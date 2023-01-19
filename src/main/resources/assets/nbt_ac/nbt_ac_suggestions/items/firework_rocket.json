@@ -1,0 +1,59 @@
+{
+	"item/minecraft:firework_rocket":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "Fireworks",
+				"type": "compound",
+
+				"subcompound":
+				{
+					"suggestions":
+					[
+						{
+							"tag": "Flight",
+							"type": "byte"
+						},
+
+						{
+							"tag": "Explosions",
+							"type": "list/compound",
+							
+							"subcompound":
+							{
+								"suggestions":
+								[
+									{
+										"tag": "Type",
+										"type": "byte"
+									},
+
+									{
+										"tag": "Colors",
+										"type": "int_array"
+									},
+
+									{
+										"tag": "FadeColors",
+										"type": "int_array"
+									},
+
+									{
+										"tag": "Trail",
+										"type": "boolean"
+									},
+
+									{
+										"tag": "Flicker",
+										"type": "boolean"
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		]
+	}
+}
