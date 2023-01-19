@@ -26,7 +26,7 @@ apply plugin: 'org.spongepowered.mixin'
 
 version = ''
 group = 'com.mt1006.nbt_ac'
-archivesBaseName = 'NBTac-FORGE-1.18.3'
+archivesBaseName = 'NBTac-FORGE-1.19.3'
 def versionToSet = '1.0'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
