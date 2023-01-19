@@ -1,0 +1,147 @@
+buildscript
+{
+	repositories
+	{
+		maven { url = 'https://maven.minecraftforge.net' }
+		mavenCentral()
+	}
+
+	dependencies
+	{
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+		classpath 'org.spongepowered:mixingradle:0.7.+'
+	}
+}
+
+plugins
+{
+	id 'eclipse'
+	id 'maven-publish'
+	id 'net.minecraftforge.gradle' version '5.1.+'
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+
+version = ''
+group = 'com.mt1006.nbt_ac'
+archivesBaseName = 'NBTac-FORGE-1.16.5'
+def versionToSet = '1.0'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+
+configurations
+{
+	library
+	implementation.extendsFrom library
+}
+
+minecraft.runs.all
+{
+	lazyToken('minecraft_classpath')
+	{
+		configurations.library.copyRecursive().resolve().collect
+		{
+			it.absolutePath
+		}.join(File.pathSeparator)
+	}
+}
+
+minecraft
+{
+	mappings channel: 'official', version: '1.16.5'
+
+	runs
+	{
+		client
+		{
+			workingDirectory project.file('run')
+
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+			property 'forge.enabledGameTestNamespaces', 'nbt_ac'
+
+			mods
+			{
+				nbt_ac { source sourceSets.main }
+			}
+		}
+
+		server
+		{
+			workingDirectory project.file('run')
+
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+			property 'forge.enabledGameTestNamespaces', 'nbt_ac'
+
+			mods
+			{
+				nbt_ac { source sourceSets.main }
+			}
+		}
+	}
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies
+{
+	minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	implementation 'org.apache.bcel:bcel:6.7.0'
+	library("org.apache.bcel:bcel:6.7.0")
+	{
+		exclude group: 'net.java.dev.jna', module: 'jna'
+		exclude group: 'net.java.dev.jna', module: 'jna-platform'
+		exclude group: 'org.apache.commons', module: 'commons-lang3'
+	}
+}
+
+mixin
+{
+	add sourceSets.main, 'mixins.nbt_ac.refmap.json'
+	config 'mixins.nbt_ac.json'
+}
+
+jar
+{
+	manifest
+	{
+		attributes([
+				"Specification-Title"     : "nbt_ac",
+				"Specification-Vendor"    : "mt1006",
+				"Specification-Version"   : versionToSet,
+				"Implementation-Title"    : project.name,
+				"Implementation-Version"  : versionToSet,
+				"Implementation-Vendor"   : "mt1006",
+				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+		])
+	}
+}
+
+shadowJar
+{
+	archiveClassifier.set('')
+	archiveVersion.set(versionToSet)
+	configurations = [project.configurations.library]
+	finalizedBy 'reobfShadowJar'
+	exclude 'META-INF/maven/**'
+}
+
+assemble.dependsOn shadowJar
+
+reobf
+{
+	shadowJar {}
+}
+
+jar.finalizedBy('reobfJar')
+
+tasks.withType(JavaCompile).configureEach
+{
+	options.encoding = 'UTF-8'
+}

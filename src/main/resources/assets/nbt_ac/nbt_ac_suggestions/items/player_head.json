@@ -1,0 +1,12 @@
+{
+	"item/minecraft:player_head":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "SkullOwner",
+				"type": "string"
+			}
+		]
+	}
+}
