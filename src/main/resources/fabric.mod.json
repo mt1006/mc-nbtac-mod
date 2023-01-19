@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "nbt_ac",
+	"version": "${version}",
+
+	"name": "NBT Autocomplete",
+	"description": "Adds suggestions for NBT tags",
+	"authors": ["mt1006 (mt1006x)"],
+	"contact":
+	{
+		"homepage": "https://github.com/mt1006/mc-nbtac-mod",
+		"sources": "https://github.com/mt1006/mc-nbtac-mod/issues"
+	},
+
+	"license": "GNU Lesser General Public License v3.0",
+	"icon": "assets/nbt_ac/logo.png",
+
+	"environment": "*",
+	"entrypoints":
+	{
+		"main": ["com.mt1006.nbt_ac.NBTac"]
+	},
+	"mixins": ["mixins.nbt_ac.json"],
+
+	"depends":
+	{
+		"fabricloader": ">=0.14.10",
+		"fabric-api": "*",
+		"minecraft": "~1.19",
+		"java": ">=17"
+	},
+	"suggests":
+	{
+		"another-mod": "*"
+	}
+}
