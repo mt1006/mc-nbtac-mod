@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "com.mt1006.nbt_ac.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "client.SuggestionsListMixin",
+    "client.arguments.CompoundTagArgumentMixin",
+    "client.arguments.NbtPathArgumentMixin",
+    "client.arguments.NbtTagArgumentMixin",
+    "client.selectors.BlockStateParserMixin",
+    "client.selectors.EntitySelectorParserMixin",
+    "client.selectors.ItemParserMixin"
+  ],
+  "mixins": [
+    "common.BlockEntityMixin",
+    "common.EntityMixin",
+    "common.EntityTypeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "mixins.nbt_ac.refmap.json"
+}

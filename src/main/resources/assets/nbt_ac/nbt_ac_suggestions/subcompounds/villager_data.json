@@ -1,0 +1,25 @@
+{
+	"subcompound/nbt_ac:villager_data":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "level",
+				"type": "int",
+				"subtype": "described_enum/1;novice;2;apprentice;3;journeyman;4;expert;5;master"
+			},
+
+			{
+				"tag": "profession",
+				"type": "string",
+				"subtype": "registry_key/minecraft:villager_profession"
+			},
+
+			{
+				"tag": "type",
+				"type": "string",
+				"subtype": "registry_key/minecraft:villager_type"
+			}
+		]
+	}
+}

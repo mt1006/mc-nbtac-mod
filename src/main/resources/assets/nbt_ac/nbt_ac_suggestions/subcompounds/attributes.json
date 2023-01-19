@@ -1,0 +1,51 @@
+{
+	"subcompound/nbt_ac:attributes":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "Name",
+				"type": "string",
+				"subtype": "registry_key/minecraft:attribute"
+			},
+
+			{
+				"tag": "Base",
+				"type": "double"
+			},
+
+			{
+				"tag": "Modifiers",
+				"type": "list/compound",
+
+				"subcompound":
+				{
+					"suggestions":
+					[
+						{
+							"tag": "Name",
+							"type": "string"
+						},
+
+						{
+							"tag": "Amount",
+							"type": "double"
+						},
+
+						{
+							"tag": "Operation",
+							"type": "int",
+							"subtype": "described_enum/0;add;1;multiply_base;2;multiply"
+						},
+
+						{
+							"tag": "UUID",
+							"type": "uuid",
+							"subtype": "random_uuid"
+						}
+					]
+				}
+			}
+		]
+	}
+}
