@@ -1,0 +1,38 @@
+{
+	"item/minecraft:map":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "map",
+				"type": "int"
+			},
+
+			{
+				"tag": "map_scale_direction",
+				"type": "int"
+			},
+
+			{
+				"tag": "map_to_lock",
+				"type": "boolean"
+			},
+
+			{
+				"tag": "display",
+				"type": "compound",
+
+				"subcompound":
+				{
+					"suggestions":
+					[
+						{
+							"tag": "MapColor",
+							"type": "int"
+						}
+					]
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "package": "com.mt1006.nbt_ac.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "client.SuggestionsListMixin",
+    "client.arguments.CompoundTagArgumentMixin",
+    "client.arguments.NbtPathArgumentMixin",
+    "client.arguments.NbtTagArgumentMixin",
+    "client.selectors.BlockStateParserMixin",
+    "client.selectors.EntitySelectorParserMixin",
+    "client.selectors.ItemParserMixin"
+  ],
+  "mixins": [
+    "common.BlockEntityMixin",
+    "common.EntityMixin",
+    "client.MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
