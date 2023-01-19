@@ -1,0 +1,44 @@
+{
+	"item/minecraft:compass":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "LodestoneDimension",
+				"type": "string",
+				"subtype": "registry_key/minecraft:dimension"
+			},
+
+			{
+				"tag": "LodestoneTracked",
+				"type": "boolean"
+			},
+
+			{
+				"tag": "LodestonePos",
+				"type": "compound",
+
+				"subcompound":
+				{
+					"suggestions":
+					[
+						{
+							"tag": "X",
+							"type": "int"
+						},
+
+						{
+							"tag": "Y",
+							"type": "int"
+						},
+						
+						{
+							"tag": "Z",
+							"type": "int"
+						}
+					]
+				}
+			}
+		]
+	}
+}
