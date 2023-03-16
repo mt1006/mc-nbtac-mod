@@ -1,0 +1,2 @@
+===Version 1.0.1===
+-Better support for interaction and display entities. 
