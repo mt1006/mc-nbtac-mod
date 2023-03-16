@@ -26,8 +26,8 @@ apply plugin: 'org.spongepowered.mixin'
 
 version = ''
 group = 'com.mt1006.nbt_ac'
-archivesBaseName = 'NBTac-FORGE-1.19.3'
-def versionToSet = '1.0'
+archivesBaseName = 'NBTac-FORGE-1.19.4'
+def versionToSet = '1.0.1'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -52,7 +52,7 @@ minecraft.runs.all
 
 minecraft
 {
-	mappings channel: 'official', version: '1.19.3'
+	mappings channel: 'official', version: '1.19.4'
 
 	runs
 	{
@@ -90,7 +90,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies
 {
-	minecraft 'net.minecraftforge:forge:1.19.3-44.1.0'
+	minecraft 'net.minecraftforge:forge:1.19.4-45.0.6'
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	implementation 'org.apache.bcel:bcel:6.7.0'
 	library("org.apache.bcel:bcel:6.7.0")
