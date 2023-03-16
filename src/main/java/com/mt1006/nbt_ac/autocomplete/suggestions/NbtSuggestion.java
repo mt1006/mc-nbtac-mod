@@ -364,6 +364,7 @@ public class NbtSuggestion extends CustomSuggestion
 	{
 		NORMAL("",""),
 		PREDICTION("(*) ", "(prediction) "),
+		TYPE_PREDICTION("(T) ", "(type prediction) "),
 		SUBTYPE_PREDICTION("(S) ", "(subtype prediction) "),
 		COMPOUND_PREDICTION("(C) ", "(compound prediction) "),
 		UNCERTAIN("(?) ", "(uncertain) ");

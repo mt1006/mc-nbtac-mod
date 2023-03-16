@@ -350,8 +350,14 @@ public class CustomTagParser
 		List<CustomSuggestion> newSuggestionList = new LinkedList<>();
 		if (suggestion != null)
 		{
-			if (suggestion.subcompound != null) { newSuggestionList.addAll(suggestion.subcompound.suggestions); }
-			else { Predictions.addSubtypeSuggestions(suggestion, newSuggestionList); }
+			if (suggestion.subcompound != null && suggestion.subcompound.suggestions.size() > 0)
+			{
+				newSuggestionList.addAll(suggestion.subcompound.suggestions);
+			}
+			else
+			{
+				Predictions.addSubtypeSuggestions(suggestion, newSuggestionList);
+			}
 		}
 
 		Suggestion substructSuggestion = readStruct(newSuggestionList);

@@ -10,6 +10,7 @@ import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +44,26 @@ public class Predictions
 			{
 				addCommonTags(type, suggestionList);
 				if (type.startsWith("tag/item/")) { addItemPredictions(type.substring(9), suggestionList); }
-				else if (type.startsWith("tag/entity/")) { addEntityPredictions(suggestionList); }
+				else if (type.startsWith("tag/entity/")) { addEntityPredictions(type.substring(11), suggestionList); }
 			}
 
 			setSubtype(suggestionList, "CustomName", NbtSuggestion.Subtype.JSON_TEXT, null);
 
 			if (tag.endsWith("Item") || tag.endsWith("Items") || tag.equals("Book") || tag.equals("Trident") ||
 					(rootTag.equals("Recipes") && (tag.equals("buy") || tag.equals("buyB") || tag.equals("sell"))) ||
-					(tag.equals("Inventory") && !suggestionList.isEmpty()))
+					(tag.equals("Inventory") && !suggestionList.isEmpty()) || tag.equals("item"))
 			{
 				setSubtype(suggestionList, "id", NbtSuggestion.Subtype.REGISTRY_KEY, "minecraft:item");
 
 				String id = findTag(tagList, "id", String.class);
 				if (id != null) { setSubtype(suggestionList, "tag", NbtSuggestion.Subtype.TAG, "item/" + id); }
+			}
+			else if (tag.equals("block_state"))
+			{
+				setFullType(suggestionList, "Name", NbtSuggestion.Type.STRING, NbtSuggestion.Subtype.REGISTRY_KEY, "minecraft:block");
+
+				String id = findTag(tagList, "Name", String.class);
+				if (id != null) { setSubtype(suggestionList, "Properties", NbtSuggestion.Subtype.BLOCK_STATE_TAG, id); }
 			}
 			else if (tag.equals("Inventory"))
 			{
@@ -216,11 +224,21 @@ public class Predictions
 		}
 	}
 
-	private static void addEntityPredictions(List<CustomSuggestion> suggestionList)
+	private static void addEntityPredictions(String entityName, List<CustomSuggestion> suggestionList)
 	{
 		setSubcompound(suggestionList, "Attributes", NbtSuggestionManager.get("subcompound/nbt_ac:attributes"));
 		setSubcompound(suggestionList, "VillagerData", NbtSuggestionManager.get("subcompound/nbt_ac:villager_data"));
 
+		if (entityName.equals("block_display") || entityName.equals("minecraft:block_display") ||
+				entityName.equals("item_display") || entityName.equals("minecraft:item_display") ||
+				entityName.equals("text_display") || entityName.equals("minecraft:text_display"))
+		{
+			addDisplayEntityPredictions(suggestionList);
+		}
+		else if (entityName.equals("interaction") || entityName.equals("minecraft:interaction"))
+		{
+			addInteractionEntityPredictions(suggestionList);
+		}
 
 		NbtSuggestion nbtSuggestion = findNbtSuggestion(suggestionList, "Passengers");
 		if (nbtSuggestion == null)
@@ -229,6 +247,47 @@ public class Predictions
 			nbtSuggestion.listType = NbtSuggestion.Type.COMPOUND;
 			suggestionList.add(nbtSuggestion);
 		}
+	}
+
+	private static void addDisplayEntityPredictions(List<CustomSuggestion> suggestionList)
+	{
+		// Common
+		setType(suggestionList, "glow_color_override", NbtSuggestion.Type.INT);
+		setType(suggestionList, "height", NbtSuggestion.Type.INT);
+		setType(suggestionList, "width", NbtSuggestion.Type.INT);
+		setType(suggestionList, "interpolation_duration", NbtSuggestion.Type.INT);
+		setType(suggestionList, "start_interpolation", NbtSuggestion.Type.INT);
+		setType(suggestionList, "shadow_radius", NbtSuggestion.Type.FLOAT);
+		setType(suggestionList, "shadow_strength", NbtSuggestion.Type.FLOAT);
+		setType(suggestionList, "view_range", NbtSuggestion.Type.FLOAT);
+		setFullType(suggestionList, "billboard", NbtSuggestion.Type.STRING,
+				NbtSuggestion.Subtype.ENUM, "\"fixed\";\"vertical\";\"horizontal\";\"center\"");
+		setSubcompound(suggestionList, "brightness", NbtSuggestionManager.get("subcompound/nbt_ac:display_brightness"));
+		setSubcompound(suggestionList, "transformation", NbtSuggestionManager.get("subcompound/nbt_ac:display_transformation"));
+
+		// Item display
+		setFullType(suggestionList, "item_display", NbtSuggestion.Type.STRING, NbtSuggestion.Subtype.ENUM,
+				"\"none\";\"thirdperson_lefthand\";\"thirdperson_righthand\";\"firstperson_lefthand\";" +
+				"\"firstperson_righthand\";\"head\";\"gui\";\"ground\";\"fixed\"");
+
+		// Text display
+		setType(suggestionList, "background", NbtSuggestion.Type.INT);
+		setType(suggestionList, "line_width", NbtSuggestion.Type.INT);
+		setType(suggestionList, "text_opacity", NbtSuggestion.Type.BYTE);
+		setType(suggestionList, "default_background", NbtSuggestion.Type.BOOLEAN);
+		setType(suggestionList, "see_through", NbtSuggestion.Type.BOOLEAN);
+		setType(suggestionList, "shadow", NbtSuggestion.Type.BOOLEAN);
+		setFullType(suggestionList, "text", NbtSuggestion.Type.STRING, NbtSuggestion.Subtype.JSON_TEXT, null);
+		setFullType(suggestionList, "alignment", NbtSuggestion.Type.STRING, NbtSuggestion.Subtype.ENUM, "\"center\";\"left\";\"right\"");
+	}
+
+	private static void addInteractionEntityPredictions(List<CustomSuggestion> suggestionList)
+	{
+		setType(suggestionList, "width", NbtSuggestion.Type.FLOAT);
+		setType(suggestionList, "height", NbtSuggestion.Type.FLOAT);
+		setType(suggestionList, "response", NbtSuggestion.Type.BOOLEAN);
+		setSubcompound(suggestionList, "attack", NbtSuggestionManager.get("subcompound/nbt_ac:interaction_info"));
+		setSubcompound(suggestionList, "interaction", NbtSuggestionManager.get("subcompound/nbt_ac:interaction_info"));
 	}
 
 	private static void addTagPredictions(String tag, List<CustomSuggestion> suggestionList)
@@ -241,14 +300,35 @@ public class Predictions
 		addPredictions(tempTagParser, suggestionList, false);
 	}
 
-	private static void setSubtype(List<CustomSuggestion> suggestionList, String tag, NbtSuggestion.Subtype subtype, String subtypeData)
+	private static void setType(List<CustomSuggestion> suggestionList, String tag, NbtSuggestion.Type type)
+	{
+		setFullType(suggestionList, tag, type, null, null);
+	}
+
+	private static void setSubtype(List<CustomSuggestion> suggestionList, String tag,
+								   NbtSuggestion.Subtype subtype, @Nullable String subtypeData)
+	{
+		setFullType(suggestionList, tag, null, subtype, subtypeData);
+	}
+
+	private static void setFullType(List<CustomSuggestion> suggestionList, String tag, @Nullable NbtSuggestion.Type type,
+										  @Nullable NbtSuggestion.Subtype subtype, @Nullable String subtypeData)
 	{
 		NbtSuggestion nbtSuggestion = findNbtSuggestion(suggestionList, tag);
-		if (nbtSuggestion == null || nbtSuggestion.subtype != NbtSuggestion.Subtype.NONE) { return; }
+		if (nbtSuggestion == null) { return; }
 
-		nbtSuggestion.subtype = subtype;
-		nbtSuggestion.subtypeData = subtypeData;
-		nbtSuggestion.changeSuggestionType(NbtSuggestion.SuggestionType.SUBTYPE_PREDICTION);
+		if (type != null && nbtSuggestion.type == NbtSuggestion.Type.UNKNOWN)
+		{
+			nbtSuggestion.type = type;
+			nbtSuggestion.changeSuggestionType(NbtSuggestion.SuggestionType.TYPE_PREDICTION);
+		}
+
+		if (subtype != null && nbtSuggestion.subtype == NbtSuggestion.Subtype.NONE)
+		{
+			nbtSuggestion.subtype = subtype;
+			nbtSuggestion.subtypeData = subtypeData;
+			nbtSuggestion.changeSuggestionType(NbtSuggestion.SuggestionType.SUBTYPE_PREDICTION);
+		}
 	}
 
 	private static void setSubcompound(List<CustomSuggestion> suggestionList, String tag, NbtSuggestions subcompound)
