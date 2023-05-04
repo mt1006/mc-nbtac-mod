@@ -1,16 +1,17 @@
-package com.mt1006.nbt_ac.mixin.client.selectors;
+package com.mt1006.nbt_ac.mixin.suggestions.selectors;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
+import com.mt1006.nbt_ac.utils.RegistryUtils;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -51,12 +51,11 @@ public class BlockStateParserMixin
 	private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder)
 	{
 		if (state == null) { return Suggestions.empty(); }
-		ResourceLocation resourceLocation = Registry.BLOCK.getKey(state.getBlock());
+		ResourceLocation resourceLocation = RegistryUtils.BLOCK.getKey(state.getBlock());
 
 		String name = resourceLocation.toString();
 		String tag = suggestionsBuilder.getRemaining();
 
-		return NbtSuggestionManager.loadSuggestions(NbtSuggestionManager.get("block/" + name),
-				"$tag/block/" + name, tag, suggestionsBuilder, false).buildFuture();
+		return NbtSuggestionManager.loadFromName("block/" + name, tag, suggestionsBuilder, false);
 	}
 }

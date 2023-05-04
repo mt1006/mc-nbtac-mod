@@ -18,37 +18,18 @@ plugins
 	id 'eclipse'
 	id 'maven-publish'
 	id 'net.minecraftforge.gradle' version '5.1.+'
-	id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = ''
+version = '1.1'
 group = 'com.mt1006.nbt_ac'
 archivesBaseName = 'NBTac-FORGE-1.19.2'
-def versionToSet = '1.0'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-
-configurations
-{
-	library
-	implementation.extendsFrom library
-}
-
-minecraft.runs.all
-{
-	lazyToken('minecraft_classpath')
-	{
-		configurations.library.copyRecursive().resolve().collect
-		{
-			it.absolutePath
-		}.join(File.pathSeparator)
-	}
-}
 
 minecraft
 {
@@ -92,13 +73,6 @@ dependencies
 {
 	minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-	implementation 'org.apache.bcel:bcel:6.7.0'
-	library("org.apache.bcel:bcel:6.7.0")
-	{
-		exclude group: 'net.java.dev.jna', module: 'jna'
-		exclude group: 'net.java.dev.jna', module: 'jna-platform'
-		exclude group: 'org.apache.commons', module: 'commons-lang3'
-	}
 }
 
 mixin
@@ -114,29 +88,13 @@ jar
 		attributes([
 				"Specification-Title"     : "nbt_ac",
 				"Specification-Vendor"    : "mt1006",
-				"Specification-Version"   : versionToSet,
+				"Specification-Version"   : "${archiveVersion}",
 				"Implementation-Title"    : project.name,
-				"Implementation-Version"  : versionToSet,
+				"Implementation-Version"  : "${archiveVersion}",
 				"Implementation-Vendor"   : "mt1006",
 				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 		])
 	}
-}
-
-shadowJar
-{
-	archiveClassifier.set('')
-	archiveVersion.set(versionToSet)
-	configurations = [project.configurations.library]
-	finalizedBy 'reobfShadowJar'
-	exclude 'META-INF/maven/**'
-}
-
-assemble.dependsOn shadowJar
-
-reobf
-{
-	shadowJar {}
 }
 
 jar.finalizedBy('reobfJar')

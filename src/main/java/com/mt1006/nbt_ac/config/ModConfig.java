@@ -2,6 +2,7 @@ package com.mt1006.nbt_ac.config;
 
 import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.io.File;
 
@@ -17,6 +18,7 @@ public class ModConfig
 	public static MutableBoolean hideForgeTags = new MutableBoolean(true);
 	public static MutableBoolean showTagTypes = new MutableBoolean(true);
 	public static MutableBoolean predictSuggestions = new MutableBoolean(true);
+	public static MutableInt saveSuggestions = new MutableInt(0);
 
 	public static void initConfig()
 	{
@@ -35,13 +37,20 @@ public class ModConfig
 				"Suggest 1b/0b instead of true/false for boolean value.");
 
 		configFile.addValue("hide_forge_tags", hideForgeTags,
-				"Hide \"ForgeCaps\" and \"ForgeData\" tags.");
+				"Hide Forge specific tags.");
 
 		configFile.addValue("show_tag_types", showTagTypes,
 				"Show tag type next to its name in suggestions list.");
 
 		configFile.addValue("predict_suggestions", predictSuggestions,
 				"Predict suggestions for known tags.");
+
+		configFile.addValue("save_suggestions", saveSuggestions,
+				"Save suggestions to file - \".minecraft/nbt_ac_output.txt\"\n" +
+				"0 - Disabled\n" +
+				"1 - Enabled\n" +
+				"2 - Enabled and sorted (easier for comparing)\n" +
+				"Other values will be treated as 0.");
 	}
 
 	public static void loadConfig()

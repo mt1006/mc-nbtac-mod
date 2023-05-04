@@ -1,4 +1,4 @@
-package com.mt1006.nbt_ac.mixin.common;
+package com.mt1006.nbt_ac.mixin.constructors;
 
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
 import net.minecraft.core.BlockPos;
@@ -14,8 +14,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class BlockEntityMixin
 {
 	@Inject(at = @At(value = "RETURN"), method = "<init>")
-	private void atConstructor(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState, CallbackInfo callbackInfo)
+	private void atConstructor(BlockEntityType<?> blockEntityType, BlockPos blockPos,
+							   BlockState blockState, CallbackInfo callbackInfo) throws Exception
 	{
-		if (TypeLoader.getClasses) { TypeLoader.lastClass = this.getClass(); }
+		if (TypeLoader.getClasses)
+		{
+			TypeLoader.lastClass = this.getClass();
+			throw new Exception();
+		}
 	}
 }

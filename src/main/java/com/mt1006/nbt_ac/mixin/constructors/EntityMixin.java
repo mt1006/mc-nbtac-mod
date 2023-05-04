@@ -1,4 +1,4 @@
-package com.mt1006.nbt_ac.mixin.common;
+package com.mt1006.nbt_ac.mixin.constructors;
 
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
 import net.minecraft.world.entity.Entity;
@@ -12,9 +12,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class EntityMixin
 {
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType;getDimensions()Lnet/minecraft/world/entity/EntityDimensions;"))
-	private EntityDimensions atConstructor(EntityType<?> entityType)
+	private EntityDimensions atConstructor(EntityType<?> entityType) throws Exception
 	{
-		if (TypeLoader.getClasses) { TypeLoader.lastClass = this.getClass(); }
+		if (TypeLoader.getClasses)
+		{
+			TypeLoader.lastClass = this.getClass();
+			throw new Exception();
+		}
 		return entityType.getDimensions();
 	}
 }

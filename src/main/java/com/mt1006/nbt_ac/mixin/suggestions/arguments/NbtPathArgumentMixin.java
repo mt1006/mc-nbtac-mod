@@ -1,4 +1,4 @@
-package com.mt1006.nbt_ac.mixin.client.arguments;
+package com.mt1006.nbt_ac.mixin.suggestions.arguments;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -17,8 +17,7 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(NbtPathArgument.class)
 abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 {
-	@Override
-	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
+	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
 	{
 		try
 		{
@@ -27,8 +26,7 @@ abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 
 			String tag = suggestionsBuilder.getRemaining();
 
-			return NbtSuggestionManager.loadSuggestions(NbtSuggestionManager.get(name),
-					"$tag/" + name, tag, suggestionsBuilder, true).buildFuture();
+			return NbtSuggestionManager.loadFromName(name, tag, suggestionsBuilder, true);
 		}
 		catch (Exception exception)
 		{
@@ -40,6 +38,7 @@ abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 	{
 		String commandName = MixinUtils.getNodeString(commandContext, 0);
 		if (commandName.equals("data")) { return getResourceNameForDataCommand(commandContext); }
+		else if (commandContext.getChild() != null) { return getResourceName(commandContext.getChild()); }
 		return null;
 	}
 

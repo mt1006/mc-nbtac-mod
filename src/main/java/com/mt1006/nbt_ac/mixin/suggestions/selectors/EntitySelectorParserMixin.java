@@ -1,4 +1,4 @@
-package com.mt1006.nbt_ac.mixin.client.selectors;
+package com.mt1006.nbt_ac.mixin.suggestions.selectors;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -9,6 +9,7 @@ import com.mt1006.nbt_ac.utils.MixinUtils;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.commands.arguments.selector.options.EntitySelectorOptions;
 import net.minecraft.world.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -68,7 +68,6 @@ public class EntitySelectorParserMixin
 		String name = MixinUtils.entityFromSelectorData(type, entityUUID, playerName);
 		String tag = suggestionsBuilder.getRemaining();
 
-		return NbtSuggestionManager.loadSuggestions(NbtSuggestionManager.get(name),
-				"$tag/" + name, tag, suggestionsBuilder, false).buildFuture();
+		return NbtSuggestionManager.loadFromName(name, tag, suggestionsBuilder, false);
 	}
 }

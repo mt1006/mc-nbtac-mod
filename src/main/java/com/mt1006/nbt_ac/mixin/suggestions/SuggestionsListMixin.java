@@ -1,9 +1,10 @@
-package com.mt1006.nbt_ac.mixin.client;
+package com.mt1006.nbt_ac.mixin.suggestions;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.config.ModConfig;
+import com.mt1006.nbt_ac.mixin.fields.CommandSuggestionsMixin;
 import com.mt1006.nbt_ac.utils.Fields;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.CommandSuggestions;
@@ -31,35 +32,32 @@ public class SuggestionsListMixin
 
 	@Inject(at = @At(value = "RETURN"), method = "<init>")
 	private void atConstructor(CommandSuggestions commandSuggestions, int x, int y, int w,
-							   List<?> suggestions, boolean narrated, CallbackInfo callbackInfo)
+							   List<Suggestion> suggestions, boolean narrated, CallbackInfo callbackInfo)
 	{
 		if (!ModConfig.showTagTypes.getValue()) { return; }
 
 		try
 		{
-			if (Fields.suggestionsListRect != null && Fields.commandSuggestionsFont != null)
+			EditBox editBox = ((CommandSuggestionsMixin)commandSuggestions).getInput();
+			fontToUse = ((CommandSuggestionsMixin)commandSuggestions).getFont();
+
+			int newW = 0;
+			for (Suggestion suggestion : suggestions)
 			{
-				EditBox editBox = (EditBox)Fields.commandSuggestionsEditBox.get(commandSuggestions);
-				fontToUse = (Font)Fields.commandSuggestionsFont.get(commandSuggestions);
-
-				int newW = 0;
-				for (Suggestion suggestion : (List<Suggestion>)suggestions)
+				String subtext = NbtSuggestionManager.getSubtext(suggestion);
+				if (subtext == null)
 				{
-					String subtext = NbtSuggestionManager.getSubtext(suggestion);
-					if (subtext == null)
-					{
-						addTypeNames = false;
-						return;
-					}
-
-					newW = Math.max(newW, fontToUse.width(suggestion.getText()) + fontToUse.width(subtext) + 3);
+					addTypeNames = false;
+					return;
 				}
 
-				int newX = Mth.clamp(rect.getX(), 0, editBox.getScreenX(0) + editBox.getInnerWidth() - newW) - 1;
-
-				addTypeNames = true;
-				Fields.suggestionsListRect.set(this, new Rect2i(newX, rect.getY(), newW, rect.getHeight()));
+				newW = Math.max(newW, fontToUse.width(suggestion.getText()) + fontToUse.width(subtext) + 3);
 			}
+
+			int newX = Mth.clamp(rect.getX(), 0, editBox.getScreenX(0) + editBox.getInnerWidth() - newW) - 1;
+
+			addTypeNames = true;
+			Fields.suggestionsListRect.set(this, new Rect2i(newX, rect.getY(), newW, rect.getHeight()));
 		}
 		catch (Exception ignore) {}
 	}
@@ -67,20 +65,18 @@ public class SuggestionsListMixin
 	@Inject(at = @At(value = "RETURN"), method = "render")
 	private void atRender(PoseStack poseStack, int mouseX, int mouseY, CallbackInfo callbackInfo)
 	{
-		if (addTypeNames && Fields.suggestionsListRect != null && Fields.commandSuggestionsFont != null)
+		if (!addTypeNames) { return; }
+		int height = rect.getHeight() / 12;
+
+		for (int i = 0; i < height; ++i)
 		{
-			int height = rect.getHeight() / 12;
+			String subtext = NbtSuggestionManager.getSubtext(suggestionList.get(i + this.offset));
+			if (subtext == null) { continue; }
 
-			for (int i = 0; i < height; ++i)
-			{
-				String subtext = NbtSuggestionManager.getSubtext(suggestionList.get(i + this.offset));
-				if (subtext == null) { continue; }
-
-				fontToUse.drawShadow(poseStack, subtext,
-						(float)(rect.getX() + rect.getWidth() - fontToUse.width(subtext) - 1),
-						(float)(rect.getY() + 2 + 12 * i),
-						i + offset == current ? -256 : -5592406);
-			}
+			fontToUse.drawShadow(poseStack, subtext,
+					(float)(rect.getX() + rect.getWidth() - fontToUse.width(subtext) - 1),
+					(float)(rect.getY() + 2 + 12 * i),
+					i + offset == current ? -256 : -5592406);
 		}
 	}
 }

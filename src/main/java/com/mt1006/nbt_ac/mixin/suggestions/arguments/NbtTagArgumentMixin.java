@@ -1,4 +1,4 @@
-package com.mt1006.nbt_ac.mixin.client.arguments;
+package com.mt1006.nbt_ac.mixin.suggestions.arguments;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -14,29 +14,34 @@ import com.mt1006.nbt_ac.utils.MixinUtils;
 import net.minecraft.commands.arguments.NbtTagArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(NbtTagArgument.class)
 abstract public class NbtTagArgumentMixin implements ArgumentType<Tag>
 {
-	@Override
-	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
+	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
 	{
 		try
 		{
 			NbtSuggestion nbtSuggestion = getSuggestion(commandContext);
-			if (nbtSuggestion == null ) { return Suggestions.empty(); }
+			if (nbtSuggestion == null) { return Suggestions.empty(); }
 
 			String tag = suggestionsBuilder.getRemaining();
 
-			return NbtSuggestionManager.loadSuggestions(nbtSuggestion.subcompound,
-					nbtSuggestion.getComplexTag(), tag, suggestionsBuilder, false).buildFuture();
+			if (nbtSuggestion.subcompound == null)
+			{
+				NbtSuggestionManager.simpleSuggestion("", String.format("§8%s[%s]",
+						nbtSuggestion.suggestionType.symbol, nbtSuggestion.type.getName()), suggestionsBuilder);
+				return suggestionsBuilder.buildFuture();
+			}
+			else
+			{
+				return NbtSuggestionManager.loadFromSuggestion(nbtSuggestion, tag, suggestionsBuilder);
+			}
 		}
 		catch (Exception exception)
 		{
@@ -48,6 +53,7 @@ abstract public class NbtTagArgumentMixin implements ArgumentType<Tag>
 	{
 		String commandName = MixinUtils.getNodeString(commandContext, 0);
 		if (commandName.equals("data")) { return getSuggestionForDataCommand(commandContext); }
+		else if (commandContext.getChild() != null) { return getSuggestion(commandContext.getChild()); }
 		return null;
 	}
 
@@ -82,10 +88,11 @@ abstract public class NbtTagArgumentMixin implements ArgumentType<Tag>
 		NbtSuggestions rootSuggestions = NbtSuggestionManager.get(root);
 		if (rootSuggestions == null) { return null; }
 
-		List<CustomSuggestion> suggestionList = new LinkedList<>(NbtSuggestionManager.get(root).suggestions);
+		List<CustomSuggestion> suggestionList = new ArrayList<>();
+		NbtSuggestionManager.addToList(suggestionList, rootSuggestions, root);
 
 		CustomTagParser pathParser = new CustomTagParser(path);
-		pathParser.read(suggestionList, "$tag/" + root, true);
+		pathParser.read(suggestionList, null, root, true);
 
 		return pathParser.lastFoundSuggestion;
 	}
