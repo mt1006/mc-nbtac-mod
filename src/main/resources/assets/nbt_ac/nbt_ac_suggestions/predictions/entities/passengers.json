@@ -1,0 +1,22 @@
+{
+	"conditions":
+	[
+		{
+			"path": ["Passengers"]
+		}
+	],
+	
+	"operations":
+	[
+		{
+			"type": "add_tag",
+			"val": "id/string/registry_key/minecraft:entity_type"
+		},
+
+		{
+			"with": "id",
+			"type": "set_subtype",
+			"val": "tag/entity/*"
+		}
+	]
+}

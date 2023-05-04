@@ -3,8 +3,8 @@ package com.mt1006.nbt_ac.autocomplete.loader.typeloader;
 import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
+import com.mt1006.nbt_ac.utils.RegistryUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -19,11 +19,12 @@ public class TypeLoader
 	{
 		getClasses = true;
 
-		for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE)
+		for (EntityType<?> entityType : RegistryUtils.ENTITY_TYPE)
 		{
 			lastClass = null;
 			ResourceLocation resourceName = EntityType.getKey(entityType);
 
+			long start = System.currentTimeMillis();
 			if (resourceName.toString().equals("minecraft:player"))
 			{
 				lastClass = Player.class;
@@ -32,7 +33,7 @@ public class TypeLoader
 			{
 				try
 				{
-					entityType.create(null); // lastClass set by mixin (common.EntityMixin)
+					entityType.create(null); // lastClass set by mixin (constructors.EntityMixin)
 				}
 				catch (Throwable throwable)
 				{
@@ -42,7 +43,6 @@ public class TypeLoader
 					}
 				}
 			}
-
 
 			if (lastClass != null)
 			{
@@ -71,7 +71,7 @@ public class TypeLoader
 	{
 		getClasses = true;
 
-		for (BlockEntityType<?> blockEntityType : BuiltInRegistries.BLOCK_ENTITY_TYPE)
+		for (BlockEntityType<?> blockEntityType : RegistryUtils.BLOCK_ENTITY_TYPE)
 		{
 			lastClass = null;
 			ResourceLocation resourceName = BlockEntityType.getKey(blockEntityType);
@@ -88,7 +88,7 @@ public class TypeLoader
 				}
 			}
 
-			if (lastClass != null) // set by mixin (common.BlockEntityMixin)
+			if (lastClass != null) // set by mixin (constructors.BlockEntityMixin)
 			{
 				try
 				{

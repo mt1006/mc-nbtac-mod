@@ -40,7 +40,7 @@ abstract public class CustomSuggestion
 
 				suggestions.add(new Suggestion(StringRange.between(start, len), text, tooltip));
 			}
-			catch (Exception exception) { System.out.println(exception); return; }
+			catch (Exception exception) { return; }
 		}
 		else
 		{

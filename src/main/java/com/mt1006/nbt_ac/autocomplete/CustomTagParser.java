@@ -5,20 +5,18 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.autocomplete.suggestions.CustomSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
-import com.mt1006.nbt_ac.autocomplete.suggestions.SimpleSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.nbt.TagParser;
-import org.apache.commons.lang3.tuple.MutablePair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
+import java.util.Map;
 
 public class CustomTagParser
 {
 	public final StringReader reader;
-	public final Stack<ArrayList<MutablePair<String, Object>>> stack = new Stack<>();
 	public NbtSuggestion lastFoundSuggestion = null;
 
 	public CustomTagParser(String tag)
@@ -26,11 +24,9 @@ public class CustomTagParser
 		reader = new StringReader(tag);
 	}
 
-	public Suggestion read(List<CustomSuggestion> suggestionList, String complexTag, boolean suggestPath)
+	public Suggestion read(List<CustomSuggestion> suggestionList, @Nullable NbtSuggestion suggestion,
+						   @Nullable String parentTag, boolean suggestPath)
 	{
-		stack.push(new ArrayList<>());
-		stack.peek().add(new MutablePair<>(complexTag, null));
-
 		try
 		{
 			if (suggestPath)
@@ -39,8 +35,7 @@ public class CustomTagParser
 			}
 			else
 			{
-				stack.push(new ArrayList<>());
-				return readStruct(suggestionList);
+				return readStruct(suggestionList, suggestion, NbtSuggestion.ParentInfo.fromRoot(parentTag), false);
 			}
 		}
 		catch (CommandSyntaxException ignore) { return Suggestion.NONE; }
@@ -52,14 +47,10 @@ public class CustomTagParser
 		{
 			while (true)
 			{
-				stack.push(new ArrayList<>());
-
-				Predictions.addPredictions(this, suggestionList, false);
-
 				String key = readPathKey();
 				if (key.isEmpty()) { return Suggestion.TAG; }
 
-				List<CustomSuggestion> potentialSuggestions = new LinkedList<>();
+				List<CustomSuggestion> potentialSuggestions = new ArrayList<>();
 				NbtSuggestion foundSuggestion = findSuggestion(suggestionList, key, potentialSuggestions);
 				lastFoundSuggestion = foundSuggestion;
 
@@ -73,8 +64,6 @@ public class CustomTagParser
 
 				if (foundSuggestion == null) { return Suggestion.NONE; }
 
-				stack.peek().add(new MutablePair<>(foundSuggestion.getComplexTag(), null));
-
 				if (reader.peek() == '[')
 				{
 					expect('[');
@@ -82,7 +71,7 @@ public class CustomTagParser
 
 					if (reader.peek() == '{')
 					{
-						Suggestion compoundSuggestion = readSubcompound(foundSuggestion, suggestionList);
+						Suggestion compoundSuggestion = readSubcompound(foundSuggestion, suggestionList, NbtSuggestion.ParentInfo.blank());
 						if (compoundSuggestion != Suggestion.CONTINUE) { return compoundSuggestion; }
 					}
 					else
@@ -96,7 +85,7 @@ public class CustomTagParser
 				if (!reader.canRead()) { return Suggestion.NONE; }
 				if (reader.peek() == '{')
 				{
-					Suggestion compoundSuggestion = readSubcompound(foundSuggestion, suggestionList);
+					Suggestion compoundSuggestion = readSubcompound(foundSuggestion, suggestionList, NbtSuggestion.ParentInfo.blank());
 					if (compoundSuggestion != Suggestion.CONTINUE) { return compoundSuggestion; }
 				}
 
@@ -106,15 +95,45 @@ public class CustomTagParser
 				suggestionList.clear();
 				if (foundSuggestion.subcompound != null)
 				{
-					suggestionList.addAll(foundSuggestion.subcompound.suggestions);
+					suggestionList.addAll(foundSuggestion.subcompound.getAll());
 				}
 			}
 		}
 		catch (CommandSyntaxException ignore) { return Suggestion.NONE; }
 	}
 
-	private Suggestion readStruct(List<CustomSuggestion> suggestionList) throws CommandSyntaxException
+	private Suggestion readStruct(List<CustomSuggestion> suggestionList, @Nullable NbtSuggestion suggestion,
+								  NbtSuggestion.ParentInfo parentInfo, boolean isMapScanner) throws CommandSyntaxException
 	{
+		if (suggestion != null)
+		{
+			if (!isMapScanner)
+			{
+				List<CustomSuggestion> tempSuggestionList = new ArrayList<>();
+				Map<String, String> tempTagMap = new HashMap<>();
+				NbtSuggestion.ParentInfo tempParentInfo = parentInfo.withTagMap(tempTagMap);
+
+				if (suggestion.subcompound != null) { tempSuggestionList.addAll(suggestion.subcompound.getAll()); }
+				suggestion.getSubtypeTagSuggestions(tempSuggestionList, tempParentInfo);
+
+				int oldPos = reader.getCursor();
+
+				try
+				{
+					readStruct(tempSuggestionList, suggestion, tempParentInfo, true);
+				}
+				catch (Exception ignore) {}
+
+				suggestion.getSubtypeTagSuggestions(suggestionList, tempParentInfo);
+
+				reader.setCursor(oldPos);
+			}
+			else
+			{
+				suggestion.getSubtypeTagSuggestions(suggestionList, parentInfo);
+			}
+		}
+
 		if (reader.canRead()) { expect('{'); }
 		else { return Suggestion.COMPOUND_BEGIN; }
 		reader.skipWhitespace();
@@ -125,18 +144,14 @@ public class CustomTagParser
 			return Suggestion.CONTINUE;
 		}
 
-		boolean predictionsAdded = false;
-
 		do
 		{
-			Predictions.addPredictions(this, suggestionList, predictionsAdded);
-			predictionsAdded = true;
 
 			String key = readKey();
 			if (key.isEmpty()) { return Suggestion.TAG; }
-			stack.peek().add(new MutablePair<>(key + "$", null));
+			parentInfo.putTag(key, null);
 
-			List<CustomSuggestion> potentialSuggestions = new LinkedList<>();
+			List<CustomSuggestion> potentialSuggestions = new ArrayList<>();
 			NbtSuggestion foundSuggestion = findSuggestion(suggestionList, key, potentialSuggestions);
 
 			if (!reader.canRead())
@@ -154,15 +169,10 @@ public class CustomTagParser
 				}
 			}
 
-			if (foundSuggestion != null)
-			{
-				suggestionList.remove(foundSuggestion);
-				stack.peek().get(stack.peek().size() - 1).left = foundSuggestion.getComplexTag();
-				stack.peek().get(stack.peek().size() - 1).right = foundSuggestion.subcompound;
-			}
+			if (foundSuggestion != null) { suggestionList.remove(foundSuggestion); }
 
 			expect(':');
-			Suggestion suggestionForValue = readValue(foundSuggestion, suggestionList, false);
+			Suggestion suggestionForValue = readValue(foundSuggestion, suggestionList, parentInfo, false);
 
 			if (suggestionForValue != Suggestion.CONTINUE) { return suggestionForValue; }
 		} while (hasElementSeparator());
@@ -199,49 +209,40 @@ public class CustomTagParser
 		return reader.getString().substring(start, reader.getCursor());
 	}
 
-	private Suggestion readValue(NbtSuggestion suggestion, List<CustomSuggestion> suggestionList,
-								 boolean fromList) throws CommandSyntaxException
+	private Suggestion readValue(@Nullable NbtSuggestion suggestion, List<CustomSuggestion> suggestionList,
+								 NbtSuggestion.ParentInfo parentInfo, boolean fromList) throws CommandSyntaxException
 	{
 		reader.skipWhitespace();
 		char peek = reader.canRead() ? reader.peek() : '\0';
 
-		if (peek == '{')
-		{
-			stack.push(new ArrayList<>());
-			Suggestion newSuggestion = readSubcompound(suggestion, suggestionList);
-			stack.pop();
-			return newSuggestion;
-		}
-		else if (peek == '[')
-		{
-			return readList(suggestion, suggestionList);
-		}
-		else
-		{
-			return readTypedValue(suggestion, suggestionList, fromList);
-		}
+		if (peek == '{') { return readSubcompound(suggestion, suggestionList, parentInfo); }
+		else if (peek == '[') { return readList(suggestion, suggestionList, parentInfo); }
+		else { return readTypedValue(suggestion, suggestionList, parentInfo, fromList); }
 	}
 
-	private Suggestion readTypedValue(NbtSuggestion suggestion, List<CustomSuggestion> suggestionList, boolean fromList)
+	private Suggestion readTypedValue(@Nullable NbtSuggestion suggestion, List<CustomSuggestion> suggestionList,
+									  NbtSuggestion.ParentInfo parentInfo, boolean fromList)
 	{
 		NbtSuggestion.Type expectedType = NbtSuggestion.Type.UNKNOWN;
 		if (suggestion != null)
 		{
-			if (fromList) { expectedType = suggestion.getListType(); }
-			else { expectedType = suggestion.getType(); }
+			if (fromList) { expectedType = suggestion.listType; }
+			else { expectedType = suggestion.type; }
 		}
 
 		reader.skipWhitespace();
 
 		int cursor = reader.getCursor();
 		boolean readStringError = false;
-		ArrayList<MutablePair<String, Object>> list = stack.peek();
 
 		if (reader.canRead())
 		{
 			if (StringReader.isQuotedStringStart(reader.peek()))
 			{
-				try { list.get(list.size() - 1).right = reader.readQuotedString(); }
+				try
+				{
+					if (suggestion != null) { parentInfo.putTag(suggestion.tag, reader.readQuotedString()); }
+				}
 				catch (Exception exception) { readStringError = true; }
 			}
 			else
@@ -253,7 +254,8 @@ public class CustomTagParser
 		if (!reader.canRead() || readStringError)
 		{
 			reader.setCursor(cursor);
-			if (suggestion != null && expectedType != NbtSuggestion.Type.LIST && suggestion.getSubtypeSuggestions(suggestionList))
+			if (suggestion != null && expectedType != NbtSuggestion.Type.LIST &&
+					suggestion.getSubtypeSuggestions(suggestionList, parentInfo))
 			{
 				String prefix = reader.getString().substring(cursor);
 				suggestionList.removeIf(customSuggestion ->
@@ -271,7 +273,8 @@ public class CustomTagParser
 		return Suggestion.CONTINUE;
 	}
 
-	private Suggestion readList(NbtSuggestion suggestion, List<CustomSuggestion> suggestionList) throws CommandSyntaxException
+	private Suggestion readList(@Nullable NbtSuggestion suggestion, List<CustomSuggestion> suggestionList,
+								NbtSuggestion.ParentInfo parentInfo) throws CommandSyntaxException
 	{
 		if (reader.canRead(3) && !StringReader.isQuotedStringStart(reader.peek(1)) && reader.peek(2) == ';')
 		{
@@ -281,11 +284,12 @@ public class CustomTagParser
 		}
 		else
 		{
-			return readListTag(suggestion, suggestionList);
+			return readListTag(suggestion, suggestionList, parentInfo);
 		}
 	}
 
-	private Suggestion readListTag(NbtSuggestion suggestion, List<CustomSuggestion> suggestionList) throws CommandSyntaxException
+	private Suggestion readListTag(NbtSuggestion suggestion, List<CustomSuggestion> suggestionList,
+								   NbtSuggestion.ParentInfo parentInfo) throws CommandSyntaxException
 	{
 		expect('[');
 		reader.skipWhitespace();
@@ -298,7 +302,7 @@ public class CustomTagParser
 
 		do
 		{
-			Suggestion valueSuggestion = readValue(suggestion, suggestionList, true);
+			Suggestion valueSuggestion = readValue(suggestion, suggestionList, parentInfo, true);
 			if (valueSuggestion != Suggestion.CONTINUE) { return valueSuggestion; }
 		} while (hasElementSeparator());
 
@@ -331,7 +335,7 @@ public class CustomTagParser
 		{
 			if (reader.peek() != ']')
 			{
-				readValue(null, null, false);
+				readValue(null, null, NbtSuggestion.ParentInfo.blank(), false);
 
 				if (hasElementSeparator())
 				{
@@ -345,29 +349,18 @@ public class CustomTagParser
 		}
 	}
 
-	private Suggestion readSubcompound(NbtSuggestion suggestion, List<CustomSuggestion> suggestionList) throws CommandSyntaxException
+	private Suggestion readSubcompound(@Nullable NbtSuggestion suggestion, List<CustomSuggestion> suggestionList,
+									   NbtSuggestion.ParentInfo parentInfo) throws CommandSyntaxException
 	{
-		List<CustomSuggestion> newSuggestionList = new LinkedList<>();
-		if (suggestion != null)
-		{
-			if (suggestion.subcompound != null && suggestion.subcompound.suggestions.size() > 0)
-			{
-				newSuggestionList.addAll(suggestion.subcompound.suggestions);
-			}
-			else
-			{
-				Predictions.addSubtypeSuggestions(suggestion, newSuggestionList);
-			}
-		}
-
-		Suggestion substructSuggestion = readStruct(newSuggestionList);
+		List<CustomSuggestion> newSuggestionList = new ArrayList<>();
+		if (suggestion != null && suggestion.subcompound != null) { newSuggestionList.addAll(suggestion.subcompound.getAll()); }
+		Suggestion substructSuggestion = readStruct(newSuggestionList, suggestion, parentInfo.createChild(suggestion), false);
 
 		if (substructSuggestion == Suggestion.TAG && suggestionList != null)
 		{
 			suggestionList.clear();
 			suggestionList.addAll(newSuggestionList);
 		}
-
 		return substructSuggestion;
 	}
 
@@ -459,7 +452,7 @@ public class CustomTagParser
 						else { type = " " + typeString; }
 					}
 
-					(new SimpleSuggestion(suggestion, type)).suggest(suggestionsBuilder, NbtSuggestionManager.getSubtextMap());
+					NbtSuggestionManager.simpleSuggestion(suggestion, type, suggestionsBuilder);
 				}
 			}
 		}

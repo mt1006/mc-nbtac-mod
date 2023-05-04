@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "root": "entity/minecraft:player" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "add_tag",
+			"val": "BlockEntityTag/compound/tag/block/minecraft:banner"
+		}
+	]
+}

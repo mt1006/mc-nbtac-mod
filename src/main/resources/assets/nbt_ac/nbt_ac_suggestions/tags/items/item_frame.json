@@ -1,0 +1,15 @@
+{
+	"tag/item/minecraft:item_frame":
+	{
+		"tags": [ "item/minecraft:glow_item_frame" ],
+
+		"suggestions":
+		[
+			{
+				"tag": "EntityTag",
+				"type": "compound",
+				"subtype": "tag/entity/minecraft:item_frame"
+			}
+		]
+	}
+}

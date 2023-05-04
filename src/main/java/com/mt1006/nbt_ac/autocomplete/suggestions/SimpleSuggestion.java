@@ -13,20 +13,17 @@ public class SimpleSuggestion extends CustomSuggestion
 		this.subtext = subtext;
 	}
 
-	@Override
-	public String getSuggestionText()
+	@Override public String getSuggestionText()
 	{
 		return text;
 	}
 
-	@Override
-	public String getSuggestionSubtext()
+	@Override public String getSuggestionSubtext()
 	{
 		return subtext;
 	}
 
-	@Override
-	public Message getSuggestionTooltip()
+	@Override public Message getSuggestionTooltip()
 	{
 		return null;
 	}

@@ -1,0 +1,17 @@
+{
+	"tag/component/nbt_ac:display_brightness":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "block",
+				"type": "int"
+			},
+
+			{
+				"tag": "sky",
+				"type": "int"
+			}
+		]
+	}
+}

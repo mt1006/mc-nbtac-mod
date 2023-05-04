@@ -1,0 +1,18 @@
+{
+	"tag/item/minecraft:crossbow":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "Charged",
+				"type": "boolean"
+			},
+
+			{
+				"tag": "ChargedProjectiles",
+				"type": "list/compound",
+				"subtype": "item_compound"
+			}
+		]
+	}
+}

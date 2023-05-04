@@ -2,39 +2,49 @@ package com.mt1006.nbt_ac.autocomplete.suggestions;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.Message;
+import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
+import com.mt1006.nbt_ac.utils.RegistryUtils;
+import com.mt1006.nbt_ac.utils.TagType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.Utility;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.analysis.Analyzer;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class NbtSuggestion extends CustomSuggestion
 {
-	public String tag;
+	public final String tag;
 	public Type type;
-	public Type listType;
+	public Type listType = Type.UNKNOWN;
 	public Subtype subtype = Subtype.NONE;
-	public String subtypeData = null;
-	public NbtSuggestions subcompound = null;
+	public @Nullable String subtypeData = null;
+	public @Nullable String subtypeWith = null;
+	public boolean subtypeWithParentTag = false;
+	public @Nullable NbtSuggestions subcompound = null;
 	public SuggestionType suggestionType = SuggestionType.NORMAL;
 
 	public NbtSuggestion(String tag, Type type)
 	{
 		this.tag = tag;
 		this.type = type;
-		this.listType = Type.UNKNOWN;
 	}
 
 	public NbtSuggestion(String tag, Type type, SuggestionType suggestionType)
@@ -43,26 +53,28 @@ public class NbtSuggestion extends CustomSuggestion
 		this.suggestionType = suggestionType;
 	}
 
-	public Type getType()
+	public NbtSuggestion copy(boolean prediction, NbtSuggestions oldParent, NbtSuggestions newParent)
 	{
-		return type;
-	}
+		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type, suggestionType);
+		newSuggestion.listType = listType;
+		newSuggestion.subtype = subtype;
+		newSuggestion.subtypeData = subtypeData;
 
-	public Type getListType()
-	{
-		return listType;
-	}
+		if (prediction) {newSuggestion.changeSuggestionType(SuggestionType.PREDICTION); }
 
-	public String getComplexTag()
-	{
-		String substring = "";
-
-		if (subtype == Subtype.TAG)
+		if (subcompound != null)
 		{
-			substring = "tag/" + subtypeData;
+			if (subcompound == oldParent)
+			{
+				newSuggestion.subcompound = newParent;
+			}
+			else
+			{
+				newSuggestion.subcompound = new NbtSuggestions();
+				newSuggestion.subcompound.copyAll(subcompound, prediction);
+			}
 		}
-
-		return String.format("%s$%s", tag, substring);
+		return newSuggestion;
 	}
 
 	public NbtSuggestions addSubcompound()
@@ -71,26 +83,28 @@ public class NbtSuggestion extends CustomSuggestion
 		return subcompound;
 	}
 
-	public <T> boolean getSubtypeSuggestions(List<CustomSuggestion> suggestionList)
+	public <T> boolean getSubtypeSuggestions(List<CustomSuggestion> suggestionList, ParentInfo parentInfo)
 	{
+		String finalData = getFinalSubtypeData(parentInfo);
+
 		switch (subtype)
 		{
 			case ENUM:
-				if (subtypeData == null) { break; }
+				if (finalData == null) { break; }
 				suggestionList.clear();
 
-				for (String substring : subtypeData.split(";"))
+				for (String substring : finalData.split(";"))
 				{
 					suggestionList.add(new SimpleSuggestion(substring, null));
 				}
 				return true;
 
 			case DESCRIBED_ENUM:
-				if (subtypeData == null) { break; }
+				if (finalData == null) { break; }
 				suggestionList.clear();
 
 				String suggestionText = null;
-				for (String substring : subtypeData.split(";"))
+				for (String substring : finalData.split(";"))
 				{
 					if (suggestionText == null)
 					{
@@ -106,12 +120,12 @@ public class NbtSuggestion extends CustomSuggestion
 
 			case REGISTRY_KEY:
 			case REGISTRY_ID:
-				if (subtypeData == null) { break; }
+				if (finalData == null) { break; }
 
 				try
 				{
-					ResourceLocation registryLocation = new ResourceLocation(subtypeData);
-					Registry<T> registry = (Registry<T>)BuiltInRegistries.REGISTRY.get(registryLocation);
+					ResourceLocation registryLocation = new ResourceLocation(finalData);
+					Registry<T> registry = (Registry<T>)RegistryUtils.REGISTRY.get(registryLocation);
 					if (registry == null) { break; }
 
 					suggestionList.clear();
@@ -191,25 +205,124 @@ public class NbtSuggestion extends CustomSuggestion
 		return false;
 	}
 
-	public void changeSuggestionType(SuggestionType newSuggestionType)
+	public <T extends Comparable<T>> void getSubtypeTagSuggestions(List<CustomSuggestion> suggestionList, ParentInfo parentInfo)
 	{
-		if (suggestionType == SuggestionType.NORMAL) { suggestionType = newSuggestionType; }
+		String finalData = getFinalSubtypeData(parentInfo);
+
+		switch (subtype)
+		{
+			case TAG:
+				if (finalData == null) { break; }
+				finalData = finalData.replace("block/item/", "block/");
+				finalData = finalData.replace("entity/item/", "entity/");
+
+				NbtSuggestions tagSuggestions = NbtSuggestionManager.get(finalData);
+				NbtSuggestionManager.addToList(suggestionList, tagSuggestions, finalData);
+				break;
+
+			case BLOCK_STATE_TAG:
+				try
+				{
+					if (finalData == null) { break; }
+
+					if (finalData.startsWith("block/")) { finalData = finalData.substring(6); }
+					else if (finalData.startsWith("item/")) { finalData = finalData.substring(5); }
+
+					Item blockItem = RegistryUtils.ITEM.get(new ResourceLocation(finalData));
+					if (!(blockItem instanceof BlockItem)) { break; }
+
+					for (Property<?> property : ((BlockItem)blockItem).getBlock().defaultBlockState().getProperties())
+					{
+						NbtSuggestion nbtSuggestion = new NbtSuggestion(property.getName(), NbtSuggestion.Type.STRING);
+						nbtSuggestion.subtype = NbtSuggestion.Subtype.ENUM;
+
+						StringBuilder enumStringBuilder = new StringBuilder();
+						for (T possibleValue : ((Property<T>)property).getPossibleValues())
+						{
+							enumStringBuilder.append("\"").append(((Property<T>)property).getName(possibleValue)).append("\";");
+						}
+						nbtSuggestion.subtypeData = enumStringBuilder.toString();
+
+						suggestionList.add(nbtSuggestion);
+					}
+				}
+				catch (Exception ignore) {}
+				break;
+
+			case SPAWN_EGG:
+				try
+				{
+					if (finalData == null) { break; }
+					if (finalData.startsWith("item/")) { finalData = finalData.substring(5); }
+
+					Item item = RegistryUtils.ITEM.get(new ResourceLocation(finalData));
+					if (item instanceof SpawnEggItem)
+					{
+						String key = RegistryUtils.ENTITY_TYPE.getKey(((SpawnEggItem)item).getType(null)).toString();
+						NbtSuggestions spawnEggSuggestions = NbtSuggestionManager.get("entity/" + key);
+						NbtSuggestionManager.addToList(suggestionList, spawnEggSuggestions, finalData);
+					}
+				}
+				catch (Exception ignore) {}
+				break;
+		}
 	}
 
-	@Override
-	public String getSuggestionText()
+	public String getFinalTagName(ParentInfo parentInfo)
+	{
+		String finalData = getFinalSubtypeData(parentInfo);
+
+		if (subtype == Subtype.TAG && finalData != null)
+		{
+			return finalData.replace("block/item/", "block/");
+		}
+		return tag;
+	}
+
+	private @Nullable String getFinalSubtypeData(ParentInfo parentInfo)
+	{
+		if (subtypeWith != null && subtypeData != null && subtypeData.contains("*"))
+		{
+			if (subtypeWith.equals("#parent"))
+			{
+				if (parentInfo.parentTag == null) { return null; }
+				return subtypeData.replace("*", parentInfo.parentTag);
+			}
+			else if (subtypeWith.equals("#parent2"))
+			{
+				if (parentInfo.secondParentTag == null) { return null; }
+				return subtypeData.replace("*", parentInfo.secondParentTag);
+			}
+			else
+			{
+				Map<String, String> map = subtypeWithParentTag ? parentInfo.parentTagMap : parentInfo.tagMap;
+				if (map == null) { return null; }
+
+				String tagValue = map.get(subtypeWith);
+				if (tagValue == null) { return null; }
+
+				return subtypeData.replace("*", tagValue);
+			}
+		}
+		return subtypeData;
+	}
+
+	public void changeSuggestionType(SuggestionType newSuggestionType)
+	{
+		if (newSuggestionType.level >= suggestionType.level) { suggestionType = newSuggestionType; }
+	}
+
+	@Override public String getSuggestionText()
 	{
 		return tag;
 	}
 
-	@Override
-	public String getSuggestionSubtext()
+	@Override public String getSuggestionSubtext()
 	{
 		return String.format("  §8%s[%s]", suggestionType.symbol, type.getName());
 	}
 
-	@Override
-	public Message getSuggestionTooltip()
+	@Override public Message getSuggestionTooltip()
 	{
 		return new LiteralMessage(String.format("%s§r §8%s[%s]", tag, suggestionType.name, type.getName()));
 	}
@@ -219,18 +332,18 @@ public class NbtSuggestion extends CustomSuggestion
 		NOT_FOUND((byte)-1),
 		UNKNOWN((byte)-1),
 		BOOLEAN((byte)-1),
-		BYTE(Tag.TAG_BYTE),
-		SHORT(Tag.TAG_SHORT),
-		INT(Tag.TAG_INT),
-		LONG(Tag.TAG_LONG),
-		FLOAT(Tag.TAG_FLOAT),
-		DOUBLE(Tag.TAG_DOUBLE),
-		STRING(Tag.TAG_STRING),
-		LIST(Tag.TAG_LIST),
-		BYTE_ARRAY(Tag.TAG_BYTE_ARRAY),
-		INT_ARRAY(Tag.TAG_INT_ARRAY),
-		LONG_ARRAY(Tag.TAG_LONG_ARRAY),
-		COMPOUND(Tag.TAG_COMPOUND),
+		BYTE(TagType.BYTE),
+		SHORT(TagType.SHORT),
+		INT(TagType.INT),
+		LONG(TagType.LONG),
+		FLOAT(TagType.FLOAT),
+		DOUBLE(TagType.DOUBLE),
+		STRING(TagType.STRING),
+		LIST(TagType.LIST),
+		BYTE_ARRAY(TagType.BYTE_ARRAY),
+		INT_ARRAY(TagType.INT_ARRAY),
+		LONG_ARRAY(TagType.LONG_ARRAY),
+		COMPOUND(TagType.COMPOUND),
 		UUID((byte)-1);
 
 		private static final HashMap<String, Type> nameMap = new HashMap<>();
@@ -259,11 +372,12 @@ public class NbtSuggestion extends CustomSuggestion
 
 			try
 			{
-				for (Method method : Disassembly.findClass(CompoundTag.class.getName()).getMethods())
+				ClassNode classNode = Disassembly.loadClass(CompoundTag.class.getCanonicalName());
+				for (MethodNode method : classNode.methods)
 				{
-					if (!method.isPublic()) { continue; }
-					Type type = fromMethodObject(method);
-					if (type != NOT_FOUND) { methodNameMap.put(method.getName(), type); }
+					if ((method.access & Opcodes.ACC_PUBLIC) == 0) { continue; }
+					Type type = fromMethodObject(classNode, method);
+					if (type != NOT_FOUND) { methodNameMap.put(method.name, type); }
 				}
 			}
 			catch (Exception ignore) {}
@@ -284,15 +398,15 @@ public class NbtSuggestion extends CustomSuggestion
 			return idMap.getOrDefault(id, UNKNOWN);
 		}
 
-		private static Type fromMethodObject(Method method)
+		private static Type fromMethodObject(ClassNode classNode, MethodNode method)
 		{
 			String methodArguments = "(Ljava/lang/String;)";
-			String signature = method.getSignature();
+			String signature = method.desc;
 
 			if (!signature.startsWith(methodArguments))
 			{
 				String getListSignature = "(Ljava/lang/String;I)L" + ListTag.class.getName().replace('.', '/') + ";";
-				if (method.getSignature().equals(getListSignature)) { return LIST; }
+				if (method.desc.equals(getListSignature)) { return LIST; }
 				return NOT_FOUND;
 			}
 
@@ -321,10 +435,19 @@ public class NbtSuggestion extends CustomSuggestion
 				default: return NOT_FOUND;
 			}
 
-			Code code = method.getCode();
-			String codeString = Utility.codeToString(code.getCode(), code.getConstantPool(), 0, -1);
-			if (codeString.contains("(Ljava/lang/String;I)Z")) { return BYTE; }
-			if (codeString.contains("(Ljava/lang/String;)B")) { return BOOLEAN; }
+			try
+			{
+				Disassembly.ValueTracker valueTracker = new Disassembly.ValueTracker(null, false, true);
+				Analyzer<Disassembly.TrackedValue> analyzer = new Analyzer<>(valueTracker);
+				analyzer.analyze(classNode.name, method);
+
+				for (Disassembly.InvokeInfo invokeInfo : valueTracker.invokes)
+				{
+					if (invokeInfo.insn.desc.equals("(Ljava/lang/String;I)Z")) { return BYTE; }
+					if (invokeInfo.insn.desc.equals("(Ljava/lang/String;)B")) { return BOOLEAN; }
+				}
+			}
+			catch (Exception ignore) {}
 
 			return NOT_FOUND;
 		}
@@ -336,7 +459,8 @@ public class NbtSuggestion extends CustomSuggestion
 		ENUM,               // subtypeData = "1;2;\"aaa\""
 		DESCRIBED_ENUM,     // subtypeData = "1;description;2;description;3;;4"
 		TAG,                // subtypeData = "item/minecraft:compass"
-		BLOCK_STATE_TAG,    // subtypeData = "minecraft:chest"
+		BLOCK_STATE_TAG,    // subtypeData = "minecraft:chest" (can also start with "block/" or "item/")
+		SPAWN_EGG,          // subtypeData = "minecraft:allay_spawn_egg" (can also start with "item/")
 		REGISTRY_ID,        // subtypeData = "minecraft:mob_effect"
 		REGISTRY_KEY,       // subtypeData = "minecraft:mob_effect"
 		RECIPE,             // subtypeData = null
@@ -362,20 +486,67 @@ public class NbtSuggestion extends CustomSuggestion
 
 	public enum SuggestionType
 	{
-		NORMAL("",""),
-		PREDICTION("(*) ", "(prediction) "),
-		TYPE_PREDICTION("(T) ", "(type prediction) "),
-		SUBTYPE_PREDICTION("(S) ", "(subtype prediction) "),
-		COMPOUND_PREDICTION("(C) ", "(compound prediction) "),
-		UNCERTAIN("(?) ", "(uncertain) ");
+		NORMAL("", "", 0),
+		UNCERTAIN("(?) ", "(uncertain) ", 1),
+		COMPOUND_PREDICTION("(C) ", "(compound prediction) ", 2),
+		SUBTYPE_PREDICTION("(S) ", "(subtype prediction) ", 3),
+		TYPE_PREDICTION("(T) ", "(type prediction) ", 4),
+		PREDICTION("(*) ", "(prediction) ", 5);
 
 		public final String symbol;
 		public final String name;
+		public final int level;
 
-		SuggestionType(String symbol, String name)
+		SuggestionType(String symbol, String name, int level)
 		{
 			this.symbol = symbol;
 			this.name = name;
+			this.level = level;
+		}
+	}
+
+	public static class ParentInfo
+	{
+		public @Nullable Map<String, String> tagMap;
+		public @Nullable Map<String, String> parentTagMap;
+		public @Nullable String parentTag;
+		public @Nullable String secondParentTag;
+
+		private ParentInfo(@Nullable Map<String, String> tagMap, @Nullable Map<String, String> parentTagMap,
+						   @Nullable String parentTag, @Nullable String secondParentTag)
+		{
+			this.tagMap = tagMap;
+			this.parentTagMap = parentTagMap;
+			this.parentTag = parentTag;
+			this.secondParentTag = secondParentTag;
+		}
+
+		public ParentInfo withTagMap(@Nullable Map<String, String> newTagMap)
+		{
+			return new ParentInfo(newTagMap, parentTagMap, parentTag, secondParentTag);
+		}
+
+		public ParentInfo createChild(@Nullable NbtSuggestion suggestion)
+		{
+			if (suggestion == null) { return new ParentInfo(new HashMap<>(), tagMap, "[undefined]", parentTag); }
+			ParentInfo newParentInfo = new ParentInfo(new HashMap<>(), tagMap, suggestion.tag, parentTag);
+			newParentInfo.parentTag = suggestion.getFinalTagName(newParentInfo);
+			return newParentInfo;
+		}
+
+		public void putTag(String key, String value)
+		{
+			if (tagMap != null) { tagMap.put(key, value); }
+		}
+
+		public static ParentInfo fromRoot(@Nullable String rootTag)
+		{
+			return new ParentInfo(new HashMap<>(), null, rootTag, null);
+		}
+
+		public static ParentInfo blank()
+		{
+			return new ParentInfo(new HashMap<>(), null, null, null);
 		}
 	}
 }
