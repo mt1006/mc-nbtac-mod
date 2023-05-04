@@ -1,0 +1,21 @@
+{
+	"conditions":
+	[
+		{ "root": "entity/minecraft:item_display" }
+	],
+	
+	"operations":
+	[
+		{
+			"on": "item_display",
+			"type": "set_type",
+			"val": "string"
+		},
+		
+		{
+			"on": "item_display",
+			"type": "set_subtype",
+			"val": "enum/\"none\";\"thirdperson_lefthand\";\"thirdperson_righthand\";\"firstperson_lefthand\";\"firstperson_righthand\";\"head\";\"gui\";\"ground\";\"fixed\""
+		}
+	]
+}

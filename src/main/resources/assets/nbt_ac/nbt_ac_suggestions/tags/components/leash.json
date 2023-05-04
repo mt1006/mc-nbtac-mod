@@ -1,0 +1,27 @@
+{
+	"tag/component/nbt_ac:leash":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "UUID",
+				"type": "uuid"
+			},
+
+			{
+				"tag": "X",
+				"type": "int"
+			},
+
+			{
+				"tag": "Y",
+				"type": "int"
+			},
+
+			{
+				"tag": "Z",
+				"type": "int"
+			}
+		]
+	}
+}
