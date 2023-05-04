@@ -1,0 +1,43 @@
+{
+	"tag/item/minecraft:firework_star":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "Explosion",
+				"type": "compound",
+				
+				"subcompound":
+				{
+					"suggestions":
+					[
+						{
+							"tag": "Type",
+							"type": "byte"
+						},
+
+						{
+							"tag": "Colors",
+							"type": "int_array"
+						},
+
+						{
+							"tag": "FadeColors",
+							"type": "int_array"
+						},
+
+						{
+							"tag": "Trail",
+							"type": "boolean"
+						},
+
+						{
+							"tag": "Flicker",
+							"type": "boolean"
+						}
+					]
+				}
+			}
+		]
+	}
+}

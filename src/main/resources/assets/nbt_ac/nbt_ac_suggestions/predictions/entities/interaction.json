@@ -1,0 +1,39 @@
+{
+	"conditions":
+	[
+		{ "root": "entity/minecraft:interaction" }
+	],
+	
+	"operations":
+	[
+		{
+			"on": "width",
+			"type": "set_type",
+			"val": "float"
+		},
+		
+		{
+			"on": "height",
+			"type": "set_type",
+			"val": "float"
+		},
+		
+		{
+			"on": "response",
+			"type": "set_type",
+			"val": "boolean"
+		},
+		
+		{
+			"on": "attack",
+			"type": "set_subcompound",
+			"val": "component/nbt_ac:interaction_info"
+		},
+		
+		{
+			"on": "interaction",
+			"type": "set_subcompound",
+			"val": "component/nbt_ac:interaction_info"
+		}
+	]
+}

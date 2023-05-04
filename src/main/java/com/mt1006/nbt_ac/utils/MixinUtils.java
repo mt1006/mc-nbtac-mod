@@ -2,6 +2,8 @@ package com.mt1006.nbt_ac.utils;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedArgument;
+import com.mt1006.nbt_ac.mixin.fields.ClientLevelMixin;
+import com.mt1006.nbt_ac.mixin.fields.EntitySelectorMixin;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -16,7 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -54,66 +56,53 @@ public class MixinUtils
 		if (level == null) { return null; }
 		Block block = level.getBlockState(blockPos).getBlock();
 
-		return "block/" + Registry.BLOCK.getKey(block);
+		return "block/" + RegistryUtils.BLOCK.getKey(block);
 	}
 
 	public static String entityFromEntitySelector(EntitySelector entitySelector)
 	{
-		try
-		{
-			Object typeObject = Fields.entitySelectorType.get(entitySelector);
-			Object uuidObject = Fields.entitySelectorUUID.get(entitySelector);
-			Object playerNameObject = Fields.entitySelectorPlayerName.get(entitySelector);
-			return entityFromSelectorData(typeObject, uuidObject, playerNameObject);
-		}
-		catch (Exception exception) { return null; }
+		return entityFromSelectorData(
+				((EntitySelectorMixin)entitySelector).getType(),
+				((EntitySelectorMixin)entitySelector).getEntityUUID(),
+				((EntitySelectorMixin)entitySelector).getPlayerName());
 	}
 
-	public static String entityFromSelectorData(Object typeObject, Object uuidObject, Object playerNameObject)
+	public static String entityFromSelectorData(EntityType<?> typeTest, @Nullable UUID uuid, @Nullable String playerName)
 	{
-		if (typeObject instanceof EntityType)
+		if (typeTest != null)
 		{
-			EntityType<?> type = (EntityType<?>)typeObject;
-			return "entity/" + Registry.ENTITY_TYPE.getKey(type);
+			return "entity/" + RegistryUtils.ENTITY_TYPE.getKey((EntityType<?>)typeTest);
 		}
 
 		ClientWorld clientLevel = Minecraft.getInstance().level;
 		if (clientLevel == null) { return null; }
 
-		if (uuidObject instanceof UUID)
+		if (uuid != null)
 		{
-			UUID uuid = (UUID)uuidObject;
-
 			try
 			{
-				Object entityStorageObject = Fields.clientLevelEntityStorage.get(clientLevel);
-				if(!(entityStorageObject instanceof Int2ObjectMap)) { return null; }
-				Int2ObjectMap<Entity> entityStorage = (Int2ObjectMap<Entity>)entityStorageObject;
+				Int2ObjectMap<Entity> entityStorage = ((ClientLevelMixin)clientLevel).getEntitiesById();
 
 				for (Entity entity : entityStorage.values())
 				{
 					if (entity.getUUID().equals(uuid))
 					{
-						return "entity/" + Registry.ENTITY_TYPE.getKey(entity.getType());
+						return "entity/" + RegistryUtils.ENTITY_TYPE.getKey(entity.getType());
 					}
 				}
 			}
 			catch (Exception ignore) {}
 		}
 
-		if (playerNameObject instanceof String)
-		{
-			String playerName = (String)playerNameObject;
+		if (playerName == null) { return null; }
 
-			for (PlayerEntity player : clientLevel.players())
+		for (PlayerEntity player : clientLevel.players())
+		{
+			if (player.getGameProfile().getName().equals(playerName))
 			{
-				if (player.getGameProfile().getName().equals(playerName))
-				{
-					return "entity/" + EntityType.getKey(EntityType.PLAYER);
-				}
+				return "entity/" + EntityType.getKey(EntityType.PLAYER);
 			}
 		}
-
 		return null;
 	}
 }

@@ -1,0 +1,29 @@
+{
+	"tag/item/minecraft:suspicious_stew":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "Effects",
+				"type": "list/compound",
+
+				"subcompound":
+				{
+					"suggestions":
+					[
+						{
+							"tag": "EffectId",
+							"type": "byte",
+							"subtype": "registry_id/minecraft:mob_effect"
+						},
+
+						{
+							"tag": "EffectDuration",
+							"type": "int"
+						}
+					]
+				}
+			}
+		]
+	}
+}
