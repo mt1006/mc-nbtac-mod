@@ -1,0 +1,13 @@
+{
+	"tag/item/minecraft:goat_horn":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "instrument",
+				"type": "string",
+				"subtype": "registry_key/minecraft:instrument"
+			}
+		]
+	}
+}

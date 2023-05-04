@@ -1,0 +1,13 @@
+{
+	"tag/item/minecraft:bundle":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "Items",
+				"type": "list/compound",
+				"subtype": "item_compound"
+			}
+		]
+	}
+}

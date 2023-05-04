@@ -1,0 +1,19 @@
+{
+	"conditions":
+	[
+		{ "path": ["VillagerData"] }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "set_type",
+			"val": "compound"
+		},
+
+		{
+			"type": "set_subcompound",
+			"val": "component/nbt_ac:villager_data"
+		}
+	]
+}

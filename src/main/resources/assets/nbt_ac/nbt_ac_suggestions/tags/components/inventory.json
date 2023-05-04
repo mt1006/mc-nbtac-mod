@@ -1,0 +1,23 @@
+{
+	"tag/component/nbt_ac:inventory":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "id",
+				"type": "string",
+				"subtype": "registry_key/minecraft:item"
+			},
+
+			{
+				"tag": "Count",
+				"type": "byte"
+			},
+
+			{
+				"tag": "tag",
+				"type": "compound"
+			}
+		]
+	}
+}

@@ -8,901 +8,661 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.apache.bcel.Const;
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.util.ByteSequence;
+import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.analysis.*;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Disassembly
 {
 	private static final boolean DEBUG_MESSAGES = false;
 	private static final int MAX_DISASSEMBLY_DEPTH = 16;
 	private static final String METHOD_LOAD_SIGNATURE = "(L" + CompoundTag.class.getName().replace('.', '/') + ";)V";
-	private static final String COMPOUND_TAG_SIGNATURE = CompoundTag.class.getName();
-	private static final String LIST_TAG_SIGNATURE = ListTag.class.getName();
-	private static final String COMPOUND_TAG_ARG_SIGNATURE = "L" + CompoundTag.class.getName().replace('.', '/') + ";";
-	private static final String LIST_TAG_ARG_SIGNATURE = "L" + ListTag.class.getName().replace('.', '/') + ";";
-	private static final Map<String, JavaClass> classMap = new HashMap<>();
-	private static final Set<String> disassembledMethods = new HashSet<>();
-	private static String blockEntityLoadName = null;
+	private static final String COMPOUND_TAG_SIGNATURE = CompoundTag.class.getName().replace('.', '/');
+	private static final String LIST_TAG_SIGNATURE = ListTag.class.getName().replace('.', '/');
+	private static final String COMPOUND_TAG_ARG_SIGNATURE = CompoundTag.class.getName();
+	private static final String LIST_TAG_ARG_SIGNATURE = ListTag.class.getName();
+	private static final String STRING_ARG_SIGNATURE = String.class.getName();
+	private static final Map<String, ClassNode> classMap = new HashMap<>();
+	private static final Stack<String> disassemblingStack = new Stack<>();
+	private static final Map<String, Template> fullTemplateMap = new HashMap<>();
+	private static final Map<String, Template> partialTemplateMap = new HashMap<>();
+	private static String blockEntityLoadMethod = null;
 
 	public static void init()
 	{
-		Method method;
-
 		try
 		{
-			method = findMethod(findClass(BlockEntity.class.getName()), null, METHOD_LOAD_SIGNATURE, false, true);
-			if (method == null) { throw new Exception("Failed to find \"load\" method"); }
+			MethodNode methodNode = loadMethod(loadClass(BlockEntity.class.getName()), null, METHOD_LOAD_SIGNATURE, true, false);
+			if (methodNode == null) { throw new Exception("Failed to find \"load\" method"); }
+			blockEntityLoadMethod = methodNode.name;
 		}
 		catch (Exception exception)
 		{
 			NBTac.LOGGER.error("Failed to initialize disassembler: " + exception);
 			exception.printStackTrace();
-			return;
+		}
+	}
+
+	public static void clear()
+	{
+		classMap.clear();
+		fullTemplateMap.clear();
+		partialTemplateMap.clear();
+	}
+
+	public static ClassNode loadClass(String className) throws IOException
+	{
+		className = className.replace('/', '.');
+
+		ClassNode existingNode = classMap.get(className);
+		if (existingNode != null) { return existingNode; }
+
+		String classPath = className.replace('.', '/') + ".class";
+		ClassReader reader;
+
+		try
+		{
+			InputStream classStream = Class.forName(className).getClassLoader().getResourceAsStream(classPath);
+			if (classStream == null) { throw new ClassNotFoundException(); }
+			reader = new ClassReader(classStream);
+			classStream.close();
+		}
+		catch (ClassNotFoundException exception)
+		{
+			throw new IOException("Class not found! - " + classPath);
 		}
 
-		blockEntityLoadName = method.getName();
+		ClassNode node = new ClassNode(Opcodes.ASM9);
+		reader.accept(node, 0);
+
+		classMap.put(className, node);
+		return node;
+	}
+
+	private static @Nullable MethodNode loadMethod(ClassNode classNode, @Nullable String methodName, @Nullable String methodSignature,
+												   boolean mustBePublic, boolean checkSuperclasses)
+	{
+		for (MethodNode methodNode : classNode.methods)
+		{
+			if ((methodName == null || methodName.equals(methodNode.name)) &&
+					(methodSignature == null || methodSignature.equals(methodNode.desc)) &&
+					(!mustBePublic || (methodNode.access & Opcodes.ACC_PUBLIC) != 0))
+			{
+				return methodNode;
+			}
+		}
+
+		if (checkSuperclasses)
+		{
+			if (classNode.superName == null || classNode.superName.equals("java/lang/Object")) { return null; }
+
+			try
+			{
+				MethodNode node = loadMethod(loadClass(classNode.superName), methodName, methodSignature, mustBePublic, true);
+				if (node != null) { return node; }
+			}
+			catch (Exception ignore) {}
+
+			try
+			{
+				for (String interfaceName : classNode.interfaces)
+				{
+					MethodNode node = loadMethod(loadClass(interfaceName), methodName, methodSignature, mustBePublic, true);
+					if (node != null) { return node; }
+				}
+			}
+			catch (Exception ignore) {}
+		}
+		return null;
 	}
 
 	public static void disassemblyEntity(Class<?> clazz, NbtSuggestions arg) throws Exception
 	{
-		disassembly(Entity.class.getName(), null, METHOD_LOAD_SIGNATURE, clazz.getName(), arg, 0, true, false);
+		disassemblyLoadMethod(Entity.class, null, METHOD_LOAD_SIGNATURE, clazz, arg);
 	}
 
 	public static void disassemblyBlockEntity(Class<?> clazz, NbtSuggestions arg) throws Exception
 	{
-		if (blockEntityLoadName == null) { return; }
-		disassembly(clazz.getName(), blockEntityLoadName, METHOD_LOAD_SIGNATURE, clazz.getName(), arg, 0, true, false);
+		disassemblyLoadMethod(clazz, blockEntityLoadMethod, METHOD_LOAD_SIGNATURE, clazz, arg);
 	}
 
-	public static void disassembly(String className, String methodName, String methodSignature, String objectClassName,
-								   NbtSuggestions arg, int depth, boolean mustBePublic, boolean uncertain) throws Exception
+	public static void disassemblyLoadMethod(Class<?> clazz, @Nullable String methodName, String methodSignature,
+											 Class<?> objectClass, NbtSuggestions arg) throws Exception
 	{
-		String methodID = String.format("%s %s %s %s", className, methodName, methodSignature, objectClassName);
+		Template templates = new Template();
+		disassembly(clazz.getName(), methodName, methodSignature, true, objectClass.getName(), new MethodArgs(templates, null), 0, false);
+		templates.applyTemplate(arg);
+	}
 
-		if (disassembledMethods.contains(methodID))
+	public static void disassembly(String className, @Nullable String methodName, String methodSignature, boolean mustBePublic,
+								   @Nullable String objectClass, MethodArgs args, int depth, boolean uncertain) throws Exception
+	{
+		String methodID = String.format("%s %s %s", className, methodName, methodSignature);
+		String methodFullID = String.format("%s %s", methodID, objectClass);
+
+		if (disassemblingStack.contains(methodFullID))
 		{
 			//TODO: handle nbt recursion
-			if (DEBUG_MESSAGES) { NBTac.LOGGER.warn("Already disassembled! - " + methodID); }
+			if (DEBUG_MESSAGES) { NBTac.LOGGER.warn("Already disassembled! - " + methodFullID); }
 			return;
 		}
 
 		if (depth >= MAX_DISASSEMBLY_DEPTH)
 		{
-			if (DEBUG_MESSAGES) { NBTac.LOGGER.warn("Too deep! - " + methodID); }
+			if (DEBUG_MESSAGES) { NBTac.LOGGER.warn("Too deep! - " + methodFullID); }
 			return;
 		}
 
-		Method method = findMethod(findClass(className), methodName, methodSignature, true, mustBePublic);
+		ClassNode classNode = loadClass(className);
+		MethodNode method = loadMethod(classNode, methodName, methodSignature, mustBePublic, true);
 
 		if (method == null)
 		{
-			if (methodName == null) { methodName = "with signature "; }
-			throw new Exception("Unable to find superclass of " + className + " containing method " + methodName + methodSignature);
+			String methodInfo = methodName != null ? methodName : "with signature ";
+			throw new Exception("Unable to find superclass of " + className + " containing method " + methodInfo + methodSignature);
 		}
 
-		disassembledMethods.add(methodID);
-		readMethod(method, arg, objectClassName, depth, uncertain);
-		disassembledMethods.remove(methodID);
+		disassemblingStack.push(methodFullID);
+		readMethod(classNode, method, args, objectClass, depth, uncertain, methodID, methodFullID);
+		disassemblingStack.pop();
 	}
 
-	public static JavaClass findClass(String className) throws Exception
+	private static void readMethod(ClassNode classNode, MethodNode methodNode, MethodArgs args, @Nullable String objectClass,
+								   int depth, boolean uncertain, String methodID, String methodFullID) throws Exception
 	{
-		JavaClass existingJavaClass = classMap.get(className);
-
-		if (existingJavaClass == null)
+		Template fullTemplate = fullTemplateMap.get(methodFullID);
+		if (fullTemplate != null)
 		{
-			String classPath = className.replace('.', '/') + ".class";
-			InputStream classStream = Class.forName(className).getClassLoader().getResourceAsStream(classPath);
-			ClassParser classParser = new ClassParser(classStream, classPath);
-			JavaClass javaClass = classParser.parse();
+			args.compound.merge(fullTemplate, args.string);
+			return;
+		}
 
-			classMap.put(className, javaClass);
-			return javaClass;
+		Template partialTemplate = partialTemplateMap.get(methodID);
+		Template template;
+		List<InvokeInfo> invokes;
+
+		if (partialTemplate != null)
+		{
+			template = partialTemplate.copy(null, false, null);
+			invokes = template.invokes != null ? template.invokes : Collections.emptyList();
 		}
 		else
 		{
-			return existingJavaClass;
-		}
-	}
+			template = new Template();
+			ValueTracker valueTracker = new ValueTracker(template, uncertain, false);
+			Analyzer<TrackedValue> analyzer = new Analyzer<>(valueTracker);
 
-	private static Method findMethod(JavaClass javaClass, String methodName, String methodSignature,
-									 boolean searchInSuperclasses, boolean mustBePublic) throws Exception
-	{
-		if (javaClass == null) { return null; }
+			analyzer.analyze(classNode.name, methodNode);
+			invokes = valueTracker.invokes;
 
-		for (Method method : javaClass.getMethods())
-		{
-			if (mustBePublic && !method.isPublic()) { continue; }
-			if ((methodName == null || method.getName().equals(methodName)) && method.getSignature().equals(methodSignature))
+			// Invokes that don't depend on objectClass value
+			for (InvokeInfo invoke : invokes)
 			{
-				return method;
+				if (invoke.insn.getOpcode() != Opcodes.INVOKEVIRTUAL && !invoke.calledOnThis)
+				{
+					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, null, invoke.args, depth + 1, uncertain);
+				}
+			}
+
+			partialTemplateMap.put(methodID, template.copy(null, false, null));
+		}
+
+		// Invokes that depend on objectClass value
+		for (InvokeInfo invoke : invokes)
+		{
+			if (invoke.insn.getOpcode() == Opcodes.INVOKEVIRTUAL)
+			{
+				if (invoke.calledOnThis && objectClass != null)
+				{
+					disassembly(objectClass, invoke.insn.name, invoke.insn.desc, false, objectClass, invoke.args, depth + 1, uncertain);
+				}
+				else
+				{
+					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, null, invoke.args, depth + 1, true);
+				}
+			}
+			else if (invoke.calledOnThis)
+			{
+				disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, objectClass, invoke.args, depth + 1, uncertain);
 			}
 		}
 
-		if (searchInSuperclasses)
-		{
-			try
-			{
-				String superclassName = javaClass.getSuperclassName();
-				if (superclassName.equals("java.lang.Object")) { return null; }
+		fullTemplateMap.put(methodFullID, template);
+		args.compound.merge(template, args.string);
+	}
 
-				JavaClass superclass = classMap.get(superclassName);
-				if (superclass == null)
+	private static boolean isHiddenTag(String tag)
+	{
+		return (ModConfig.hideForgeTags.getValue() && (tag.equals("ForgeCaps") ||
+				tag.equals("ForgeData") || tag.equals("forge:id") || tag.equals("forge:effect_id")));
+	}
+
+	// Credits to: https://stackoverflow.com/a/48806265/18214530
+	public static class ValueTracker extends Interpreter<TrackedValue>
+	{
+		private final @Nullable Template arg;
+		private final boolean uncertain;
+		private final boolean keepAllInvokes;
+		private final BasicInterpreter basicInterpreter = new BasicInterpreter();
+		private final Set<AbstractInsnNode> insnSet = new HashSet<>();
+		public final List<InvokeInfo> invokes = new ArrayList<>();
+
+		public ValueTracker(@Nullable Template arg, boolean uncertain, boolean keepAllInvokes)
+		{
+			super(Opcodes.ASM9);
+			this.arg = arg;
+			this.uncertain = uncertain;
+			this.keepAllInvokes = keepAllInvokes;
+
+			if (arg != null) { arg.invokes = invokes; }
+		}
+
+		@Override public TrackedValue newValue(Type type)
+		{
+			return TrackedValue.unknown(basicInterpreter.newValue(type));
+		}
+
+		@Override public TrackedValue newParameterValue(final boolean isInstanceMethod, final int local, final Type type)
+		{
+			BasicValue basicValue = basicInterpreter.newParameterValue(isInstanceMethod, local, type);
+
+			if (isInstanceMethod && local == 0)
+			{
+				return TrackedValue.create(TrackedValue.Type.THIS, null, basicValue);
+			}
+			else if (type.getClassName().equals(COMPOUND_TAG_ARG_SIGNATURE))
+			{
+				if (arg != null) { return TrackedValue.create(TrackedValue.Type.COMPOUND, arg, basicValue); }
+			}
+			else if (type.getClassName().equals(LIST_TAG_ARG_SIGNATURE))
+			{
+				if (arg != null) { return TrackedValue.create(TrackedValue.Type.LIST_TAG, arg, basicValue);}
+			}
+			else if (type.getClassName().equals(STRING_ARG_SIGNATURE))
+			{
+				return TrackedValue.create(TrackedValue.Type.STRING, "*", basicValue);
+			}
+
+			return TrackedValue.unknown(basicValue);
+		}
+
+		@Override public TrackedValue newOperation(AbstractInsnNode insn) throws AnalyzerException
+		{
+			BasicValue basicValue = basicInterpreter.newOperation(insn);
+
+			switch (insn.getOpcode())
+			{
+				case Opcodes.ICONST_M1:
+				case Opcodes.ICONST_0:
+				case Opcodes.ICONST_1:
+				case Opcodes.ICONST_2:
+				case Opcodes.ICONST_3:
+				case Opcodes.ICONST_4:
+				case Opcodes.ICONST_5:
+					return TrackedValue.create(TrackedValue.Type.INTEGER, insn.getOpcode() - Opcodes.ICONST_0, basicValue);
+
+				case Opcodes.BIPUSH:
+				case Opcodes.SIPUSH:
+					return TrackedValue.create(TrackedValue.Type.INTEGER, ((IntInsnNode)insn).operand, basicValue);
+
+				case Opcodes.LDC:
+					Object ldcVal = ((LdcInsnNode)insn).cst;
+					if (ldcVal instanceof Integer) { return TrackedValue.create(TrackedValue.Type.INTEGER, ldcVal, basicValue); }
+					else if (ldcVal instanceof String) { return TrackedValue.create(TrackedValue.Type.STRING, ldcVal, basicValue); }
+					break;
+			}
+
+			return TrackedValue.unknown(basicValue);
+		}
+
+		@Override public TrackedValue copyOperation(AbstractInsnNode insn, TrackedValue value)
+		{
+			return value;
+		}
+
+		@Override public TrackedValue unaryOperation(AbstractInsnNode insn, TrackedValue value) throws AnalyzerException
+		{
+			BasicValue basicValue = basicInterpreter.unaryOperation(insn, value.basicValue);
+			if (insn.getOpcode() == Opcodes.CHECKCAST) { return TrackedValue.copy(value, basicValue); }
+			else { return TrackedValue.unknown(basicValue); }
+		}
+
+		@Override public TrackedValue binaryOperation(AbstractInsnNode insn, TrackedValue value1, TrackedValue value2) throws AnalyzerException
+		{
+			BasicValue typeValue = basicInterpreter.binaryOperation(insn, value1.basicValue, value2.basicValue);
+			return TrackedValue.unknown(typeValue);
+		}
+
+		@Override public TrackedValue ternaryOperation(AbstractInsnNode insn, TrackedValue value1, TrackedValue value2, TrackedValue value3)
+		{
+			return null;
+		}
+
+		@Override public TrackedValue naryOperation(AbstractInsnNode insn, List<? extends TrackedValue> values) throws AnalyzerException
+		{
+			BasicValue basicValue = basicInterpreter.naryOperation(insn, null);
+
+			// Ignores INVOKEINTERFACE, INVOKEDYNAMIC, MULTIANEWARRAY and other unexpected opcodes
+			if (insnSet.add(insn) &&
+					(insn.getOpcode() == Opcodes.INVOKEVIRTUAL ||
+					insn.getOpcode() == Opcodes.INVOKESTATIC ||
+					insn.getOpcode() == Opcodes.INVOKESPECIAL))
+			{
+				MethodInsnNode methodInsn = (MethodInsnNode)insn;
+
+				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && !keepAllInvokes)
 				{
-					superclass = javaClass.getSuperClass();
-					classMap.put(superclassName, superclass);
+					if (methodInsn.owner.equals(COMPOUND_TAG_SIGNATURE)) { return onCompoundTagInvoke(methodInsn, values, basicValue); }
+					else if (methodInsn.owner.equals(LIST_TAG_SIGNATURE)) { return onListTagInvoke(methodInsn, values, basicValue); }
 				}
 
-				Method superclassMethod = findMethod(superclass, methodName,
-						methodSignature, searchInSuperclasses, mustBePublic);
-				if (superclassMethod != null) { return superclassMethod; }
+				InvokeInfo.add(invokes, methodInsn, values, keepAllInvokes);
 			}
-			catch (Exception ignore) {}
 
-			for (String classInterfaceName : javaClass.getInterfaceNames())
+			return TrackedValue.unknown(basicValue);
+		}
+
+		@Override public void returnOperation(AbstractInsnNode insn, TrackedValue value, TrackedValue expected) {}
+
+		@Override public TrackedValue merge(TrackedValue value1, TrackedValue value2)
+		{
+			if (value1.compare(value2)) { return value1; }
+			BasicValue basicValue = basicInterpreter.merge(value1.basicValue, value2.basicValue);
+
+			if (basicValue.equals(value1.basicValue) && (value1.basicValue.equals(value2.basicValue))) { return value1; }
+			else if (basicValue.equals(value2.basicValue) && (value2.basicValue.equals(value1.basicValue))) { return value2; }
+			else { return TrackedValue.unknown(basicValue); }
+		}
+
+		private TrackedValue onCompoundTagInvoke(MethodInsnNode methodInsn, List<? extends TrackedValue> values, BasicValue basicValue)
+		{
+			if (values.size() < 2 || values.get(0).type != TrackedValue.Type.COMPOUND || values.get(1).type != TrackedValue.Type.STRING)
 			{
-				JavaClass classInterface = classMap.get(classInterfaceName);
-				if (classInterface == null)
+				return TrackedValue.unknown(basicValue);
+			}
+
+			NbtSuggestion.Type type = NbtSuggestion.Type.fromMethodName(methodInsn.name);
+			NbtSuggestion.Type listType = NbtSuggestion.Type.UNKNOWN;
+
+			if (type == NbtSuggestion.Type.LIST && values.size() == 3)
+			{
+				if (values.get(2).type == TrackedValue.Type.INTEGER)
 				{
-					classInterface = javaClass.getRepository().loadClass(classInterfaceName);
-					classMap.put(classInterfaceName, classInterface);
+					listType = NbtSuggestion.Type.fromID(((Integer)values.get(2).object).byteValue());
 				}
-
-				Method interfaceMethod = findMethod(classInterface, methodName,
-						methodSignature, searchInSuperclasses, mustBePublic);
-				if (interfaceMethod != null) { return interfaceMethod; }
 			}
+			else if (values.size() != 2)
+			{
+				return TrackedValue.unknown(basicValue);
+			}
+
+			Template suggestions = (Template)values.get(0).object;
+			String tagName = (String)values.get(1).object;
+
+			if (isHiddenTag(tagName)) { return TrackedValue.unknown(basicValue); }
+
+			SuggestionTemplate newSuggestion;
+			if (uncertain) { newSuggestion = new SuggestionTemplate(tagName, type, NbtSuggestion.SuggestionType.UNCERTAIN); }
+			else { newSuggestion = new SuggestionTemplate(tagName, type); }
+
+			suggestions.addSuggestion(newSuggestion);
+
+			if (type == NbtSuggestion.Type.COMPOUND)
+			{
+				return TrackedValue.create(TrackedValue.Type.COMPOUND, newSuggestion.addSubcompound(), basicValue);
+			}
+			else if (type == NbtSuggestion.Type.LIST)
+			{
+				newSuggestion.listType = listType;
+				if (listType == NbtSuggestion.Type.COMPOUND)
+				{
+					return TrackedValue.create(TrackedValue.Type.LIST_TAG, newSuggestion.addSubcompound(), basicValue);
+				}
+			}
+
+			return TrackedValue.unknown(basicValue);
 		}
 
-		return null;
-	}
-
-	private static void readMethod(Method method, NbtSuggestions arg, String objectClassName, int depth, boolean uncertain) throws Exception
-	{
-		/*
-			References:
-				https://en.wikipedia.org/wiki/List_of_Java_bytecode_instructions
-				https://docs.oracle.com/javase/specs/jvms/se12/html/jvms-6.html
-		 */
-
-		Code code = method.getCode();
-
-		LocalVariableTable localVarTable = code.getLocalVariableTable();
-		DisassembledValue[] localVars = new DisassembledValue[localVarTable.getLength()];
-		ConstantPool constPool = code.getConstantPool();
-		CodeStack<DisassembledValue> stack = new CodeStack<>();
-
-		ByteSequence bytes = new ByteSequence(code.getCode());
-
-		for (int i = 0; i < localVarTable.getTableLength(); i++)
+		private TrackedValue onListTagInvoke(MethodInsnNode methodInsn, List<? extends TrackedValue> values, BasicValue basicValue)
 		{
-			LocalVariable argument = localVarTable.getLocalVariable(i, 0);
-			if (argument == null) { continue; }
-
-			if (argument.getName().equals("this"))
+			if (values.size() != 2 || values.get(0).type != TrackedValue.Type.LIST_TAG ||
+					!methodInsn.desc.equals("(I)L" + CompoundTag.class.getName().replace('.', '/') + ";")) // getCompound
 			{
-				if (i == 0) { localVars[i] = new DisassembledValue(DisassembledValue.Type.THIS, null); }
-				else { throw new Exception("[NBT_AC] index != 0 for \"this\"!"); }
+				return TrackedValue.unknown(basicValue);
 			}
-			else if (argument.getSignature().equals(COMPOUND_TAG_ARG_SIGNATURE))
-			{
-				localVars[i] = new DisassembledValue(DisassembledValue.Type.COMPOUND, arg);
-			}
-			else if (argument.getSignature().equals(LIST_TAG_ARG_SIGNATURE))
-			{
-				localVars[i] = new DisassembledValue(DisassembledValue.Type.LIST_TAG, arg);
-			}
-		}
 
-		while (bytes.available() != 0)
-		{
-			int opcode = bytes.readUnsignedByte();
-
-			switch (opcode)
-			{
-				case Const.AALOAD:
-				case Const.BALOAD:
-				case Const.CALOAD:
-				case Const.DALOAD:
-				case Const.FALOAD:
-				case Const.IALOAD:
-				case Const.LALOAD:
-				case Const.SALOAD:
-					stack.poppush(2, 1);
-					break;
-
-				case Const.AASTORE:
-				case Const.BASTORE:
-				case Const.CASTORE:
-				case Const.DASTORE:
-				case Const.FASTORE:
-				case Const.IASTORE:
-				case Const.LASTORE:
-				case Const.SASTORE:
-					stack.popx(3);
-					break;
-
-				case Const.ACONST_NULL:
-					stack.push(null);
-					break;
-
-				case Const.ALOAD:
-				case Const.DLOAD:
-				case Const.FLOAD:
-				case Const.ILOAD:
-				case Const.LLOAD:
-					stack.push(localVars[bytes.readUnsignedByte()]);
-					break;
-
-				case Const.ALOAD_0:
-				case Const.ALOAD_1:
-				case Const.ALOAD_2:
-				case Const.ALOAD_3:
-				case Const.DLOAD_0:
-				case Const.DLOAD_1:
-				case Const.DLOAD_2:
-				case Const.DLOAD_3:
-				case Const.FLOAD_0:
-				case Const.FLOAD_1:
-				case Const.FLOAD_2:
-				case Const.FLOAD_3:
-				case Const.ILOAD_0:
-				case Const.ILOAD_1:
-				case Const.ILOAD_2:
-				case Const.ILOAD_3:
-				case Const.LLOAD_0:
-				case Const.LLOAD_1:
-				case Const.LLOAD_2:
-				case Const.LLOAD_3:
-					int loadPos = (opcode - 2) % 4;
-					stack.push(localVars[loadPos]);
-					break;
-
-				case Const.ASTORE:
-				case Const.DSTORE:
-				case Const.FSTORE:
-				case Const.ISTORE:
-				case Const.LSTORE:
-					localVars[bytes.readUnsignedByte()] = stack.pop();
-					break;
-
-				case Const.ASTORE_0:
-				case Const.ASTORE_1:
-				case Const.ASTORE_2:
-				case Const.ASTORE_3:
-				case Const.DSTORE_0:
-				case Const.DSTORE_1:
-				case Const.DSTORE_2:
-				case Const.DSTORE_3:
-				case Const.FSTORE_0:
-				case Const.FSTORE_1:
-				case Const.FSTORE_2:
-				case Const.FSTORE_3:
-				case Const.ISTORE_0:
-				case Const.ISTORE_1:
-				case Const.ISTORE_2:
-				case Const.ISTORE_3:
-				case Const.LSTORE_0:
-				case Const.LSTORE_1:
-				case Const.LSTORE_2:
-				case Const.LSTORE_3:
-					int storePos = (opcode - 3) % 4;
-					localVars[storePos] = stack.pop();
-					break;
-
-				case Const.RETURN:
-				case Const.ARETURN:
-				case Const.DRETURN:
-				case Const.FRETURN:
-				case Const.IRETURN:
-				case Const.LRETURN:
-					break;
-
-				case Const.ATHROW:
-					break;
-
-				case Const.ANEWARRAY:
-					stack.poppush(1, 1);
-					bytes.skip(2);
-					break;
-
-				case Const.MULTIANEWARRAY:
-					bytes.skip(2);
-					stack.poppush(bytes.readUnsignedByte(), 1);
-					break;
-
-				case Const.ARRAYLENGTH:
-					stack.poppush(1, 1);
-					break;
-
-				case Const.BIPUSH:
-					stack.push(new DisassembledValue(DisassembledValue.Type.INTEGER, (int)bytes.readByte()));
-					break;
-
-				case Const.BREAKPOINT:
-				case Const.IMPDEP1:
-				case Const.IMPDEP2:
-					break;
-
-				case Const.CHECKCAST:
-					bytes.skip(2);
-					break;
-
-				case Const.D2F:
-				case Const.D2I:
-				case Const.D2L:
-				case Const.F2D:
-				case Const.F2I:
-				case Const.F2L:
-				case Const.I2B:
-				case Const.I2C:
-				case Const.I2D:
-				case Const.I2F:
-				case Const.I2L:
-				case Const.I2S:
-				case Const.L2D:
-				case Const.L2F:
-				case Const.L2I:
-					stack.poppush(1, 1);
-					break;
-
-				case Const.DCONST_0:
-				case Const.DCONST_1:
-				case Const.FCONST_0:
-				case Const.FCONST_1:
-				case Const.FCONST_2:
-				case Const.LCONST_0:
-				case Const.LCONST_1:
-					stack.push(null);
-					break;
-
-				case Const.ICONST_M1:
-				case Const.ICONST_0:
-				case Const.ICONST_1:
-				case Const.ICONST_2:
-				case Const.ICONST_3:
-				case Const.ICONST_4:
-				case Const.ICONST_5:
-					int iconst_val = 0;
-					if (opcode == Const.ICONST_M1) { iconst_val = -1; }
-					if (opcode == Const.ICONST_0) { iconst_val = 0; }
-					if (opcode == Const.ICONST_1) { iconst_val = 1; }
-					if (opcode == Const.ICONST_2) { iconst_val = 2; }
-					if (opcode == Const.ICONST_3) { iconst_val = 3; }
-					if (opcode == Const.ICONST_4) { iconst_val = 4; }
-					if (opcode == Const.ICONST_5) { iconst_val = 5; }
-
-					stack.push(new DisassembledValue(DisassembledValue.Type.INTEGER, iconst_val));
-					break;
-
-				case Const.DADD:
-				case Const.DCMPG:
-				case Const.DCMPL:
-				case Const.DDIV:
-				case Const.DMUL:
-				case Const.DREM:
-				case Const.DSUB:
-				case Const.FADD:
-				case Const.FCMPG:
-				case Const.FCMPL:
-				case Const.FDIV:
-				case Const.FMUL:
-				case Const.FREM:
-				case Const.FSUB:
-				case Const.IADD:
-				case Const.IAND:
-				case Const.IDIV:
-				case Const.IMUL:
-				case Const.IOR:
-				case Const.IREM:
-				case Const.ISHL:
-				case Const.ISHR:
-				case Const.ISUB:
-				case Const.IUSHR:
-				case Const.IXOR:
-				case Const.LADD:
-				case Const.LAND:
-				case Const.LCMP:
-				case Const.LDIV:
-				case Const.LMUL:
-				case Const.LOR:
-				case Const.LREM:
-				case Const.LSHL:
-				case Const.LSHR:
-				case Const.LSUB:
-				case Const.LUSHR:
-				case Const.LXOR:
-					stack.poppush(2, 1);
-					break;
-
-				case Const.DNEG:
-				case Const.FNEG:
-				case Const.INEG:
-				case Const.LNEG:
-					stack.poppush(1, 1);
-					break;
-
-				case Const.DUP:
-					stack.push(stack.peek());
-					break;
-
-				case Const.DUP_X1:
-					DisassembledValue dupx1_val1 = stack.pop();
-					DisassembledValue dupx1_val2 = stack.pop();
-					stack.push(dupx1_val1);
-					stack.push(dupx1_val2);
-					stack.push(dupx1_val1);
-					break;
-
-				case Const.DUP_X2:
-					DisassembledValue dupx2_val1 = stack.pop();
-					DisassembledValue dupx2_val2 = stack.pop();
-					DisassembledValue dupx2_val3 = stack.pop();
-					stack.push(dupx2_val1);
-					stack.push(dupx2_val3);
-					stack.push(dupx2_val2);
-					stack.push(dupx2_val1);
-					break;
-
-				case Const.DUP2:
-					DisassembledValue dup2_val1 = stack.elementAt(stack.size() - 1);
-					DisassembledValue dup2_val2 = stack.elementAt(stack.size() - 2);
-					stack.push(dup2_val2);
-					stack.push(dup2_val1);
-					break;
-
-				case Const.DUP2_X1:
-					DisassembledValue dup2x1_val1 = stack.pop();
-					DisassembledValue dup2x1_val2 = stack.pop();
-					DisassembledValue dup2x1_val3 = stack.pop();
-					stack.push(dup2x1_val2);
-					stack.push(dup2x1_val1);
-					stack.push(dup2x1_val3);
-					stack.push(dup2x1_val2);
-					stack.push(dup2x1_val1);
-					break;
-
-				case Const.DUP2_X2:
-					DisassembledValue dup2x2_val1 = stack.pop();
-					DisassembledValue dup2x2_val2 = stack.pop();
-					DisassembledValue dup2x2_val3 = stack.pop();
-					DisassembledValue dup2x2_val4 = stack.pop();
-					stack.push(dup2x2_val2);
-					stack.push(dup2x2_val1);
-					stack.push(dup2x2_val4);
-					stack.push(dup2x2_val3);
-					stack.push(dup2x2_val2);
-					stack.push(dup2x2_val1);
-					break;
-
-				case Const.SWAP:
-					DisassembledValue swap_val1 = stack.pop();
-					DisassembledValue swap_val2 = stack.pop();
-					stack.push(swap_val1);
-					stack.push(swap_val2);
-					break;
-
-				case Const.SIPUSH:
-					stack.push(new DisassembledValue(DisassembledValue.Type.INTEGER, (int)bytes.readShort()));
-					break;
-
-				case Const.MONITORENTER:
-				case Const.MONITOREXIT:
-					stack.pop();
-					break;
-
-				case Const.NEW:
-					stack.push(null);
-					bytes.skip(2);
-					break;
-
-				case Const.NEWARRAY:
-					stack.poppush(1, 1);
-					bytes.skip(1);
-					break;
-
-				case Const.POP:
-					stack.pop();
-					break;
-
-				case Const.POP2:
-					stack.popx(2);
-					break;
-
-				case Const.IINC:
-					bytes.skip(2);
-					break;
-
-				case Const.GETFIELD:
-					stack.poppush(1, 1);
-					bytes.skip(2);
-					break;
-
-				case Const.GETSTATIC:
-					stack.push(null);
-					bytes.skip(2);
-					break;
-
-				case Const.GOTO:
-					bytes.skip(2);
-					break;
-
-				case Const.GOTO_W:
-					bytes.skip(4);
-					break;
-
-				case Const.IF_ACMPEQ:
-				case Const.IF_ACMPNE:
-				case Const.IF_ICMPEQ:
-				case Const.IF_ICMPGE:
-				case Const.IF_ICMPGT:
-				case Const.IF_ICMPLE:
-				case Const.IF_ICMPLT:
-				case Const.IF_ICMPNE:
-					stack.popx(2);
-					bytes.skip(2);
-					break;
-
-				case Const.IFEQ:
-				case Const.IFGE:
-				case Const.IFGT:
-				case Const.IFLE:
-				case Const.IFLT:
-				case Const.IFNE:
-				case Const.IFNONNULL:
-				case Const.IFNULL:
-					stack.pop();
-					bytes.skip(2);
-					break;
-
-				case Const.JSR:
-					stack.push(null);
-					bytes.skip(2);
-					break;
-
-				case Const.JSR_W:
-					stack.push(null);
-					bytes.skip(4);
-					break;
-
-				case Const.RET:
-					bytes.skip(1);
-					break;
-
-				case Const.WIDE:
-					int wide_opcode = bytes.read();
-
-					switch (wide_opcode)
-					{
-						case Const.ALOAD:
-						case Const.DLOAD:
-						case Const.FLOAD:
-						case Const.ILOAD:
-						case Const.LLOAD:
-							stack.push(localVars[bytes.readUnsignedShort()]);
-							break;
-
-						case Const.ASTORE:
-						case Const.DSTORE:
-						case Const.FSTORE:
-						case Const.ISTORE:
-						case Const.LSTORE:
-							localVars[bytes.readUnsignedShort()] = stack.pop();
-							break;
-
-						case Const.RET:
-							bytes.skip(2);
-							break;
-
-						case Const.IINC:
-							bytes.skip(4);
-							break;
-
-						default:
-							throw new Exception(String.format("[NBT_AC] Undefined opcode for wide operation (%d)!",wide_opcode));
-					}
-
-					break;
-
-				case Const.LOOKUPSWITCH:
-					int lookupswitch_indexMod4 = bytes.getIndex() % 4;
-					bytes.skip(lookupswitch_indexMod4 == 0 ? 0 : 4 - lookupswitch_indexMod4);
-					bytes.skip(4);
-					long lookupswitch_npairs = bytes.readInt();
-					bytes.skip(lookupswitch_npairs * 8);
-					break;
-
-				case Const.TABLESWITCH:
-					int tableswitch_indexMod4 = bytes.getIndex() % 4;
-					bytes.skip(tableswitch_indexMod4 == 0 ? 0 : 4 - tableswitch_indexMod4);
-					bytes.skip(4);
-					long tableswitch_low = bytes.readInt();
-					long tableswitch_high = bytes.readInt();
-					bytes.skip((tableswitch_high - tableswitch_low + 1) * 4);
-					break;
-
-				case Const.LDC:
-					int ldc_index = bytes.readUnsignedByte();
-					Constant ldc_const = constPool.getConstant(ldc_index);
-					if (ldc_const.getTag() == Const.CONSTANT_String)
-					{
-						stack.push(new DisassembledValue(DisassembledValue.Type.STRING,
-								((ConstantString)ldc_const).getBytes(constPool)));
-					}
-					else
-					{
-						stack.push(null);
-					}
-					break;
-
-				case Const.LDC_W:
-					int ldcw_index = bytes.readUnsignedShort();
-					Constant ldcw_const = constPool.getConstant(ldcw_index);
-					if (ldcw_const.getTag() == Const.CONSTANT_String)
-					{
-						stack.push(new DisassembledValue(DisassembledValue.Type.STRING, ((ConstantString)ldcw_const).getBytes(constPool)));
-					}
-					else
-					{
-						stack.push(null);
-					}
-					break;
-
-				case Const.LDC2_W:
-					stack.push(null);
-					bytes.skip(2);
-					break;
-
-				case Const.PUTFIELD:
-					stack.popx(2);
-					bytes.skip(2);
-					break;
-
-				case Const.PUTSTATIC:
-					stack.pop();
-					bytes.skip(2);
-					break;
-
-				case Const.INVOKEDYNAMIC:
-				case Const.INVOKEINTERFACE:
-				case Const.INVOKESPECIAL:
-				case Const.INVOKESTATIC:
-				case Const.INVOKEVIRTUAL:
-					handleInvoke(opcode, bytes, constPool, stack, objectClassName, depth, uncertain);
-					break;
-
-				case Const.NOP:
-				case Const.INSTANCEOF:
-					break;
-
-			}
+			return TrackedValue.create(TrackedValue.Type.COMPOUND, values.get(0).object, basicValue);
 		}
 	}
 
-	private static void handleInvoke(int opcode, ByteSequence bytes, ConstantPool constPool,
-									 CodeStack<DisassembledValue> stack, String objectClassName,
-									 int depth, boolean uncertain) throws Exception
+	public static class TrackedValue implements Value
 	{
-		boolean valueAlreadyReturned = false;
-		int index = bytes.readUnsignedShort();
+		public final TrackedValue.Type type;
+		public final Object object;
+		public final BasicValue basicValue;
 
-		ConstantCP constant = constPool.getConstant(index);
-		ConstantNameAndType nameAndType = constPool.getConstant(constant.getNameAndTypeIndex(), Const.CONSTANT_NameAndType);
-
-		MethodSignature signature = new MethodSignature(nameAndType.getSignature(constPool));
-
-		/*
-			INVOKEVIRTUAL - If method belongs to CompoundTag or ListTag and is known, then add appropriate suggestion.
-			                If object on which the method was called is "this", then disassemble the method.
-			                If object on which the method was called is unknown, then disassemble the method of
-			                   type class and mark suggestions as "uncertain".
-			INVOKESPECIAL/INVOKESTATIC - Disassemble method.
-			INVOKEDYNAMIC/INVOKEINTERFACE - Ignore.
-		 */
-
-		switch (opcode)
+		private TrackedValue(TrackedValue.Type type, Object object, BasicValue basicValue)
 		{
-			case Const.INVOKEVIRTUAL:
-				valueAlreadyReturned =
-						handleInvokeVirtual(constPool, stack, objectClassName, depth, constant, signature, nameAndType, uncertain);
-				break;
-
-			case Const.INVOKESPECIAL:
-			case Const.INVOKESTATIC:
-				handleInvokeStatic(opcode, constPool, stack, objectClassName, depth, constant, signature, nameAndType, uncertain);
-				break;
-
-			case Const.INVOKEDYNAMIC:
-			case Const.INVOKEINTERFACE:
-				handleInvokeDynamic(opcode, bytes, stack, signature);
-				break;
-
-			default:
-				throw new Exception("[NBT_AC] Unexpected invoke opcode!");
+			this.type = type;
+			this.object = object;
+			this.basicValue = basicValue;
 		}
 
-		if (signature.returnsValue() && !valueAlreadyReturned) { stack.push(null); }
-	}
-
-	private static boolean handleInvokeVirtual(ConstantPool constPool, CodeStack<DisassembledValue> stack, String objectClassName,
-											   int depth, ConstantCP constant, MethodSignature signature,
-											   ConstantNameAndType nameAndType, boolean uncertain) throws Exception
-	{
-		ConstantClass constClass = constPool.getConstant(constant.getClassIndex(), Const.CONSTANT_Class);
-		String classSignature = ((String)constClass.getConstantValue(constPool)).replace('/', '.');
-
-		if (classSignature.equals(COMPOUND_TAG_SIGNATURE))
+		public static @Nullable TrackedValue create(TrackedValue.Type type, Object object, @Nullable BasicValue basicValue)
 		{
-			return handleCompoundTagMethodInvoke(constPool, stack, signature, nameAndType, uncertain);
+			return basicValue != null ? new TrackedValue(type, object, basicValue) : null;
 		}
-		else if (classSignature.equals(LIST_TAG_SIGNATURE))
+
+		public static @Nullable TrackedValue copy(TrackedValue trackedValue, @Nullable BasicValue basicValue)
 		{
-			return handleListTagMethodInvoke(stack, signature);
+			return basicValue != null ? new TrackedValue(trackedValue.type, trackedValue.object, basicValue) : null;
 		}
-		else
+
+		public static @Nullable TrackedValue unknown(@Nullable BasicValue basicValue)
 		{
-			return handleUnknownMethodInvoke(classSignature, constPool, stack, objectClassName, depth, signature, nameAndType, uncertain);
+			return basicValue != null ? new TrackedValue(Type.UNKNOWN, null, basicValue) : null;
+		}
+
+		public boolean compare(TrackedValue valueToCompare)
+		{
+			if (this == valueToCompare) { return true; }
+			if (type != valueToCompare.type) { return false; }
+			if ((object == null) != (valueToCompare.object == null)) { return false; }
+			if (object != null && !object.equals(valueToCompare.object)) { return false; }
+			return basicValue.equals(valueToCompare.basicValue);
+		}
+
+		@Override public int getSize()
+		{
+			return basicValue.getSize();
+		}
+
+		public enum Type
+		{
+			STRING,     // String
+			INTEGER,    // Integer
+			COMPOUND,   // CompoundTemplate
+			LIST_TAG,   // CompoundTemplate
+			THIS,       // null
+			UNKNOWN     // null
 		}
 	}
 
-	private static boolean handleCompoundTagMethodInvoke(ConstantPool constPool, CodeStack<DisassembledValue> stack,
-														 MethodSignature signature, ConstantNameAndType nameAndType, boolean uncertain)
+	public static class InvokeInfo
 	{
-		String name = nameAndType.getName(constPool);
-		NbtSuggestion.Type type = NbtSuggestion.Type.fromMethodName(name);
-		NbtSuggestion.Type listType = NbtSuggestion.Type.UNKNOWN;
+		public final MethodInsnNode insn;
+		public final MethodArgs args;
+		public final boolean calledOnThis;
 
-		if (type == NbtSuggestion.Type.LIST && signature.argumentCount() == 2)
+		public InvokeInfo(MethodInsnNode insn, MethodArgs args, boolean calledOnThis)
 		{
-			DisassembledValue listTypeArg = stack.pop();
-			if (listTypeArg != null && listTypeArg.type == DisassembledValue.Type.INTEGER)
+			this.insn = insn;
+			this.args = args;
+			this.calledOnThis = calledOnThis;
+		}
+
+		public InvokeInfo copy(Template newCompound)
+		{
+			return new InvokeInfo(insn, new MethodArgs(newCompound, args.string), calledOnThis);
+		}
+
+		public static void add(List<InvokeInfo> invokes, MethodInsnNode insn, List<? extends TrackedValue> values, boolean keepAllInvokes)
+		{
+			MethodArgs args = MethodArgs.getArgs(values, insn.getOpcode() == Opcodes.INVOKESTATIC);
+			boolean calledOnThis = insn.getOpcode() != Opcodes.INVOKESTATIC && isCalledOnThis(values);
+			if (args != null || keepAllInvokes) { invokes.add(new InvokeInfo(insn, args, calledOnThis)); }
+		}
+
+		private static boolean isCalledOnThis(List<? extends TrackedValue> values)
+		{
+			return values.size() > 0 && values.get(0).type == TrackedValue.Type.THIS;
+		}
+	}
+
+	public static class SuggestionTemplate
+	{
+		public String tag;
+		public NbtSuggestion.Type type;
+		public NbtSuggestion.Type listType = NbtSuggestion.Type.UNKNOWN;
+		public Template subcompound = null;
+		public NbtSuggestion.SuggestionType suggestionType = NbtSuggestion.SuggestionType.NORMAL;
+
+		public SuggestionTemplate(String tag, NbtSuggestion.Type type)
+		{
+			this.tag = tag;
+			this.type = type;
+		}
+
+		public SuggestionTemplate(String tag, NbtSuggestion.Type type, NbtSuggestion.SuggestionType suggestionType)
+		{
+			this(tag, type);
+			this.suggestionType = suggestionType;
+		}
+
+		public Template addSubcompound()
+		{
+			subcompound = new Template();
+			return subcompound;
+		}
+
+		public NbtSuggestion applyTemplate()
+		{
+			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, suggestionType);
+			nbtSuggestion.listType = listType;
+			if (subcompound != null) { subcompound.applyTemplate(nbtSuggestion.addSubcompound()); }
+			return nbtSuggestion;
+		}
+
+		public @Nullable SuggestionTemplate copy(@Nullable Map<Template, Template> templateMap, boolean replace, @Nullable String toReplace)
+		{
+			String newTag;
+			if (replace && tag.equals("*"))
 			{
-				listType = NbtSuggestion.Type.fromID(((Integer)listTypeArg.object).byteValue());
-			}
-		}
-		else if (signature.argumentCount() != 1)
-		{
-			stack.popx(signature.argumentCount() + 1);
-			return false;
-		}
-
-		DisassembledValue arg = stack.pop();
-		DisassembledValue compound = stack.pop();
-
-		if (type == NbtSuggestion.Type.NOT_FOUND || arg == null || arg.type != DisassembledValue.Type.STRING ||
-				compound == null || compound.type != DisassembledValue.Type.COMPOUND)
-		{
-			return false;
-		}
-
-		NbtSuggestions suggestions = (NbtSuggestions)compound.object;
-		String tagName = (String)arg.object;
-
-		if (ModConfig.hideForgeTags.getValue() && (tagName.equals("ForgeCaps") || tagName.equals("ForgeData")))
-		{
-			return false;
-		}
-
-		NbtSuggestion newSuggestion;
-		if (uncertain) { newSuggestion = new NbtSuggestion(tagName, type, NbtSuggestion.SuggestionType.UNCERTAIN); }
-		else { newSuggestion = new NbtSuggestion(tagName, type); }
-
-		suggestions.addSuggestion(newSuggestion);
-
-		if (type == NbtSuggestion.Type.COMPOUND)
-		{
-			stack.push(new DisassembledValue(DisassembledValue.Type.COMPOUND, newSuggestion.addSubcompound()));
-			return true; // valueAlreadyReturned = true
-		}
-		else if (type == NbtSuggestion.Type.LIST)
-		{
-			newSuggestion.listType = listType;
-
-			if (listType == NbtSuggestion.Type.COMPOUND)
-			{
-				stack.push(new DisassembledValue(DisassembledValue.Type.LIST_TAG, newSuggestion.addSubcompound()));
-				return true; // valueAlreadyReturned = true
-			}
-		}
-
-		return false;
-	}
-
-	private static boolean handleListTagMethodInvoke(CodeStack<DisassembledValue> stack, MethodSignature signature)
-	{
-		if (!signature.signature.equals("(I)L" + CompoundTag.class.getName().replace('.', '/') + ";"))
-		{
-			stack.popx(signature.argumentCount() + 1);
-			return false;
-		}
-
-		stack.pop(); // index of element - ignore
-		DisassembledValue listTag = stack.pop();
-
-		if (listTag == null || listTag.type != DisassembledValue.Type.LIST_TAG) { return false; }
-
-		stack.push(new DisassembledValue(DisassembledValue.Type.COMPOUND, listTag.object));
-		return true;
-	}
-
-	private static boolean handleUnknownMethodInvoke(String classSignature, ConstantPool constPool, CodeStack<DisassembledValue> stack,
-													 String objectClassName, int depth, MethodSignature signature,
-													 ConstantNameAndType nameAndType, boolean uncertain) throws Exception
-	{
-		DisassembledValue object = stack.get(stack.size() - signature.argumentCount() - 1);
-		NbtSuggestions suggestions = getCompoundTagArgument(stack, signature);
-
-		if (suggestions != null)
-		{
-			if (object != null && object.type == DisassembledValue.Type.THIS && objectClassName != null)
-			{
-				disassembly(objectClassName, nameAndType.getName(constPool),
-						nameAndType.getSignature(constPool), objectClassName, suggestions, depth + 1, false, uncertain);
+				if (toReplace != null && !isHiddenTag(toReplace)) { newTag = toReplace; }
+				else { return null; }
 			}
 			else
 			{
-				disassembly(classSignature, nameAndType.getName(constPool),
-						nameAndType.getSignature(constPool), null, suggestions, depth + 1, false, true);
+				newTag = tag;
 			}
-		}
 
-		stack.pop();
-		return false;
-	}
-
-	private static void handleInvokeStatic(int opcode, ConstantPool constPool, CodeStack<DisassembledValue> stack,
-										   String objectClassName, int depth, ConstantCP constant, MethodSignature signature,
-										   ConstantNameAndType nameAndType, boolean uncertain) throws Exception
-	{
-		NbtSuggestions suggestions = getCompoundTagArgument(stack, signature);
-
-		String newObjectClassName = null;
-		if (opcode == Const.INVOKESPECIAL)
-		{
-			DisassembledValue value = stack.pop();
-			if (value != null && value.type == DisassembledValue.Type.THIS) { newObjectClassName = objectClassName; }
-		}
-
-		if (suggestions != null)
-		{
-			ConstantClass constClass = constPool.getConstant(constant.getClassIndex(), Const.CONSTANT_Class);
-			String className = ((String)constClass.getConstantValue(constPool)).replace('/', '.');
-
-			disassembly(className, nameAndType.getName(constPool),
-					nameAndType.getSignature(constPool), newObjectClassName, suggestions, depth + 1, false, uncertain);
+			SuggestionTemplate newTemplate = new SuggestionTemplate(newTag, type, suggestionType);
+			newTemplate.listType = listType;
+			if (subcompound != null) { newTemplate.subcompound = subcompound.copy(templateMap, replace, toReplace); }
+			return newTemplate;
 		}
 	}
 
-
-	private static void handleInvokeDynamic(int opcode, ByteSequence bytes, CodeStack<DisassembledValue> stack,
-											MethodSignature signature) throws Exception
+	public static class Template
 	{
-		stack.popx(signature.argumentCount());
-		if (opcode == Const.INVOKEINTERFACE) { stack.pop(); }
-		bytes.skip(2);
-	}
+		public final List<SuggestionTemplate> suggestions = new ArrayList<>();
+		public @Nullable List<InvokeInfo> invokes = null;
 
-	private static NbtSuggestions getCompoundTagArgument(CodeStack<DisassembledValue> stack, MethodSignature signature)
-	{
-		NbtSuggestions suggestions = null;
-
-		for (int i = 0; i < signature.argumentCount(); i++)
+		public void addSuggestion(@Nullable SuggestionTemplate suggestion)
 		{
-			DisassembledValue stackValue = stack.pop();
-			if (stackValue == null) { continue; }
-			if (stackValue.type == DisassembledValue.Type.COMPOUND || stackValue.type == DisassembledValue.Type.LIST_TAG)
+			if (suggestion == null) { return; }
+			suggestions.removeIf(listElement -> listElement.tag.equals(suggestion.tag));
+			suggestions.add(suggestion);
+		}
+
+		public void merge(Template templates, @Nullable String toReplace)
+		{
+			for (SuggestionTemplate template : templates.suggestions)
 			{
-				suggestions = (NbtSuggestions)stackValue.object;
+				addSuggestion(template.copy(null, true, toReplace));
 			}
 		}
 
-		return suggestions;
+		public void applyTemplate(NbtSuggestions nbtSuggestions)
+		{
+			for (SuggestionTemplate template : suggestions)
+			{
+				nbtSuggestions.add(template.applyTemplate());
+			}
+		}
+
+		public Template copy(@Nullable Map<Template, Template> templateMap, boolean replace, @Nullable String toReplace)
+		{
+			Template template = new Template();
+
+			if (templateMap == null && invokes != null) { templateMap = new IdentityHashMap<>(); }
+			if (templateMap != null) { templateMap.put(this, template); }
+
+			for (SuggestionTemplate suggestionTemplate : suggestions)
+			{
+				template.addSuggestion(suggestionTemplate.copy(templateMap, replace, toReplace));
+			}
+
+			if (templateMap != null && invokes != null)
+			{
+				template.invokes = new ArrayList<>();
+				for (InvokeInfo invoke : invokes)
+				{
+					Template newCompound = templateMap.get(invoke.args.compound);
+					if (newCompound != null) { template.invokes.add(invoke.copy(newCompound)); }
+				}
+			}
+			return template;
+		}
+	}
+
+	public static class MethodArgs
+	{
+		public final Template compound;
+		public final @Nullable String string;
+
+		public MethodArgs(Template compound, @Nullable String string)
+		{
+			this.compound = compound;
+			this.string = string;
+		}
+
+		public static @Nullable MethodArgs getArgs(List<? extends TrackedValue> values, boolean isStatic)
+		{
+			Template compound = null;
+			String string = null;
+
+			for (int i = (isStatic ? 0 : 1); i < values.size(); i++)
+			{
+				TrackedValue trackedValue = values.get(i);
+				if (trackedValue.type == TrackedValue.Type.COMPOUND || trackedValue.type == TrackedValue.Type.LIST_TAG)
+				{
+					if (compound == null) { compound = (Template)trackedValue.object; }
+				}
+				else if (trackedValue.type == TrackedValue.Type.STRING)
+				{
+					if (string == null) { string = (String)trackedValue.object; }
+				}
+			}
+
+			return compound != null ? new MethodArgs(compound, string) : null;
+		}
 	}
 }
