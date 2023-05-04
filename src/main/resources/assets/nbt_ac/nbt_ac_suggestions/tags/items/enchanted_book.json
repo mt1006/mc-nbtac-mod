@@ -1,0 +1,29 @@
+{
+	"tag/item/minecraft:enchanted_book":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "StoredEnchantments",
+				"type": "list/compound",
+
+				"subcompound":
+				{
+					"suggestions":
+					[
+						{
+							"tag": "id",
+							"type": "string",
+							"subtype": "registry_key/minecraft:enchantment"
+						},
+
+						{
+							"tag": "lvl",
+							"type": "int"
+						}
+					]
+				}
+			}
+		]
+	}
+}

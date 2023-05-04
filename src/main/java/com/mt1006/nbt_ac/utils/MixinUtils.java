@@ -2,6 +2,8 @@ package com.mt1006.nbt_ac.utils;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedArgument;
+import com.mt1006.nbt_ac.mixin.fields.ClientLevelMixin;
+import com.mt1006.nbt_ac.mixin.fields.EntitySelectorMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.CommandSourceStack;
@@ -9,15 +11,15 @@ import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.WorldCoordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.entity.TransientEntitySectionManager;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -55,64 +57,51 @@ public class MixinUtils
 		if (level == null) { return null; }
 		Block block = level.getBlockState(blockPos).getBlock();
 
-		return "block/" + Registry.BLOCK.getKey(block);
+		return "block/" + RegistryUtils.BLOCK.getKey(block);
 	}
 
 	public static String entityFromEntitySelector(EntitySelector entitySelector)
 	{
-		try
-		{
-			Object typeObject = Fields.entitySelectorType.get(entitySelector);
-			Object uuidObject = Fields.entitySelectorUUID.get(entitySelector);
-			Object playerNameObject = Fields.entitySelectorPlayerName.get(entitySelector);
-			return entityFromSelectorData(typeObject, uuidObject, playerNameObject);
-		}
-		catch (Exception exception) { return null; }
+		return entityFromSelectorData(
+				((EntitySelectorMixin)entitySelector).getType(),
+				((EntitySelectorMixin)entitySelector).getEntityUUID(),
+				((EntitySelectorMixin)entitySelector).getPlayerName());
 	}
 
-	public static String entityFromSelectorData(Object typeObject, Object uuidObject, Object playerNameObject)
+	public static String entityFromSelectorData(EntityTypeTest<Entity, ?> typeTest, @Nullable UUID uuid, @Nullable String playerName)
 	{
-		if (typeObject instanceof EntityType)
+		if (typeTest instanceof EntityType)
 		{
-			EntityType<?> type = (EntityType<?>)typeObject;
-			return "entity/" + Registry.ENTITY_TYPE.getKey(type);
+			return "entity/" + RegistryUtils.ENTITY_TYPE.getKey((EntityType<?>)typeTest);
 		}
 
 		ClientLevel clientLevel = Minecraft.getInstance().level;
 		if (clientLevel == null) { return null; }
 
-		if (uuidObject instanceof UUID)
+		if (uuid != null)
 		{
-			UUID uuid = (UUID)uuidObject;
-
 			try
 			{
-				Object entityStorageObject = Fields.clientLevelEntityStorage.get(clientLevel);
-				if(!(entityStorageObject instanceof TransientEntitySectionManager)) { return null; }
-				TransientEntitySectionManager<?> entityStorage = (TransientEntitySectionManager<?>)entityStorageObject;
+				TransientEntitySectionManager<Entity> entityStorage = ((ClientLevelMixin)clientLevel).getEntityStorage();
 
-				EntityAccess entityAccess = entityStorage.getEntityGetter().get(uuid);
-				if (!(entityAccess instanceof Entity)) { return null; }
-				Entity entity = (Entity)entityAccess;
+				Entity entity = entityStorage.getEntityGetter().get(uuid);
+				if (entity == null) { return null; }
 
-				return "entity/" + Registry.ENTITY_TYPE.getKey(entity.getType());
+
+				return "entity/" + RegistryUtils.ENTITY_TYPE.getKey(entity.getType());
 			}
 			catch (Exception ignore) {}
 		}
 
-		if (playerNameObject instanceof String)
-		{
-			String playerName = (String)playerNameObject;
+		if (playerName == null) { return null; }
 
-			for (Player player : clientLevel.players())
+		for (Player player : clientLevel.players())
+		{
+			if (player.getGameProfile().getName().equals(playerName))
 			{
-				if (player.getGameProfile().getName().equals(playerName))
-				{
-					return "entity/" + EntityType.getKey(EntityType.PLAYER);
-				}
+				return "entity/" + EntityType.getKey(EntityType.PLAYER);
 			}
 		}
-
 		return null;
 	}
 }

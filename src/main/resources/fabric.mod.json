@@ -8,8 +8,9 @@
 	"authors": ["mt1006 (mt1006x)"],
 	"contact":
 	{
-		"homepage": "https://github.com/mt1006/mc-nbtac-mod",
-		"sources": "https://github.com/mt1006/mc-nbtac-mod/issues"
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/nbt-autocomplete",
+		"sources": "https://github.com/mt1006/mc-nbtac-mod",
+		"issues": "https://github.com/mt1006/mc-nbtac-mod/issues"
 	},
 
 	"license": "GNU Lesser General Public License v3.0",

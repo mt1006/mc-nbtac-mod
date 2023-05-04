@@ -1,8 +1,7 @@
 plugins
 {
-	id 'fabric-loom' version '1.0-SNAPSHOT'
+	id 'fabric-loom' version '1.1-SNAPSHOT'
 	id 'maven-publish'
-	id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -12,25 +11,12 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
-configurations
-{
-	shadow
-	implementation.extendsFrom shadow
-}
-
 dependencies
 {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	shadow("org.apache.bcel:bcel:6.7.0")
-	{
-		exclude group: 'net.java.dev.jna', module: 'jna'
-		exclude group: 'net.java.dev.jna', module: 'jna-platform'
-		exclude group: 'org.apache.commons', module: 'commons-lang3'
-	}
 }
 
 processResources
@@ -40,17 +26,8 @@ processResources
 }
 
 tasks.withType(JavaCompile).configureEach { it.options.release = 17 }
+
 java { withSourcesJar() }
-
-shadowJar
-{
-	archiveClassifier.set('fat')
-	configurations = [project.configurations.shadow]
-	exclude 'META-INF/maven/**'
-	finalizedBy 'remapJar'
-}
-
-remapJar { input.set shadowJar.archiveFile }
 
 jar
 {

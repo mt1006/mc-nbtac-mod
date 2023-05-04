@@ -14,12 +14,15 @@ import net.minecraft.client.Minecraft;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Loader
 {
-	public static final boolean SAVE_SUGGESTIONS = false;
+	private static final String SAVE_SUGGESTIONS_FILE = "nbt_ac_output.txt";
+	private static final int MAX_PRINTER_DEPTH = 32;
 	public static AtomicBoolean finished = new AtomicBoolean(false);
 
 	public static void load()
@@ -31,10 +34,14 @@ public class Loader
 			Disassembly.init();
 			TypeLoader.loadBlockEntityTypes();
 			TypeLoader.loadEntityTypes();
+			Disassembly.clear();
 		}
 
 		long interruptionStart = System.currentTimeMillis();
-		try { ResourceLoader.countDownLatch.await(); }
+		try
+		{
+			ResourceLoader.countDownLatch.await();
+		}
 		catch (InterruptedException exception) { NBTac.LOGGER.warn("Unexpected \"ResourceLoader.countDownLatch.await()\" interruption"); }
 		long interruptionDuration = System.currentTimeMillis() - interruptionStart;
 
@@ -44,42 +51,64 @@ public class Loader
 		}
 
 		long duration = System.currentTimeMillis() - start;
-		NBTac.LOGGER.info("Finished in: " + duration + " ms [" + (duration - interruptionDuration) + " ms without interruption]");
+		NBTac.LOGGER.info("Finished in: " + (duration - interruptionDuration) + " ms [" + duration + " ms with interruption]");
 		finished.set(true);
 
-		if (SAVE_SUGGESTIONS)
-		{
-			File outputFile = new File(Minecraft.getInstance().gameDirectory, "nbt_ac_output.txt");
+		saveSuggestions(ModConfig.saveSuggestions.getValue());
+	}
 
-			try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile)))
+	public static void saveSuggestions(int mode)
+	{
+		if (mode == 1 || mode == 2)
+		{
+			File outputFile = new File(Minecraft.getInstance().gameDirectory, SAVE_SUGGESTIONS_FILE);
+
+			try (PrintWriter fileWriter = new PrintWriter(new FileWriter(outputFile)))
 			{
-				for (Map.Entry<String, NbtSuggestions> suggestions : NbtSuggestionManager.getSuggestionMap().entrySet())
+				StringWriter stringWriter = new StringWriter();
+				PrintWriter writer = new PrintWriter(stringWriter);
+
+				for (Map.Entry<String, NbtSuggestions> suggestions : NbtSuggestionManager.suggestionMap.entrySet())
 				{
 					writer.println(suggestions.getKey());
-					printSuggestions(writer, null, suggestions.getValue(), 1);
+					printSuggestions(writer, suggestions.getKey(), suggestions.getValue(), mode, 1);
 					writer.println("");
 				}
+
+				if (mode == 2)
+				{
+					String[] strings = stringWriter.toString().split(System.lineSeparator());
+					Arrays.sort(strings);
+					for (String str : strings)
+					{
+						fileWriter.write(str);
+					}
+				}
+				else
+				{
+					fileWriter.write(stringWriter.toString());
+				}
+
 			}
 			catch (Exception exception) { NBTac.LOGGER.warn("Failed to save suggestions!"); }
 		}
 	}
 
-	public static void printSuggestions(PrintWriter writer, NbtSuggestion parent, NbtSuggestions suggestions, int depth)
+	public static void printSuggestions(PrintWriter writer, String key, NbtSuggestions suggestions, int mode, int depth)
 	{
-		for (NbtSuggestion suggestion : suggestions.suggestions)
+		if (depth > MAX_PRINTER_DEPTH) { return; }
+
+		for (NbtSuggestion suggestion : suggestions.getAll())
 		{
+			if (mode == 2) { writer.print(key); }
 			for (int i = 0; i < depth; i++) { writer.print("-"); }
 			writer.printf("%s (%s) [%s/%s] - %s/%s\n", suggestion.tag, suggestion.suggestionType.name,
 					suggestion.type.getName(), suggestion.listType.getName(), suggestion.subtype.getName(), suggestion.subtypeData);
 
-			// Debug:
-			if (parent != null && suggestion.tag.equalsIgnoreCase("id") &&
-					!parent.tag.endsWith("Items") && !parent.tag.endsWith("Item") && !parent.tag.endsWith("Effects"))
+			if (suggestion.subcompound != null && suggestions != suggestion.subcompound)
 			{
-				NBTac.LOGGER.info("ID parent: " + parent.tag);
+				printSuggestions(writer, key, suggestion.subcompound, mode, depth + 1);
 			}
-
-			if (suggestion.subcompound != null) { printSuggestions(writer, suggestion, suggestion.subcompound, depth + 1); }
 		}
 	}
 }
