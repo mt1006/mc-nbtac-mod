@@ -1,0 +1,31 @@
+{
+	"conditions":
+	[
+		{
+			"root": "entity/minecraft:block_display",
+			"path": ["block_state"]
+		}
+	],
+	
+	"operations":
+	[
+		{
+			"on": "Name",
+			"type": "set_type",
+			"val": "string"
+		},
+
+		{
+			"on": "Name",
+			"type": "set_subtype",
+			"val": "registry_key/minecraft:block"
+		},
+
+		{
+			"on": "Properties",
+			"with": "Name",
+			"type": "set_subtype",
+			"val": "block_state_tag/*"
+		}
+	]
+}
