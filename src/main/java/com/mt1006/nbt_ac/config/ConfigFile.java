@@ -137,7 +137,7 @@ public class ConfigFile
 			}
 
 			stringBuffer.setLength(0);
-			stringBuffer.append(value.substring(1, value.length() - 1));
+			stringBuffer.append(value, 1, value.length() - 1);
 		}
 	}
 }

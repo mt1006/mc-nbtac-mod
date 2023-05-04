@@ -1,2 +1,12 @@
+===Version 1.1===
+-Multiple optimizations and code quality improvements.
+-Suggestions now work properly when using "/execute" command.
+-Added tags for splash potions and lingering potions.
+-Added "save_suggestions" option.
+-Option "use_new_thread" now works properly when set to false.
+-Predictions are now defined in JSON files instead of being hardcoded, allowing them to be added by resource packs or other mods.
+-Changes to the resource format.
+-Reduced file size - switched from BCEL to ASM library.
+
 ===Version 1.0.1===
--Better support for interaction and display entities. 
+-Better support for interaction and display entities.

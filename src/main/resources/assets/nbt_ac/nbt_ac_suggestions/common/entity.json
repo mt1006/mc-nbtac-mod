@@ -1,0 +1,12 @@
+{
+	"common/entity":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "Passengers",
+				"type": "list/compound"
+			}
+		]
+	}
+}
