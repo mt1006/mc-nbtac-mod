@@ -1,0 +1,12 @@
+{
+	"tag/item/minecraft:writable_book":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "pages",
+				"type": "list/string"
+			}
+		]
+	}
+}

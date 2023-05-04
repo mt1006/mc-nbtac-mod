@@ -7,15 +7,13 @@ import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.Fields;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 
 @Mod(NBTac.MOD_ID)
@@ -23,13 +21,15 @@ import org.slf4j.Logger;
 public class NBTac
 {
 	public static final String MOD_ID = "nbt_ac";
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "1.1";
 	public static final String FOR_VERSION = "1.18.2";
 	public static final String FOR_LOADER = "Forge";
 	public static final Logger LOGGER = LogUtils.getLogger();
+	public static final boolean isDedicatedServer = FMLEnvironment.dist.isDedicatedServer();
 
 	public NBTac()
 	{
+		if (isDedicatedServer) { return; }
 		MinecraftForge.EVENT_BUS.register(this);
 		((ReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener(new ResourceLoader());
 	}
@@ -38,6 +38,12 @@ public class NBTac
 	public static void setup(final FMLCommonSetupEvent event)
 	{
 		LOGGER.info(getFullName() + " - Author: mt1006 (mt1006x)");
+
+		if (isDedicatedServer)
+		{
+			LOGGER.info("Dedicated server detected - mod setup stopped!");
+			return;
+		}
 
 		ModConfig.initConfig();
 		ModConfig.loadConfig();
@@ -48,7 +54,9 @@ public class NBTac
 	@SubscribeEvent
 	public static void loadComplete(FMLLoadCompleteEvent event)
 	{
-		new Thread(Loader::load).start();
+		if (isDedicatedServer) { return; }
+		if (ModConfig.useNewThread.getValue()) { new Thread(Loader::load).start(); }
+		else { Loader.load(); }
 	}
 
 	public static String getFullName()
