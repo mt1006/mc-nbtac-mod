@@ -71,7 +71,7 @@ public class ResourceLoader implements SimpleResourceReloadListener<Map<Resource
 												   @NotNull ResourceManager resourceManager,
 												   @NotNull ProfilerFiller profilerFiller, Executor executor)
 	{
-		if (!firstCall) { return new CompletableFuture<>(); }
+		if (!firstCall) { return CompletableFuture.runAsync(() -> {}); }
 		firstCall = false;
 
 		for (Map.Entry<ResourceLocation, JsonElement> resourceEntry : resources.entrySet())
