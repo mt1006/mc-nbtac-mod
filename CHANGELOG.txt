@@ -1,3 +1,6 @@
+===Version 1.1.1===
+-Fixed Fabric version freezing when reloading/changing resource packs (thanks TheWaffleLord for reporting).
+
 ===Version 1.1===
 -Multiple optimizations and code quality improvements.
 -Suggestions now work properly when using "/execute" command.
