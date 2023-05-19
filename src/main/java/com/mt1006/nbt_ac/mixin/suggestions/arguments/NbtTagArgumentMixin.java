@@ -51,7 +51,7 @@ abstract public class NbtTagArgumentMixin implements ArgumentType<Tag>
 
 	private NbtSuggestion getSuggestion(CommandContext<?> commandContext)
 	{
-		String commandName = MixinUtils.getNodeString(commandContext, 0);
+		String commandName = MixinUtils.getCommandName(commandContext);
 		if (commandName.equals("data")) { return getSuggestionForDataCommand(commandContext); }
 		else if (commandContext.getChild() != null) { return getSuggestion(commandContext.getChild()); }
 		return null;
