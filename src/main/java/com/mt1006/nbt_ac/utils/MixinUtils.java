@@ -2,6 +2,7 @@ package com.mt1006.nbt_ac.utils;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedArgument;
+import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.mixin.fields.ClientLevelMixin;
 import com.mt1006.nbt_ac.mixin.fields.EntitySelectorMixin;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -31,6 +32,16 @@ public class MixinUtils
 	public static String getNodeString(CommandContext<?> commandContext, int pos)
 	{
 		return commandContext.getNodes().get(pos).getNode().getName();
+	}
+
+	public static String getCommandName(CommandContext<?> commandContext)
+	{
+		String name = getNodeString(commandContext, 0);
+		if (ModConfig.supportCommandNamespace.getValue() && name.startsWith("minecraft:"))
+		{
+			return name.substring(10);
+		}
+		return name;
 	}
 
 	public static String getArgumentString(CommandContext<?> commandContext, String argumentName)
