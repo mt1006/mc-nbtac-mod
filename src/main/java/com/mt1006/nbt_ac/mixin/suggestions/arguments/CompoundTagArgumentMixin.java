@@ -37,7 +37,7 @@ abstract public class CompoundTagArgumentMixin implements ArgumentType<CompoundN
 
 	private String getResourceName(CommandContext<?> commandContext)
 	{
-		String commandName = MixinUtils.getNodeString(commandContext, 0);
+		String commandName = MixinUtils.getCommandName(commandContext);
 
 		switch (commandName)
 		{
