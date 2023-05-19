@@ -16,6 +16,7 @@ public class ModConfig
 	public static MutableBoolean useNewThread = new MutableBoolean(true);
 	public static MutableBoolean shortBoolean = new MutableBoolean(false);
 	public static MutableBoolean hideForgeTags = new MutableBoolean(true);
+	public static MutableBoolean supportCommandNamespace = new MutableBoolean(true);
 	public static MutableBoolean showTagTypes = new MutableBoolean(true);
 	public static MutableBoolean predictSuggestions = new MutableBoolean(true);
 	public static MutableInt saveSuggestions = new MutableInt(0);
@@ -38,6 +39,9 @@ public class ModConfig
 
 		configFile.addValue("hide_forge_tags", hideForgeTags,
 				"Hide Forge specific tags.");
+
+		configFile.addValue("support_command_namespace", supportCommandNamespace,
+				"Ignore the \"minecraft:\" command prefix.");
 
 		configFile.addValue("show_tag_types", showTagTypes,
 				"Show tag type next to its name in suggestions list.");
