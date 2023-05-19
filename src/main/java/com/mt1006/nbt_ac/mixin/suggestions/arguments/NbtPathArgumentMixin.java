@@ -36,7 +36,7 @@ abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 
 	private String getResourceName(CommandContext<?> commandContext)
 	{
-		String commandName = MixinUtils.getNodeString(commandContext, 0);
+		String commandName = MixinUtils.getCommandName(commandContext);
 		if (commandName.equals("data")) { return getResourceNameForDataCommand(commandContext); }
 		else if (commandContext.getChild() != null) { return getResourceName(commandContext.getChild()); }
 		return null;
