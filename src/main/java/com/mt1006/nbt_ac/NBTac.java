@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 public class NBTac implements ModInitializer
 {
 	public static final String VERSION = "1.1.2";
-	public static final String FOR_VERSION = "1.19.4";
+	public static final String FOR_VERSION = "1.20";
 	public static final String FOR_LOADER = "Fabric";
 	public static final Logger LOGGER = LogUtils.getLogger();
 	public static final boolean isDedicatedServer = FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
