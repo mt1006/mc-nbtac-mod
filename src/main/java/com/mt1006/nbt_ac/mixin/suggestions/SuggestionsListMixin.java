@@ -1,12 +1,12 @@
 package com.mt1006.nbt_ac.mixin.suggestions;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.mixin.fields.CommandSuggestionsMixin;
 import com.mt1006.nbt_ac.utils.Fields;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.CommandSuggestions;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
@@ -63,7 +63,7 @@ public class SuggestionsListMixin
 	}
 
 	@Inject(at = @At(value = "RETURN"), method = "render")
-	private void atRender(PoseStack poseStack, int mouseX, int mouseY, CallbackInfo callbackInfo)
+	private void atRender(GuiGraphics guiGraphics, int mouseX, int mouseY, CallbackInfo callbackInfo)
 	{
 		if (!addTypeNames) { return; }
 		int height = rect.getHeight() / 12;
@@ -73,9 +73,9 @@ public class SuggestionsListMixin
 			String subtext = NbtSuggestionManager.getSubtext(suggestionList.get(i + this.offset));
 			if (subtext == null) { continue; }
 
-			fontToUse.drawShadow(poseStack, subtext,
-					(float)(rect.getX() + rect.getWidth() - fontToUse.width(subtext) - 1),
-					(float)(rect.getY() + 2 + 12 * i),
+			guiGraphics.drawString(fontToUse, subtext,
+					rect.getX() + rect.getWidth() - fontToUse.width(subtext) - 1,
+					rect.getY() + 2 + 12 * i,
 					i + offset == current ? -256 : -5592406);
 		}
 	}

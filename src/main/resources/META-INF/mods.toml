@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[45,)"
+loaderVersion="[46,)"
 license="GNU Lesser General Public License v3.0"
 
 [[mods]]
@@ -13,13 +13,13 @@ description="Adds suggestions for NBT tags"
 [[dependencies.nbt_ac]]
     modId="forge"
     mandatory=true
-    versionRange="[45,)"
+    versionRange="[46,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.nbt_ac]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,1.20)"
+    versionRange="[1.20,1.20.1)"
     ordering="NONE"
     side="BOTH"
