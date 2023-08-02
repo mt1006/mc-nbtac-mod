@@ -1,0 +1,18 @@
+{
+  "tag/item/minecraft:axolotl_bucket":
+  {
+    "suggestions":
+    [
+      {
+        "tag": "EntityTag",
+        "type": "compound",
+        "subtype": "tag/entity/minecraft:axolotl"
+      },
+
+      {
+        "tag": "BucketVariantTag",
+        "type": "int"
+      }
+    ]
+  }
+}
