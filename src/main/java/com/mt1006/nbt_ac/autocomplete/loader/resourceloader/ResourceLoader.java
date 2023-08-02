@@ -84,6 +84,7 @@ public class ResourceLoader extends SimplePreparableReloadListener<Map<ResourceL
 					else if (key.equals("operations")) { predictionPair.right = value.getAsJsonArray(); }
 					else if (key.startsWith("common/")) { common.add(new ImmutablePair<>(key, value.getAsJsonObject())); }
 					else if (key.startsWith("tag/")) { tags.add(new ImmutablePair<>(key, value.getAsJsonObject())); }
+					else if (key.startsWith("parent/")) { tags.add(new ImmutablePair<>(null, value.getAsJsonObject())); }
 				}
 
 				if (predictionPair.left != null && predictionPair.right != null) { predictions.add(predictionPair); }

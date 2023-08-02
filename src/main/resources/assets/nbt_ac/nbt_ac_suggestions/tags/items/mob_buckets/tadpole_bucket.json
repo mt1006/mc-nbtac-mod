@@ -1,0 +1,18 @@
+{
+  "tag/item/minecraft:tadpole_bucket":
+  {
+    "suggestions":
+    [
+      {
+        "tag": "EntityTag",
+        "type": "compound",
+        "subtype": "tag/entity/minecraft:tadpole"
+      },
+
+      {
+        "tag": "BucketVariantTag",
+        "type": "int"
+      }
+    ]
+  }
+}
