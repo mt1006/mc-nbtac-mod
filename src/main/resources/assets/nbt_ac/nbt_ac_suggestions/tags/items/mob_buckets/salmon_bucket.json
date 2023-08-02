@@ -1,0 +1,18 @@
+{
+  "tag/item/minecraft:salmon_bucket":
+  {
+    "suggestions":
+    [
+      {
+        "tag": "EntityTag",
+        "type": "compound",
+        "subtype": "tag/entity/minecraft:salmon"
+      },
+
+      {
+        "tag": "BucketVariantTag",
+        "type": "int"
+      }
+    ]
+  }
+}
