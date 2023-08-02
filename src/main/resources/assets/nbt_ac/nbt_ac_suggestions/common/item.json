@@ -112,6 +112,11 @@
 			{
 				"tag": "HideFlags",
 				"type": "int"
+			},
+
+			{
+				"tag": "CustomModelData",
+				"type": "int"
 			}
 		]
 	}

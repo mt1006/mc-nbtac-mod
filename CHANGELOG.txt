@@ -1,3 +1,11 @@
+===Version 1.1.3===
+-Added setting "ignore_letter_case" which is set to true by default, therefore letter case is now ignored by default.
+-Added "CustomModelData" item tag suggestion (thanks DaniDipp for reporting).
+-Added "Trim" armor tag suggestion for versions 1.19.4 and 1.20.1.
+-Removed "predict_suggestions" setting which wasn't working.
+-Fixed suggestions for mobs in buckets.
+-Added description translations for Mod Menu on Fabric (thanks to Amirhan-Taipovjan-Greatest-I)
+
 ===Version 1.1.2===
 -Added "support_command_namespace" option set to true by default (thanks the-n1n for reporting issue with namespaces).
 

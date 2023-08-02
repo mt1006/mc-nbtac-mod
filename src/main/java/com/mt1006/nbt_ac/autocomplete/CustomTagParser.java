@@ -373,7 +373,15 @@ public class CustomTagParser
 			if (customSuggestion instanceof NbtSuggestion)
 			{
 				NbtSuggestion suggestion = (NbtSuggestion)customSuggestion;
-				if (!suggestion.tag.startsWith(key)) { continue; }
+
+				if (ModConfig.ignoreLetterCase.getValue())
+				{
+					if (!suggestion.tag.toLowerCase().startsWith(key.toLowerCase())) { continue; }
+				}
+				else
+				{
+					if (!suggestion.tag.startsWith(key)) { continue; }
+				}
 
 				if (suggestion.tag.equals(key))
 				{

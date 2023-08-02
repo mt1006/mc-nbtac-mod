@@ -1,0 +1,18 @@
+{
+  "tag/item/minecraft:pufferfish_bucket":
+  {
+    "suggestions":
+    [
+      {
+        "tag": "EntityTag",
+        "type": "compound",
+        "subtype": "tag/entity/minecraft:pufferfish"
+      },
+
+      {
+        "tag": "BucketVariantTag",
+        "type": "int"
+      }
+    ]
+  }
+}
