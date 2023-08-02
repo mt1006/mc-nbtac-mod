@@ -18,7 +18,7 @@ public class ModConfig
 	public static MutableBoolean hideForgeTags = new MutableBoolean(true);
 	public static MutableBoolean supportCommandNamespace = new MutableBoolean(true);
 	public static MutableBoolean showTagTypes = new MutableBoolean(true);
-	public static MutableBoolean predictSuggestions = new MutableBoolean(true);
+	public static MutableBoolean ignoreLetterCase = new MutableBoolean(true);
 	public static MutableInt saveSuggestions = new MutableInt(0);
 
 	public static void initConfig()
@@ -46,8 +46,8 @@ public class ModConfig
 		configFile.addValue("show_tag_types", showTagTypes,
 				"Show tag type next to its name in suggestions list.");
 
-		configFile.addValue("predict_suggestions", predictSuggestions,
-				"Predict suggestions for known tags.");
+		configFile.addValue("ignore_letter_case", ignoreLetterCase,
+				"Ignores letter case when providing tag name suggestions.");
 
 		configFile.addValue("save_suggestions", saveSuggestions,
 				"Save suggestions to file - \".minecraft/nbt_ac_output.txt\"\n" +
