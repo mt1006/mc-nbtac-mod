@@ -1,3 +1,6 @@
+===Version 1.1.4===
+-Fixed compatibility issue with the Polymer mod on Fabric (thanks to Julienraptor01 for reporting).
+
 ===Version 1.1.3===
 -Added setting "ignore_letter_case" which is set to true by default, therefore letter case is now ignored by default.
 -Added "CustomModelData" item tag suggestion (thanks DaniDipp for reporting).
