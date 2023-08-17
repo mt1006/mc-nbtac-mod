@@ -1,15 +1,16 @@
 plugins
 {
-	id 'fabric-loom' version '1.1-SNAPSHOT'
+	id 'fabric-loom' version '1.2-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
+
+base
+{
+	archivesName = "${project.archives_base_name}-FABRIC-${project.minecraft_version}"
+}
 
 dependencies
 {
@@ -27,7 +28,13 @@ processResources
 
 tasks.withType(JavaCompile).configureEach { it.options.release = 17 }
 
-java { withSourcesJar() }
+java
+{
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
 
 jar
 {
