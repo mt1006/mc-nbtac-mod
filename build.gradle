@@ -1,105 +1,109 @@
-buildscript
-{
-	repositories
-	{
-		maven { url = 'https://maven.minecraftforge.net' }
-		mavenCentral()
-	}
-
-	dependencies
-	{
-		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-		classpath 'org.spongepowered:mixingradle:0.7.+'
-	}
-}
-
 plugins
 {
-	id 'eclipse'
-	id 'maven-publish'
-	id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+	id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
+version = mod_version
+group = mod_group_id
 
-version = '1.1.3'
-group = 'com.mt1006.nbt_ac'
-archivesBaseName = 'NBTac-FORGE-1.18.2'
+base
+{
+    archivesName = "${mod_jar_name}-FORGE-${minecraft_version}"
+}
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-
 minecraft
 {
-	mappings channel: 'official', version: '1.18.2'
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
 
-	runs
+    runs
 	{
-		client
+        client
 		{
-			workingDirectory project.file('run')
+            workingDirectory project.file('run')
 
-			property 'forge.logging.markers', 'REGISTRIES'
-			property 'forge.logging.console.level', 'debug'
-			property 'forge.enabledGameTestNamespaces', 'nbt_ac'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', mod_id
 
-			mods
+            mods
 			{
-				nbt_ac { source sourceSets.main }
-			}
-		}
+                "${mod_id}" { source sourceSets.main }
+            }
+        }
 
-		server
+        server
 		{
-			workingDirectory project.file('run')
+            workingDirectory project.file('run')
 
-			property 'forge.logging.markers', 'REGISTRIES'
-			property 'forge.logging.console.level', 'debug'
-			property 'forge.enabledGameTestNamespaces', 'nbt_ac'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', mod_id
 
-			mods
+            mods
 			{
-				nbt_ac { source sourceSets.main }
-			}
-		}
-	}
+                "${mod_id}" { source sourceSets.main }
+            }
+        }
+    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies
 {
-	minecraft 'net.minecraftforge:forge:1.18.2-40.2.0'
-	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 mixin
 {
-	add sourceSets.main, 'mixins.nbt_ac.refmap.json'
-	config 'mixins.nbt_ac.json'
+	add sourceSets.main, "mixins.${mod_id}.refmap.json"
+	config "mixins.${mod_id}.json"
+}
+
+def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+def replaceProperties =
+[
+        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+        forge_version: forge_version, forge_version_range: forge_version_range,
+        loader_version_range: loader_version_range,
+        mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+        mod_authors: mod_authors, mod_description: mod_description,
+		mod_url: mod_url, mod_issues: mod_issues
+]
+
+processResources
+{
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+
+    filesMatching(resourceTargets) { expand replaceProperties }
 }
 
 jar
 {
-	manifest
+    manifest
 	{
-		attributes([
-				"Specification-Title"     : "nbt_ac",
-				"Specification-Vendor"    : "mt1006",
-				"Specification-Version"   : "${archiveVersion}",
-				"Implementation-Title"    : project.name,
-				"Implementation-Version"  : "${archiveVersion}",
-				"Implementation-Vendor"   : "mt1006",
-				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-		])
-	}
+        attributes([
+                "Specification-Title"     : mod_id,
+                "Specification-Vendor"    : mod_authors,
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : mod_authors,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
 
 jar.finalizedBy('reobfJar')
 
-tasks.withType(JavaCompile).configureEach
-{
-	options.encoding = 'UTF-8'
-}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
