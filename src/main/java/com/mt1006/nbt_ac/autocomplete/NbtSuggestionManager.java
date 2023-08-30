@@ -44,8 +44,6 @@ public class NbtSuggestionManager
 	public static CompletableFuture<Suggestions> load(@Nullable NbtSuggestions suggestions, String tag, SuggestionsBuilder suggestionsBuilder,
 													  boolean suggestPath, @Nullable String rootTag, @Nullable NbtSuggestion rootSuggestion)
 	{
-		subtextMap.clear();
-
 		if (!Loader.finished.get())
 		{
 			NbtSuggestionManager.simpleSuggestion("", "§8[suggestions not loaded]", suggestionsBuilder);
