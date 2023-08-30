@@ -1,10 +1,10 @@
 package com.mt1006.nbt_ac.autocomplete.suggestions;
 
-import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.Message;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
+import com.mt1006.nbt_ac.utils.ComparableLiteralMessage;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
 import com.mt1006.nbt_ac.utils.TagType;
 import net.minecraft.client.Minecraft;
@@ -324,7 +324,7 @@ public class NbtSuggestion extends CustomSuggestion
 
 	@Override public Message getSuggestionTooltip()
 	{
-		return new LiteralMessage(String.format("%s§r §8%s[%s]", tag, suggestionType.name, type.getName()));
+		return new ComparableLiteralMessage(String.format("%s§r §8%s[%s]", tag, suggestionType.name, type.getName()));
 	}
 
 	public enum Type

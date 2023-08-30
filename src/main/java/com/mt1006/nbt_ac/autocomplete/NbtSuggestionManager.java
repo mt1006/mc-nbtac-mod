@@ -44,7 +44,7 @@ public class NbtSuggestionManager
 	public static CompletableFuture<Suggestions> load(@Nullable NbtSuggestions suggestions, String tag, SuggestionsBuilder suggestionsBuilder,
 													  boolean suggestPath, @Nullable String rootTag, @Nullable NbtSuggestion rootSuggestion)
 	{
-		subtextMap.clear();
+		if (subtextMap.size() > 1024) { subtextMap.clear(); }
 
 		if (!Loader.finished.get())
 		{
