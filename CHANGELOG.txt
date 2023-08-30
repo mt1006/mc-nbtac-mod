@@ -1,3 +1,6 @@
+===Version 1.1.5===
+-Fixed duplicate suggestions and missing type names for some command arguments, e.g. for /tp entity selector (thanks to Windyera for reporting).
+
 ===Version 1.1.4===
 -Fixed compatibility issue with the Polymer mod on Fabric (thanks to Julienraptor01 for reporting).
 

@@ -7,10 +7,10 @@ Modrinth page: https://modrinth.com/mod/nbt-autocomplete
 
 # Examples
 
-![](screenshots/example1.png)
+![](https://raw.githubusercontent.com/mt1006/mc-nbtac-mod/_common/screenshots/example1.png)
 
-![](screenshots/example2.png)
+![](https://raw.githubusercontent.com/mt1006/mc-nbtac-mod/_common/screenshots/example2.png)
 
-![](screenshots/example3.png)
+![](https://raw.githubusercontent.com/mt1006/mc-nbtac-mod/_common/screenshots/example3.png)
 
-![](screenshots/example4.png)
+![](https://raw.githubusercontent.com/mt1006/mc-nbtac-mod/_common/screenshots/example4.png)
