@@ -6,6 +6,7 @@
   [
     "suggestions.SuggestionsListMixin",
     "suggestions.ArgumentCommandNodeMixin",
+    "suggestions.CommandDispatcherMixin",
     "suggestions.arguments.CompoundTagArgumentMixin",
     "suggestions.arguments.NbtPathArgumentMixin",
     "suggestions.arguments.NbtTagArgumentMixin",
