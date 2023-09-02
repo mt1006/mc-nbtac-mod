@@ -1,5 +1,6 @@
 package com.mt1006.nbt_ac.mixin.constructors;
 
+import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,7 +18,7 @@ public class BlockEntityMixin
 	private void atConstructor(BlockEntityType<?> blockEntityType, BlockPos blockPos,
 							   BlockState blockState, CallbackInfo callbackInfo) throws Exception
 	{
-		if (TypeLoader.getClasses)
+		if (TypeLoader.getClasses && Loader.isCurrentThread())
 		{
 			TypeLoader.lastClass = this.getClass();
 			throw new Exception();
