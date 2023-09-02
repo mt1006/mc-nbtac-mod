@@ -1,25 +1,27 @@
 modLoader="javafml"
-loaderVersion="[45,)"
-license="GNU Lesser General Public License v3.0"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="${mod_issues}"
 
 [[mods]]
-modId="nbt_ac"
-version="1.1.5"
-displayName="NBT Autocomplete"
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+displayURL="${mod_url}"
 logoFile="logo.png"
-authors="mt1006 (mt1006x)"
-description="Adds suggestions for NBT tags"
+authors="${mod_authors}"
+description='''${mod_description}'''
 
-[[dependencies.nbt_ac]]
+[[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
-    versionRange="[45,)"
+    versionRange="${forge_version_range}"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.nbt_ac]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,1.20)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
