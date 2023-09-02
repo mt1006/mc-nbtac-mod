@@ -3,6 +3,7 @@ package com.mt1006.nbt_ac.autocomplete.loader.typeloader;
 import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
+import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class TypeLoader
 {
-	public static boolean getClasses = false;
+	public static volatile boolean getClasses = false;
 	public static Class<?> lastClass = null;
 
 	public static void loadEntityTypes()
@@ -55,7 +56,7 @@ public class TypeLoader
 				catch (Exception exception)
 				{
 					NBTac.LOGGER.error("Failed to load entity \"" + resourceName + "\": " + exception);
-					exception.printStackTrace();
+					Loader.printStackTrace(exception);
 				}
 			}
 			else
@@ -99,7 +100,7 @@ public class TypeLoader
 				catch (Exception exception)
 				{
 					NBTac.LOGGER.error("Failed to load block entity \"" + resourceName + "\": " + exception);
-					exception.printStackTrace();
+					Loader.printStackTrace(exception);
 				}
 			}
 			else
