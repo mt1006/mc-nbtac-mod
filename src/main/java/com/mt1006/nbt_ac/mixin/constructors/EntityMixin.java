@@ -18,8 +18,7 @@ public class EntityMixin
 		if (TypeLoader.getClasses && Loader.isCurrentThread())
 		{
 			TypeLoader.lastClass = this.getClass();
-			//TODO: check
-			//throw new Exception();
+			throw new Exception();
 		}
 		return entityType.getDimensions();
 	}
