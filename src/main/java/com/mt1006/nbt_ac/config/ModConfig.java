@@ -19,6 +19,7 @@ public class ModConfig
 	public static MutableBoolean supportCommandNamespace = new MutableBoolean(true);
 	public static MutableBoolean showTagTypes = new MutableBoolean(true);
 	public static MutableBoolean ignoreLetterCase = new MutableBoolean(true);
+	public static MutableBoolean printExceptionStackTrace = new MutableBoolean(false);
 	public static MutableInt saveSuggestions = new MutableInt(0);
 
 	public static void initConfig()
@@ -48,6 +49,9 @@ public class ModConfig
 
 		configFile.addValue("ignore_letter_case", ignoreLetterCase,
 				"Ignores letter case when providing tag name suggestions.");
+
+		configFile.addValue("print_exception_stack_trace", printExceptionStackTrace,
+				"Prints stack trace for exceptions.");
 
 		configFile.addValue("save_suggestions", saveSuggestions,
 				"Save suggestions to file - \".minecraft/nbt_ac_output.txt\"\n" +

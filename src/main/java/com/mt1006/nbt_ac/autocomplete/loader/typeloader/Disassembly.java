@@ -2,6 +2,7 @@ package com.mt1006.nbt_ac.autocomplete.loader.typeloader;
 
 import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
+import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +47,7 @@ public class Disassembly
 		catch (Exception exception)
 		{
 			NBTac.LOGGER.error("Failed to initialize disassembler: " + exception);
-			exception.printStackTrace();
+			Loader.printStackTrace(exception);
 		}
 	}
 

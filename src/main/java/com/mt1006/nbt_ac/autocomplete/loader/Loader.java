@@ -23,11 +23,13 @@ public class Loader
 {
 	private static final String SAVE_SUGGESTIONS_FILE = "nbt_ac_output.txt";
 	private static final int MAX_PRINTER_DEPTH = 32;
+	private static volatile Thread thread;
 	public static AtomicBoolean finished = new AtomicBoolean(false);
 
 	public static void load()
 	{
 		long start = System.currentTimeMillis();
+		thread = Thread.currentThread();
 
 		if (ModConfig.useDisassembler.getValue())
 		{
@@ -110,5 +112,15 @@ public class Loader
 				printSuggestions(writer, key, suggestion.subcompound, mode, depth + 1);
 			}
 		}
+	}
+
+	public static void printStackTrace(Exception exception)
+	{
+		if (ModConfig.printExceptionStackTrace.getValue()) { exception.printStackTrace(); }
+	}
+
+	public static boolean isCurrentThread()
+	{
+		return Thread.currentThread() == thread;
 	}
 }
