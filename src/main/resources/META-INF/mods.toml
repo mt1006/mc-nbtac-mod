@@ -4,7 +4,7 @@ license="GNU Lesser General Public License v3.0"
 
 [[mods]]
 modId="nbt_ac"
-version="1.1.5"
+version="1.1.6"
 displayName="NBT Autocomplete"
 logoFile="logo.png"
 authors="mt1006 (mt1006x)"
