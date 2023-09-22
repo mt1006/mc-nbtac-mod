@@ -1,19 +1,19 @@
 {
 	"conditions":
 	[
-		{ "path": ["*Effects"] }
+		{ "path": ["*effects"] }
 	],
 	
 	"operations":
 	[
 		{
-			"on": "Id",
+			"on": "id",
 			"type": "set_subtype",
-			"val": "registry_id/minecraft:mob_effect"
+			"val": "registry_key/minecraft:mob_effect"
 		},
 
 		{
-			"on": "HiddenEffect",
+			"on": "hidden_effect",
 			"type": "recursion"
 		}
 	]

@@ -4,7 +4,7 @@
 		"suggestions":
 		[
 			{
-				"tag": "Effects",
+				"tag": "effects",
 				"type": "list/compound",
 
 				"subcompound":
@@ -12,13 +12,13 @@
 					"suggestions":
 					[
 						{
-							"tag": "EffectId",
+							"tag": "id",
 							"type": "byte",
-							"subtype": "registry_id/minecraft:mob_effect"
+							"subtype": "registry_key/minecraft:mob_effect"
 						},
 
 						{
-							"tag": "EffectDuration",
+							"tag": "duration",
 							"type": "int"
 						}
 					]

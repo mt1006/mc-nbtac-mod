@@ -21,7 +21,7 @@
 			},
 
 			{
-				"tag": "CustomPotionEffects",
+				"tag": "custom_potion_effects",
 				"type": "list/compound",
 
 				"subcompound":
@@ -29,33 +29,33 @@
 					"suggestions":
 					[
 						{
-							"tag": "Id",
+							"tag": "id",
 							"type": "int",
-							"subtype": "registry_id/minecraft:mob_effect"
+							"subtype": "registry_key/minecraft:mob_effect"
 						},
 
 						{
-							"tag": "Amplifier",
+							"tag": "amplifier",
 							"type": "byte"
 						},
 
 						{
-							"tag": "Duration",
+							"tag": "duration",
 							"type": "int"
 						},
 
 						{
-							"tag": "Ambient",
+							"tag": "ambient",
 							"type": "boolean"
 						},
 
 						{
-							"tag": "ShowParticles",
+							"tag": "show_particles",
 							"type": "boolean"
 						},
 
 						{
-							"tag": "ShowIcon",
+							"tag": "show_icon",
 							"type": "boolean"
 						}
 					]
