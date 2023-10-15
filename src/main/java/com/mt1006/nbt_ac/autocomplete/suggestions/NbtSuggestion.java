@@ -183,7 +183,7 @@ public class NbtSuggestion extends CustomSuggestion
 				for (int i = 0; i < 9; i++)
 				{
 					String subtext = String.format("  §8<Hotbar %d> [#inventory_slot]", i + 1);
-					suggestionList.add(new SimpleSuggestion(Integer.toString(i), subtext));
+					suggestionList.add(new SimpleSuggestion(String.format("%d%s", i, type.suffix), subtext));
 				}
 
 				for (int i = 9; i < 35; i++)
@@ -191,14 +191,14 @@ public class NbtSuggestion extends CustomSuggestion
 					int row = ((i - 9) / 9) + 1;
 					int column = ((i - 9) % 9) + 1;
 					String subtext = String.format("  §8<Storage %d:%d> [#inventory_slot]", row, column);
-					suggestionList.add(new SimpleSuggestion(Integer.toString(i), subtext));
+					suggestionList.add(new SimpleSuggestion(String.format("%d%s", i, type.suffix), subtext));
 				}
 
-				suggestionList.add(new SimpleSuggestion("100", "  §8<Feet> [#inventory_slot]"));
-				suggestionList.add(new SimpleSuggestion("101", "  §8<Legs> [#inventory_slot]"));
-				suggestionList.add(new SimpleSuggestion("102", "  §8<Chest> [#inventory_slot]"));
-				suggestionList.add(new SimpleSuggestion("103", "  §8<Head> [#inventory_slot]"));
-				suggestionList.add(new SimpleSuggestion("-106", "  §8<Off-hand> [#inventory_slot]"));
+				suggestionList.add(new SimpleSuggestion("100" + type.suffix, "  §8<Feet> [#inventory_slot]"));
+				suggestionList.add(new SimpleSuggestion("101" + type.suffix, "  §8<Legs> [#inventory_slot]"));
+				suggestionList.add(new SimpleSuggestion("102" + type.suffix, "  §8<Chest> [#inventory_slot]"));
+				suggestionList.add(new SimpleSuggestion("103" + type.suffix, "  §8<Head> [#inventory_slot]"));
+				suggestionList.add(new SimpleSuggestion("-106" + type.suffix, "  §8<Off-hand> [#inventory_slot]"));
 				return true;
 		}
 
@@ -331,12 +331,12 @@ public class NbtSuggestion extends CustomSuggestion
 	{
 		NOT_FOUND((byte)-1),
 		UNKNOWN((byte)-1),
-		BOOLEAN((byte)-1),
-		BYTE(TagType.BYTE),
-		SHORT(TagType.SHORT),
+		BOOLEAN((byte)-1, "b"),
+		BYTE(TagType.BYTE, "b"),
+		SHORT(TagType.SHORT, "s"),
 		INT(TagType.INT),
-		LONG(TagType.LONG),
-		FLOAT(TagType.FLOAT),
+		LONG(TagType.LONG, "l"),
+		FLOAT(TagType.FLOAT, "f"),
 		DOUBLE(TagType.DOUBLE),
 		STRING(TagType.STRING),
 		LIST(TagType.LIST),
@@ -350,10 +350,18 @@ public class NbtSuggestion extends CustomSuggestion
 		private static final HashMap<String, Type> methodNameMap = new HashMap<>();
 		private static final HashMap<Byte, Type> idMap = new HashMap<>();
 		private final byte id;
+		public final String suffix;
 
 		Type(byte id)
 		{
 			this.id = id;
+			this.suffix = "";
+		}
+
+		Type(byte id, String suffix)
+		{
+			this.id = id;
+			this.suffix = suffix;
 		}
 
 		public String getName()
