@@ -178,6 +178,14 @@ public class Prediction
 					compound.add(newSuggestion);
 					return;
 
+				case "add_compound":          // val = "id/component/nbt_ac:inventory"
+					int slash = val.indexOf('/');
+					NbtSuggestion compoundSuggestion = new NbtSuggestion(val.substring(0, slash),
+							NbtSuggestion.Type.COMPOUND, NbtSuggestion.SuggestionType.PREDICTION);
+					compoundSuggestion.subcompound = NbtSuggestionManager.get(val.substring(slash + 1));
+					compound.add(compoundSuggestion);
+					return;
+
 				case "copy_tags":        // val = "component/nbt_ac:inventory"
 					compound.copyAll(NbtSuggestionManager.get(val), true);
 					return;
