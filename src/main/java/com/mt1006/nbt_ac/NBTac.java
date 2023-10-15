@@ -20,8 +20,9 @@ import org.slf4j.Logger;
 @Mod.EventBusSubscriber(modid = NBTac.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NBTac
 {
+	//TODO: add support for storage NBTs (1.2)
 	public static final String MOD_ID = "nbt_ac";
-	public static final String VERSION = "1.1.6";
+	public static final String VERSION = "1.1.7";
 	public static final String FOR_VERSION = "1.20.2";
 	public static final String FOR_LOADER = "Forge";
 	public static final Logger LOGGER = LogUtils.getLogger();

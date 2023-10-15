@@ -1,3 +1,8 @@
+===Version 1.1.7===
+-Added "SelectedItem" player tag suggestion (thanks to Neylz for reporting).
+-Fixed suggestions not working properly with "/execute if/unless/store" subcommands (thanks to W2D3F1X2 for reporting).
+-Fixed player inventory slot suggestions not having a proper type suffix.
+
 ===Version 1.1.6===
 -Added setting "print_exception_stack_trace" which is set to false by default.
 -Fixed compatibility issue with some mods causing crash on startup.
