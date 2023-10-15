@@ -7,8 +7,8 @@
 	"operations":
 	[
 		{
-			"type": "add_tag",
-			"val": "BlockEntityTag/compound/tag/block/minecraft:banner"
+			"type": "add_compound",
+			"val": "SelectedItem/component/nbt_ac:inventory"
 		}
 	]
 }
