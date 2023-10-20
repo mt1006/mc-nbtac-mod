@@ -1,3 +1,6 @@
+===Version 1.1.8===
+-Fixed possible crash on startup when installed with Quilt, clientcommands and ViaFabricPlus, all at the same (thanks to SinedKadis for reporting).
+
 ===Version 1.1.7===
 -Added "SelectedItem" player tag suggestion (thanks to Neylz for reporting).
 -Fixed suggestions not working properly with "/execute if/unless/store" subcommands (thanks to W2D3F1X2 for reporting).
