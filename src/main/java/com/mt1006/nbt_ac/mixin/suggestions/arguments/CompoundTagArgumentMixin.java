@@ -9,10 +9,8 @@ import com.mt1006.nbt_ac.utils.MixinUtils;
 import net.minecraft.commands.arguments.CompoundTagArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.concurrent.CompletableFuture;

@@ -1,6 +1,5 @@
 package com.mt1006.nbt_ac;
 
-import com.mojang.logging.LogUtils;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ResourceLoader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
@@ -10,14 +9,15 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackType;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NBTac implements ModInitializer
 {
-	public static final String VERSION = "1.1.7";
-	public static final String FOR_VERSION = "1.18.2";
+	public static final String VERSION = "1.1.8";
+	public static final String FOR_VERSION = "1.17.1";
 	public static final String FOR_LOADER = "Fabric";
-	public static final Logger LOGGER = LogUtils.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger();
 	public static final boolean isDedicatedServer = FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
 
 	@Override public void onInitialize()
