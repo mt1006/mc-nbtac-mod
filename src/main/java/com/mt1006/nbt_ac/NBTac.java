@@ -1,6 +1,5 @@
 package com.mt1006.nbt_ac;
 
-import com.mojang.logging.LogUtils;
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ResourceLoader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
@@ -14,17 +13,18 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(NBTac.MOD_ID)
 @Mod.EventBusSubscriber(modid = NBTac.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NBTac
 {
 	public static final String MOD_ID = "nbt_ac";
-	public static final String VERSION = "1.1.7";
-	public static final String FOR_VERSION = "1.18.2";
+	public static final String VERSION = "1.1.8";
+	public static final String FOR_VERSION = "1.17.1";
 	public static final String FOR_LOADER = "Forge";
-	public static final Logger LOGGER = LogUtils.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger();
 	public static final boolean isDedicatedServer = FMLEnvironment.dist.isDedicatedServer();
 
 	public NBTac()

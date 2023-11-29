@@ -11,19 +11,20 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagCollection;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @Mixin(BlockStateParser.class)
 public class BlockStateParserMixin
@@ -31,7 +32,7 @@ public class BlockStateParserMixin
 	@Shadow @Final private StringReader reader;
 	@Shadow @Nullable private BlockState state;
 	@Shadow @Nullable private CompoundTag nbt;
-	@Shadow private BiFunction<SuggestionsBuilder, Registry<Block>, CompletableFuture<Suggestions>> suggestions;
+	@Shadow private BiFunction<SuggestionsBuilder, TagCollection<Block>, CompletableFuture<Suggestions>> suggestions;
 
 	@Inject(method = "readNbt", at = @At(value = "HEAD"), cancellable = true)
 	protected void atReadNbt(CallbackInfo callbackInfo) throws CommandSyntaxException
@@ -51,7 +52,7 @@ public class BlockStateParserMixin
 		}
 	}
 
-	private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder, Registry<Block> registry)
+	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder, TagCollection<Block> registry)
 	{
 		if (state == null) { return Suggestions.empty(); }
 		ResourceLocation resourceLocation = RegistryUtils.BLOCK.getKey(state.getBlock());
