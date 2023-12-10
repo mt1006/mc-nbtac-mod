@@ -1,9 +1,9 @@
 plugins
 {
-    id 'eclipse'
-    id 'idea'
-    id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+	id 'eclipse'
+	id 'idea'
+	id 'maven-publish'
+	id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
 	id 'org.spongepowered.mixin' version '0.7.+'
 }
 
@@ -20,47 +20,29 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft
 {
-    mappings channel: mapping_channel, version: mapping_version
-    copyIdeResources = true
+	mappings channel: mapping_channel, version: mapping_version
+	copyIdeResources = true
 
-    runs
+	runs
 	{
-        client
+		configureEach
 		{
-            workingDirectory project.file('run')
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+		}
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods
-			{
-                "${mod_id}" { source sourceSets.main }
-            }
-        }
-
-        server
-		{
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods
-			{
-                "${mod_id}" { source sourceSets.main }
-            }
-        }
-    }
+		client { property 'forge.enabledGameTestNamespaces', mod_id }
+		server { property 'forge.enabledGameTestNamespaces', mod_id }
+	}
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies
 {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 mixin
@@ -69,41 +51,46 @@ mixin
 	config "mixins.${mod_id}.json"
 }
 
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def replaceProperties =
-[
-        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-        forge_version: forge_version, forge_version_range: forge_version_range,
-        loader_version_range: loader_version_range,
-        mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-        mod_authors: mod_authors, mod_description: mod_description,
+tasks.named('processResources', ProcessResources).configure
+{
+	var replaceProperties =
+	[
+		minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+		forge_version: forge_version, forge_version_range: forge_version_range,
+		loader_version_range: loader_version_range,
+		mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+		mod_authors: mod_authors, mod_description: mod_description,
 		mod_url: mod_url, mod_issues: mod_issues
-]
+	]
+	inputs.properties replaceProperties
 
-processResources
-{
-    inputs.properties replaceProperties
-    replaceProperties.put 'project', project
-
-    filesMatching(resourceTargets) { expand replaceProperties }
+	filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) { expand replaceProperties + [project: project] }
 }
 
-jar
+tasks.named('jar', Jar).configure
 {
-    manifest
+	manifest
 	{
-        attributes([
-                "Specification-Title"     : mod_id,
-                "Specification-Vendor"    : mod_authors,
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : mod_authors,
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
+		attributes([
+				'Specification-Title'     : mod_id,
+				'Specification-Vendor'    : mod_authors,
+				'Specification-Version'   : '1',
+				'Implementation-Title'    : project.name,
+				'Implementation-Version'  : project.jar.archiveVersion,
+				'Implementation-Vendor'   : mod_authors
+		])
+	}
 
-jar.finalizedBy('reobfJar')
+	finalizedBy 'reobfJar'
+}
 
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+eclipse { synchronizationTasks 'genEclipseRuns' }
+
+sourceSets.each
+{
+	def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+	it.output.resourcesDir = dir
+	it.java.destinationDirectory = dir
+}
