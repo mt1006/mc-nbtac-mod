@@ -1,32 +1,32 @@
 {
-  "schemaVersion": 1,
-  "id": "nbt_ac",
-  "version": "${version}",
-  "name": "NBT Autocomplete",
-  "description": "Adds suggestions for NBT tags.",
-  "authors": [
-    "mt1006 (mt1006x)"
-  ],
-  "contact": {
-    "homepage": "https://modrinth.com/mod/nbt-autocomplete",
-    "sources": "https://github.com/mt1006/mc-nbtac-mod",
-    "issues": "https://github.com/mt1006/mc-nbtac-mod/issues"
-  },
-  "license": "LGPL-3.0-only",
-  "icon": "assets/nbt_ac/icon.png",
-  "environment": "client",
-  "entrypoints": {
-    "main": [
-      "com.mt1006.nbt_ac.NBTac"
-    ]
-  },
-  "mixins": [
-    "mixins.nbt_ac.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.14.25",
-    "fabric-api": "*",
-    "minecraft": "~1.20.3",
-    "java": ">=17"
-  }
+	"schemaVersion": 1,
+	"id": "nbt_ac",
+	"version": "${version}",
+
+	"name": "NBT Autocomplete",
+	"description": "Adds suggestions for NBT tags.",
+	"authors": ["mt1006 (mt1006x)"],
+	"contact":
+	{
+		"homepage": "https://modrinth.com/mod/nbt-autocomplete",
+		"sources": "https://github.com/mt1006/mc-nbtac-mod",
+		"issues": "https://github.com/mt1006/mc-nbtac-mod/issues"
+	},
+	"license": "LGPL-3.0-only",
+	"icon": "assets/nbt_ac/icon.png",
+
+	"environment": "client",
+	"entrypoints":
+	{
+		"main": ["com.mt1006.nbt_ac.NBTac"]
+	},
+	"mixins": ["mixins.nbt_ac.json"],
+
+	"depends":
+	{
+		"fabricloader": ">=0.14.25",
+		"fabric-api": "*",
+		"minecraft": "~1.20.3",
+		"java": ">=17"
+	}
 }
