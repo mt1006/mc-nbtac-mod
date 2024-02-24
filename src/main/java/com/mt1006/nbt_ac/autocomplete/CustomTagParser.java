@@ -146,7 +146,7 @@ public class CustomTagParser
 
 		do
 		{
-
+			//TODO: better support for quoted keys
 			String key = readKey();
 			if (key.isEmpty()) { return Suggestion.TAG; }
 			parentInfo.putTag(key, null);
@@ -374,7 +374,7 @@ public class CustomTagParser
 			{
 				NbtSuggestion suggestion = (NbtSuggestion)customSuggestion;
 
-				if (ModConfig.ignoreLetterCase.getValue())
+				if (ModConfig.ignoreLetterCase.val)
 				{
 					if (!suggestion.tag.toLowerCase().startsWith(key.toLowerCase())) { continue; }
 				}
@@ -479,9 +479,7 @@ public class CustomTagParser
 				case BYTE_ARRAY: return new String[]{"[B;"};
 				case INT_ARRAY: return new String[]{"[I;"};
 				case LONG_ARRAY: return new String[]{"[L;"};
-				case BOOLEAN:
-					if (ModConfig.shortBoolean.getValue()) { return new String[]{"1b","0b"}; }
-					else { return new String[]{"true","false"}; }
+				case BOOLEAN: return ModConfig.shortBoolean.val ? new String[]{"1b","0b"} : new String[]{"true","false"};
 				case TYPE_BYTE:
 				case TYPE_SHORT:
 				case TYPE_INT:

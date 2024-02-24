@@ -1,5 +1,6 @@
 {
   "required": true,
+  "minVersion": "0.8",
   "package": "com.mt1006.nbt_ac.mixin",
   "compatibilityLevel": "JAVA_17",
   "client":
@@ -14,9 +15,10 @@
     "suggestions.selectors.ItemParserMixin",
     "constructors.BlockEntityMixin",
     "constructors.EntityMixin",
-    "fields.ClientLevelMixin",
-    "fields.CommandSuggestionsMixin",
-    "fields.EntitySelectorMixin"
+    "fields.ClientLevelFields",
+    "fields.CommandSuggestionsFields",
+    "fields.EntitySelectorFields",
+    "misc.TitleScreenMixin"
   ],
   "injectors": { "defaultRequire": 1 },
   "refmap": "mixins.nbt_ac.refmap.json"

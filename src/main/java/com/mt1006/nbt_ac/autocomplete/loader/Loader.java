@@ -3,6 +3,7 @@ package com.mt1006.nbt_ac.autocomplete.loader;
 import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
+import com.mt1006.nbt_ac.autocomplete.loader.cache.TypeCache;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ParseJson;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ResourceLoader;
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
@@ -17,26 +18,46 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Loader
 {
 	private static final String SAVE_SUGGESTIONS_FILE = "nbt_ac_output.txt";
 	private static final int MAX_PRINTER_DEPTH = 32;
 	private static volatile Thread thread;
-	public static AtomicBoolean finished = new AtomicBoolean(false);
+	private static final AtomicInteger printedStackTraces = new AtomicInteger();
+	public static volatile boolean finished = false;
 
 	public static void load()
 	{
+		int debugSleep = ModConfig.debugSleep.val;
+		if (debugSleep > 0)
+		{
+			NBTac.LOGGER.info("Debug sleep enabled! - Sleeping: {} ms", debugSleep);
+			try { Thread.sleep(debugSleep); }
+			catch (InterruptedException exception) { NBTac.LOGGER.error("Unexpected debug sleep interruption!"); }
+		}
+
+		if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Loader started!"); }
 		long start = System.currentTimeMillis();
 		thread = Thread.currentThread();
 
-		if (ModConfig.useDisassembler.getValue())
+		if (ModConfig.useDisassembler.val)
 		{
-			Disassembly.init();
-			TypeLoader.loadBlockEntityTypes();
-			TypeLoader.loadEntityTypes();
-			Disassembly.clear();
+			boolean cacheEnabled = TypeCache.isEnabled();
+			boolean cacheLoaded = cacheEnabled && TypeCache.load();
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Cache loaded: {}", cacheLoaded); }
+
+			if (!cacheLoaded)
+			{
+				Disassembly.init();
+				TypeLoader.loadBlockEntityTypes();
+				TypeLoader.loadEntityTypes();
+				Disassembly.clear();
+
+				if (cacheEnabled) { TypeCache.add(); }
+			}
+			if (cacheEnabled) { TypeCache.updateIndex(); }
 		}
 
 		long interruptionStart = System.currentTimeMillis();
@@ -44,24 +65,24 @@ public class Loader
 		{
 			ResourceLoader.countDownLatch.await();
 		}
-		catch (InterruptedException exception) { NBTac.LOGGER.warn("Unexpected \"ResourceLoader.countDownLatch.await()\" interruption"); }
+		catch (InterruptedException exception) { NBTac.LOGGER.error("Unexpected \"ResourceLoader.countDownLatch.await()\" interruption!"); }
 		long interruptionDuration = System.currentTimeMillis() - interruptionStart;
 
-		if (ModConfig.loadFromResources.getValue())
+		if (ModConfig.loadFromResources.val)
 		{
 			ParseJson.parseAll();
 		}
 
 		long duration = System.currentTimeMillis() - start;
-		NBTac.LOGGER.info("Finished in: " + (duration - interruptionDuration) + " ms [" + duration + " ms with interruption]");
-		finished.set(true);
+		NBTac.LOGGER.info("Finished in: {} ms [{} ms with interruption]", duration - interruptionDuration, duration);
+		finished = true;
 
-		saveSuggestions(ModConfig.saveSuggestions.getValue());
+		saveSuggestions(SaveSuggestionsMode.get(ModConfig.saveSuggestions.val));
 	}
 
-	public static void saveSuggestions(int mode)
+	private static void saveSuggestions(SaveSuggestionsMode mode)
 	{
-		if (mode == 1 || mode == 2)
+		if (mode.enabled)
 		{
 			File outputFile = new File(Minecraft.getInstance().gameDirectory, SAVE_SUGGESTIONS_FILE);
 
@@ -77,13 +98,15 @@ public class Loader
 					writer.println("");
 				}
 
-				if (mode == 2)
+				if (mode == SaveSuggestionsMode.ENABLED_SORTED)
 				{
 					String[] strings = stringWriter.toString().split(System.lineSeparator());
 					Arrays.sort(strings);
+
 					for (String str : strings)
 					{
-						fileWriter.write(str);
+						if (str.isEmpty()) { continue; }
+						fileWriter.println(str);
 					}
 				}
 				else
@@ -96,13 +119,13 @@ public class Loader
 		}
 	}
 
-	public static void printSuggestions(PrintWriter writer, String key, NbtSuggestions suggestions, int mode, int depth)
+	private static void printSuggestions(PrintWriter writer, String key, NbtSuggestions suggestions, SaveSuggestionsMode mode, int depth)
 	{
 		if (depth > MAX_PRINTER_DEPTH) { return; }
 
 		for (NbtSuggestion suggestion : suggestions.getAll())
 		{
-			if (mode == 2) { writer.print(key); }
+			if (mode == SaveSuggestionsMode.ENABLED_SORTED) { writer.print(key); }
 			for (int i = 0; i < depth; i++) { writer.print("-"); }
 			writer.printf("%s (%s) [%s/%s] - %s/%s\n", suggestion.tag, suggestion.suggestionType.name,
 					suggestion.type.getName(), suggestion.listType.getName(), suggestion.subtype.getName(), suggestion.subtypeData);
@@ -116,11 +139,40 @@ public class Loader
 
 	public static void printStackTrace(Exception exception)
 	{
-		if (ModConfig.printExceptionStackTrace.getValue()) { exception.printStackTrace(); }
+		if (ModConfig.maxStackTraces.val > printedStackTraces.get())
+		{
+			exception.printStackTrace();
+			printedStackTraces.incrementAndGet();
+		}
 	}
 
 	public static boolean isCurrentThread()
 	{
 		return Thread.currentThread() == thread;
+	}
+
+	private enum SaveSuggestionsMode
+	{
+		DISABLED(0, false),
+		ENABLED(1, true),
+		ENABLED_SORTED(2, true);
+
+		private final int id;
+		public final boolean enabled;
+
+		SaveSuggestionsMode(int id, boolean enabled)
+		{
+			this.id = id;
+			this.enabled = enabled;
+		}
+
+		public static SaveSuggestionsMode get(int id)
+		{
+			for (SaveSuggestionsMode mode : values())
+			{
+				if (mode.id == id) { return mode; }
+			}
+			return DISABLED;
+		}
 	}
 }
