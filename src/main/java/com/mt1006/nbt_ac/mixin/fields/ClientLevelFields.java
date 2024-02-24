@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ClientLevel.class)
-public interface ClientLevelMixin
+public interface ClientLevelFields
 {
 	@Accessor TransientEntitySectionManager<Entity> getEntityStorage();
 }

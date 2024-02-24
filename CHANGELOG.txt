@@ -1,5 +1,18 @@
+===Version 1.2===
+-Added configuration GUI accessible from "Mods" menu on Forge or with "Mod Menu" mod on Fabric.
+-Added suggestion caching.
+-Added "use_cache" (true by default) and "max_cached_instances" (32 by default) settings.
+-Added "debug_mode" (false by default), "debug_sleep" (0 by default) and "debug_config_screen" (false by default) settings, all used mainly for debugging.
+-Replaced "print_exception_stack_trace" setting with "max_stack_traces" (6 by default).
+-Improvements to some setting descriptions.
+-Improved Forge specific tags hiding.
+-Fixed empty suggestion boxes showing for subtext only suggestions, when "show_tag_types" was set to false.
+-Fixed issues with saving sorted suggestions using "save_suggestions" debug option.
+-Fixed "use_new_thread" not working properly when set to false on Fabric.
+-Fixed crash on Fabric when using pistons with ModernFix, More Culling and Lithium all installed and ModernFix's dynamic resources enabled (thanks to LoadingX2 for reporting).
+
 ===Version 1.1.8===
--Fixed possible crash on startup when installed with Quilt, clientcommands and ViaFabricPlus, all at the same (thanks to SinedKadis for reporting).
+-Fixed possible crash on startup when installed with Quilt, clientcommands and ViaFabricPlus, all at the same time (thanks to SinedKadis for reporting).
 
 ===Version 1.1.7===
 -Added "SelectedItem" player tag suggestion (thanks to Neylz for reporting).

@@ -25,7 +25,6 @@ public class TypeLoader
 			lastClass = null;
 			ResourceLocation resourceName = EntityType.getKey(entityType);
 
-			long start = System.currentTimeMillis();
 			if (resourceName.toString().equals("minecraft:player"))
 			{
 				lastClass = Player.class;

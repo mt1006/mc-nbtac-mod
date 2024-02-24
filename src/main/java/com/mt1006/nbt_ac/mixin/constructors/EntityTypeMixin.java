@@ -18,13 +18,13 @@ abstract public class EntityTypeMixin<T extends Entity> implements FeatureElemen
 	@Shadow @Final private EntityType.EntityFactory<T> factory;
 
 	@Inject(method = "create(Lnet/minecraft/world/level/Level;)Lnet/minecraft/world/entity/Entity;", at = @At(value = "HEAD"), cancellable = true)
-	public void create(Level level, CallbackInfoReturnable<T> callbackInfo)
+	public void create(Level level, CallbackInfoReturnable<T> cir)
 	{
 		if (level == null)
 		{
 			// Bypass "enabled feature" check in 1.19.3 and later
-			callbackInfo.setReturnValue(this.factory.create((EntityType<T>)(Object)this, level));
-			callbackInfo.cancel();
+			cir.setReturnValue(this.factory.create((EntityType<T>)(Object)this, level));
+			cir.cancel();
 		}
 	}
 }
