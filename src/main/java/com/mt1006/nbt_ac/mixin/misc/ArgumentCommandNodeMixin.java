@@ -1,4 +1,4 @@
-package com.mt1006.nbt_ac.mixin.suggestions;
+package com.mt1006.nbt_ac.mixin.misc;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;

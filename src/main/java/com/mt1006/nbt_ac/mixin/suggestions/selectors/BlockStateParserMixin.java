@@ -17,13 +17,13 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @Mixin(BlockStateParser.class)
 public class BlockStateParserMixin
@@ -34,9 +34,9 @@ public class BlockStateParserMixin
 	@Shadow private BiFunction<SuggestionsBuilder, Registry<Block>, CompletableFuture<Suggestions>> suggestions;
 
 	@Inject(method = "readNbt", at = @At(value = "HEAD"), cancellable = true)
-	protected void atReadNbt(CallbackInfo callbackInfo) throws CommandSyntaxException
+	protected void atReadNbt(CallbackInfo ci) throws CommandSyntaxException
 	{
-		callbackInfo.cancel();
+		ci.cancel();
 		int cursorPos = reader.getCursor();
 
 		try
@@ -51,7 +51,7 @@ public class BlockStateParserMixin
 		}
 	}
 
-	private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder, Registry<Block> registry)
+	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder, Registry<Block> registry)
 	{
 		if (state == null) { return Suggestions.empty(); }
 		ResourceLocation resourceLocation = RegistryUtils.BLOCK.getKey(state.getBlock());

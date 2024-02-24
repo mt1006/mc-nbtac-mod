@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
-import com.mt1006.nbt_ac.utils.MixinUtils;
+import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.commands.arguments.CompoundTagArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -37,40 +38,40 @@ abstract public class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		}
 	}
 
-	private String getResourceName(CommandContext<?> commandContext)
+	@Unique private String getResourceName(CommandContext<?> ctx)
 	{
-		String commandName = MixinUtils.getCommandName(commandContext);
+		String commandName = Utils.getCommandName(ctx);
 
 		switch (commandName)
 		{
 			case "summon":
-				ResourceLocation resourceLocation = commandContext.getArgument("entity", ResourceLocation.class);
+				ResourceLocation resourceLocation = ctx.getArgument("entity", ResourceLocation.class);
 				return "entity/" + resourceLocation;
 
 			case "data":
-				return getResourceNameForDataCommand(commandContext);
+				return getResourceNameForDataCommand(ctx);
 
 			default:
-				if (commandContext.getChild() != null) { return getResourceName(commandContext.getChild()); }
+				if (ctx.getChild() != null) { return getResourceName(ctx.getChild()); }
 		}
 		return null;
 	}
 
-	private String getResourceNameForDataCommand(CommandContext<?> commandContext)
+	@Unique private String getResourceNameForDataCommand(CommandContext<?> ctx)
 	{
-		String instruction = MixinUtils.getNodeString(commandContext, 1);
+		String instruction = Utils.getNodeString(ctx, 1);
 		if (!instruction.equals("merge")) { return null; }
-		String targetType = MixinUtils.getNodeString(commandContext, 2);
+		String targetType = Utils.getNodeString(ctx, 2);
 
 		switch (targetType)
 		{
 			case "block":
-				Coordinates coords = commandContext.getArgument("targetPos", Coordinates.class);
-				return MixinUtils.blockFromCoords(coords);
+				Coordinates coords = ctx.getArgument("targetPos", Coordinates.class);
+				return Utils.blockFromCoords(coords);
 
 			case "entity":
-				EntitySelector entitySelector = commandContext.getArgument("target", EntitySelector.class);
-				return MixinUtils.entityFromEntitySelector(entitySelector);
+				EntitySelector entitySelector = ctx.getArgument("target", EntitySelector.class);
+				return Utils.entityFromEntitySelector(entitySelector);
 		}
 		return null;
 	}

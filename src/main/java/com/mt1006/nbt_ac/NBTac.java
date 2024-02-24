@@ -14,7 +14,8 @@ import org.slf4j.Logger;
 
 public class NBTac implements ModInitializer
 {
-	public static final String VERSION = "1.1.7";
+	public static final String MOD_ID = "nbt_ac";
+	public static final String VERSION = "1.2";
 	public static final String FOR_VERSION = "1.18.2";
 	public static final String FOR_LOADER = "Fabric";
 	public static final Logger LOGGER = LogUtils.getLogger();
@@ -31,8 +32,7 @@ public class NBTac implements ModInitializer
 		}
 
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ResourceLoader());
-		ModConfig.initConfig();
-		ModConfig.loadConfig();
+		ModConfig.load();
 		Fields.init();
 		NbtSuggestion.Type.init();
 	}

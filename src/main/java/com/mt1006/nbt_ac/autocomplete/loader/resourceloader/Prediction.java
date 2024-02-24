@@ -136,14 +136,11 @@ public class Prediction
 
 			if (suggestion.subcompound == null)
 			{
-				if (suggestion.type == NbtSuggestion.Type.COMPOUND || suggestion.listType == NbtSuggestion.Type.COMPOUND)
-				{
-					suggestion.subcompound = new NbtSuggestions();
-				}
-				else
+				if (suggestion.type != NbtSuggestion.Type.COMPOUND && suggestion.listType != NbtSuggestion.Type.COMPOUND)
 				{
 					return;
 				}
+				suggestion.subcompound = new NbtSuggestions();
 			}
 			NbtSuggestions compound = suggestion.subcompound;
 
