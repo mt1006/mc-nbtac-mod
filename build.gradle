@@ -12,12 +12,19 @@ base
 	archivesName = "${project.archives_base_name}-FABRIC-${project.minecraft_version}"
 }
 
+repositories
+{
+	maven { url "https://maven.terraformersmc.com/releases/" }
+}
+
 dependencies
 {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	modApi("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
 }
 
 processResources

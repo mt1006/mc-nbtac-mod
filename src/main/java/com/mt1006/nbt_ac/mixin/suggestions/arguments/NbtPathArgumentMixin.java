@@ -5,14 +5,17 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.RootCommandNode;
+import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
-import com.mt1006.nbt_ac.utils.MixinUtils;
+import com.mt1006.nbt_ac.config.ModConfig;
+import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -36,42 +39,42 @@ abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 		}
 	}
 
-	private @Nullable String getResourceName(CommandContext<?> commandContext, int cursor)
+	@Unique private @Nullable String getResourceName(CommandContext<?> ctx, int cursor)
 	{
-		if (commandContext.getRange().getEnd() < cursor && commandContext.getChild() != null)
+		if (ctx.getRange().getEnd() < cursor && ctx.getChild() != null)
 		{
-			return getResourceName(commandContext.getChild(), cursor);
+			return getResourceName(ctx.getChild(), cursor);
 		}
 
-		String commandName = MixinUtils.getCommandName(commandContext);
+		String commandName = Utils.getCommandName(ctx);
 		boolean isExecuteCommand = commandName.equals("execute");
 
-		if (commandContext.getRootNode() instanceof RootCommandNode<?> && commandName.equals("data"))
+		if (ctx.getRootNode() instanceof RootCommandNode<?> && commandName.equals("data"))
 		{
-			return getResourceNameForDataCommand(commandContext);
+			return getResourceNameForDataCommand(ctx);
 		}
-		else if (isExecuteCommand || commandContext.getRootNode().getName().equals("execute"))
+		else if (isExecuteCommand || ctx.getRootNode().getName().equals("execute"))
 		{
-			if (isExecuteCommand) { commandName = MixinUtils.getNodeString(commandContext, 1); }
+			if (isExecuteCommand) { commandName = Utils.getNodeString(ctx, 1); }
 
 			if (commandName.equals("if") || commandName.equals("unless"))
 			{
-				return getResourceNameForExecuteCommand(commandContext, true, isExecuteCommand);
+				return getResourceNameForExecuteCommand(ctx, true, isExecuteCommand);
 			}
 			else if (commandName.equals("store"))
 			{
-				return getResourceNameForExecuteCommand(commandContext, false, isExecuteCommand);
+				return getResourceNameForExecuteCommand(ctx, false, isExecuteCommand);
 			}
 		}
 		return null;
 	}
 
-	private @Nullable String getResourceNameForDataCommand(CommandContext<?> commandContext)
+	@Unique private @Nullable String getResourceNameForDataCommand(CommandContext<?> ctx)
 	{
 		String blockArgument = "targetPos";
 		String entityArgument = "target";
-		String instruction = MixinUtils.getNodeString(commandContext, 1);
-		String type = MixinUtils.getNodeString(commandContext, 2);
+		String instruction = Utils.getNodeString(ctx, 1);
+		String type = Utils.getNodeString(ctx, 2);
 
 		switch (instruction)
 		{
@@ -80,12 +83,12 @@ abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 				break;
 
 			case "modify":
-				if (commandContext.getNodes().size() > 7)
+				if (ctx.getNodes().size() > 7)
 				{
-					String modification = MixinUtils.getNodeString(commandContext, 5);
+					String modification = Utils.getNodeString(ctx, 5);
 
-					if (modification.equals("insert")) { type = MixinUtils.getNodeString(commandContext, 8); }
-					else { type = MixinUtils.getNodeString(commandContext, 7); }
+					if (modification.equals("insert")) { type = Utils.getNodeString(ctx, 8); }
+					else { type = Utils.getNodeString(ctx, 7); }
 
 					blockArgument = "sourcePos";
 					entityArgument = "source";
@@ -96,29 +99,29 @@ abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 				return null;
 		}
 
-		return getResourceNameForArguments(commandContext, type, blockArgument, entityArgument);
+		return getResourceNameForArguments(ctx, type, blockArgument, entityArgument);
 	}
 
-	private @Nullable String getResourceNameForExecuteCommand(CommandContext<?> commandContext, boolean isIf, boolean withOffset)
+	@Unique private @Nullable String getResourceNameForExecuteCommand(CommandContext<?> ctx, boolean isIf, boolean withOffset)
 	{
 		int offset = withOffset ? 1 : 0;
-		if (isIf && !MixinUtils.getNodeString(commandContext, 1 + offset).equals("data")) { return null; }
+		if (isIf && !Utils.getNodeString(ctx, 1 + offset).equals("data")) { return null; }
 
-		String type = MixinUtils.getNodeString(commandContext, 2 + offset);
-		return getResourceNameForArguments(commandContext, type, isIf ? "sourcePos" : "targetPos", isIf ? "source" : "target");
+		String type = Utils.getNodeString(ctx, 2 + offset);
+		return getResourceNameForArguments(ctx, type, isIf ? "sourcePos" : "targetPos", isIf ? "source" : "target");
 	}
 
-	private String getResourceNameForArguments(CommandContext<?> commandContext, String type, String blockArgument, String entityArgument)
+	@Unique private String getResourceNameForArguments(CommandContext<?> ctx, String type, String blockArgument, String entityArgument)
 	{
 		switch (type)
 		{
 			case "block":
-				Coordinates coords = commandContext.getArgument(blockArgument, Coordinates.class);
-				return MixinUtils.blockFromCoords(coords);
+				Coordinates coords = ctx.getArgument(blockArgument, Coordinates.class);
+				return Utils.blockFromCoords(coords);
 
 			case "entity":
-				EntitySelector entitySelector = commandContext.getArgument(entityArgument, EntitySelector.class);
-				return MixinUtils.entityFromEntitySelector(entitySelector);
+				EntitySelector entitySelector = ctx.getArgument(entityArgument, EntitySelector.class);
+				return Utils.entityFromEntitySelector(entitySelector);
 		}
 		return null;
 	}
