@@ -22,7 +22,6 @@ import java.util.*;
 
 public class Disassembly
 {
-	private static final boolean DEBUG_MESSAGES = false;
 	private static final int MAX_DISASSEMBLY_DEPTH = 16;
 	private static final String METHOD_LOAD_SIGNATURE = "(L" + CompoundTag.class.getName().replace('.', '/') + ";)V";
 	private static final String COMPOUND_TAG_SIGNATURE = CompoundTag.class.getName().replace('.', '/');
@@ -151,13 +150,13 @@ public class Disassembly
 		if (disassemblingStack.contains(methodFullID))
 		{
 			//TODO: handle nbt recursion
-			if (DEBUG_MESSAGES) { NBTac.LOGGER.warn("Already disassembled! - " + methodFullID); }
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Already disassembled! - " + methodFullID); }
 			return;
 		}
 
 		if (depth >= MAX_DISASSEMBLY_DEPTH)
 		{
-			if (DEBUG_MESSAGES) { NBTac.LOGGER.warn("Too deep! - " + methodFullID); }
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Too deep! - " + methodFullID); }
 			return;
 		}
 
@@ -241,8 +240,8 @@ public class Disassembly
 
 	private static boolean isHiddenTag(String tag)
 	{
-		return (ModConfig.hideForgeTags.getValue() && (tag.equals("ForgeCaps") ||
-				tag.equals("ForgeData") || tag.equals("forge:id") || tag.equals("forge:effect_id")));
+		return (ModConfig.hideForgeTags.val &&
+				(tag.equals("ForgeCaps") || tag.equals("ForgeData") || tag.startsWith("forge:")));
 	}
 
 	// Credits to: https://stackoverflow.com/a/48806265/18214530
@@ -523,7 +522,7 @@ public class Disassembly
 
 		private static boolean isCalledOnThis(List<? extends TrackedValue> values)
 		{
-			return values.size() > 0 && values.get(0).type == TrackedValue.Type.THIS;
+			return !values.isEmpty() && values.get(0).type == TrackedValue.Type.THIS;
 		}
 	}
 
@@ -555,8 +554,7 @@ public class Disassembly
 
 		public NbtSuggestion applyTemplate()
 		{
-			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, suggestionType);
-			nbtSuggestion.listType = listType;
+			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, suggestionType, listType);
 			if (subcompound != null) { subcompound.applyTemplate(nbtSuggestion.addSubcompound()); }
 			return nbtSuggestion;
 		}

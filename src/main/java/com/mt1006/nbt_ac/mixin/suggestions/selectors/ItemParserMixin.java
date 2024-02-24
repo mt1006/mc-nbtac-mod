@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,9 +35,9 @@ public class ItemParserMixin
 	@Shadow private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions;
 
 	@Inject(at = @At(value = "HEAD"), method = "readNbt", cancellable = true)
-	protected void atReadNbt(CallbackInfo callbackInfo) throws CommandSyntaxException
+	protected void atReadNbt(CallbackInfo ci) throws CommandSyntaxException
 	{
-		callbackInfo.cancel();
+		ci.cancel();
 		int cursorPos = reader.getCursor();
 
 		try
@@ -51,7 +52,7 @@ public class ItemParserMixin
 		}
 	}
 
-	private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder)
+	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder)
 	{
 		Holder<Item> itemHolder = result.left().orElse(null);
 		if (itemHolder == null) { return Suggestions.empty(); }

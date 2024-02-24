@@ -3,7 +3,7 @@ package com.mt1006.nbt_ac.mixin.suggestions;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.config.ModConfig;
-import com.mt1006.nbt_ac.mixin.fields.CommandSuggestionsMixin;
+import com.mt1006.nbt_ac.mixin.fields.CommandSuggestionsFields;
 import com.mt1006.nbt_ac.utils.Fields;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,6 +14,7 @@ import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,19 +28,19 @@ public class SuggestionsListMixin
 	@Shadow @Final private List<Suggestion> suggestionList;
 	@Shadow private int offset;
 	@Shadow private int current;
-	private Font fontToUse = null;
-	private boolean addTypeNames = false;
+	@Unique private Font fontToUse = null;
+	@Unique private boolean addTypeNames = false;
 
 	@Inject(at = @At(value = "RETURN"), method = "<init>")
 	private void atConstructor(CommandSuggestions commandSuggestions, int x, int y, int w,
-							   List<Suggestion> suggestions, boolean narrated, CallbackInfo callbackInfo)
+							   List<Suggestion> suggestions, boolean narrated, CallbackInfo ci)
 	{
-		if (!ModConfig.showTagTypes.getValue()) { return; }
+		if (!ModConfig.showTagTypes.val) { return; }
 
 		try
 		{
-			EditBox editBox = ((CommandSuggestionsMixin)commandSuggestions).getInput();
-			fontToUse = ((CommandSuggestionsMixin)commandSuggestions).getFont();
+			EditBox editBox = ((CommandSuggestionsFields)commandSuggestions).getInput();
+			fontToUse = ((CommandSuggestionsFields)commandSuggestions).getFont();
 
 			int newW = 0;
 			for (Suggestion suggestion : suggestions)
@@ -63,7 +64,7 @@ public class SuggestionsListMixin
 	}
 
 	@Inject(at = @At(value = "RETURN"), method = "render")
-	private void atRender(GuiGraphics guiGraphics, int mouseX, int mouseY, CallbackInfo callbackInfo)
+	private void atRender(GuiGraphics guiGraphics, int mouseX, int mouseY, CallbackInfo ci)
 	{
 		if (!addTypeNames) { return; }
 		int height = rect.getHeight() / 12;

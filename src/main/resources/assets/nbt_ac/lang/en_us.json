@@ -1,0 +1,72 @@
+{
+  "nbt_ac.options": "NBT Autocomplete Settings",
+
+  "nbt_ac.options.customization": "Customization",
+  "nbt_ac.options.mods_and_plugins_support": "Mods and Plugins Support",
+  "nbt_ac.options.advanced_settings": "Advanced Settings",
+  "nbt_ac.options.debugging_options": "Debugging Options",
+
+
+
+  "nbt_ac.options.field.ignore_letter_case": "Ignore Letter Case",
+  "nbt_ac.options.field.ignore_letter_case.desc": "Ignores letter case when providing tag name suggestions.",
+
+  "nbt_ac.options.field.show_tag_types": "Show Tag Types",
+  "nbt_ac.options.field.show_tag_types.desc": "Show tag type next to its name in suggestion list.",
+
+  "nbt_ac.options.field.short_boolean": "Short Boolean",
+  "nbt_ac.options.field.short_boolean.desc": "Suggests 1b/0b instead of true/false for boolean value.",
+
+  "nbt_ac.options.field.hide_forge_tags": "Hide Forge Tags",
+  "nbt_ac.options.field.hide_forge_tags.desc": "Hides Forge specific tags. Requires removing \"./minecraft/cache/nbt_ac\" and game restart to take effect.",
+
+
+  "nbt_ac.options.field.support_command_namespace": "Support For Command Namespace",
+  "nbt_ac.options.field.support_command_namespace.desc": "Ignores the \"minecraft:\" command prefix. Useful when using with plugins which put Minecraft commands under this namespace.",
+
+
+  "nbt_ac.options.field.use_new_thread": "Use New Thread",
+  "nbt_ac.options.field.use_new_thread.desc": "Uses new thread to load suggestions during Minecraft loading.",
+
+  "nbt_ac.options.field.use_disassembler": "Use Disassembler",
+  "nbt_ac.options.field.use_disassembler.desc": "Loads suggestions by using disassembler on \"load\" methods of entities and block entities.",
+
+  "nbt_ac.options.field.load_from_resources": "Load From Resources",
+  "nbt_ac.options.field.load_from_resources.desc": "Loads suggestions from resource files (required to load item tags and tag predictions).",
+
+  "nbt_ac.options.field.use_cache": "Use Cache",
+  "nbt_ac.options.field.use_cache.desc": "Enables suggestion caching.",
+
+  "nbt_ac.options.field.max_cached_instances": "Max Cached Instances",
+  "nbt_ac.options.field.max_cached_instances.-1": "[unlimited]",
+  "nbt_ac.options.field.max_cached_instances.desc": "Maximum number of cached Minecraft instances. Use -1 to disable the limit.",
+
+
+  "nbt_ac.options.field.max_stack_traces": "Max Logged Stack Traces",
+  "nbt_ac.options.field.max_stack_traces.-1": "[unlimited]",
+  "nbt_ac.options.field.max_stack_traces.0": "0 (disabled)",
+  "nbt_ac.options.field.max_stack_traces.desc": "Limit of printed stack traces for exceptions.\n-1 - Unlimited\n 0 - Stack traces disabled",
+
+  "nbt_ac.options.field.debug_mode": "Debug Mode",
+  "nbt_ac.options.field.debug_mode.desc": "Enables additional messages and checks useful for debugging.",
+
+  "nbt_ac.options.field.debug_sleep": "Debug Loading Sleep",
+  "nbt_ac.options.field.debug_sleep.0": "[disabled]",
+  "nbt_ac.options.field.debug_sleep.desc": "Delays suggestion loading to better measure time it takes (value in milliseconds, recommended to set to a few thousand).",
+
+  "nbt_ac.options.field.debug_config_screen": "Debug Config Screen",
+  "nbt_ac.options.field.debug_config_screen.desc": "Shows settings GUI after pressing realms button. It isn't reset to default value by GUI reset button!",
+
+  "nbt_ac.options.field.save_suggestions": "Save Suggestions",
+  "nbt_ac.options.field.save_suggestions.0": "Disabled",
+  "nbt_ac.options.field.save_suggestions.1": "Enabled",
+  "nbt_ac.options.field.save_suggestions.2": "Enabled and Sorted",
+  "nbt_ac.options.field.save_suggestions.desc": "Saves suggestions to file - \".minecraft/nbt_ac_output.txt\"\n0 - Disabled\n1 - Enabled\n2 - Enabled and sorted (easier for comparing)\nOther values will be treated as 0.",
+
+
+
+  "nbt_ac.options.common.tooltip": "%s\n§8Default value: %s",
+  "nbt_ac.options.common.reset_settings": "Reset Settings",
+  "nbt_ac.options.common.undefined": "[undefined]",
+  "nbt_ac.options.common.gui_debug_warning.1": "Config screen debug mode is enabled!"
+}

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.UUID;
 
 @Mixin(EntitySelector.class)
-public interface EntitySelectorMixin
+public interface EntitySelectorFields
 {
 	@Accessor @Nullable String getPlayerName();
 	@Accessor @Nullable UUID getEntityUUID();

@@ -1,68 +1,69 @@
 package com.mt1006.nbt_ac.config;
 
-import net.minecraft.client.Minecraft;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.mutable.MutableInt;
-
-import java.io.File;
+import com.google.common.collect.ImmutableList;
+import com.mt1006.nbt_ac.config.gui.ModOptionList;
 
 public class ModConfig
 {
-	private static final String CONFIG_FILE_NAME = "config/nbt_ac.txt";
-	private static ConfigFile configFile;
+	private static final ConfigFields configFields = new ConfigFields("nbt_ac.txt");
 
-	public static MutableBoolean useDisassembler = new MutableBoolean(true);
-	public static MutableBoolean loadFromResources = new MutableBoolean(true);
-	public static MutableBoolean useNewThread = new MutableBoolean(true);
-	public static MutableBoolean shortBoolean = new MutableBoolean(false);
-	public static MutableBoolean hideForgeTags = new MutableBoolean(true);
-	public static MutableBoolean supportCommandNamespace = new MutableBoolean(true);
-	public static MutableBoolean showTagTypes = new MutableBoolean(true);
-	public static MutableBoolean ignoreLetterCase = new MutableBoolean(true);
-	public static MutableBoolean printExceptionStackTrace = new MutableBoolean(false);
-	public static MutableInt saveSuggestions = new MutableInt(0);
+	public static final ConfigFields.BooleanField ignoreLetterCase = configFields.add("ignore_letter_case", true);
+	public static final ConfigFields.BooleanField showTagTypes = configFields.add("show_tag_types", true);
+	public static final ConfigFields.BooleanField shortBoolean = configFields.add("short_boolean", false);
+	public static final ConfigFields.BooleanField hideForgeTags = configFields.add("hide_forge_tags", true);
+	public static final ConfigFields.BooleanField supportCommandNamespace = configFields.add("support_command_namespace", true);
+	public static final ConfigFields.BooleanField useNewThread = configFields.add("use_new_thread", true);
+	public static final ConfigFields.BooleanField useDisassembler = configFields.add("use_disassembler", true);
+	public static final ConfigFields.BooleanField loadFromResources = configFields.add("load_from_resources", true);
+	public static final ConfigFields.BooleanField useCache = configFields.add("use_cache", true);
+	public static final ConfigFields.IntegerField maxCachedInstances = configFields.add("max_cached_instances", 32);
+	public static final ConfigFields.IntegerField maxStackTraces = configFields.add("max_stack_traces", 6);
+	public static final ConfigFields.BooleanField debugMode = configFields.add("debug_mode", false);
+	public static final ConfigFields.IntegerField debugSleep = configFields.add("debug_sleep", 0);
+	public static final ConfigFields.IntegerField saveSuggestions = configFields.add("save_suggestions", 0);
+	public static final ConfigFields.BooleanField debugConfigScreen = configFields.add("debug_config_screen", false);
 
-	public static void initConfig()
+	public static void initWidgets(ModOptionList list)
 	{
-		configFile = new ConfigFile(new File(Minecraft.getInstance().gameDirectory, CONFIG_FILE_NAME));
+		if (debugConfigScreen.val) { list.addLabel("common.gui_debug_warning.1"); }
 
-		configFile.addValue("use_disassembler", useDisassembler,
-				"Load suggestions by using disassembler on \"load\" methods of entities and block entities.");
+		list.addLabel("customization");
+		list.add(ignoreLetterCase.createSwitch());
+		list.add(showTagTypes.createSwitch());
+		list.add(shortBoolean.createSwitch());
+		list.add(hideForgeTags.createSwitch());
 
-		configFile.addValue("load_from_resources", loadFromResources,
-				"Load suggestions from resource files (required to load item nbt suggestions).");
+		list.addLabel("mods_and_plugins_support");
+		list.add(supportCommandNamespace.createSwitch());
 
-		configFile.addValue("use_new_thread", useNewThread,
-				"Use new thread to load suggestions after loading Minecraft.");
+		list.addLabel("advanced_settings");
+		list.add(useNewThread.createSwitch());
+		list.add(useDisassembler.createSwitch());
+		list.add(loadFromResources.createSwitch());
+		list.add(useCache.createSwitch());
+		list.add(maxCachedInstances.createSlider(-1, 64, 1, ImmutableList.of(-1)));
 
-		configFile.addValue("short_boolean", shortBoolean,
-				"Suggest 1b/0b instead of true/false for boolean value.");
-
-		configFile.addValue("hide_forge_tags", hideForgeTags,
-				"Hide Forge specific tags.");
-
-		configFile.addValue("support_command_namespace", supportCommandNamespace,
-				"Ignore the \"minecraft:\" command prefix.");
-
-		configFile.addValue("show_tag_types", showTagTypes,
-				"Show tag type next to its name in suggestions list.");
-
-		configFile.addValue("ignore_letter_case", ignoreLetterCase,
-				"Ignores letter case when providing tag name suggestions.");
-
-		configFile.addValue("print_exception_stack_trace", printExceptionStackTrace,
-				"Prints stack trace for exceptions.");
-
-		configFile.addValue("save_suggestions", saveSuggestions,
-				"Save suggestions to file - \".minecraft/nbt_ac_output.txt\"\n" +
-				"0 - Disabled\n" +
-				"1 - Enabled\n" +
-				"2 - Enabled and sorted (easier for comparing)\n" +
-				"Other values will be treated as 0.");
+		list.addLabel("debugging_options");
+		list.add(maxStackTraces.createSlider(-1, 96, 1, ImmutableList.of(-1, 0)));
+		list.add(debugMode.createSwitch());
+		list.add(debugSleep.createSlider(0, 100, 200, ImmutableList.of(0)));
+		list.add(saveSuggestions.createSwitch(ImmutableList.of(0, 1, 2)));
 	}
 
-	public static void loadConfig()
+	public static void load()
 	{
-		configFile.load();
+		configFields.load();
+	}
+
+	public static void save()
+	{
+		configFields.save();
+	}
+
+	public static void reset()
+	{
+		boolean debugVal = debugConfigScreen.val;
+		configFields.reset();
+		debugConfigScreen.val = debugVal;
 	}
 }

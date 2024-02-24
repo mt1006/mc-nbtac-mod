@@ -33,11 +33,6 @@ public class ResourceLoader extends SimplePreparableReloadListener<Map<ResourceL
 	public static boolean firstCall = true;
 	public static CountDownLatch countDownLatch = new CountDownLatch(1);
 
-	/*@Override public ResourceLocation getFabricId()
-	{
-		return new ResourceLocation("nbt_ac", "nbt_ac");
-	}*/
-
 	@Override protected @NotNull Map<ResourceLocation, JsonElement> prepare(@NotNull ResourceManager resourceManager,
 																			@NotNull ProfilerFiller profilerFiller)
 	{
