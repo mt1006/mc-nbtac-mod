@@ -6,6 +6,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mt1006.nbt_ac.NBTac;
+import com.mt1006.nbt_ac.autocomplete.loader.Loader;
+import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.FileToIdConverter;
 import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
@@ -102,6 +104,7 @@ public class ResourceLoader implements SimpleResourceReloadListener<Map<Resource
 		}
 
 		countDownLatch.countDown();
+		if (!ModConfig.useNewThread.val) { Loader.load(); }
 		return CompletableFuture.runAsync(() -> {});
 	}
 }

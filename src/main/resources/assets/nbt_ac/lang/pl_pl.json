@@ -1,3 +1,75 @@
 {
-	"modmenu.descriptionTranslation.nbt_ac": "Dodaje sugestie dla tagów NBT"
+  "nbt_ac.options": "Ustawienia autouzupełniania NBT",
+
+  "nbt_ac.options.customization": "Dostosowywanie",
+  "nbt_ac.options.mods_and_plugins_support": "Wsparcie dla modów i pluginów",
+  "nbt_ac.options.advanced_settings": "Zaawansowane ustawienia",
+  "nbt_ac.options.debugging_options": "Opcje debugowania",
+
+
+
+  "nbt_ac.options.field.ignore_letter_case": "Ignoruj wielkość liter",
+  "nbt_ac.options.field.ignore_letter_case.desc": "Ignoruje wielkość liter przy znajdowaniu sugestii nazw tagów.",
+
+  "nbt_ac.options.field.show_tag_types": "Pokazuj typy tagów",
+  "nbt_ac.options.field.show_tag_types.desc": "Pokazuje typy tagów obok ich nazw na liście sugestii.",
+
+  "nbt_ac.options.field.short_boolean": "Krótki boolean",
+  "nbt_ac.options.field.short_boolean.desc": "Sugeruje 1b/0b zamiast true/false przy wartościach typu boolean.",
+
+  "nbt_ac.options.field.hide_forge_tags": "Ukryj tagi Forge'a",
+  "nbt_ac.options.field.hide_forge_tags.desc": "Ukrywa tagi specyficzne dla Forge'a. Wymaga usunięcia \"./minecraft/cache/nbt_ac\" i restartu gry, aby odniosło skutek.",
+
+
+  "nbt_ac.options.field.support_command_namespace": "Wsparcie przestrzeni nazw poleceń",
+  "nbt_ac.options.field.support_command_namespace.desc": "Ignoruje prefiks polecenia \"minecraft:\". Przydatne przy używaniu pluginów które umieszczają polecenia Minecraft'a w tej przestrzeni nazw.",
+
+
+  "nbt_ac.options.field.use_new_thread": "Użyj nowego wątku",
+  "nbt_ac.options.field.use_new_thread.desc": "Używa nowego wątku do załadowania sugestii po załadowaniu Minecraft'a.",
+
+  "nbt_ac.options.field.use_disassembler": "Użyj disassemblera",
+  "nbt_ac.options.field.use_disassembler.desc": "Ładuje sugestie używając disassemblera na metodach \"load\" bytów i bytów bloków.",
+
+  "nbt_ac.options.field.load_from_resources": "Ładuj z zasobów",
+  "nbt_ac.options.field.load_from_resources.desc": "Ładuje sugestie z plików zasobów (wymagane aby załadować tagi przedmiotów i przewidywania tagów).",
+
+  "nbt_ac.options.field.use_cache": "Użyj cache",
+  "nbt_ac.options.field.use_cache.desc": "Włącza cache sugestii.",
+
+  "nbt_ac.options.field.max_cached_instances": "Limit zapisanych w cache instancji",
+  "nbt_ac.options.field.max_cached_instances.-1": "[nielimitowane]",
+  "nbt_ac.options.field.max_cached_instances.desc": "Maksymalna liczba instancji Minecraft'a w cache. Użyj -1 aby wyłączyć limit.",
+
+
+  "nbt_ac.options.field.max_stack_traces": "Limit stack trace'ów w logach",
+  "nbt_ac.options.field.max_stack_traces.-1": "[nielimitowane]",
+  "nbt_ac.options.field.max_stack_traces.0": "0 (wyłączone)",
+  "nbt_ac.options.field.max_stack_traces.desc": "Limit wypisywanych stack trace'ów dla wyjątków.\n-1 - Nielimitowane\n 0 - Stack trace'y wyłączone",
+
+  "nbt_ac.options.field.debug_mode": "Tryb Debugowania",
+  "nbt_ac.options.field.debug_mode.desc": "Włącza dodatkowe wiadomości i sprawdzenia przydatne przy debugowaniu.",
+
+  "nbt_ac.options.field.debug_sleep": "Testowe uśpienie ładowania",
+  "nbt_ac.options.field.debug_sleep.0": "[wyłączone]",
+  "nbt_ac.options.field.debug_sleep.desc": "Opóźnia ładowanie sugestii w celu lepszego zmierzenia czasu jakie ono zajmuje (wartość w milisekundach, zaleca się ustawienie kilku tysięcy).",
+
+  "nbt_ac.options.field.debug_config_screen": "Testowanie ekranu konfiguracji",
+  "nbt_ac.options.field.debug_config_screen.desc": "Pokazuje ekran ustawień po naciśnięciu przycisku realsm. Nie jest resetowane do domyślnej wartości przed przycisk resetowania ustawień!",
+
+  "nbt_ac.options.field.save_suggestions": "Zapisz sugestie",
+  "nbt_ac.options.field.save_suggestions.0": "Wyłączone",
+  "nbt_ac.options.field.save_suggestions.1": "Włączone",
+  "nbt_ac.options.field.save_suggestions.2": "Włączone i posortowane",
+  "nbt_ac.options.field.save_suggestions.desc": "Zapisuje sugestie do pliku - \".minecraft/nbt_ac_output.txt\"\n0 - Wyłączone\n1 - Włączone\n2 - Włączone i posortowane (łatwiejsze do porównywania)\nInne wartości będą traktowane jako 0.",
+
+
+
+  "nbt_ac.options.common.tooltip": "%s\n§8Domyślna wartość: %s",
+  "nbt_ac.options.common.reset_settings": "Zresetuj ustawienia",
+  "nbt_ac.options.common.undefined": "[niezdefiniowane]",
+  "nbt_ac.options.common.gui_debug_warning.1": "Tryb testowania ekranu konfiguracji jest włączony!",
+
+
+  "modmenu.descriptionTranslation.nbt_ac": "Dodaje sugestie dla tagów NBT"
 }

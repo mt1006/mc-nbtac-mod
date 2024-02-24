@@ -10,11 +10,12 @@ import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.suggestions.CustomSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
-import com.mt1006.nbt_ac.utils.MixinUtils;
+import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.commands.arguments.NbtTagArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,34 +50,34 @@ abstract public class NbtTagArgumentMixin implements ArgumentType<Tag>
 		}
 	}
 
-	private NbtSuggestion getSuggestion(CommandContext<?> commandContext)
+	@Unique private NbtSuggestion getSuggestion(CommandContext<?> ctx)
 	{
-		String commandName = MixinUtils.getCommandName(commandContext);
-		if (commandName.equals("data")) { return getSuggestionForDataCommand(commandContext); }
-		else if (commandContext.getChild() != null) { return getSuggestion(commandContext.getChild()); }
+		String commandName = Utils.getCommandName(ctx);
+		if (commandName.equals("data")) { return getSuggestionForDataCommand(ctx); }
+		else if (ctx.getChild() != null) { return getSuggestion(ctx.getChild()); }
 		return null;
 	}
 
-	private NbtSuggestion getSuggestionForDataCommand(CommandContext<?> commandContext)
+	@Unique private NbtSuggestion getSuggestionForDataCommand(CommandContext<?> ctx)
 	{
-		String instruction = MixinUtils.getNodeString(commandContext, 1);
+		String instruction = Utils.getNodeString(ctx, 1);
 		if (!instruction.equals("modify")) { return null; }
 
-		String type = MixinUtils.getNodeString(commandContext, 2);
-		String path = MixinUtils.getArgumentString(commandContext, "targetPath");
+		String type = Utils.getNodeString(ctx, 2);
+		String path = Utils.getArgumentString(ctx, "targetPath");
 
 		String root;
 
 		switch (type)
 		{
 			case "block":
-				Coordinates coords = commandContext.getArgument("targetPos", Coordinates.class);
-				root =  MixinUtils.blockFromCoords(coords);
+				Coordinates coords = ctx.getArgument("targetPos", Coordinates.class);
+				root =  Utils.blockFromCoords(coords);
 				break;
 
 			case "entity":
-				EntitySelector entitySelector = commandContext.getArgument("target", EntitySelector.class);
-				root = MixinUtils.entityFromEntitySelector(entitySelector);
+				EntitySelector entitySelector = ctx.getArgument("target", EntitySelector.class);
+				root = Utils.entityFromEntitySelector(entitySelector);
 				break;
 
 			default:

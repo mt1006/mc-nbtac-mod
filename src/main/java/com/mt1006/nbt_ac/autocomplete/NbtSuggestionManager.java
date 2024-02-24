@@ -44,7 +44,7 @@ public class NbtSuggestionManager
 	public static CompletableFuture<Suggestions> load(@Nullable NbtSuggestions suggestions, String tag, SuggestionsBuilder suggestionsBuilder,
 													  boolean suggestPath, @Nullable String rootTag, @Nullable NbtSuggestion rootSuggestion)
 	{
-		if (!Loader.finished.get())
+		if (!Loader.finished)
 		{
 			NbtSuggestionManager.simpleSuggestion("", "§8[suggestions not loaded]", suggestionsBuilder);
 			return suggestionsBuilder.buildFuture();
@@ -62,10 +62,7 @@ public class NbtSuggestionManager
 
 		if (suggestionToShow == CustomTagParser.Suggestion.TAG)
 		{
-			for (CustomSuggestion suggestion : suggestionList)
-			{
-				suggestion.suggest(newSuggestionsBuilder, subtextMap);
-			}
+			suggestionList.forEach((s) -> s.suggest(newSuggestionsBuilder, subtextMap));
 		}
 		else
 		{
@@ -110,7 +107,8 @@ public class NbtSuggestionManager
 		{
 			list.add(get("common/block"));
 		}
-		else if (tag.startsWith("entity/")) {
+		else if (tag.startsWith("entity/"))
+		{
 			list.add(get("common/entity"));
 		}
 		return list;
