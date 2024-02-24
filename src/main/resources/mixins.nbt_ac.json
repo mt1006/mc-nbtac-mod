@@ -1,11 +1,11 @@
 {
   "required": true,
+  "minVersion": "0.8",
   "package": "com.mt1006.nbt_ac.mixin",
   "compatibilityLevel": "JAVA_17",
   "client":
   [
     "suggestions.SuggestionsListMixin",
-    "suggestions.ArgumentCommandNodeMixin",
     "suggestions.CommandDispatcherMixin",
     "suggestions.arguments.CompoundTagArgumentMixin",
     "suggestions.arguments.NbtPathArgumentMixin",
@@ -16,9 +16,11 @@
     "constructors.BlockEntityMixin",
     "constructors.EntityMixin",
     "constructors.EntityTypeMixin",
-    "fields.ClientLevelMixin",
-    "fields.CommandSuggestionsMixin",
-    "fields.EntitySelectorMixin",
+    "fields.ClientLevelFields",
+    "fields.CommandSuggestionsFields",
+    "fields.EntitySelectorFields",
+    "misc.TitleScreenMixin",
+    "misc.ArgumentCommandNodeMixin",
     "MinecraftMixin"
   ],
   "injectors": { "defaultRequire": 1 }

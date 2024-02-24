@@ -16,7 +16,7 @@ public class BlockEntityMixin
 {
 	@Inject(at = @At(value = "RETURN"), method = "<init>")
 	private void atConstructor(BlockEntityType<?> blockEntityType, BlockPos blockPos,
-							   BlockState blockState, CallbackInfo callbackInfo) throws Exception
+							   BlockState blockState, CallbackInfo ci) throws Exception
 	{
 		if (TypeLoader.getClasses && Loader.isCurrentThread())
 		{

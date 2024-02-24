@@ -53,10 +53,15 @@ public class NbtSuggestion extends CustomSuggestion
 		this.suggestionType = suggestionType;
 	}
 
+	public NbtSuggestion(String tag, Type type, SuggestionType suggestionType, Type listType)
+	{
+		this(tag, type, suggestionType);
+		this.listType = listType;
+	}
+
 	public NbtSuggestion copy(boolean prediction, NbtSuggestions oldParent, NbtSuggestions newParent)
 	{
-		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type, suggestionType);
-		newSuggestion.listType = listType;
+		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type, suggestionType, listType);
 		newSuggestion.subtype = subtype;
 		newSuggestion.subtypeData = subtypeData;
 
@@ -314,6 +319,18 @@ public class NbtSuggestion extends CustomSuggestion
 
 	@Override public String getSuggestionText()
 	{
+		//TODO: restore after adding custom suggestion sorting
+		/*boolean requiresQuotes = false;
+		for (char c : tag.toCharArray())
+		{
+			if (!StringReader.isAllowedInUnquotedString(c))
+			{
+				requiresQuotes = true;
+				break;
+			}
+		}
+
+		return requiresQuotes ? String.format("\"%s\"", tag) : tag;*/
 		return tag;
 	}
 
@@ -380,7 +397,7 @@ public class NbtSuggestion extends CustomSuggestion
 
 			try
 			{
-				ClassNode classNode = Disassembly.loadClass(CompoundTag.class.getCanonicalName());
+				ClassNode classNode = Disassembly.loadClass(CompoundTag.class.getCanonicalName(), null);
 				for (MethodNode method : classNode.methods)
 				{
 					if ((method.access & Opcodes.ACC_PUBLIC) == 0) { continue; }
@@ -459,6 +476,12 @@ public class NbtSuggestion extends CustomSuggestion
 
 			return NOT_FOUND;
 		}
+
+		public static Type fromOrdinal(int ordinal)
+		{
+			Type[] types = values();
+			return types.length > ordinal ? types[ordinal] : UNKNOWN;
+		}
 	}
 
 	public enum Subtype
@@ -510,6 +533,12 @@ public class NbtSuggestion extends CustomSuggestion
 			this.symbol = symbol;
 			this.name = name;
 			this.level = level;
+		}
+
+		public static SuggestionType fromOrdinal(int ordinal)
+		{
+			SuggestionType[] types = values();
+			return types.length > ordinal ? types[ordinal] : NORMAL;
 		}
 	}
 

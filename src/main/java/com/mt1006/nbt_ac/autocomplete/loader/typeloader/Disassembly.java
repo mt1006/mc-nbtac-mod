@@ -22,7 +22,6 @@ import java.util.*;
 
 public class Disassembly
 {
-	private static final boolean DEBUG_MESSAGES = false;
 	private static final int MAX_DISASSEMBLY_DEPTH = 16;
 	private static final String METHOD_LOAD_SIGNATURE = "(L" + CompoundTag.class.getName().replace('.', '/') + ";)V";
 	private static final String COMPOUND_TAG_SIGNATURE = CompoundTag.class.getName().replace('.', '/');
@@ -40,7 +39,7 @@ public class Disassembly
 	{
 		try
 		{
-			MethodNode methodNode = loadMethod(loadClass(BlockEntity.class.getName()), null, METHOD_LOAD_SIGNATURE, true, false);
+			MethodNode methodNode = loadMethod(loadClass(BlockEntity.class.getName(), null), null, METHOD_LOAD_SIGNATURE, true, false);
 			if (methodNode == null) { throw new Exception("Failed to find \"load\" method"); }
 			blockEntityLoadMethod = methodNode.name;
 		}
@@ -58,7 +57,7 @@ public class Disassembly
 		partialTemplateMap.clear();
 	}
 
-	public static ClassNode loadClass(String className) throws IOException
+	public static ClassNode loadClass(String className, @Nullable Class<?> clazz) throws IOException
 	{
 		className = className.replace('/', '.');
 
@@ -70,7 +69,8 @@ public class Disassembly
 
 		try
 		{
-			InputStream classStream = Class.forName(className).getClassLoader().getResourceAsStream(classPath);
+			if (clazz == null) { clazz = Class.forName(className); }
+			InputStream classStream = clazz.getClassLoader().getResourceAsStream(classPath);
 			if (classStream == null) { throw new ClassNotFoundException(); }
 			reader = new ClassReader(classStream);
 			classStream.close();
@@ -106,7 +106,7 @@ public class Disassembly
 
 			try
 			{
-				MethodNode node = loadMethod(loadClass(classNode.superName), methodName, methodSignature, mustBePublic, true);
+				MethodNode node = loadMethod(loadClass(classNode.superName, null), methodName, methodSignature, mustBePublic, true);
 				if (node != null) { return node; }
 			}
 			catch (Exception ignore) {}
@@ -115,7 +115,7 @@ public class Disassembly
 			{
 				for (String interfaceName : classNode.interfaces)
 				{
-					MethodNode node = loadMethod(loadClass(interfaceName), methodName, methodSignature, mustBePublic, true);
+					MethodNode node = loadMethod(loadClass(interfaceName, null), methodName, methodSignature, mustBePublic, true);
 					if (node != null) { return node; }
 				}
 			}
@@ -138,12 +138,14 @@ public class Disassembly
 											 Class<?> objectClass, NbtSuggestions arg) throws Exception
 	{
 		Template templates = new Template();
-		disassembly(clazz.getName(), methodName, methodSignature, true, objectClass.getName(), new MethodArgs(templates, null), 0, false);
+		disassembly(clazz.getName(), methodName, methodSignature, true, objectClass.getName(), new MethodArgs(templates, null), 0, false, clazz);
 		templates.applyTemplate(arg);
 	}
 
-	public static void disassembly(String className, @Nullable String methodName, String methodSignature, boolean mustBePublic,
-								   @Nullable String objectClass, MethodArgs args, int depth, boolean uncertain) throws Exception
+	//TODO: clean up
+	public static void disassembly(String className, @Nullable String methodName, String methodSignature,
+								   boolean mustBePublic, @Nullable String objectClass, MethodArgs args, int depth,
+								   boolean uncertain, @Nullable Class<?> clazz) throws Exception
 	{
 		String methodID = String.format("%s %s %s", className, methodName, methodSignature);
 		String methodFullID = String.format("%s %s", methodID, objectClass);
@@ -151,17 +153,17 @@ public class Disassembly
 		if (disassemblingStack.contains(methodFullID))
 		{
 			//TODO: handle nbt recursion
-			if (DEBUG_MESSAGES) { NBTac.LOGGER.warn("Already disassembled! - " + methodFullID); }
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Already disassembled! - " + methodFullID); }
 			return;
 		}
 
 		if (depth >= MAX_DISASSEMBLY_DEPTH)
 		{
-			if (DEBUG_MESSAGES) { NBTac.LOGGER.warn("Too deep! - " + methodFullID); }
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Too deep! - " + methodFullID); }
 			return;
 		}
 
-		ClassNode classNode = loadClass(className);
+		ClassNode classNode = loadClass(className, clazz);
 		MethodNode method = loadMethod(classNode, methodName, methodSignature, mustBePublic, true);
 
 		if (method == null)
@@ -208,7 +210,7 @@ public class Disassembly
 			{
 				if (invoke.insn.getOpcode() != Opcodes.INVOKEVIRTUAL && !invoke.calledOnThis)
 				{
-					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, null, invoke.args, depth + 1, uncertain);
+					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, null, invoke.args, depth + 1, uncertain, null);
 				}
 			}
 
@@ -222,16 +224,16 @@ public class Disassembly
 			{
 				if (invoke.calledOnThis && objectClass != null)
 				{
-					disassembly(objectClass, invoke.insn.name, invoke.insn.desc, false, objectClass, invoke.args, depth + 1, uncertain);
+					disassembly(objectClass, invoke.insn.name, invoke.insn.desc, false, objectClass, invoke.args, depth + 1, uncertain, null);
 				}
 				else
 				{
-					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, null, invoke.args, depth + 1, true);
+					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, null, invoke.args, depth + 1, true, null);
 				}
 			}
 			else if (invoke.calledOnThis)
 			{
-				disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, objectClass, invoke.args, depth + 1, uncertain);
+				disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, objectClass, invoke.args, depth + 1, uncertain, null);
 			}
 		}
 
@@ -241,8 +243,8 @@ public class Disassembly
 
 	private static boolean isHiddenTag(String tag)
 	{
-		return (ModConfig.hideForgeTags.getValue() && (tag.equals("ForgeCaps") ||
-				tag.equals("ForgeData") || tag.equals("forge:id") || tag.equals("forge:effect_id")));
+		return (ModConfig.hideForgeTags.val &&
+				(tag.equals("ForgeCaps") || tag.equals("ForgeData") || tag.startsWith("forge:")));
 	}
 
 	// Credits to: https://stackoverflow.com/a/48806265/18214530
@@ -523,7 +525,7 @@ public class Disassembly
 
 		private static boolean isCalledOnThis(List<? extends TrackedValue> values)
 		{
-			return values.size() > 0 && values.get(0).type == TrackedValue.Type.THIS;
+			return !values.isEmpty() && values.get(0).type == TrackedValue.Type.THIS;
 		}
 	}
 
@@ -555,8 +557,7 @@ public class Disassembly
 
 		public NbtSuggestion applyTemplate()
 		{
-			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, suggestionType);
-			nbtSuggestion.listType = listType;
+			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, suggestionType, listType);
 			if (subcompound != null) { subcompound.applyTemplate(nbtSuggestion.addSubcompound()); }
 			return nbtSuggestion;
 		}

@@ -5,7 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
-import com.mt1006.nbt_ac.utils.MixinUtils;
+import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.commands.arguments.selector.options.EntitySelectorOptions;
 import net.minecraft.world.entity.EntityType;
@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -30,7 +31,7 @@ public class EntitySelectorParserMixin
 	@Shadow @Nullable private EntityType<?> type;
 	@Shadow @Nullable private UUID entityUUID;
 	@Shadow @Nullable private String playerName;
-	private String lastTag = null;
+	@Unique private String lastTag = null;
 
 	@ModifyVariable(method = "parseOptions", at = @At("STORE"), ordinal = 0)
 	public String parseOptionsModifyString(String str)
@@ -63,9 +64,9 @@ public class EntitySelectorParserMixin
 		}
 	}
 
-	private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder, Consumer<SuggestionsBuilder> consumer)
+	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder, Consumer<SuggestionsBuilder> consumer)
 	{
-		String name = MixinUtils.entityFromSelectorData(type, entityUUID, playerName);
+		String name = Utils.entityFromSelectorData(type, entityUUID, playerName);
 		String tag = suggestionsBuilder.getRemaining();
 
 		return NbtSuggestionManager.loadFromName(name, tag, suggestionsBuilder, false);

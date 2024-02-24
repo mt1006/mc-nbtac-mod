@@ -1,4 +1,4 @@
-package com.mt1006.nbt_ac.mixin.suggestions;
+package com.mt1006.nbt_ac.mixin.misc;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -7,7 +7,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mt1006.nbt_ac.NBTac;
-import net.fabricmc.loader.api.FabricLoader;
+import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
@@ -53,9 +53,8 @@ public class ArgumentCommandNodeMixin
 	{
 		if (ccFixStatus == 0)
 		{
-			boolean condition = FabricLoader.getInstance().getModContainer("quilt_loader").isPresent()
-					&& FabricLoader.getInstance().getModContainer("clientcommands").isPresent()
-					&& FabricLoader.getInstance().getModContainer("viafabricplus").isPresent();
+			boolean condition = Utils.isModPresent("quilt_loader")
+					&& Utils.isModPresent("clientcommands") && Utils.isModPresent("viafabricplus");
 
 			if (condition)
 			{

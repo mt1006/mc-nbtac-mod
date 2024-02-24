@@ -5,11 +5,13 @@ import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
+import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.piston.PistonMovingBlockEntity;
 
 public class TypeLoader
 {
@@ -25,7 +27,6 @@ public class TypeLoader
 			lastClass = null;
 			ResourceLocation resourceName = EntityType.getKey(entityType);
 
-			long start = System.currentTimeMillis();
 			if (resourceName.toString().equals("minecraft:player"))
 			{
 				lastClass = Player.class;
@@ -72,20 +73,33 @@ public class TypeLoader
 	{
 		getClasses = true;
 
+		//https://github.com/mt1006/mc-nbtac-mod/issues/18
+		boolean pistonCrashFix = Utils.isModPresent("moreculling") &&
+				Utils.isModPresent("modernfix") && Utils.isModPresent("lithium");
+
 		for (BlockEntityType<?> blockEntityType : RegistryUtils.BLOCK_ENTITY_TYPE)
 		{
+			//TODO: clean up code
 			lastClass = null;
 			ResourceLocation resourceName = BlockEntityType.getKey(blockEntityType);
 
-			try
+			if (pistonCrashFix && blockEntityType == BlockEntityType.PISTON)
 			{
-				blockEntityType.create(BlockPos.ZERO, null);
+				lastClass = PistonMovingBlockEntity.class;
 			}
-			catch (Throwable throwable)
+
+			if (lastClass == null)
 			{
-				if (throwable instanceof Error)
+				try
 				{
-					NBTac.LOGGER.error("Block entity \"" + resourceName + "\" constructor thrown error: " + throwable);
+					blockEntityType.create(BlockPos.ZERO, null);
+				}
+				catch (Throwable throwable)
+				{
+					if (throwable instanceof Error)
+					{
+						NBTac.LOGGER.error("Block entity \"" + resourceName + "\" constructor thrown error: " + throwable);
+					}
 				}
 			}
 

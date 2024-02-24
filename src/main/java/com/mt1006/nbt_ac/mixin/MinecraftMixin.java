@@ -1,6 +1,7 @@
 package com.mt1006.nbt_ac.mixin;
 
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
+import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,6 +15,6 @@ public class MinecraftMixin
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void atConstructor(GameConfig gameConfig, CallbackInfo callbackInfo)
 	{
-		new Thread(Loader::load).start();
+		if (ModConfig.useNewThread.val) { new Thread(Loader::load).start(); }
 	}
 }
