@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,39 +29,39 @@ import java.util.function.Function;
 @Mixin(ItemParser.class)
 public class ItemParserMixin
 {
-    @Shadow @Final private StringReader reader;
-    @Shadow private Either<Holder<Item>, HolderSet<Item>> result;
-    @Shadow @Nullable private CompoundTag nbt;
-    @Shadow private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions;
+	@Shadow @Final private StringReader reader;
+	@Shadow private Either<Holder<Item>, HolderSet<Item>> result;
+	@Shadow @Nullable private CompoundTag nbt;
+	@Shadow private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions;
 
-    @Inject(at = @At(value = "HEAD"), method = "readNbt", cancellable = true)
-    protected void atReadNbt(CallbackInfo callbackInfo) throws CommandSyntaxException
-    {
-        callbackInfo.cancel();
-        int cursorPos = reader.getCursor();
+	@Inject(at = @At(value = "HEAD"), method = "readNbt", cancellable = true)
+	protected void atReadNbt(CallbackInfo ci) throws CommandSyntaxException
+	{
+		ci.cancel();
+		int cursorPos = reader.getCursor();
 
-        try
-        {
-            nbt = (new TagParser(reader)).readStruct();
-        }
-        catch (CommandSyntaxException exception)
-        {
-            reader.setCursor(cursorPos);
-            suggestions = this::suggestNbt;
-            throw exception;
-        }
-    }
+		try
+		{
+			nbt = (new TagParser(reader)).readStruct();
+		}
+		catch (CommandSyntaxException exception)
+		{
+			reader.setCursor(cursorPos);
+			suggestions = this::suggestNbt;
+			throw exception;
+		}
+	}
 
-    private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder)
-    {
-        Holder<Item> itemHolder = result.left().orElse(null);
-        if (itemHolder == null) { return Suggestions.empty(); }
-        Item item = itemHolder.get();
-        ResourceLocation resourceLocation = RegistryUtils.ITEM.getKey(item);
+	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder)
+	{
+		Holder<Item> itemHolder = result.left().orElse(null);
+		if (itemHolder == null) { return Suggestions.empty(); }
+		Item item = itemHolder.get();
+		ResourceLocation resourceLocation = RegistryUtils.ITEM.getKey(item);
 
-        String name = resourceLocation.toString();
-        String tag = suggestionsBuilder.getRemaining();
+		String name = resourceLocation.toString();
+		String tag = suggestionsBuilder.getRemaining();
 
-        return NbtSuggestionManager.loadFromName("item/" + name, tag, suggestionsBuilder, false);
-    }
+		return NbtSuggestionManager.loadFromName("item/" + name, tag, suggestionsBuilder, false);
+	}
 }

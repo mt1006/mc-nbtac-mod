@@ -4,7 +4,9 @@ import com.mojang.brigadier.Message;
 import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.Fields;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -22,35 +24,44 @@ abstract public class CustomSuggestion
 		String subtext = getSuggestionSubtext();
 		Message tooltip = getSuggestionTooltip();
 
-		if (text.isEmpty() && suggestionsBuilder.getRemaining().equals(text))
+		if (text.isEmpty() && suggestionsBuilder.getRemaining().isEmpty())
 		{
-			if (Fields.suggestionsBuilderList == null) { return; }
-
-			try
-			{
-				List<Suggestion> suggestions = (List<Suggestion>)Fields.suggestionsBuilderList.get(suggestionsBuilder);
-				int start = (int)Fields.suggestionsBuilderInt.get(suggestionsBuilder);
-
-				int len = 0;
-				for (Field stringField : Fields.suggestionsBuilderStrings)
-				{
-					String val = (String)stringField.get(suggestionsBuilder);
-					if (val != null && val.length() > len) { len = val.length(); }
-				}
-
-				suggestions.add(new Suggestion(StringRange.between(start, len), text, tooltip));
-			}
-			catch (Exception exception) { return; }
+			if (!emptySuggestion(suggestionsBuilder, tooltip)) { return; }
 		}
 		else
 		{
 			suggestionsBuilder.suggest(text, tooltip);
 		}
 
-		subtextMap.put(getLastAddedSuggestion(suggestionsBuilder), subtext);
+		if (!ModConfig.showTagTypes.val) { return; }
+		Suggestion lastAdded = getLastAddedSuggestion(suggestionsBuilder);
+		if (lastAdded != null) { subtextMap.put(lastAdded, subtext); }
 	}
 
-	private static Suggestion getLastAddedSuggestion(SuggestionsBuilder suggestionsBuilder)
+	private boolean emptySuggestion(SuggestionsBuilder suggestionsBuilder, Message tooltip)
+	{
+		if (!ModConfig.showTagTypes.val) { return true; }
+		if (Fields.suggestionsBuilderList == null) { return false; }
+
+		try
+		{
+			List<Suggestion> suggestions = (List<Suggestion>)Fields.suggestionsBuilderList.get(suggestionsBuilder);
+			int start = (int)Fields.suggestionsBuilderInt.get(suggestionsBuilder);
+
+			int len = 0;
+			for (Field stringField : Fields.suggestionsBuilderStrings)
+			{
+				String val = (String)stringField.get(suggestionsBuilder);
+				if (val != null && val.length() > len) { len = val.length(); }
+			}
+
+			suggestions.add(new Suggestion(StringRange.between(start, len), "", tooltip));
+			return true;
+		}
+		catch (Exception exception) { return false; }
+	}
+
+	private static @Nullable Suggestion getLastAddedSuggestion(SuggestionsBuilder suggestionsBuilder)
 	{
 		if (Fields.suggestionsBuilderList == null) { return null; }
 
