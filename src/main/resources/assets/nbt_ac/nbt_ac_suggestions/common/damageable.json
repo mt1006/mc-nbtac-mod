@@ -1,0 +1,12 @@
+{
+	"common/damageable":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "Damage",
+				"type": "int"
+			}
+		]
+	}
+}
