@@ -18,7 +18,7 @@
   "nbt_ac.options.field.short_boolean.desc": "Sugeruje 1b/0b zamiast true/false przy wartościach typu boolean.",
 
   "nbt_ac.options.field.hide_forge_tags": "Ukryj tagi Forge'a",
-  "nbt_ac.options.field.hide_forge_tags.desc": "Ukrywa tagi specyficzne dla Forge'a. Wymaga usunięcia \"./minecraft/cache/nbt_ac\" i restartu gry, aby odniosło skutek.",
+  "nbt_ac.options.field.hide_forge_tags.desc": "Ukrywa tagi występujące tylko na Forge'u. Wymaga usunięcia \"./minecraft/cache/nbt_ac\" i restartu gry, aby zadziałało.",
 
 
   "nbt_ac.options.field.support_command_namespace": "Wsparcie przestrzeni nazw poleceń",
@@ -38,14 +38,14 @@
   "nbt_ac.options.field.use_cache.desc": "Włącza cache sugestii.",
 
   "nbt_ac.options.field.max_cached_instances": "Limit zapisanych w cache instancji",
-  "nbt_ac.options.field.max_cached_instances.-1": "[nielimitowane]",
+  "nbt_ac.options.field.max_cached_instances.-1": "[bez limitu]",
   "nbt_ac.options.field.max_cached_instances.desc": "Maksymalna liczba instancji Minecraft'a w cache. Użyj -1 aby wyłączyć limit.",
 
 
   "nbt_ac.options.field.max_stack_traces": "Limit stack trace'ów w logach",
-  "nbt_ac.options.field.max_stack_traces.-1": "[nielimitowane]",
+  "nbt_ac.options.field.max_stack_traces.-1": "[bez limitu]",
   "nbt_ac.options.field.max_stack_traces.0": "0 (wyłączone)",
-  "nbt_ac.options.field.max_stack_traces.desc": "Limit wypisywanych stack trace'ów dla wyjątków.\n-1 - Nielimitowane\n 0 - Stack trace'y wyłączone",
+  "nbt_ac.options.field.max_stack_traces.desc": "Limit wypisywanych stack trace'ów dla wyjątków.\n-1 - Bez limitu\n 0 - Stack trace'y wyłączone",
 
   "nbt_ac.options.field.debug_mode": "Tryb Debugowania",
   "nbt_ac.options.field.debug_mode.desc": "Włącza dodatkowe wiadomości i sprawdzenia przydatne przy debugowaniu.",
