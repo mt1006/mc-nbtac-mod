@@ -61,7 +61,7 @@
 			{
 				"tag": "CanDestroy",
 				"type": "list/string",
-				"subtype": "block_state"
+				"subtype": "registry_key/minecraft:block"
 			},
 
 			{
