@@ -15,6 +15,12 @@
 				"type": "compound",
 				"subtype": "block_state_tag/*",
 				"with": "#parent2"
+			},
+
+			{
+				"tag": "CanPlaceOn",
+				"type": "list/string",
+				"subtype": "registry_key/minecraft:block"
 			}
 		]
 	}
