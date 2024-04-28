@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 public class NBTac implements ModInitializer
 {
 	public static final String MOD_ID = "nbt_ac";
-	public static final String VERSION = "1.2";
+	public static final String VERSION = "1.2.1";
 	public static final String FOR_VERSION = "1.19.2";
 	public static final String FOR_LOADER = "Fabric";
 	public static final Logger LOGGER = LogUtils.getLogger();
@@ -23,7 +23,7 @@ public class NBTac implements ModInitializer
 
 	@Override public void onInitialize()
 	{
-		LOGGER.info(getFullName() + " - Author: mt1006 (mt1006x)");
+		LOGGER.info("{} - Author: mt1006 (mt1006x)", getFullName());
 
 		if (isDedicatedServer)
 		{
