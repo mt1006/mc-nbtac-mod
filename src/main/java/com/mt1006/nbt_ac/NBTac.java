@@ -23,9 +23,8 @@ import org.slf4j.Logger;
 @Mod.EventBusSubscriber(modid = NBTac.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NBTac
 {
-	//TODO: add support for storage NBTs (1.3)
 	public static final String MOD_ID = "nbt_ac";
-	public static final String VERSION = "1.2";
+	public static final String VERSION = "1.2.1";
 	public static final String FOR_VERSION = "1.20.1";
 	public static final String FOR_LOADER = "Forge";
 	public static final Logger LOGGER = LogUtils.getLogger();
@@ -44,7 +43,7 @@ public class NBTac
 	@SubscribeEvent
 	public static void setup(final FMLCommonSetupEvent event)
 	{
-		LOGGER.info(getFullName() + " - Author: mt1006 (mt1006x)");
+		LOGGER.info("{} - Author: mt1006 (mt1006x)", getFullName());
 
 		if (isDedicatedServer)
 		{
