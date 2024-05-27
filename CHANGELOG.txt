@@ -1,0 +1,62 @@
+===Version 1.2.1===
+-Setting "debug_config_screen" now shows config screen after closing realms screen, instead of replacing it.
+-Minor improvements to translations.
+
+===Version 1.2===
+-Added configuration GUI accessible from "Mods" menu on Forge or with "Mod Menu" mod on Fabric.
+-Added suggestion caching.
+-Added "use_cache" (true by default) and "max_cached_instances" (32 by default) settings.
+-Added "debug_mode" (false by default), "debug_sleep" (0 by default) and "debug_config_screen" (false by default) settings, all used mainly for debugging.
+-Replaced "print_exception_stack_trace" setting with "max_stack_traces" (6 by default).
+-Improvements to some setting descriptions.
+-Improved Forge specific tags hiding.
+-Fixed empty suggestion boxes showing for subtext only suggestions, when "show_tag_types" was set to false.
+-Fixed issues with saving sorted suggestions using "save_suggestions" debug option.
+-Fixed "use_new_thread" not working properly when set to false on Fabric.
+-Fixed crash on Fabric when using pistons with ModernFix, More Culling and Lithium all installed and ModernFix's dynamic resources enabled (thanks to LoadingX2 for reporting).
+
+===Version 1.1.8===
+-Fixed possible crash on startup when installed with Quilt, clientcommands and ViaFabricPlus, all at the same time (thanks to SinedKadis for reporting).
+
+===Version 1.1.7===
+-Added "SelectedItem" player tag suggestion (thanks to Neylz for reporting).
+-Fixed suggestions not working properly with "/execute if/unless/store" subcommands (thanks to W2D3F1X2 for reporting).
+-Fixed player inventory slot suggestions not having a proper type suffix.
+
+===Version 1.1.6===
+-Added setting "print_exception_stack_trace" which is set to false by default.
+-Fixed compatibility issue with some mods causing crash on startup.
+-Fixed issue causing worse loading performance on Forge 1.16.5.
+
+===Version 1.1.5===
+-Fixed duplicate suggestions and missing type names for some command arguments, e.g. for /tp entity selector (thanks to Windyera for reporting).
+
+===Version 1.1.4===
+-Fixed compatibility issue with the Polymer mod on Fabric (thanks to Julienraptor01 for reporting).
+
+===Version 1.1.3===
+-Added setting "ignore_letter_case" which is set to true by default, therefore letter case is now ignored by default.
+-Added "CustomModelData" item tag suggestion (thanks DaniDipp for reporting).
+-Added "Trim" armor tag suggestion for versions 1.19.4 and 1.20.1.
+-Removed "predict_suggestions" setting which wasn't working.
+-Fixed suggestions for mobs in buckets.
+-Added description translations for Mod Menu on Fabric (thanks to Amirhan-Taipovjan-Greatest-I)
+
+===Version 1.1.2===
+-Added "support_command_namespace" option set to true by default (thanks the-n1n for reporting issue with namespaces).
+
+===Version 1.1.1===
+-Fixed Fabric version freezing when reloading/changing resource packs (thanks TheWaffleLord for reporting).
+
+===Version 1.1===
+-Multiple optimizations and code quality improvements.
+-Suggestions now work properly when using "/execute" command.
+-Added tags for splash potions and lingering potions.
+-Added "save_suggestions" option.
+-Option "use_new_thread" now works properly when set to false.
+-Predictions are now defined in JSON files instead of being hardcoded, allowing them to be added by resource packs or other mods.
+-Changes to the resource format.
+-Reduced file size - switched from BCEL to ASM library.
+
+===Version 1.0.1===
+-Better support for interaction and display entities.

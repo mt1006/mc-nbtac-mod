@@ -55,7 +55,7 @@
   "nbt_ac.options.field.debug_sleep.desc": "Delays suggestion loading to better measure time it takes (value in milliseconds, recommended to set to a few thousand).",
 
   "nbt_ac.options.field.debug_config_screen": "Debug Config Screen",
-  "nbt_ac.options.field.debug_config_screen.desc": "Shows settings GUI after pressing realms button. It isn't reset to default value by GUI reset button!",
+  "nbt_ac.options.field.debug_config_screen.desc": "Shows settings GUI after exiting realms screen. It isn't reset to default value by GUI reset button!",
 
   "nbt_ac.options.field.save_suggestions": "Save Suggestions",
   "nbt_ac.options.field.save_suggestions.0": "Disabled",

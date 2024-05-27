@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.mt1006.nbt_ac.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "client":
   [
     "suggestions.SuggestionsListMixin",
@@ -19,7 +19,7 @@
     "fields.ClientLevelFields",
     "fields.CommandSuggestionsFields",
     "fields.EntitySelectorFields",
-    "misc.TitleScreenMixin",
+    "misc.RealmsMainScreenMixin",
     "misc.ArgumentCommandNodeMixin",
     "MinecraftMixin"
   ],
