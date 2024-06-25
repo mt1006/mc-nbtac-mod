@@ -9,6 +9,7 @@ import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.SimpleSuggestion;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,8 +105,13 @@ public class NbtSuggestionManager
 
 		if (tag.startsWith("item/"))
 		{
-			if (RegistryUtils.ITEM.get(tag.substring(5)) instanceof BlockItem) { list.add(get("common/block_item")); }
-			if (RegistryUtils.ITEM.get(tag.substring(5)) instanceof SpawnEggItem) { list.add(get("common/spawn_egg_item")); }
+			Item item = RegistryUtils.ITEM.get(tag.substring(5));
+			if (item != null)
+			{
+				if (item instanceof BlockItem) { list.add(get("common/block_item")); }
+				if (item instanceof SpawnEggItem) { list.add(get("common/spawn_egg_item")); }
+				if (item.canBeDepleted()) { list.add(get("common/damageable")); }
+			}
 			list.add(get("common/item"));
 		}
 		else if (tag.startsWith("block/"))

@@ -1,0 +1,49 @@
+{
+	"tag/item/minecraft:tipped_arrow":
+	{
+		"suggestions":
+		[
+			{
+				"tag": "CustomPotionEffects",
+				"type": "list/compound",
+
+				"subcompound":
+				{
+					"suggestions":
+					[
+						{
+							"tag": "Id",
+							"type": "int",
+							"subtype": "registry_id/minecraft:mob_effect"
+						},
+
+						{
+							"tag": "Amplifier",
+							"type": "byte"
+						},
+
+						{
+							"tag": "Duration",
+							"type": "int"
+						},
+
+						{
+							"tag": "Ambient",
+							"type": "boolean"
+						},
+
+						{
+							"tag": "ShowParticles",
+							"type": "boolean"
+						},
+
+						{
+							"tag": "ShowIcon",
+							"type": "boolean"
+						}
+					]
+				}
+			}
+		]
+	}
+}

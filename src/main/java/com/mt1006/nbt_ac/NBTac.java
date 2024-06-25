@@ -21,8 +21,8 @@ import org.apache.logging.log4j.Logger;
 public class NBTac
 {
 	public static final String MOD_ID = "nbt_ac";
-	public static final String VERSION = "1.1.7";
-	public static final String FOR_VERSION = "1.19.5";
+	public static final String VERSION = "1.1.9";
+	public static final String FOR_VERSION = "1.16.5";
 	public static final String FOR_LOADER = "Forge";
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final boolean isDedicatedServer = FMLEnvironment.dist.isDedicatedServer();
