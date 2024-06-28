@@ -1,0 +1,21 @@
+{
+	"conditions":
+	[
+		{ "root": "entity/minecraft:interaction" }
+	],
+	
+	"operations":
+	[
+		{
+			"on": "attack",
+			"type": "set_subcompound",
+			"val": "compound/nbt_ac:interaction_info"
+		},
+		
+		{
+			"on": "interaction",
+			"type": "set_subcompound",
+			"val": "compound/nbt_ac:interaction_info"
+		}
+	]
+}

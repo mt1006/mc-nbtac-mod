@@ -4,7 +4,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-import java.util.List;
 import java.util.Map;
 
 public class FileToIdConverter
@@ -22,6 +21,7 @@ public class FileToIdConverter
 	{
 		return new FileToIdConverter(prefix, ".json");
 	}
+
 	public ResourceLocation fileToId(ResourceLocation resLoc)
 	{
 		String path = resLoc.getPath();
@@ -35,6 +35,6 @@ public class FileToIdConverter
 
 	private static ResourceLocation withPath(ResourceLocation resLoc, String path)
 	{
-		return new ResourceLocation(resLoc.getNamespace(), resLoc.getPath());
+		return new ResourceLocation(resLoc.getNamespace(), path);
 	}
 }

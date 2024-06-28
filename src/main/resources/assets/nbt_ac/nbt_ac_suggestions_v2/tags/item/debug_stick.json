@@ -1,0 +1,11 @@
+{
+	"id": "item/minecraft:debug_stick",
+
+	"tags":
+	[
+		{
+			"tag": "DebugProperty",
+			"type": "compound"
+		}
+	]
+}

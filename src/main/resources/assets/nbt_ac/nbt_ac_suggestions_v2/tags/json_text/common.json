@@ -1,0 +1,91 @@
+{
+	"tags":
+	[
+		{
+			"tag": "extra",
+			"type": "compound",
+			"subtype": "json_text_compound"
+		},
+
+		{
+			"tag": "color",
+			"type": "string",
+			"subtype": "json_text_color"
+		},
+
+		{
+			"tag": "font",
+			"type": "string",
+			"subtype": "font"
+		},
+
+		{
+			"tag": "bold",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "italic",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "underlined",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "strikethrough",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "obfuscated",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "insertion",
+			"type": "string"
+		},
+
+		{
+			"tag": "clickEvent",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "action",
+					"type": "string",
+					"subtype": "enum/open_url;open_file;run_command;suggest_command;change_page;copy_to_clipboard"
+				},
+
+				{
+					"tag": "value",
+					"type": "string"
+				}
+			]
+		},
+
+		{
+			"tag": "hoverEvent",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "action",
+					"type": "string",
+					"subtype": "enum/show_text;show_item;show_entity"
+				},
+
+				{
+					"tag": "contents",
+					"type": "compound",
+					"subtype": "hover_event_contents"
+				}
+			]
+		}
+	]
+}

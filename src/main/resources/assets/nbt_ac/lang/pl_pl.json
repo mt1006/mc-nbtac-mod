@@ -1,28 +1,101 @@
 {
   "nbt_ac.options": "Ustawienia autouzupełniania NBT",
 
-  "nbt_ac.options.customization": "Dostosowywanie",
+  "nbt_ac.options.style": "Styl",
+  "nbt_ac.options.suggestions": "Sugestie",
+  "nbt_ac.options.suggestion_priority": "Priorytet sugestii",
+  "nbt_ac.options.item_components": "Komponenty przedmiotów",
   "nbt_ac.options.mods_and_plugins_support": "Wsparcie dla modów i pluginów",
   "nbt_ac.options.advanced_settings": "Zaawansowane ustawienia",
   "nbt_ac.options.debugging_options": "Opcje debugowania",
 
 
 
+  "nbt_ac.options.field.short_boolean": "Krótki boolean",
+  "nbt_ac.options.field.short_boolean.desc": "Sugeruje 1b/0b zamiast true/false przy wartościach typu boolean.",
+
+  "nbt_ac.options.field.tag_quotation_marks": "Umieść tagi w cudzysłowie",
+  "nbt_ac.options.field.tag_quotation_marks.false": "Gdy konieczne",
+  "nbt_ac.options.field.tag_quotation_marks.true": "Zawsze",
+  "nbt_ac.options.field.tag_quotation_marks.desc": "Umieszcza nazwy tagów w cudzysłowie.\ntrue - Zawsze\nfalse - Gdy konieczne",
+
+  "nbt_ac.options.field.string_quotation_marks": "Umieść ciągi w cudzysłowie",
+  "nbt_ac.options.field.string_quotation_marks.false": "Gdy konieczne",
+  "nbt_ac.options.field.string_quotation_marks.true": "Zawsze",
+  "nbt_ac.options.field.string_quotation_marks.desc": "Umieszcza wartości typu string w cudzysłowie.\ntrue - Zawsze\nfalse - Gdy konieczne",
+
+  "nbt_ac.options.field.default_quotation_mark_type": "Domyślny typ cudzysłowów",
+  "nbt_ac.options.field.default_quotation_mark_type.1": "Pojedyńcze (')",
+  "nbt_ac.options.field.default_quotation_mark_type.2": "Podwójne (\")",
+  "nbt_ac.options.field.default_quotation_mark_type.desc": "Określa jaki typ cudzysłowów będzie domyślnie używany.\n1 - Pojedyńczy (')\n2 - Podwójny (\")\nInne wartości będą traktowane jako 2.\nJeśli używasz wersji 1.19.4 lub starszej, miej na uwadze to, że ustawienie pojedyńczych cudzysłowów (w szczególności z \"Umieść tagi w cudzysłowie\" ustawionym na \"Zawsze\") może powodować problemy ze ścieżkami NBT z powodu błędu MC-175504. Ustawienie te także nie jest stosowane do komponentów tekstu w JSON'ie.",
+
+  "nbt_ac.options.field.json_string_suggestion": "Sugestia ciągu JSON",
+  "nbt_ac.options.field.json_string_suggestion.0": "Żadna",
+  "nbt_ac.options.field.json_string_suggestion.1": "Zalecana",
+  "nbt_ac.options.field.json_string_suggestion.2": "Domyślna dla ciągów",
+  "nbt_ac.options.field.json_string_suggestion.3": "Przestarzała, oddzielone (' \")",
+  "nbt_ac.options.field.json_string_suggestion.4": "Przestarzała, złączone ('\")",
+  "nbt_ac.options.field.json_string_suggestion.5": "Przestarzała, lewy ukośnik (\"\\\")",
+  "nbt_ac.options.field.json_string_suggestion.desc": "Określa sugestię otwarcia prostego ciągu dla komponentów tekstu w JSON'ie.\n0 - Żadna\n1 - Zalecana - to samo co 2 na 1.20.4 i nowszych, to samo co 3 na starszych.\n2 - Domyślna dla ciągów - użyj rodzaju cudzysłowu z ustawienia \"Domyślny typ cudzysłowów\".\n3 - Przestarzała, oddzielone (' \")\n4 - Przestarzała, złączone ('\") - similar to 3, but without space.\n5 - Przestarzała, lewy ukośnik (\"\\\")\nInne wartości będą traktowane jako 1.",
+
+  "nbt_ac.options.field.hide_mc_namespace_in_tags": "Ukryj przestrzeń nazw Minecraft'a w tagach",
+  "nbt_ac.options.field.hide_mc_namespace_in_tags.desc": "Ukrywa przestrzeń nazw \"minecraft:\" w sugestiach tagów.",
+
+  "nbt_ac.options.field.hide_mc_namespace_in_strings": "Ukryj przestrzeń nazw Minecraft'a w ciągach",
+  "nbt_ac.options.field.hide_mc_namespace_in_strings.desc": "Ukrywa przestrzeń nazw \"minecraft:\" w sugestiach ciągów.",
+
+
   "nbt_ac.options.field.ignore_letter_case": "Ignoruj wielkość liter",
   "nbt_ac.options.field.ignore_letter_case.desc": "Ignoruje wielkość liter przy znajdowaniu sugestii nazw tagów.",
 
-  "nbt_ac.options.field.show_tag_types": "Pokazuj typy tagów",
-  "nbt_ac.options.field.show_tag_types.desc": "Pokazuje typy tagów obok ich nazw na liście sugestii.",
-
-  "nbt_ac.options.field.short_boolean": "Krótki boolean",
-  "nbt_ac.options.field.short_boolean.desc": "Sugeruje 1b/0b zamiast true/false przy wartościach typu boolean.",
+  "nbt_ac.options.field.show_tag_hints": "Pokazuj podpowiedzi do tagów",
+  "nbt_ac.options.field.show_tag_hints.desc": "Pokazuje podpowiedzi do tagów (takie jak ich typ lub źródło) obok ich nazw na liście sugestii.",
 
   "nbt_ac.options.field.hide_forge_tags": "Ukryj tagi Forge'a",
   "nbt_ac.options.field.hide_forge_tags.desc": "Ukrywa tagi występujące tylko na Forge'u. Wymaga usunięcia \"./minecraft/cache/nbt_ac\" i restartu gry, aby zadziałało.",
 
 
+  "nbt_ac.options.field.custom_sorting": "Niestandardowe sortowanie",
+  "nbt_ac.options.field.custom_sorting.desc": "Zezwala modowi na użycie niealfabetycznego sortowania sugestii.",
+
+  "nbt_ac.options.field.mark_recommended": "Oznacz polecane",
+  "nbt_ac.options.field.mark_recommended.desc": "Oznacza polecane sugestie znakiem \"<*>\" w podpowiedzi.",
+
+  "nbt_ac.options.field.recommended_at_the_top": "Polecane na górze",
+  "nbt_ac.options.field.recommended_at_the_top.desc": "Umieszcza polecane sugestie na górze listy. Wymaga niestandardowego sortowania.",
+
+  "nbt_ac.options.field.mark_irrelevant": "Oznacz nieistotne",
+  "nbt_ac.options.field.mark_irrelevant.desc": "Oznacza nieistotne sugestie znakiem \"<I>\" w podpowiedzi.",
+
+  "nbt_ac.options.field.gray_out_irrelevant": "Wyszarz nieistotne",
+  "nbt_ac.options.field.gray_out_irrelevant.desc": "Wyszarza nieistotne sugestie.",
+
+  "nbt_ac.options.field.placing_of_irrelevant": "Umieszczanie nieistotnych",
+  "nbt_ac.options.field.placing_of_irrelevant.0": "Normalne",
+  "nbt_ac.options.field.placing_of_irrelevant.1": "Na dole",
+  "nbt_ac.options.field.placing_of_irrelevant.2": "Ukryte",
+  "nbt_ac.options.field.placing_of_irrelevant.desc": "Określa pozycję nieistotnych sugestii.\n0 - Normalna\n1 - Na dole\n2 - Ukryte\nInne wartości będą traktowane jako 1.\nWartości inne od \"Normalna\" wymagają niestandardowego sortowania.",
+
+
+  "nbt_ac.options.field.hide_mc_namespace_in_components": "Ukryj przestrzeń nazw Minecraft'a w komponentach",
+  "nbt_ac.options.field.hide_mc_namespace_in_components.desc": "Ukrywa przestrzeń nazw \"minecraft:\" w sugestiach komponentów przedmiotów.",
+
+  "nbt_ac.options.field.show_custom_data_as_relevant": "Pokaż \"custom_data\" jako istotne",
+  "nbt_ac.options.field.show_custom_data_as_relevant.desc": "Gdy włączone, komponent przedmiotu \"minecraft:custom_data\" będzie się zawsze pokazywał jako istotna sugestia. Gdy wyłączone, będzie się zawsze pokazywał jako nieistotny.",
+
+  "nbt_ac.options.field.show_custom_model_data_as_relevant": "Pokaż \"custom_model_data\" jako istotne",
+  "nbt_ac.options.field.show_custom_model_data_as_relevant.desc": "Gdy włączone, komponent przedmiotu \"minecraft:custom_model_data\" będzie się zawsze pokazywał jako istotna sugestia. Gdy wyłączone, będzie się zawsze pokazywał jako nieistotny.",
+
+
+  "nbt_ac.options.field.vanilla_ids_sorting": "Sortowanie ID z wanilii",
+  "nbt_ac.options.field.vanilla_ids_sorting.0": "Bez niestandardowego sortowania",
+  "nbt_ac.options.field.vanilla_ids_sorting.1": "Zależy",
+  "nbt_ac.options.field.vanilla_ids_sorting.2": "Zawsze na górze",
+  "nbt_ac.options.field.vanilla_ids_sorting.3": "Zawsze w środku",
+  "nbt_ac.options.field.vanilla_ids_sorting.desc": "Określa metodę sortowania ID z wanilii (w przestrzeni nazw \"minecraft:\") w stosunku do ID spoza wanilii (z modów). Ustawnie to działa tylko na sugestiach dodanych przez tego moda. Ustawienie te jest także ściśle związane z ustawieniem \"Ukryj przestrzeń nazw Minecraft'a w ciągach\".\n0 - Bez niestandardowego sortowania - przy ukrytej przestrzeni nazw Minecraft'a, ID z wanilii będą rozrzucone pomiędzy ID z modów, z tego względu nie jest to zalecane.\n1 - Zależy - umieszczone na górze tylko przy ukrytej przestrzeni nazw, w innym przypadku w środku.\n2 - Zawsze na górze\n3 - Zawsze w środku\nInne wartości będą traktowane jako 1.",
+
   "nbt_ac.options.field.support_command_namespace": "Wsparcie przestrzeni nazw poleceń",
-  "nbt_ac.options.field.support_command_namespace.desc": "Ignoruje prefiks polecenia \"minecraft:\". Przydatne przy używaniu pluginów które umieszczają polecenia Minecraft'a w tej przestrzeni nazw.",
+  "nbt_ac.options.field.support_command_namespace.desc": "Ignoruje \"minecraft:\" jako prefiks polecenia. Przydatne przy używaniu pluginów które umieszczają polecenia Minecraft'a w tej przestrzeni nazw.",
 
 
   "nbt_ac.options.field.use_new_thread": "Użyj nowego wątku",
@@ -33,6 +106,9 @@
 
   "nbt_ac.options.field.load_from_resources": "Ładuj z zasobów",
   "nbt_ac.options.field.load_from_resources.desc": "Ładuje sugestie z plików zasobów (wymagane aby załadować tagi przedmiotów i przewidywania tagów).",
+
+  "nbt_ac.options.field.allowBlockEntityExtraction": "Zezwalaj na ekstrakcję bytów bloków",
+  "nbt_ac.options.field.allowBlockEntityExtraction.desc": "Zezwala na użycie metody ekstrakcji bytów bloków (podobnej do tej używanej przez disassemblera) po załadowaniu sugestii.",
 
   "nbt_ac.options.field.use_cache": "Użyj cache",
   "nbt_ac.options.field.use_cache.desc": "Włącza cache sugestii.",
@@ -47,7 +123,7 @@
   "nbt_ac.options.field.max_stack_traces.0": "0 (wyłączone)",
   "nbt_ac.options.field.max_stack_traces.desc": "Limit wypisywanych stack trace'ów dla wyjątków.\n-1 - Bez limitu\n 0 - Stack trace'y wyłączone",
 
-  "nbt_ac.options.field.debug_mode": "Tryb Debugowania",
+  "nbt_ac.options.field.debug_mode": "Tryb debugowania",
   "nbt_ac.options.field.debug_mode.desc": "Włącza dodatkowe wiadomości i sprawdzenia przydatne przy debugowaniu.",
 
   "nbt_ac.options.field.debug_sleep": "Testowe uśpienie ładowania",
@@ -55,7 +131,7 @@
   "nbt_ac.options.field.debug_sleep.desc": "Opóźnia ładowanie sugestii w celu lepszego zmierzenia czasu jakie ono zajmuje (wartość w milisekundach, zaleca się ustawienie kilku tysięcy).",
 
   "nbt_ac.options.field.debug_config_screen": "Testowanie ekranu konfiguracji",
-  "nbt_ac.options.field.debug_config_screen.desc": "Pokazuje ekran ustawień po naciśnięciu przycisku realsm. Nie jest resetowane do domyślnej wartości przed przycisk resetowania ustawień!",
+  "nbt_ac.options.field.debug_config_screen.desc": "Pokazuje ekran ustawień po wyjściu z ekranu realms. Nie jest resetowane do domyślnej wartości po użyciu przycisku resetowania ustawień!",
 
   "nbt_ac.options.field.save_suggestions": "Zapisz sugestie",
   "nbt_ac.options.field.save_suggestions.0": "Wyłączone",
@@ -68,8 +144,8 @@
   "nbt_ac.options.common.tooltip": "%s\n§8Domyślna wartość: %s",
   "nbt_ac.options.common.reset_settings": "Zresetuj ustawienia",
   "nbt_ac.options.common.undefined": "[niezdefiniowane]",
-  "nbt_ac.options.common.gui_debug_warning.1": "Tryb testowania ekranu konfiguracji jest włączony!",
+  "nbt_ac.options.common.gui_debug_warning": "Tryb debugowania ekranu konfiguracji jest włączony!",
 
 
-  "modmenu.descriptionTranslation.nbt_ac": "Dodaje sugestie dla tagów NBT"
+  "modmenu.descriptionTranslation.nbt_ac": "Dodaje sugestie tagów NBT"
 }

@@ -4,11 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mt1006.nbt_ac.config.ConfigFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.DisconnectedScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -118,12 +120,16 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 		private final ConfigFields.BooleanField field;
 		private final Component component;
 		public final List<FormattedCharSequence> tooltip;
+		private final Component valOn, valOff;
 
-		public BooleanSwitch(ConfigFields.BooleanField field)
+		public BooleanSwitch(ConfigFields.BooleanField field, boolean useCustomValues)
 		{
 			super(0, 0, ELEMENT_WIDTH, ELEMENT_HEIGHT, CommonComponents.EMPTY);
 			this.field = field;
 			this.component = field.getWidgetName();
+
+			valOn = useCustomValues ? Component.translatable(field.getWidgetNameKey() + ".true") : CommonComponents.OPTION_ON;
+			valOff = useCustomValues ? Component.translatable(field.getWidgetNameKey() + ".false") : CommonComponents.OPTION_OFF;
 
 			updateText();
 			tooltip = Minecraft.getInstance().font.split(field.getWidgetTooltip(), 200);
@@ -131,13 +137,13 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 
 		public void updateText()
 		{
-			Component val = field.val ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF;
+			Component val = field.val ? valOn : valOff;
 			setMessage(component.copy().append(": ").append(val));
 		}
 
 		@Override public void onPress()
 		{
-			this.field.val = !this.field.val;
+			field.val = !field.val;
 			updateText();
 		}
 

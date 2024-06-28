@@ -1,0 +1,12 @@
+{
+	"id": "item/minecraft:tipped_arrow",
+
+	"tags":
+	[
+		{
+			"tag": "CustomPotionEffects",
+			"type": "list/compound",
+			"subtype": "tag/compound/nbt_ac:effect"
+		}
+	]
+}

@@ -9,17 +9,16 @@ import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.commands.arguments.CompoundTagArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(CompoundTagArgument.class)
-abstract public class CompoundTagArgumentMixin implements ArgumentType<CompoundTag>
+public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundTag>
 {
 	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
 	{
@@ -38,7 +37,7 @@ abstract public class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		}
 	}
 
-	@Unique private String getResourceName(CommandContext<?> ctx)
+	@Unique private @Nullable String getResourceName(CommandContext<?> ctx)
 	{
 		String commandName = Utils.getCommandName(ctx);
 
@@ -57,7 +56,7 @@ abstract public class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		return null;
 	}
 
-	@Unique private String getResourceNameForDataCommand(CommandContext<?> ctx)
+	@Unique private @Nullable String getResourceNameForDataCommand(CommandContext<?> ctx)
 	{
 		String instruction = Utils.getNodeString(ctx, 1);
 		if (!instruction.equals("merge")) { return null; }

@@ -30,6 +30,8 @@ public class Loader
 
 	public static void load()
 	{
+		ModConfig.load();
+
 		int debugSleep = ModConfig.debugSleep.val;
 		if (debugSleep > 0)
 		{
@@ -77,6 +79,12 @@ public class Loader
 		NBTac.LOGGER.info("Finished in: {} ms [{} ms with interruption]", duration - interruptionDuration, duration);
 		finished = true;
 
+		if (ModConfig.debugMode.val)
+		{
+			NBTac.LOGGER.info("Created NbtSuggestion instances: {}", NbtSuggestion.createdInstanceCounter);
+			NBTac.LOGGER.info("Created NbtSuggestions instances: {}", NbtSuggestions.createdInstanceCounter);
+		}
+
 		saveSuggestions(SaveSuggestionsMode.get(ModConfig.saveSuggestions.val));
 	}
 
@@ -91,7 +99,7 @@ public class Loader
 				StringWriter stringWriter = new StringWriter();
 				PrintWriter writer = new PrintWriter(stringWriter);
 
-				for (Map.Entry<String, NbtSuggestions> suggestions : NbtSuggestionManager.suggestionMap.entrySet())
+				for (Map.Entry<String, NbtSuggestions> suggestions : NbtSuggestionManager.suggestionSet())
 				{
 					writer.println(suggestions.getKey());
 					printSuggestions(writer, suggestions.getKey(), suggestions.getValue(), mode, 1);
@@ -127,7 +135,7 @@ public class Loader
 		{
 			if (mode == SaveSuggestionsMode.ENABLED_SORTED) { writer.print(key); }
 			for (int i = 0; i < depth; i++) { writer.print("-"); }
-			writer.printf("%s (%s) [%s/%s] - %s/%s\n", suggestion.tag, suggestion.suggestionType.name,
+			writer.printf("%s (%s) [%s/%s] - %s/%s\n", suggestion.tag, suggestion.source.name,
 					suggestion.type.getName(), suggestion.listType.getName(), suggestion.subtype.getName(), suggestion.subtypeData);
 
 			if (suggestion.subcompound != null && suggestions != suggestion.subcompound)
@@ -146,9 +154,9 @@ public class Loader
 		}
 	}
 
-	public static boolean isCurrentThread()
+	public static Thread getLoaderThread()
 	{
-		return Thread.currentThread() == thread;
+		return thread;
 	}
 
 	private enum SaveSuggestionsMode

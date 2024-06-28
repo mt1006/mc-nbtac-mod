@@ -45,7 +45,7 @@ public class Disassembly
 		}
 		catch (Exception exception)
 		{
-			NBTac.LOGGER.error("Failed to initialize disassembler: " + exception);
+			NBTac.LOGGER.error("Failed to initialize disassembler: {}", exception.toString());
 			Loader.printStackTrace(exception);
 		}
 	}
@@ -92,9 +92,9 @@ public class Disassembly
 	{
 		for (MethodNode methodNode : classNode.methods)
 		{
-			if ((methodName == null || methodName.equals(methodNode.name)) &&
-					(methodSignature == null || methodSignature.equals(methodNode.desc)) &&
-					(!mustBePublic || (methodNode.access & Opcodes.ACC_PUBLIC) != 0))
+			if ((methodName == null || methodName.equals(methodNode.name))
+					&& (methodSignature == null || methodSignature.equals(methodNode.desc))
+					&& (!mustBePublic || (methodNode.access & Opcodes.ACC_PUBLIC) != 0))
 			{
 				return methodNode;
 			}
@@ -153,13 +153,13 @@ public class Disassembly
 		if (disassemblingStack.contains(methodFullID))
 		{
 			//TODO: handle nbt recursion
-			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Already disassembled! - " + methodFullID); }
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Already disassembled! - {}", methodFullID); }
 			return;
 		}
 
 		if (depth >= MAX_DISASSEMBLY_DEPTH)
 		{
-			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Too deep! - " + methodFullID); }
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Too deep! - {}", methodFullID); }
 			return;
 		}
 
@@ -194,7 +194,7 @@ public class Disassembly
 		if (partialTemplate != null)
 		{
 			template = partialTemplate.copy(null, false, null);
-			invokes = template.invokes != null ? template.invokes : Collections.emptyList();
+			invokes = template.invokes != null ? template.invokes : List.of();
 		}
 		else
 		{
@@ -243,8 +243,8 @@ public class Disassembly
 
 	private static boolean isHiddenTag(String tag)
 	{
-		return (ModConfig.hideForgeTags.val &&
-				(tag.equals("ForgeCaps") || tag.equals("ForgeData") || tag.startsWith("forge:")));
+		return (ModConfig.hideForgeTags.val
+				&& (tag.equals("ForgeCaps") || tag.equals("ForgeData") || tag.startsWith("forge:")));
 	}
 
 	// Credits to: https://stackoverflow.com/a/48806265/18214530
@@ -353,10 +353,10 @@ public class Disassembly
 			BasicValue basicValue = basicInterpreter.naryOperation(insn, null);
 
 			// Ignores INVOKEINTERFACE, INVOKEDYNAMIC, MULTIANEWARRAY and other unexpected opcodes
-			if (insnSet.add(insn) &&
-					(insn.getOpcode() == Opcodes.INVOKEVIRTUAL ||
-					insn.getOpcode() == Opcodes.INVOKESTATIC ||
-					insn.getOpcode() == Opcodes.INVOKESPECIAL))
+			if (insnSet.add(insn)
+					&& (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
+					|| insn.getOpcode() == Opcodes.INVOKESTATIC
+					|| insn.getOpcode() == Opcodes.INVOKESPECIAL))
 			{
 				MethodInsnNode methodInsn = (MethodInsnNode)insn;
 
@@ -412,7 +412,7 @@ public class Disassembly
 			if (isHiddenTag(tagName)) { return TrackedValue.unknown(basicValue); }
 
 			SuggestionTemplate newSuggestion;
-			if (uncertain) { newSuggestion = new SuggestionTemplate(tagName, type, NbtSuggestion.SuggestionType.UNCERTAIN); }
+			if (uncertain) { newSuggestion = new SuggestionTemplate(tagName, type, NbtSuggestion.Source.UNCERTAIN); }
 			else { newSuggestion = new SuggestionTemplate(tagName, type); }
 
 			suggestions.addSuggestion(newSuggestion);
@@ -535,7 +535,7 @@ public class Disassembly
 		public NbtSuggestion.Type type;
 		public NbtSuggestion.Type listType = NbtSuggestion.Type.UNKNOWN;
 		public Template subcompound = null;
-		public NbtSuggestion.SuggestionType suggestionType = NbtSuggestion.SuggestionType.NORMAL;
+		public NbtSuggestion.Source source = NbtSuggestion.Source.DEFAULT;
 
 		public SuggestionTemplate(String tag, NbtSuggestion.Type type)
 		{
@@ -543,10 +543,10 @@ public class Disassembly
 			this.type = type;
 		}
 
-		public SuggestionTemplate(String tag, NbtSuggestion.Type type, NbtSuggestion.SuggestionType suggestionType)
+		public SuggestionTemplate(String tag, NbtSuggestion.Type type, NbtSuggestion.Source source)
 		{
 			this(tag, type);
-			this.suggestionType = suggestionType;
+			this.source = source;
 		}
 
 		public Template addSubcompound()
@@ -557,8 +557,11 @@ public class Disassembly
 
 		public NbtSuggestion applyTemplate()
 		{
-			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, suggestionType, listType);
-			if (subcompound != null) { subcompound.applyTemplate(nbtSuggestion.addSubcompound()); }
+			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, source, listType);
+			if (subcompound != null && !subcompound.suggestions.isEmpty())
+			{
+				subcompound.applyTemplate(nbtSuggestion.getSubcompound());
+			}
 			return nbtSuggestion;
 		}
 
@@ -575,7 +578,7 @@ public class Disassembly
 				newTag = tag;
 			}
 
-			SuggestionTemplate newTemplate = new SuggestionTemplate(newTag, type, suggestionType);
+			SuggestionTemplate newTemplate = new SuggestionTemplate(newTag, type, source);
 			newTemplate.listType = listType;
 			if (subcompound != null) { newTemplate.subcompound = subcompound.copy(templateMap, replace, toReplace); }
 			return newTemplate;
@@ -590,24 +593,18 @@ public class Disassembly
 		public void addSuggestion(@Nullable SuggestionTemplate suggestion)
 		{
 			if (suggestion == null) { return; }
-			suggestions.removeIf(listElement -> listElement.tag.equals(suggestion.tag));
+			suggestions.removeIf((listElement) -> listElement.tag.equals(suggestion.tag));
 			suggestions.add(suggestion);
 		}
 
 		public void merge(Template templates, @Nullable String toReplace)
 		{
-			for (SuggestionTemplate template : templates.suggestions)
-			{
-				addSuggestion(template.copy(null, true, toReplace));
-			}
+			templates.suggestions.forEach((template) -> addSuggestion(template.copy(null, true, toReplace)));
 		}
 
 		public void applyTemplate(NbtSuggestions nbtSuggestions)
 		{
-			for (SuggestionTemplate template : suggestions)
-			{
-				nbtSuggestions.add(template.applyTemplate());
-			}
+			suggestions.forEach((template) -> nbtSuggestions.add(template.applyTemplate()));
 		}
 
 		public Template copy(@Nullable Map<Template, Template> templateMap, boolean replace, @Nullable String toReplace)
