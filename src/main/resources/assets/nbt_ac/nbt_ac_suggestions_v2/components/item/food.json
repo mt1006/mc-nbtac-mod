@@ -1,0 +1,49 @@
+{
+	"id": "item/minecraft:food",
+	"type": "compound",
+	"always_relevant": true,
+
+	"tags":
+	[
+		{
+			"tag": "nutrition",
+			"type": "int",
+			"recommended": true
+		},
+
+		{
+			"tag": "saturation",
+			"type": "float",
+			"recommended": true
+		},
+
+		{
+			"tag": "can_always_eat",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "eat_seconds",
+			"type": "float"
+		},
+
+		{
+			"tag": "effects",
+			"type": "list/compound",
+
+			"tags":
+			[
+				{
+					"tag": "effect",
+					"type": "compound",
+					"subtype": "tag/compound/nbt_ac:effect"
+				},
+
+				{
+					"tag": "probability",
+					"type": "float"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"id": "compound/nbt_ac:villager/offers",
+
+	"tags":
+	[
+		{
+			"tag": "Recipes",
+			"type": "list/compound",
+			"subtype": "tag/compound/nbt_ac:villager/offer"
+		}
+	]
+}

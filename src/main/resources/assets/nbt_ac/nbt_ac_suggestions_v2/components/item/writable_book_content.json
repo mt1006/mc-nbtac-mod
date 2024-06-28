@@ -1,0 +1,12 @@
+{
+	"id": "item/minecraft:writable_book_content",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "pages",
+			"type": "list/string"
+		}
+	]
+}

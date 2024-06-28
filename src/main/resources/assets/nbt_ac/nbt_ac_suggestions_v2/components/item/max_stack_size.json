@@ -1,0 +1,4 @@
+{
+	"id": "item/minecraft:max_stack_size",
+	"type": "int"
+}

@@ -1,0 +1,5 @@
+{
+	"id": "item/minecraft:note_block_sound",
+	"type": "string",
+	"subtype": "registry_key/minecraft:sound_event"
+}

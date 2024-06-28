@@ -1,0 +1,5 @@
+{
+	"id": "item/minecraft:pot_decorations",
+	"type": "list/string",
+	"subtype": "pot_decoration"
+}

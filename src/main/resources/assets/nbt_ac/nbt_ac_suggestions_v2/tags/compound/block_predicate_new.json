@@ -1,0 +1,27 @@
+{
+	"id": "compound/nbt_ac:block_predicate_new",
+
+	"tags":
+	[
+		{
+			"tag": "blocks",
+			"type": "list/string",
+			"subtype": "registry_key/minecraft:block",
+			"recommended": true
+		},
+
+		{
+			"tag": "nbt",
+			"type": "compound",
+			"subtype": "tag/block/*",
+			"with": "#parent/blocks"
+		},
+
+		{
+			"tag": "state",
+			"type": "compound",
+			"subtype": "block_state_tag/*",
+			"with": "#parent/blocks"
+		}
+	]
+}

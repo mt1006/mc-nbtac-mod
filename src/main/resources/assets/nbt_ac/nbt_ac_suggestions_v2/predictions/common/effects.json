@@ -1,0 +1,24 @@
+{
+	"conditions":
+	[
+		{ "path": "active_effects" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "copy_tags",
+			"val": "compound/nbt_ac:effect"
+		},
+
+		{
+			"type": "add_tag",
+			"val": "hidden_effect/compound"
+		},
+
+		{
+			"on": "hidden_effect",
+			"type": "recursion"
+		}
+	]
+}

@@ -5,6 +5,7 @@ import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
@@ -24,6 +25,8 @@ public class Disassembly
 {
 	private static final int MAX_DISASSEMBLY_DEPTH = 16;
 	private static final String METHOD_LOAD_SIGNATURE = "(L" + CompoundTag.class.getName().replace('.', '/') + ";)V";
+	private static final String METHOD_LOAD_BLOCK_SIGNATURE = "(L" + CompoundTag.class.getName().replace('.', '/') +
+			";L" + HolderLookup.Provider.class.getName().replace('.', '/') + ";)V";
 	private static final String COMPOUND_TAG_SIGNATURE = CompoundTag.class.getName().replace('.', '/');
 	private static final String LIST_TAG_SIGNATURE = ListTag.class.getName().replace('.', '/');
 	private static final String COMPOUND_TAG_ARG_SIGNATURE = CompoundTag.class.getName();
@@ -39,13 +42,14 @@ public class Disassembly
 	{
 		try
 		{
-			MethodNode methodNode = loadMethod(loadClass(BlockEntity.class.getName()), null, METHOD_LOAD_SIGNATURE, true, false);
+			MethodNode methodNode = loadMethod(loadClass(BlockEntity.class.getName(), null), null,
+					METHOD_LOAD_BLOCK_SIGNATURE, Opcodes.ACC_PROTECTED, false);
 			if (methodNode == null) { throw new Exception("Failed to find \"load\" method"); }
 			blockEntityLoadMethod = methodNode.name;
 		}
 		catch (Exception exception)
 		{
-			NBTac.LOGGER.error("Failed to initialize disassembler: " + exception);
+			NBTac.LOGGER.error("Failed to initialize disassembler: {}", exception.toString());
 			Loader.printStackTrace(exception);
 		}
 	}
@@ -57,7 +61,7 @@ public class Disassembly
 		partialTemplateMap.clear();
 	}
 
-	public static ClassNode loadClass(String className) throws IOException
+	public static ClassNode loadClass(String className, @Nullable Class<?> clazz) throws IOException
 	{
 		className = className.replace('/', '.');
 
@@ -69,7 +73,8 @@ public class Disassembly
 
 		try
 		{
-			InputStream classStream = Class.forName(className).getClassLoader().getResourceAsStream(classPath);
+			if (clazz == null) { clazz = Class.forName(className); }
+			InputStream classStream = clazz.getClassLoader().getResourceAsStream(classPath);
 			if (classStream == null) { throw new ClassNotFoundException(); }
 			reader = new ClassReader(classStream);
 			classStream.close();
@@ -87,13 +92,13 @@ public class Disassembly
 	}
 
 	private static @Nullable MethodNode loadMethod(ClassNode classNode, @Nullable String methodName, @Nullable String methodSignature,
-												   boolean mustBePublic, boolean checkSuperclasses)
+												   int accessFlags, boolean checkSuperclasses)
 	{
 		for (MethodNode methodNode : classNode.methods)
 		{
-			if ((methodName == null || methodName.equals(methodNode.name)) &&
-					(methodSignature == null || methodSignature.equals(methodNode.desc)) &&
-					(!mustBePublic || (methodNode.access & Opcodes.ACC_PUBLIC) != 0))
+			if ((methodName == null || methodName.equals(methodNode.name))
+					&& (methodSignature == null || methodSignature.equals(methodNode.desc))
+					&& (accessFlags == 0 || (methodNode.access & accessFlags) != 0))
 			{
 				return methodNode;
 			}
@@ -105,7 +110,7 @@ public class Disassembly
 
 			try
 			{
-				MethodNode node = loadMethod(loadClass(classNode.superName), methodName, methodSignature, mustBePublic, true);
+				MethodNode node = loadMethod(loadClass(classNode.superName, null), methodName, methodSignature, accessFlags, true);
 				if (node != null) { return node; }
 			}
 			catch (Exception ignore) {}
@@ -114,7 +119,7 @@ public class Disassembly
 			{
 				for (String interfaceName : classNode.interfaces)
 				{
-					MethodNode node = loadMethod(loadClass(interfaceName), methodName, methodSignature, mustBePublic, true);
+					MethodNode node = loadMethod(loadClass(interfaceName, null), methodName, methodSignature, accessFlags, true);
 					if (node != null) { return node; }
 				}
 			}
@@ -125,24 +130,28 @@ public class Disassembly
 
 	public static void disassemblyEntity(Class<?> clazz, NbtSuggestions arg) throws Exception
 	{
-		disassemblyLoadMethod(Entity.class, null, METHOD_LOAD_SIGNATURE, clazz, arg);
+		disassemblyLoadMethod(Entity.class, null, METHOD_LOAD_SIGNATURE, Opcodes.ACC_PUBLIC, clazz, arg);
 	}
 
 	public static void disassemblyBlockEntity(Class<?> clazz, NbtSuggestions arg) throws Exception
 	{
-		disassemblyLoadMethod(clazz, blockEntityLoadMethod, METHOD_LOAD_SIGNATURE, clazz, arg);
+		disassemblyLoadMethod(clazz, blockEntityLoadMethod, METHOD_LOAD_BLOCK_SIGNATURE,
+				Opcodes.ACC_PROTECTED | Opcodes.ACC_PUBLIC, clazz, arg);
 	}
 
 	public static void disassemblyLoadMethod(Class<?> clazz, @Nullable String methodName, String methodSignature,
-											 Class<?> objectClass, NbtSuggestions arg) throws Exception
+											 int accessFlags, Class<?> objectClass, NbtSuggestions arg) throws Exception
 	{
 		Template templates = new Template();
-		disassembly(clazz.getName(), methodName, methodSignature, true, objectClass.getName(), new MethodArgs(templates, null), 0, false);
+		disassembly(clazz.getName(), methodName, methodSignature, accessFlags,
+				objectClass.getName(), new MethodArgs(templates, null), 0, false, clazz);
 		templates.applyTemplate(arg);
 	}
 
-	public static void disassembly(String className, @Nullable String methodName, String methodSignature, boolean mustBePublic,
-								   @Nullable String objectClass, MethodArgs args, int depth, boolean uncertain) throws Exception
+	//TODO: clean up
+	public static void disassembly(String className, @Nullable String methodName, String methodSignature,
+								   int accessFlags, @Nullable String objectClass, MethodArgs args, int depth,
+								   boolean uncertain, @Nullable Class<?> clazz) throws Exception
 	{
 		String methodID = String.format("%s %s %s", className, methodName, methodSignature);
 		String methodFullID = String.format("%s %s", methodID, objectClass);
@@ -150,18 +159,18 @@ public class Disassembly
 		if (disassemblingStack.contains(methodFullID))
 		{
 			//TODO: handle nbt recursion
-			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Already disassembled! - " + methodFullID); }
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Already disassembled! - {}", methodFullID); }
 			return;
 		}
 
 		if (depth >= MAX_DISASSEMBLY_DEPTH)
 		{
-			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Too deep! - " + methodFullID); }
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.warn("Too deep! - {}", methodFullID); }
 			return;
 		}
 
-		ClassNode classNode = loadClass(className);
-		MethodNode method = loadMethod(classNode, methodName, methodSignature, mustBePublic, true);
+		ClassNode classNode = loadClass(className, clazz);
+		MethodNode method = loadMethod(classNode, methodName, methodSignature, accessFlags, true);
 
 		if (method == null)
 		{
@@ -191,7 +200,7 @@ public class Disassembly
 		if (partialTemplate != null)
 		{
 			template = partialTemplate.copy(null, false, null);
-			invokes = template.invokes != null ? template.invokes : Collections.emptyList();
+			invokes = template.invokes != null ? template.invokes : List.of();
 		}
 		else
 		{
@@ -207,7 +216,7 @@ public class Disassembly
 			{
 				if (invoke.insn.getOpcode() != Opcodes.INVOKEVIRTUAL && !invoke.calledOnThis)
 				{
-					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, null, invoke.args, depth + 1, uncertain);
+					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, 0, null, invoke.args, depth + 1, uncertain, null);
 				}
 			}
 
@@ -221,16 +230,16 @@ public class Disassembly
 			{
 				if (invoke.calledOnThis && objectClass != null)
 				{
-					disassembly(objectClass, invoke.insn.name, invoke.insn.desc, false, objectClass, invoke.args, depth + 1, uncertain);
+					disassembly(objectClass, invoke.insn.name, invoke.insn.desc, 0, objectClass, invoke.args, depth + 1, uncertain, null);
 				}
 				else
 				{
-					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, null, invoke.args, depth + 1, true);
+					disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, 0, null, invoke.args, depth + 1, true, null);
 				}
 			}
 			else if (invoke.calledOnThis)
 			{
-				disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, false, objectClass, invoke.args, depth + 1, uncertain);
+				disassembly(invoke.insn.owner, invoke.insn.name, invoke.insn.desc, 0, objectClass, invoke.args, depth + 1, uncertain, null);
 			}
 		}
 
@@ -240,8 +249,8 @@ public class Disassembly
 
 	private static boolean isHiddenTag(String tag)
 	{
-		return (ModConfig.hideForgeTags.val &&
-				(tag.equals("ForgeCaps") || tag.equals("ForgeData") || tag.startsWith("forge:")));
+		return (ModConfig.hideForgeTags.val
+				&& (tag.equals("ForgeCaps") || tag.equals("ForgeData") || tag.startsWith("forge:")));
 	}
 
 	// Credits to: https://stackoverflow.com/a/48806265/18214530
@@ -350,10 +359,10 @@ public class Disassembly
 			BasicValue basicValue = basicInterpreter.naryOperation(insn, null);
 
 			// Ignores INVOKEINTERFACE, INVOKEDYNAMIC, MULTIANEWARRAY and other unexpected opcodes
-			if (insnSet.add(insn) &&
-					(insn.getOpcode() == Opcodes.INVOKEVIRTUAL ||
-					insn.getOpcode() == Opcodes.INVOKESTATIC ||
-					insn.getOpcode() == Opcodes.INVOKESPECIAL))
+			if (insnSet.add(insn)
+					&& (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
+					|| insn.getOpcode() == Opcodes.INVOKESTATIC
+					|| insn.getOpcode() == Opcodes.INVOKESPECIAL))
 			{
 				MethodInsnNode methodInsn = (MethodInsnNode)insn;
 
@@ -409,7 +418,7 @@ public class Disassembly
 			if (isHiddenTag(tagName)) { return TrackedValue.unknown(basicValue); }
 
 			SuggestionTemplate newSuggestion;
-			if (uncertain) { newSuggestion = new SuggestionTemplate(tagName, type, NbtSuggestion.SuggestionType.UNCERTAIN); }
+			if (uncertain) { newSuggestion = new SuggestionTemplate(tagName, type, NbtSuggestion.Source.UNCERTAIN); }
 			else { newSuggestion = new SuggestionTemplate(tagName, type); }
 
 			suggestions.addSuggestion(newSuggestion);
@@ -532,7 +541,7 @@ public class Disassembly
 		public NbtSuggestion.Type type;
 		public NbtSuggestion.Type listType = NbtSuggestion.Type.UNKNOWN;
 		public Template subcompound = null;
-		public NbtSuggestion.SuggestionType suggestionType = NbtSuggestion.SuggestionType.NORMAL;
+		public NbtSuggestion.Source source = NbtSuggestion.Source.DEFAULT;
 
 		public SuggestionTemplate(String tag, NbtSuggestion.Type type)
 		{
@@ -540,10 +549,10 @@ public class Disassembly
 			this.type = type;
 		}
 
-		public SuggestionTemplate(String tag, NbtSuggestion.Type type, NbtSuggestion.SuggestionType suggestionType)
+		public SuggestionTemplate(String tag, NbtSuggestion.Type type, NbtSuggestion.Source source)
 		{
 			this(tag, type);
-			this.suggestionType = suggestionType;
+			this.source = source;
 		}
 
 		public Template addSubcompound()
@@ -554,8 +563,11 @@ public class Disassembly
 
 		public NbtSuggestion applyTemplate()
 		{
-			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, suggestionType, listType);
-			if (subcompound != null) { subcompound.applyTemplate(nbtSuggestion.addSubcompound()); }
+			NbtSuggestion nbtSuggestion = new NbtSuggestion(tag, type, source, listType);
+			if (subcompound != null && !subcompound.suggestions.isEmpty())
+			{
+				subcompound.applyTemplate(nbtSuggestion.getSubcompound());
+			}
 			return nbtSuggestion;
 		}
 
@@ -572,7 +584,7 @@ public class Disassembly
 				newTag = tag;
 			}
 
-			SuggestionTemplate newTemplate = new SuggestionTemplate(newTag, type, suggestionType);
+			SuggestionTemplate newTemplate = new SuggestionTemplate(newTag, type, source);
 			newTemplate.listType = listType;
 			if (subcompound != null) { newTemplate.subcompound = subcompound.copy(templateMap, replace, toReplace); }
 			return newTemplate;
@@ -587,24 +599,18 @@ public class Disassembly
 		public void addSuggestion(@Nullable SuggestionTemplate suggestion)
 		{
 			if (suggestion == null) { return; }
-			suggestions.removeIf(listElement -> listElement.tag.equals(suggestion.tag));
+			suggestions.removeIf((listElement) -> listElement.tag.equals(suggestion.tag));
 			suggestions.add(suggestion);
 		}
 
 		public void merge(Template templates, @Nullable String toReplace)
 		{
-			for (SuggestionTemplate template : templates.suggestions)
-			{
-				addSuggestion(template.copy(null, true, toReplace));
-			}
+			templates.suggestions.forEach((template) -> addSuggestion(template.copy(null, true, toReplace)));
 		}
 
 		public void applyTemplate(NbtSuggestions nbtSuggestions)
 		{
-			for (SuggestionTemplate template : suggestions)
-			{
-				nbtSuggestions.add(template.applyTemplate());
-			}
+			suggestions.forEach((template) -> nbtSuggestions.add(template.applyTemplate()));
 		}
 
 		public Template copy(@Nullable Map<Template, Template> templateMap, boolean replace, @Nullable String toReplace)

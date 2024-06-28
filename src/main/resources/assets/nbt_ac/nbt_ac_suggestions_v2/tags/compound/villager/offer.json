@@ -1,0 +1,51 @@
+{
+	"id": "compound/nbt_ac:villager/offer",
+
+	"tags":
+	[
+		{
+			"tag": "buy",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item",
+			"recommended": true
+		},
+
+		{
+			"tag": "sell",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item",
+			"recommended": true
+		},
+
+		{
+			"tag": "buyB",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "demand",
+			"type": "int"
+		},
+
+		{
+			"tag": "specialPrice",
+			"type": "int"
+		},
+
+		{
+			"tag": "uses",
+			"type": "int"
+		},
+
+		{
+			"tag": "maxUses",
+			"type": "int"
+		},
+
+		{
+			"tag": "xp",
+			"type": "int"
+		}
+	]
+}
