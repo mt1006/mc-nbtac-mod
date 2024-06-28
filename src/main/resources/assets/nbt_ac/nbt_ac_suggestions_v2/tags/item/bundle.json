@@ -1,0 +1,12 @@
+{
+	"id": "item/minecraft:bundle",
+
+	"tags":
+	[
+		{
+			"tag": "Items",
+			"type": "list/compound",
+			"subtype": "item_compound"
+		}
+	]
+}

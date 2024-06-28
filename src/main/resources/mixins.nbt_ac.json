@@ -7,6 +7,7 @@
   [
     "suggestions.SuggestionsListMixin",
     "suggestions.CommandDispatcherMixin",
+    "suggestions.arguments.ComponentArgumentMixin",
     "suggestions.arguments.CompoundTagArgumentMixin",
     "suggestions.arguments.NbtPathArgumentMixin",
     "suggestions.arguments.NbtTagArgumentMixin",
@@ -19,7 +20,12 @@
     "fields.ClientLevelFields",
     "fields.CommandSuggestionsFields",
     "fields.EntitySelectorFields",
-    "misc.TitleScreenMixin"
+    "fields.TextColorFields",
+    "fields.MinecraftFields",
+    "fields.FontManagerFields",
+    "fields.KeyMappingFields",
+    "fields.DecoratedPotPatternsFields",
+    "misc.RealmsMainScreenMixin"
   ],
   "injectors": { "defaultRequire": 1 },
   "refmap": "mixins.nbt_ac.refmap.json"

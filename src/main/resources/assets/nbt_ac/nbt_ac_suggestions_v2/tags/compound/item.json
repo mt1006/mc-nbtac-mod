@@ -1,0 +1,26 @@
+{
+	"id": "compound/nbt_ac:item",
+
+	"tags":
+	[
+		{
+			"tag": "id",
+			"type": "string",
+			"subtype": "registry_key/minecraft:item",
+			"recommended": true
+		},
+
+		{
+			"tag": "Count",
+			"type": "byte",
+			"recommended": true
+		},
+
+		{
+			"tag": "tag",
+			"type": "compound",
+			"subtype": "tag/item/*",
+			"with": "#parent/id"
+		}
+	]
+}

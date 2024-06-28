@@ -17,6 +17,7 @@ import java.util.Map;
 public class CacheFile
 {
 	private static final String END_SEQUENCE = "###END###";
+	public static final int MAX_RADIX = Math.min(Character.MAX_RADIX, 36);
 
 	public static boolean load(File file, String desiredId)
 	{
@@ -61,13 +62,13 @@ public class CacheFile
 		for (int i = 0; i < len; i++)
 		{
 			if (line.charAt(i) != ';') { continue; }
-			int id = Integer.parseInt(line, pos, i, 36);
+			int id = Integer.parseInt(line, pos, i, MAX_RADIX);
 			pos = i + 1;
 			ParsedLine parsedLine = lines[id];
 
 			if (parsedLine.depth == 0)
 			{
-				NbtSuggestions suggestions = new NbtSuggestions();
+				NbtSuggestions suggestions = new NbtSuggestions(true);
 				NbtSuggestionManager.add(parsedLine.tag, suggestions);
 				stack.addRoot(suggestions);
 			}
@@ -87,7 +88,7 @@ public class CacheFile
 		{
 			Builder builder = new Builder();
 
-			for (Map.Entry<String, NbtSuggestions> suggestions : NbtSuggestionManager.suggestionMap.entrySet())
+			for (Map.Entry<String, NbtSuggestions> suggestions : NbtSuggestionManager.suggestionSet())
 			{
 				builder.add(suggestions.getKey());
 				saveSuggestions(builder, suggestions.getValue(), 1);
@@ -121,9 +122,9 @@ public class CacheFile
 		String tag = suggestion.tag;
 		int type = suggestion.type.ordinal();
 		int listType = suggestion.listType.ordinal();
-		int suggestionType = suggestion.suggestionType.ordinal();
+		int source = suggestion.source.ordinal();
 
-		return String.format("%s%d;%d;%d#%s", "-".repeat(depth), type, listType, suggestionType, tag);
+		return String.format("%s%d;%d;%d#%s", "-".repeat(depth), type, listType, source, tag);
 	}
 
 	private static class SuggestionStack
@@ -145,7 +146,7 @@ public class CacheFile
 			NbtSuggestions suggestions = stack.get(depth - 1);
 			if (suggestions == null)
 			{
-				suggestions = new NbtSuggestions();
+				suggestions = new NbtSuggestions(true);
 				stack.set(depth - 1, suggestions);
 				lastSuggestion.subcompound = suggestions;
 			}
@@ -163,7 +164,7 @@ public class CacheFile
 	{
 		private final String tag;
 		private final NbtSuggestion.Type type, listType;
-		private final NbtSuggestion.SuggestionType suggestionType;
+		private final NbtSuggestion.Source source;
 		public final int depth;
 
 		public ParsedLine(String line) throws Exception
@@ -181,7 +182,7 @@ public class CacheFile
 				tag = line;
 				type = null;
 				listType = null;
-				suggestionType = null;
+				source = null;
 				return;
 			}
 
@@ -195,14 +196,14 @@ public class CacheFile
 				tag = line.substring(separator + 1);
 				type = NbtSuggestion.Type.fromOrdinal(Integer.parseInt(values[0]));
 				listType = NbtSuggestion.Type.fromOrdinal(Integer.parseInt(values[1]));
-				suggestionType = NbtSuggestion.SuggestionType.fromOrdinal(Integer.parseInt(values[2]));
+				source = NbtSuggestion.Source.fromOrdinal(Integer.parseInt(values[2]));
 			}
 			catch (Exception exception) { throw new Exception(); }
 		}
 
 		public NbtSuggestion getSuggestion()
 		{
-			return new NbtSuggestion(tag, type, suggestionType, listType);
+			return new NbtSuggestion(tag, type, source, listType);
 		}
 	}
 
@@ -227,7 +228,7 @@ public class CacheFile
 				finalId = id;
 			}
 
-			stringBuilder.append(Integer.toString(finalId, 36));
+			stringBuilder.append(Integer.toString(finalId, MAX_RADIX));
 			stringBuilder.append(';');
 		}
 

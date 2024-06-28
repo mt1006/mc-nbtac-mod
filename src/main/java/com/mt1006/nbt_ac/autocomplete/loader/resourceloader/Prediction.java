@@ -7,6 +7,8 @@ import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
+import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestionSubtype;
+import com.mt1006.nbt_ac.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +31,10 @@ public class Prediction
 	{
 		for (Condition condition : conditions)
 		{
-			for (NbtSuggestion suggestion : condition.matchingSuggestions())
+			Collection<NbtSuggestion> matching = condition.matchingSuggestions();
+			if (ModConfig.debugMode.val && matching.isEmpty()) { NBTac.LOGGER.warn("No matching suggestions - {}", condition); }
+
+			for (NbtSuggestion suggestion : matching)
 			{
 				operations.forEach((operation) -> operation.execute(suggestion));
 			}
@@ -47,7 +52,7 @@ public class Prediction
 			root = rootElement != null ? rootElement.getAsString() : null;
 
 			JsonElement pathElement = object.get("path");
-			path = pathElement != null ? pathElement.getAsJsonArray().get(0).getAsString() : null;
+			path = pathElement != null ? pathElement.getAsString() : null;
 		}
 
 		public Collection<NbtSuggestion> matchingSuggestions()
@@ -56,27 +61,35 @@ public class Prediction
 			{
 				if (path.startsWith("*"))
 				{
+					if (root != null) { return List.of(); }
 					String key = path.substring(1);
-					return (root != null ? NbtSuggestionManager.get(root).suffixMap : NbtSuggestions.suffixFullMap).get(key);
+					return NbtSuggestions.suffixFullMap.get(key);
 				}
 				else if (path.endsWith("*"))
 				{
+					if (root != null) { return List.of(); }
 					String key = path.substring(0, path.length() - 1);
-					return (root != null ? NbtSuggestionManager.get(root).prefixMap : NbtSuggestions.prefixFullMap).get(key);
+					return NbtSuggestions.prefixFullMap.get(key);
 				}
 				else
 				{
-					return (root != null ? List.of(NbtSuggestionManager.get(root).get(path)) : NbtSuggestions.fullMap.get(path));
+					if (root == null) { return NbtSuggestions.fullMap.get(path); }
+					NbtSuggestions suggestionsFromRoot = NbtSuggestionManager.get(root);
+					NbtSuggestion suggestionFromRoot = suggestionsFromRoot != null ? suggestionsFromRoot.get(path) : null;
+					return suggestionFromRoot != null ? List.of(suggestionFromRoot) : List.of();
 				}
 			}
 			else if (root != null)
 			{
 				// If path == null then operations on a root as a suggestion (like changing type) are ignored
-				NbtSuggestion dummySuggestion = new NbtSuggestion("dummy-" + root, NbtSuggestion.Type.COMPOUND);
-				dummySuggestion.subcompound = NbtSuggestionManager.get(root);
-				return List.of(dummySuggestion);
+				return List.of(NbtSuggestion.getDummyCompound(NbtSuggestionManager.get(root)));
 			}
-			return new ArrayList<>();
+			return List.of();
+		}
+
+		@Override public String toString()
+		{
+			return String.format("root:%s path:%s", root, path);
 		}
 	}
 
@@ -114,42 +127,45 @@ public class Prediction
 
 			switch (type)
 			{
-				case "set_type":         // val = "float"
-					suggestion.type = NbtSuggestion.Type.fromName(val);
-					suggestion.changeSuggestionType(NbtSuggestion.SuggestionType.TYPE_PREDICTION);
+				case "override_unknown": // val = "float", val = "string@enum/aaa;bbb"
+					if (suggestion.type != NbtSuggestion.Type.UNKNOWN) { return; }
+					suggestion.setType(ParseJson.parseType(val));
+					suggestion.changeSuggestionSource(NbtSuggestion.Source.TYPE_PREDICTION);
 					return;
+
+				case "set_type":         // val = "float", val = "string@enum/aaa;bbb"
+					int atPos = val.indexOf('@');
+					suggestion.setType(ParseJson.parseType(atPos != -1 ? val.substring(0, atPos) : val));
+					suggestion.changeSuggestionSource(NbtSuggestion.Source.TYPE_PREDICTION);
+					if (atPos == -1) { return; }
 
 				case "set_subtype":      // val = "registry_key/minecraft:item"
 					int slashPos = val.indexOf('/');
-					suggestion.subtype = NbtSuggestion.Subtype.fromName(slashPos != -1 ? val.substring(0, slashPos) : val);
+					suggestion.subtype = NbtSuggestionSubtype.fromName(slashPos != -1 ? val.substring(0, slashPos) : val);
 					if (slashPos != -1) { suggestion.subtypeData = val.substring(slashPos + 1); }
 					suggestion.subtypeWith = with;
-					suggestion.subtypeWithParentTag = (on != null);
-					suggestion.changeSuggestionType(NbtSuggestion.SuggestionType.SUBTYPE_PREDICTION);
+					suggestion.changeSuggestionSource(NbtSuggestion.Source.SUBTYPE_PREDICTION);
 					return;
 
-				case "set_subcompound":  // val = "component/nbt_ac:attributes"
+				case "set_subcompound":  // val = "compound/nbt_ac:attributes"
+					if (suggestion.type == NbtSuggestion.Type.UNKNOWN) { suggestion.type = NbtSuggestion.Type.COMPOUND; }
+					else if (suggestion.type == NbtSuggestion.Type.LIST && suggestion.listType == NbtSuggestion.Type.UNKNOWN)
+					{
+						suggestion.listType = NbtSuggestion.Type.COMPOUND;
+					}
 					suggestion.subcompound = NbtSuggestionManager.get(val);
-					suggestion.changeSuggestionType(NbtSuggestion.SuggestionType.COMPOUND_PREDICTION);
+					suggestion.changeSuggestionSource(NbtSuggestion.Source.COMPOUND_PREDICTION);
 					return;
 			}
 
-			if (suggestion.subcompound == null)
-			{
-				if (suggestion.type != NbtSuggestion.Type.COMPOUND && suggestion.listType != NbtSuggestion.Type.COMPOUND)
-				{
-					return;
-				}
-				suggestion.subcompound = new NbtSuggestions();
-			}
-			NbtSuggestions compound = suggestion.subcompound;
+			if (!suggestion.hasSubcompound()) { return; }
 
 			switch (type)
 			{
 				case "recursion":
 					if (root == null) { return; }
 					suggestion.subcompound = root;
-					suggestion.changeSuggestionType(NbtSuggestion.SuggestionType.COMPOUND_PREDICTION);
+					suggestion.changeSuggestionSource(NbtSuggestion.Source.COMPOUND_PREDICTION);
 					return;
 
 				case "add_tag":          // val = "id/string/registry_key/minecraft:entity_type"
@@ -163,34 +179,35 @@ public class Prediction
 					String typeStr = secondSlash != -1 ? val.substring(firstSlash + 1, secondSlash) : val.substring(firstSlash + 1);
 
 					NbtSuggestion.Type type = NbtSuggestion.Type.fromName(typeStr);
-					NbtSuggestion newSuggestion = new NbtSuggestion(tagStr, type, NbtSuggestion.SuggestionType.PREDICTION);
+					NbtSuggestion newSuggestion = new NbtSuggestion(tagStr, type, NbtSuggestion.Source.PREDICTION);
 
 					if (secondSlash != -1)
 					{
 						String subtypeStr = thirdSlash != -1 ? val.substring(secondSlash + 1, thirdSlash) : val.substring(secondSlash + 1);
 						String subtypeDataStr = thirdSlash != -1 ? val.substring(thirdSlash + 1) : null;
 
-						newSuggestion.subtype = NbtSuggestion.Subtype.fromName(subtypeStr);
+						newSuggestion.subtype = NbtSuggestionSubtype.fromName(subtypeStr);
 						newSuggestion.subtypeData = subtypeDataStr;
 					}
 
-					compound.add(newSuggestion);
+					suggestion.getSubcompound().add(newSuggestion);
 					return;
 
-				case "add_compound":          // val = "id/component/nbt_ac:inventory"
+				case "add_compound":     // val = "id/component/nbt_ac:inventory"
 					int slash = val.indexOf('/');
 					NbtSuggestion compoundSuggestion = new NbtSuggestion(val.substring(0, slash),
-							NbtSuggestion.Type.COMPOUND, NbtSuggestion.SuggestionType.PREDICTION);
+							NbtSuggestion.Type.COMPOUND, NbtSuggestion.Source.PREDICTION);
 					compoundSuggestion.subcompound = NbtSuggestionManager.get(val.substring(slash + 1));
-					compound.add(compoundSuggestion);
+					suggestion.getSubcompound().add(compoundSuggestion);
 					return;
 
-				case "copy_tags":        // val = "component/nbt_ac:inventory"
-					compound.copyAll(NbtSuggestionManager.get(val), true);
+				case "copy_tags":        // val = "compound/nbt_ac:inventory"
+					NbtSuggestions copyTagsFrom = NbtSuggestionManager.get(val);
+					if (copyTagsFrom != null) { suggestion.getSubcompound().copyAll(copyTagsFrom, true); }
 					return;
 			}
 
-			NBTac.LOGGER.warn("Unknown prediction type: " + type);
+			NBTac.LOGGER.warn("Unknown prediction type: {}", type);
 		}
 	}
 }

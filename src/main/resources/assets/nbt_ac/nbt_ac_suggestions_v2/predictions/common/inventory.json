@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "path": "Inventory" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "copy_tags",
+			"val": "compound/nbt_ac:item"
+		}
+	]
+}

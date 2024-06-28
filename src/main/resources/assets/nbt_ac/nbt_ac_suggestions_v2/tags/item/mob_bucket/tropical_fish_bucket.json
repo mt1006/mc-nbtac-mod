@@ -1,0 +1,17 @@
+{
+	"id": "item/minecraft:tropical_fish_bucket",
+
+	"tags":
+	[
+		{
+			"tag": "EntityTag",
+			"type": "compound",
+			"subtype": "tag/entity/minecraft:tropical_fish"
+		},
+
+		{
+			"tag": "BucketVariantTag",
+			"type": "int"
+		}
+	]
+}

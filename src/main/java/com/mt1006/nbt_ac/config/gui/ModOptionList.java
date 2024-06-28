@@ -110,12 +110,16 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 	{
 		private final ConfigFields.BooleanField field;
 		private final Component component;
+		private final Component valOn, valOff;
 
-		public BooleanSwitch(ConfigFields.BooleanField field)
+		public BooleanSwitch(ConfigFields.BooleanField field, boolean useCustomValues)
 		{
 			super(0, 0, ELEMENT_WIDTH, ELEMENT_HEIGHT, CommonComponents.EMPTY);
 			this.field = field;
 			this.component = field.getWidgetName();
+
+			valOn = useCustomValues ? Component.translatable(field.getWidgetNameKey() + ".true") : CommonComponents.OPTION_ON;
+			valOff = useCustomValues ? Component.translatable(field.getWidgetNameKey() + ".false") : CommonComponents.OPTION_OFF;
 
 			updateText();
 			setTooltip(Tooltip.create(field.getWidgetTooltip()));
@@ -123,13 +127,13 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 
 		public void updateText()
 		{
-			Component val = field.val ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF;
+			Component val = field.val ? valOn : valOff;
 			setMessage(component.copy().append(": ").append(val));
 		}
 
 		@Override public void onPress()
 		{
-			this.field.val = !this.field.val;
+			field.val = !field.val;
 			updateText();
 		}
 

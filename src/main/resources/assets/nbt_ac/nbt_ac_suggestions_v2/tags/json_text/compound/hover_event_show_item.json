@@ -1,0 +1,20 @@
+{
+	"tags":
+	[
+		{
+			"tag": "id",
+			"type": "string",
+			"subtype": "registry_key/minecraft:item"
+		},
+
+		{
+			"tag": "count",
+			"type": "int"
+		},
+
+		{
+			"tag": "components",
+			"type": "compound"
+		}
+	]
+}
