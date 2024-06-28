@@ -5,9 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.RootCommandNode;
-import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
-import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
@@ -20,7 +18,7 @@ import org.spongepowered.asm.mixin.Unique;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(NbtPathArgument.class)
-abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
+public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 {
 	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
 	{

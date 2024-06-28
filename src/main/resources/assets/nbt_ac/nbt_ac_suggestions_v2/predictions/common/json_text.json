@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "path": "CustomName" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "set_subtype",
+			"val": "json_text"
+		}
+	]
+}

@@ -1,0 +1,9 @@
+{
+	"tags":
+	[
+		{
+			"tag": "Damage",
+			"type": "int"
+		}
+	]
+}

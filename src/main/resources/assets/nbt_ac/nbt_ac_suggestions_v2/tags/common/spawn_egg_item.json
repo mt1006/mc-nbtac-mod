@@ -1,0 +1,11 @@
+{
+	"tags":
+	[
+		{
+			"tag": "EntityTag",
+			"type": "compound",
+			"subtype": "spawn_egg/*",
+			"with": "#parent/#root"
+		}
+	]
+}

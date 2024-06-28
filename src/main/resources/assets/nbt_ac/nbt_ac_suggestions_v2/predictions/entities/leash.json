@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "path": "Leash" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "copy_tags",
+			"val": "compound/nbt_ac:leash"
+		}
+	]
+}

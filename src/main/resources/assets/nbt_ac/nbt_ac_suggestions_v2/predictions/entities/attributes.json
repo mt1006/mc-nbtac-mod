@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "path": "Attributes" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "set_subcompound",
+			"val": "compound/nbt_ac:attributes"
+		}
+	]
+}

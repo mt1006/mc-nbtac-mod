@@ -8,7 +8,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.utils.Utils;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
@@ -49,6 +48,7 @@ public class ArgumentCommandNodeMixin
 		clientcommand issue: https://github.com/Earthcomputer/clientcommands/issues/547
 		NBT Autocomplete issue: https://github.com/mt1006/mc-nbtac-mod/issues/15
 	 */
+	//TODO: remove after abandoning 1.20.1
 	@Inject(method = "isValidInput", at = @At(value = "HEAD"), cancellable = true, remap = false)
 	private void atIsValidInput(String input, CallbackInfoReturnable<Boolean> cir)
 	{

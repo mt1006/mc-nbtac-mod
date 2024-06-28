@@ -65,6 +65,7 @@ public class ConfigFields
 	public void load()
 	{
 		int loadedCount = 0;
+		boolean rewrite = false;
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
@@ -82,7 +83,11 @@ public class ConfigFields
 				String value = line.substring(equalSignPos + 1).trim();
 
 				Field<?> field = fieldMap.get(name);
-				if (field == null) { throw new IOException(); }
+				if (field == null)
+				{
+					rewrite = true;
+					continue;
+				}
 
 				field.load(value);
 				loadedCount++;
@@ -90,7 +95,7 @@ public class ConfigFields
 		}
 		catch (IOException exception) { save(); }
 
-		if (loadedCount != fields.size()) { save(); }
+		if (loadedCount != fields.size() || rewrite) { save(); }
 	}
 
 	public void reset()
@@ -109,13 +114,13 @@ public class ConfigFields
 			JsonObject json = new Gson().fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), JsonObject.class);
 			Pattern replacePattern = Pattern.compile("%(\\d+\\$)?[\\d.]*[df]");
 
-			for(Map.Entry<String, JsonElement> entry : json.entrySet())
+			for (Map.Entry<String, JsonElement> entry : json.entrySet())
 			{
 				String str = replacePattern.matcher(GsonHelper.convertToString(entry.getValue(), entry.getKey())).replaceAll("%$1s");
 				defaultLanguageKeys.put(entry.getKey(), str);
 			}
 		}
-		catch (JsonParseException | IOException ioexception)
+		catch (JsonParseException | IOException exception)
 		{
 			NBTac.LOGGER.error("Failed to load default language keys!");
 		}
@@ -229,7 +234,12 @@ public class ConfigFields
 
 		public AbstractWidget createSwitch()
 		{
-			return new ModOptionList.BooleanSwitch(this);
+			return new ModOptionList.BooleanSwitch(this, false);
+		}
+
+		public AbstractWidget createDescribedSwitch()
+		{
+			return new ModOptionList.BooleanSwitch(this, true);
 		}
 	}
 }

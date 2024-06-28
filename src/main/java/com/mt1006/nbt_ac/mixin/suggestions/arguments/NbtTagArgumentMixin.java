@@ -8,7 +8,7 @@ import com.mojang.datafixers.types.templates.Tag;
 import com.mt1006.nbt_ac.autocomplete.CustomTagParser;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
-import com.mt1006.nbt_ac.autocomplete.suggestions.CustomSuggestion;
+import com.mt1006.nbt_ac.autocomplete.SuggestionList;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.commands.arguments.NbtTagArgument;
@@ -17,12 +17,10 @@ import net.minecraft.commands.arguments.selector.EntitySelector;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(NbtTagArgument.class)
-abstract public class NbtTagArgumentMixin implements ArgumentType<Tag>
+public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 {
 	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
 	{
@@ -35,8 +33,8 @@ abstract public class NbtTagArgumentMixin implements ArgumentType<Tag>
 
 			if (nbtSuggestion.subcompound == null)
 			{
-				NbtSuggestionManager.simpleSuggestion("", String.format("§8%s[%s]",
-						nbtSuggestion.suggestionType.symbol, nbtSuggestion.type.getName()), suggestionsBuilder);
+				NbtSuggestionManager.simpleSuggestion("", String.format("%s[%s]",
+						nbtSuggestion.source.symbol, nbtSuggestion.type.getName()), suggestionsBuilder);
 				return suggestionsBuilder.buildFuture();
 			}
 			else
@@ -89,11 +87,9 @@ abstract public class NbtTagArgumentMixin implements ArgumentType<Tag>
 		NbtSuggestions rootSuggestions = NbtSuggestionManager.get(root);
 		if (rootSuggestions == null) { return null; }
 
-		List<CustomSuggestion> suggestionList = new ArrayList<>();
-		NbtSuggestionManager.addToList(suggestionList, rootSuggestions, root);
-
-		CustomTagParser pathParser = new CustomTagParser(path);
-		pathParser.read(suggestionList, null, root, true);
+		CustomTagParser pathParser = new CustomTagParser(path, CustomTagParser.Type.PATH);
+		SuggestionList suggestionList = pathParser.prepareSuggestionList(rootSuggestions, root);
+		pathParser.read(suggestionList, null, root);
 
 		return pathParser.lastFoundSuggestion;
 	}
