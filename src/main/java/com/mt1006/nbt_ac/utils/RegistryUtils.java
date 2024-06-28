@@ -27,7 +27,6 @@ public class RegistryUtils
 	public static final LocalRegistry<EntityType<?>> ENTITY_TYPE = new ForgeLocalRegistry<>(ForgeRegistries.ENTITY_TYPES);
 	public static final LocalRegistry<BlockEntityType<?>> BLOCK_ENTITY_TYPE = new ForgeLocalRegistry<>(ForgeRegistries.BLOCK_ENTITY_TYPES);
 	public static final LocalRegistry<DataComponentType<?>> DATA_COMPONENT_TYPE = new VanillaLocalRegistry<>(BuiltInRegistries.DATA_COMPONENT_TYPE);
-	public static final LocalRegistry<Enchantment> ENCHANTMENT = new ForgeLocalRegistry<>(ForgeRegistries.ENCHANTMENTS);
 
 	public static class ForgeLocalRegistry<T> implements LocalRegistry<T>
 	{
@@ -50,7 +49,7 @@ public class RegistryUtils
 
 		public @Nullable T get(String resLoc)
 		{
-			return registry.getValue(new ResourceLocation(resLoc));
+			return registry.getValue(ResourceLocation.parse(resLoc));
 		}
 
 		public Set<ResourceLocation> keySet()
@@ -90,7 +89,7 @@ public class RegistryUtils
 
 		public @Nullable T get(String resLoc)
 		{
-			return registry.get(new ResourceLocation(resLoc));
+			return registry.get(ResourceLocation.parse(resLoc));
 		}
 
 		public Set<ResourceLocation> keySet()

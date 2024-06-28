@@ -20,6 +20,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.armortrim.TrimMaterials;
 import net.minecraft.world.item.armortrim.TrimPatterns;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.entity.BannerPatterns;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
@@ -65,7 +66,8 @@ public enum NbtSuggestionSubtype
 	MAP_DECORATIONS,      // subtypeData = null
 	POT_DECORATION,       // subtypeData = null
 	TRIM_PATTERN,         // subtypeData = null
-	TRIM_MATERIAL;        // subtypeData = null
+	TRIM_MATERIAL,        // subtypeData = null
+	JUKEBOX_SONG;         // subtypeData = null
 
 	private static final List<String> JSON_TEXT_TYPE_SPECIFIC = List.of("nbt", "translatable");
 	private static final List<String> JSON_TEXT_TYPE_HAS_SEPARATOR = List.of("nbt", "selector");
@@ -145,7 +147,7 @@ public enum NbtSuggestionSubtype
 			case REQUIRED_ID:
 				if (data == null) { break; }
 				suggestionList.clear();
-				suggestionList.add(new IdSuggestion(new ResourceLocation(data), "#[required_id]", parserType));
+				suggestionList.add(new IdSuggestion(ResourceLocation.parse(data), "#[required_id]", parserType));
 				return true;
 
 			case REGISTRY_KEY:
@@ -154,7 +156,7 @@ public enum NbtSuggestionSubtype
 
 				try
 				{
-					ResourceLocation registryLocation = new ResourceLocation(data);
+					ResourceLocation registryLocation = ResourceLocation.parse(data);
 					Registry<T> registry = (Registry<T>)RegistryUtils.REGISTRY.get(registryLocation);
 					if (registry == null) { break; }
 
@@ -361,6 +363,12 @@ public enum NbtSuggestionSubtype
 				List<ResourceKey> trimMaterial = Fields.getStaticFields(TrimMaterials.class, ResourceKey.class);
 				trimMaterial.forEach((key) -> suggestionList.add(new IdSuggestion(key.location(), "[#trim_material]", parserType)));
 				return true;
+
+			case JUKEBOX_SONG:
+				suggestionList.clear();
+				List<ResourceKey> jukeboxSong = Fields.getStaticFields(JukeboxSongs.class, ResourceKey.class);
+				jukeboxSong.forEach((key) -> suggestionList.add(new IdSuggestion(key.location(), "[#jukebox_song]", parserType)));
+				return true;
 		}
 
 		return false;
@@ -400,7 +408,7 @@ public enum NbtSuggestionSubtype
 					if (data.startsWith("block/")) { data = data.substring(6); }
 					else if (data.startsWith("item/")) { data = data.substring(5); }
 
-					Item blockItem = RegistryUtils.ITEM.get(new ResourceLocation(data));
+					Item blockItem = RegistryUtils.ITEM.get(ResourceLocation.parse(data));
 					if (!(blockItem instanceof BlockItem)) { break; }
 
 					for (Property<?> property : ((BlockItem)blockItem).getBlock().defaultBlockState().getProperties())
@@ -427,7 +435,7 @@ public enum NbtSuggestionSubtype
 					if (data == null) { break; }
 					if (data.startsWith("item/")) { data = data.substring(5); }
 
-					Item item = RegistryUtils.ITEM.get(new ResourceLocation(data));
+					Item item = RegistryUtils.ITEM.get(ResourceLocation.parse(data));
 					if (item instanceof SpawnEggItem)
 					{
 						String key = RegistryUtils.ENTITY_TYPE.getKey(((SpawnEggItem)item).getType(null)).toString();
@@ -440,7 +448,7 @@ public enum NbtSuggestionSubtype
 
 			case ITEM_COMPONENTS:
 				if (data == null) { break; }
-				DataComponentManager.loadSuggestions(suggestionList, "", Set.of(), RegistryUtils.ITEM.get(data), parserType);
+				DataComponentManager.loadSuggestions(suggestionList, "", Set.of(), RegistryUtils.ITEM.get(data), parserType, false);
 				break;
 
 			case JSON_TEXT_COMPOUND:
@@ -452,8 +460,11 @@ public enum NbtSuggestionSubtype
 				break;
 
 			case ENCHANTMENTS:
-				for (ResourceLocation id : RegistryUtils.ENCHANTMENT.keySet())
+				suggestionList.clear();
+				List<ResourceKey> enchantments = Fields.getStaticFields(Enchantments.class, ResourceKey.class);
+				for (ResourceKey<?> resourceKey : enchantments)
 				{
+					ResourceLocation id = resourceKey.location();
 					NbtSuggestion tempSuggestion = new NbtSuggestion(id.toString(), NbtSuggestion.Type.INT);
 					suggestionList.add(new TagIdSuggestion(tempSuggestion, id, parserType, true));
 				}

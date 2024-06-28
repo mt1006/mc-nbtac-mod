@@ -32,7 +32,7 @@ public class DataComponentManager
 	public static final Map<String, NbtSuggestion> componentMap = new HashMap<>();
 
 	public static void loadSuggestions(SuggestionList suggestionList, String str, Set<DataComponentType<?>> usedComponents,
-									   @Nullable Item item, @Nullable CustomTagParser.Type parserType)
+									   @Nullable Item item, @Nullable CustomTagParser.Type parserType, boolean addSuffix)
 	{
 		List<Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>>> entryList = new ArrayList<>();
 		SharedSuggestionProvider.filterResources(RegistryUtils.DATA_COMPONENT_TYPE.entrySet(), str,
@@ -60,7 +60,7 @@ public class DataComponentManager
 			else
 			{
 				String subtext = component.getSubtext();
-				suggestionList.add(new ComponentSuggestion(resLoc, subtext, relevant));
+				suggestionList.add(new ComponentSuggestion(resLoc, subtext, relevant, addSuffix));
 			}
 		}
 	}
