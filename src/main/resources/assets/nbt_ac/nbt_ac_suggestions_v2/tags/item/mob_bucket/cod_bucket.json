@@ -1,0 +1,17 @@
+{
+	"id": "item/minecraft:cod_bucket",
+
+	"tags":
+	[
+		{
+			"tag": "EntityTag",
+			"type": "compound",
+			"subtype": "tag/entity/minecraft:cod"
+		},
+
+		{
+			"tag": "BucketVariantTag",
+			"type": "int"
+		}
+	]
+}

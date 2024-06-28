@@ -1,0 +1,55 @@
+{
+	"id": "parent/nbt_ac:armor",
+
+	"apply_to":
+	[
+		"item/minecraft:leather_helmet",
+		"item/minecraft:leather_chestplate",
+		"item/minecraft:leather_leggings",
+		"item/minecraft:leather_boots",
+		"item/minecraft:chainmail_helmet",
+		"item/minecraft:chainmail_chestplate",
+		"item/minecraft:chainmail_leggings",
+		"item/minecraft:chainmail_boots",
+		"item/minecraft:iron_helmet",
+		"item/minecraft:iron_chestplate",
+		"item/minecraft:iron_leggings",
+		"item/minecraft:iron_boots",
+		"item/minecraft:diamond_helmet",
+		"item/minecraft:diamond_chestplate",
+		"item/minecraft:diamond_leggings",
+		"item/minecraft:diamond_boots",
+		"item/minecraft:golden_helmet",
+		"item/minecraft:golden_chestplate",
+		"item/minecraft:golden_leggings",
+		"item/minecraft:golden_boots",
+		"item/minecraft:netherite_helmet",
+		"item/minecraft:netherite_chestplate",
+		"item/minecraft:netherite_leggings",
+		"item/minecraft:netherite_boots",
+		"item/minecraft:turtle_helmet"
+	],
+
+	"tags":
+	[
+		{
+			"tag": "Trim",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "material",
+					"type": "string",
+					"subtype": "enum/amethyst;copper;diamond;emerald;gold;iron;lapis;netherite;quartz;redstone"
+				},
+
+				{
+					"tag": "pattern",
+					"type": "string",
+					"subtype": "enum/coast;dune;eye;rib;sentry;snout;spire;tide;vex;ward;wild"
+				}
+			]
+		}
+	]
+}

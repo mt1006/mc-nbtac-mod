@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 public class NBTac
 {
 	public static final String MOD_ID = "nbt_ac";
-	public static final String VERSION = "1.2.1";
+	public static final String VERSION = "1.3";
 	public static final String FOR_VERSION = "1.19.2";
 	public static final String FOR_LOADER = "Forge";
 	public static final Logger LOGGER = LogUtils.getLogger();
@@ -43,8 +43,6 @@ public class NBTac
 	@SubscribeEvent
 	public static void setup(final FMLCommonSetupEvent event)
 	{
-		LOGGER.info("{} - Author: mt1006 (mt1006x)", getFullName());
-
 		if (isDedicatedServer)
 		{
 			LOGGER.info("Dedicated server detected - mod setup stopped!");
@@ -62,10 +60,5 @@ public class NBTac
 		if (isDedicatedServer) { return; }
 		if (ModConfig.useNewThread.val) { new Thread(Loader::load).start(); }
 		else { Loader.load(); }
-	}
-
-	public static String getFullName()
-	{
-		return "NBTac v" + VERSION + " for Minecraft " + FOR_VERSION + " [" + FOR_LOADER + "]";
 	}
 }

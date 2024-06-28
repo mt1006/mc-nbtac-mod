@@ -56,7 +56,7 @@ public class ConfigScreen extends Screen
 	@Override public void onClose()
 	{
 		ModConfig.save();
-		Minecraft.getInstance().setScreen(this.lastScreen);
+		Minecraft.getInstance().setScreen(lastScreen);
 	}
 
 	@Override public void render(@NotNull PoseStack guiGraphics, int mouseX, int mouseY, float partialTick)

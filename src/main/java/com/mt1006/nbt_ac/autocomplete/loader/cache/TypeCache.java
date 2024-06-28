@@ -1,7 +1,6 @@
 package com.mt1006.nbt_ac.autocomplete.loader.cache;
 
 import com.mt1006.nbt_ac.NBTac;
-import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.ModList;
@@ -10,17 +9,10 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TypeCache
 {
@@ -61,7 +53,8 @@ public class TypeCache
 
 	private static String genInstanceId()
 	{
-		String modVersionTag = String.format("%s/%s/%s;", NBTac.FOR_LOADER, NBTac.FOR_VERSION, NBTac.VERSION);
+		String modVersionTag = String.format("%s/%s/%s/%s;",
+				NBTac.FOR_LOADER, NBTac.FOR_VERSION, NBTac.VERSION, CacheFile.MAX_RADIX);
 		StringBuilder builder = new StringBuilder(modVersionTag);
 		TreeSet<String> mods = new TreeSet<>();
 
