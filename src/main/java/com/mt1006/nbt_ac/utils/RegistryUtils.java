@@ -25,7 +25,6 @@ public class RegistryUtils
 	public static final LocalRegistry<EntityType<?>> ENTITY_TYPE = new LocalRegistry<>(BuiltInRegistries.ENTITY_TYPE);
 	public static final LocalRegistry<BlockEntityType<?>> BLOCK_ENTITY_TYPE = new LocalRegistry<>(BuiltInRegistries.BLOCK_ENTITY_TYPE);
 	public static final LocalRegistry<DataComponentType<?>> DATA_COMPONENT_TYPE = new LocalRegistry<>(BuiltInRegistries.DATA_COMPONENT_TYPE);
-	public static final LocalRegistry<Enchantment> ENCHANTMENT = new LocalRegistry<>(BuiltInRegistries.ENCHANTMENT);
 
 	public static class LocalRegistry<T> implements Iterable<T>
 	{
@@ -48,7 +47,7 @@ public class RegistryUtils
 
 		public @Nullable T get(String resLoc)
 		{
-			return registry.get(new ResourceLocation(resLoc));
+			return registry.get(ResourceLocation.parse(resLoc));
 		}
 
 		public Set<ResourceLocation> keySet()

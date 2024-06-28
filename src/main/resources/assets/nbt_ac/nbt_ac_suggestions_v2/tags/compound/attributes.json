@@ -4,44 +4,38 @@
 	"tags":
 	[
 		{
-			"tag": "Name",
+			"tag": "id",
 			"type": "string",
 			"subtype": "registry_key/minecraft:attribute",
 			"recommended": true
 		},
 
 		{
-			"tag": "Base",
+			"tag": "base",
 			"type": "double",
 			"recommended": true
 		},
 
 		{
-			"tag": "Modifiers",
+			"tag": "modifiers",
 			"type": "list/compound",
 
 			"tags":
 			[
 				{
-					"tag": "Name",
+					"tag": "id",
 					"type": "string"
 				},
 
 				{
-					"tag": "Amount",
+					"tag": "amount",
 					"type": "double"
 				},
 
 				{
-					"tag": "Operation",
-					"type": "int",
-					"subtype": "described_enum/0;add;1;multiply_base;2;multiply"
-				},
-
-				{
-					"tag": "UUID",
-					"type": "uuid",
-					"subtype": "random_uuid"
+					"tag": "operation",
+					"type": "string",
+					"subtype": "enum/add_value;add_multiplied_base;add_multiplied_total"
 				}
 			]
 		}

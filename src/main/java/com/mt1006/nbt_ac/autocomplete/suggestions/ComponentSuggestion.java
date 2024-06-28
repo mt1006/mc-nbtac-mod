@@ -8,12 +8,12 @@ public class ComponentSuggestion extends CustomSuggestion
 {
 	private final @Nullable String textWithoutNamespace;
 
-	public ComponentSuggestion(@Nullable ResourceLocation resLoc, @Nullable String subtext, boolean relevant)
+	public ComponentSuggestion(@Nullable ResourceLocation resLoc, @Nullable String subtext, boolean relevant, boolean addSuffix)
 	{
 		super(resLoc != null ? (resLoc + "=") : "_error", subtext, relevant ? 0 : -1);
 
 		this.textWithoutNamespace = (resLoc != null && resLoc.getNamespace().equals("minecraft"))
-				? (resLoc.getPath() + "=")
+				? (resLoc.getPath() + (addSuffix ? "=" : ""))
 				: null;
 	}
 

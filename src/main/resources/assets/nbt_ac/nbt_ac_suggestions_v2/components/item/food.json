@@ -28,6 +28,12 @@
 		},
 
 		{
+			"tag": "using_converts_to",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
 			"tag": "effects",
 			"type": "list/compound",
 

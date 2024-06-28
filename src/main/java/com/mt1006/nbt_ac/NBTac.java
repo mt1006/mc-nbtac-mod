@@ -16,7 +16,7 @@ public class NBTac implements ModInitializer
 {
 	public static final String MOD_ID = "nbt_ac";
 	public static final String VERSION = "1.3";
-	public static final String FOR_VERSION = "1.20.6";
+	public static final String FOR_VERSION = "1.21";
 	public static final String FOR_LOADER = "Fabric";
 	public static final Logger LOGGER = LogUtils.getLogger();
 	public static final boolean isDedicatedServer = FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;

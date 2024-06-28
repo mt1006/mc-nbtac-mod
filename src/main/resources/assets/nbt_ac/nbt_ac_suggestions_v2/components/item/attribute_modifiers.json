@@ -24,14 +24,8 @@
 				},
 
 				{
-					"tag": "name",
+					"tag": "id",
 					"type": "string"
-				},
-
-				{
-					"tag": "uuid",
-					"type": "uuid",
-					"subtype": "random_uuid"
 				},
 
 				{

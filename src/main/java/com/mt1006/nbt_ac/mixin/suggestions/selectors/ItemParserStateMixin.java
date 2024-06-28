@@ -64,11 +64,11 @@ public abstract class ItemParserStateMixin
 	@Inject(method = "readComponents", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/item/ItemParser$State;readComponent(Lnet/minecraft/core/component/DataComponentType;)V"))
 	private void atReadComponents(CallbackInfo ci)
 	{
-		visitor.visitSuggestions(this::suggestComponent);
+		visitor.visitSuggestions(this::suggestComponentData);
 		cursorBeforeComponent = reader.getCursor();
 	}
 
-	@Inject(method = "suggestComponentAssignment", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "suggestComponentAssignmentOrRemoval", at = @At(value = "HEAD"), cancellable = true)
 	private void atSuggestComponentAssignment(SuggestionsBuilder suggestionsBuilder,
 											  CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
 	{
@@ -77,7 +77,23 @@ public abstract class ItemParserStateMixin
 		String str = suggestionsBuilder.getRemaining().toLowerCase();
 
 		SuggestionList suggestionList = new SuggestionList();
-		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, null);
+		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, null, true);
+		if (str.isEmpty() || str.equals("!")) { suggestionList.addRaw("!", "(remove component)", 200); }
+		suggestionList.forEach((s) -> s.suggest(suggestionsBuilder));
+
+		cir.setReturnValue(suggestionsBuilder.buildFuture());
+		cir.cancel();
+	}
+
+	@Inject(method = "suggestComponent(Lcom/mojang/brigadier/suggestion/SuggestionsBuilder;)Ljava/util/concurrent/CompletableFuture;", at = @At(value = "HEAD"), cancellable = true)
+	private void atSuggestComponentRemoval(SuggestionsBuilder suggestionsBuilder,
+											  CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
+	{
+		Item item = findParsedItem();
+		String str = suggestionsBuilder.getRemaining().toLowerCase();
+
+		SuggestionList suggestionList = new SuggestionList();
+		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, null, false);
 		suggestionList.forEach((s) -> s.suggest(suggestionsBuilder));
 
 		cir.setReturnValue(suggestionsBuilder.buildFuture());
@@ -110,7 +126,7 @@ public abstract class ItemParserStateMixin
 		return RegistryUtils.ITEM.get(resLoc);
 	}
 
-	@Unique private CompletableFuture<Suggestions> suggestComponent(SuggestionsBuilder suggestionsBuilder)
+	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder suggestionsBuilder)
 	{
 		ResourceLocation resLoc = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
 		NbtSuggestion component = resLoc != null ? DataComponentManager.componentMap.get("item/" + resLoc) : null;

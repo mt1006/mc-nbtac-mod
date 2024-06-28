@@ -1,7 +1,7 @@
 {
 	"conditions":
 	[
-		{ "path": "Attributes" }
+		{ "path": "attributes" }
 	],
 	
 	"operations":

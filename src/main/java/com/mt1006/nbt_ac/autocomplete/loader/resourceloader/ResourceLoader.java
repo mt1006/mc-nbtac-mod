@@ -39,7 +39,7 @@ public class ResourceLoader implements SimpleResourceReloadListener<Map<Resource
 
 	@Override public ResourceLocation getFabricId()
 	{
-		return new ResourceLocation("nbt_ac", "nbt_ac");
+		return ResourceLocation.fromNamespaceAndPath("nbt_ac", "nbt_ac");
 	}
 
 	@Override public CompletableFuture<Map<ResourceLocation, JsonElement>> load(ResourceManager manager,
