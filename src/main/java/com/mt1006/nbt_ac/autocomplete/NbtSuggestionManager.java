@@ -6,29 +6,39 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.CustomSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
-import com.mt1006.nbt_ac.autocomplete.suggestions.SimpleSuggestion;
-import com.mt1006.nbt_ac.utils.RegistryUtils;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.SpawnEggItem;
+import com.mt1006.nbt_ac.autocomplete.suggestions.RawSuggestion;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class NbtSuggestionManager
 {
-	public static final Map<String, NbtSuggestions> suggestionMap = new HashMap<>();
-	public static final Map<Suggestion, String> subtextMap = new IdentityHashMap<>();
+	private static final Map<String, NbtSuggestions> suggestionMap = new HashMap<>();
+	public static final Map<Suggestion, CustomSuggestion.Data> dataMap = new IdentityHashMap<>();
+	public static boolean hasCustomSuggestions = false;
+
+	// legacy counterpart of dataMap, left on Fabric not to break NBT Editor - NBTac integration
+	public static final Map<Suggestion, String> subtextMap = new LegacyDataMapWrapper();
 
 	public static void add(String key, NbtSuggestions suggestions)
 	{
 		suggestionMap.put(key, suggestions);
 	}
 
-	public static NbtSuggestions get(String key)
+	public static @Nullable NbtSuggestions get(@Nullable String key)
 	{
+		//TODO: check if null check is necessary (1.4)
 		if (key == null) { return null; }
 		return suggestionMap.get(key);
+	}
+
+	public static Set<Map.Entry<String, NbtSuggestions>> suggestionSet()
+	{
+		return suggestionMap.entrySet();
 	}
 
 	public static CompletableFuture<Suggestions> loadFromName(String name, String tag, SuggestionsBuilder suggestionsBuilder, boolean suggestPath)
@@ -46,23 +56,36 @@ public class NbtSuggestionManager
 	{
 		if (!Loader.finished)
 		{
-			NbtSuggestionManager.simpleSuggestion("", "§8[suggestions not loaded]", suggestionsBuilder);
+			NbtSuggestionManager.simpleSuggestion("", "[suggestions not loaded]", suggestionsBuilder);
 			return suggestionsBuilder.buildFuture();
 		}
 
 		String rootName = rootTag != null ? rootTag : (rootSuggestion != null ? rootSuggestion.tag : null);
 
-		List<CustomSuggestion> suggestionList = new ArrayList<>();
-		addToList(suggestionList, suggestions, rootTag);
+		CustomTagParser tagParser = new CustomTagParser(tag, suggestPath ? CustomTagParser.Type.PATH : CustomTagParser.Type.COMPOUND);
+		SuggestionList suggestionList = tagParser.prepareSuggestionList(suggestions, rootTag);
+		CustomTagParser.Suggestion suggestionToShow = tagParser.read(suggestionList, rootSuggestion, rootName);
 
-		CustomTagParser customTagParser = new CustomTagParser(tag);
-		CustomTagParser.Suggestion suggestionToShow = customTagParser.read(suggestionList, rootSuggestion, rootName, suggestPath);
+		return finishSuggestions(suggestionList, suggestionsBuilder, suggestionToShow, tagParser.getCursor());
+	}
 
-		SuggestionsBuilder newSuggestionsBuilder = suggestionsBuilder.createOffset(suggestionsBuilder.getStart() + customTagParser.reader.getCursor());
-
-		if (suggestionToShow == CustomTagParser.Suggestion.TAG)
+	public static CompletableFuture<Suggestions> finishSuggestions(SuggestionList suggestionList, SuggestionsBuilder suggestionsBuilder,
+																   @Nullable CustomTagParser.Suggestion suggestionToShow, int cursor)
+	{
+		int maxOffset = suggestionsBuilder.getInput().length();
+		int newOffset = suggestionsBuilder.getStart() + cursor;
+		if (newOffset > maxOffset)
 		{
-			suggestionList.forEach((s) -> s.suggest(newSuggestionsBuilder, subtextMap));
+			SuggestionsBuilder errorBuilder = suggestionsBuilder.createOffset(maxOffset);
+			errorBuilder.suggest("_error");
+			return errorBuilder.buildFuture();
+		}
+
+		SuggestionsBuilder newSuggestionsBuilder = suggestionsBuilder.createOffset(newOffset);
+
+		if (suggestionToShow == null || suggestionToShow == CustomTagParser.Suggestion.TAG)
+		{
+			suggestionList.forEach((s) -> s.suggest(newSuggestionsBuilder));
 		}
 		else
 		{
@@ -72,45 +95,35 @@ public class NbtSuggestionManager
 		return newSuggestionsBuilder.buildFuture();
 	}
 
-	public static void addToList(List<CustomSuggestion> suggestionList, @Nullable NbtSuggestions suggestions, @Nullable String rootTag)
-	{
-		if (suggestions != null) { suggestionList.addAll(suggestions.getAll()); }
-
-		for (NbtSuggestions commonSuggestions : getCommonSuggestions(rootTag))
-		{
-			if (commonSuggestions != null) { suggestionList.addAll(commonSuggestions.getAll()); }
-		}
-	}
-
 	public static void simpleSuggestion(String text, String subtext, SuggestionsBuilder suggestionsBuilder)
 	{
-		new SimpleSuggestion(text, subtext).suggest(suggestionsBuilder, subtextMap);
+		new RawSuggestion(text, subtext).suggest(suggestionsBuilder);
 	}
 
-	public static String getSubtext(Suggestion suggestion)
+	public static @Nullable String getSubtext(Suggestion suggestion)
 	{
-		return subtextMap.get(suggestion);
+		CustomSuggestion.Data data = dataMap.get(suggestion);
+		return data != null ? data.subtext : null;
 	}
 
-	private static List<@Nullable NbtSuggestions> getCommonSuggestions(@Nullable String tag)
+	public static void clearProvided()
 	{
-		if (tag == null) { return Collections.emptyList(); }
-		List<NbtSuggestions> list = new ArrayList<>();
+		dataMap.clear();
+		subtextMap.clear();
+		hasCustomSuggestions = false;
+	}
 
-		if (tag.startsWith("item/"))
+	public static class LegacyDataMapWrapper extends HashMap<Suggestion, String>
+	{
+		@Override public String put(Suggestion key, String value)
 		{
-			if (RegistryUtils.ITEM.get(tag.substring(5)) instanceof BlockItem) { list.add(get("common/block_item")); }
-			if (RegistryUtils.ITEM.get(tag.substring(5)) instanceof SpawnEggItem) { list.add(get("common/spawn_egg_item")); }
-			list.add(get("common/item"));
+			dataMap.put(key, new CustomSuggestion.Data(value, 0, false));
+			return value;
 		}
-		else if (tag.startsWith("block/"))
+
+		@Override public String remove(Object key)
 		{
-			list.add(get("common/block"));
+			return dataMap.remove(key).subtext;
 		}
-		else if (tag.startsWith("entity/"))
-		{
-			list.add(get("common/entity"));
-		}
-		return list;
 	}
 }

@@ -1,0 +1,5 @@
+{
+	"id": "item/minecraft:intangible_projectile",
+	"type": "compound",
+	"subtype": "empty_compound"
+}

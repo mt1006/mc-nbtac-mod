@@ -1,0 +1,6 @@
+{
+	"id": "item/minecraft:block_entity_data",
+	"type": "compound",
+	"subtype": "tag_with_id/block/*",
+	"with": "#parent/#root"
+}

@@ -1,5 +1,34 @@
-===Version 1.2.1===
+===Version 1.3===
+-Added support for item components on versions 1.20.6 and 1.21.
+-Added support for JSON text components both as strings inside NBT or item data or as standalone arguments, e.g. in "/tellraw" command (suggested by epicgamerjamer).
+-Multiple improvements and fixes to NBT tag/path parser.
+-Added "Gossips" villager tag suggestions.
+-Added "CustomPotionEffects" tripped arrow tag suggestions (thanks to GoldenTotem for reporting).
+-Multiple other minor improvements to suggestions.
+-Added "tag_quotation_marks" (false by default) and "string_quotation_marks" (false by default) settings.
+-Added "default_quotation_mark_type" (2 by default) setting.
+-Added "json_string_suggestion" (1 by default) setting.
+-Added "hide_mc_namespace_in_tags" (true by default) and "hide_mc_namespace_in_strings" (false by default) settings.
+-Added "custom_sorting" (true by default) setting.
+-Added "mark_recommended", "recommended_at_the_top", "mark_irrelevant" and "gray_out_irrelevant" settings (all true by default).
+-Added "placing_of_irrelevant" (1 by default) setting.
+-Added "hide_mc_namespace_in_components" (true by default) setting on versions 1.20.6 and 1.21.
+-Added "show_custom_data_as_relevant" and "show_custom_model_data_as_relevant" (both false by default) settings on versions 1.20.6 and 1.21.
+-Added "allowBlockEntityExtraction" (true by default) setting (I'll fix naming convention issue in some future patch).
+-Renamed setting "show_tag_types" to "show_tag_hints" to better describe what it's actually doing.
 -Setting "debug_config_screen" now shows config screen after closing realms screen, instead of replacing it.
+-Predictions are now marked with "P" instead of "*".
+-Replaced angle brackets with round brackets in player inventory slot suggestions.
+-Version information is no longer sent to logs during startup.
+-Updated nbt_ac_suggestions resource format.
+-Minor improvements to translations.
+-Fixed issues with tag suggestions when tag contained characters not allowed in an unquoted string.
+-Fixed unknown setting inside a configuration file causing all settings occurring after it to be reset to their default state.
+
+===Version 1.2.1===
+-Added "CanPlaceOn" block item tag suggestion (thanks to xllifi for reporting).
+-Added block id suggestions for "CanDestroy" and "CanPlaceOn" tags.
+-Added "Damage" damageable item tag suggestion.
 -Minor improvements to translations.
 
 ===Version 1.2===
@@ -14,6 +43,12 @@
 -Fixed issues with saving sorted suggestions using "save_suggestions" debug option.
 -Fixed "use_new_thread" not working properly when set to false on Fabric.
 -Fixed crash on Fabric when using pistons with ModernFix, More Culling and Lithium all installed and ModernFix's dynamic resources enabled (thanks to LoadingX2 for reporting).
+
+===Version 1.1.9===
+-Added "CanPlaceOn" block item tag suggestion (backported from 1.2.1).
+-Added block id suggestions for "CanDestroy" and "CanPlaceOn" tags (backported from 1.2.1).
+-Added "Damage" damageable item tag suggestion (backported from 1.2.1).
+-Added "CustomPotionEffects" tripped arrow tag suggestions (backported from 1.3).
 
 ===Version 1.1.8===
 -Fixed possible crash on startup when installed with Quilt, clientcommands and ViaFabricPlus, all at the same time (thanks to SinedKadis for reporting).

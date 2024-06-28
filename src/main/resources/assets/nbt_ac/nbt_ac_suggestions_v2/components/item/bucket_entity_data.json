@@ -1,0 +1,57 @@
+{
+	"id": "item/minecraft:bucket_entity_data",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "NoAI",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "Silent",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "NoGravity",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "Glowing",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "Invulnerable",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "Health",
+			"type": "float"
+		},
+
+		{
+			"tag": "Age",
+			"type": "int"
+		},
+
+		{
+			"tag": "Variant",
+			"type": "int"
+		},
+
+		{
+			"tag": "HuntingCooldown",
+			"type": "long"
+		},
+
+		{
+			"tag": "BucketVariantTag",
+			"type": "int"
+		}
+	]
+}

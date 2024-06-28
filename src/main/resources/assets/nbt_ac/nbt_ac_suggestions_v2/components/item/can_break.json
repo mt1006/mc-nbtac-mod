@@ -1,0 +1,19 @@
+{
+	"id": "item/minecraft:can_break",
+	"type": "compound",
+	"always_relevant": true,
+
+	"tags":
+	[
+		{
+			"tag": "predicates",
+			"type": "list/compound",
+			"subtype": "tag/compound/nbt_ac:block_predicate_new"
+		},
+
+		{
+			"tag": "show_in_tooltip",
+			"type": "boolean"
+		}
+	]
+}

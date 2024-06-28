@@ -1,0 +1,27 @@
+{
+	"id": "compound/nbt_ac:map_decoration",
+
+	"tags":
+	[
+		{
+			"tag": "type",
+			"type": "string",
+			"subtype": "map_decoration_type"
+		},
+
+		{
+			"tag": "x",
+			"type": "double"
+		},
+
+		{
+			"tag": "z",
+			"type": "double"
+		},
+
+		{
+			"tag": "rotation",
+			"type": "float"
+		}
+	]
+}

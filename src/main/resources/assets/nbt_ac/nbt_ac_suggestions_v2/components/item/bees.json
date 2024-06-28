@@ -1,0 +1,23 @@
+{
+	"id": "item/minecraft:bees",
+	"type": "list/compound",
+
+	"tags":
+	[
+		{
+			"tag": "entity_data",
+			"type": "compound",
+			"subtype": "tag_with_id/entity/minecraft:bee"
+		},
+
+		{
+			"tag": "min_ticks_in_hive",
+			"type": "int"
+		},
+
+		{
+			"tag": "ticks_in_hive",
+			"type": "int"
+		}
+	]
+}

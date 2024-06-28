@@ -53,7 +53,8 @@ public class TypeCache
 
 	private static String genInstanceId()
 	{
-		String modVersionTag = String.format("%s/%s/%s;", NBTac.FOR_LOADER, NBTac.FOR_VERSION, NBTac.VERSION);
+		String modVersionTag = String.format("%s/%s/%s/%s;",
+				NBTac.FOR_LOADER, NBTac.FOR_VERSION, NBTac.VERSION, CacheFile.MAX_RADIX);
 		StringBuilder builder = new StringBuilder(modVersionTag);
 		TreeSet<String> mods = new TreeSet<>();
 

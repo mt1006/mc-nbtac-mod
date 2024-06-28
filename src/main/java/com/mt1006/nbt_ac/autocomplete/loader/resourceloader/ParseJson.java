@@ -5,9 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mt1006.nbt_ac.NBTac;
+import com.mt1006.nbt_ac.autocomplete.DataComponentManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
+import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestionSubtype;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,38 +17,33 @@ public class ParseJson
 {
 	public static void parseAll()
 	{
-		parseCommon();
 		parseTags();
+		parseComponents();
 		parsePredictions();
-	}
-
-	private static void parseCommon()
-	{
-		for (Pair<String, JsonObject> common : ResourceLoader.common)
-		{
-			try
-			{
-				parseObject(common.getLeft(), common.getRight());
-			}
-			catch (Exception exception)
-			{
-				NBTac.LOGGER.warn("Failed to parse common: " + common.getLeft());
-			}
-		}
 	}
 
 	private static void parseTags()
 	{
-		for (Pair<String, JsonObject> tag : ResourceLoader.tags)
+		for (ResourceLoader.TagStructure tag : ResourceLoader.tags)
 		{
 			try
 			{
-				parseObject(tag.getLeft(), tag.getRight());
+				parseObject(tag.id, tag.applyTo, tag.tags, true);
 			}
-			catch (Exception exception)
+			catch (Exception exception) { NBTac.LOGGER.warn("Failed to parse tag: {}", tag.id); }
+		}
+	}
+
+	private static void parseComponents()
+	{
+		for (ResourceLoader.ComponentStructure component : ResourceLoader.components)
+		{
+			try
 			{
-				NBTac.LOGGER.warn("Failed to parse tag: " + tag.getLeft());
+				parseComponent(component.getId(), component.type, component.subtype,
+						component.with, component.alwaysRelevant, component.getTags());
 			}
+			catch (Exception exception) { NBTac.LOGGER.warn("Failed to parse component: {}", component.getId()); }
 		}
 	}
 
@@ -58,29 +55,40 @@ public class ParseJson
 			{
 				new Prediction(prediction).execute();
 			}
-			catch (Exception exception)
-			{
-				NBTac.LOGGER.warn("Failed to parse prediction!");
-			}
+			catch (Exception exception) { NBTac.LOGGER.warn("Failed to parse prediction!"); }
 		}
 	}
 
-	private static NbtSuggestions parseObject(@Nullable String name, JsonObject jsonObject)
+	private static void parseComponent(String id, String typeString, @Nullable String subtypeString,
+									   @Nullable String with, boolean alwaysRelevant, @Nullable JsonArray tags)
 	{
-		NbtSuggestions nbtSuggestions = new NbtSuggestions();
+		Pair<NbtSuggestion.Type, NbtSuggestion.Type> type = parseType(typeString);
+		Pair<NbtSuggestionSubtype, String> subtype = parseSubtype(subtypeString);
+		NbtSuggestions suggestions = tags != null ? parseObject(null, null, tags, false) : null;
 
-		JsonElement suggestions = jsonObject.get("suggestions");
-		if (!(suggestions instanceof JsonArray)) { return null; }
+		NbtSuggestion component = new NbtSuggestion(id, type.getLeft(), NbtSuggestion.Source.DEFAULT, type.getRight());
+		component.subtype = subtype.getLeft();
+		component.subtypeData = subtype.getRight();
+		component.subcompound = suggestions;
+		component.subtypeWith = with;
+		if (alwaysRelevant) { component.setAlwaysRelevant(); }
 
-		for (JsonElement jsonElement : suggestions.getAsJsonArray())
+		DataComponentManager.componentMap.put(id, component);
+	}
+
+	private static NbtSuggestions parseObject(@Nullable String id, @Nullable JsonArray applyTo,
+											  JsonArray tags, boolean allowPredictions)
+	{
+		NbtSuggestions nbtSuggestions = new NbtSuggestions(allowPredictions);
+
+		for (JsonElement tag : tags)
 		{
-			if (jsonElement instanceof JsonObject) { parseSuggestion((JsonObject)jsonElement, nbtSuggestions); }
+			if (tag instanceof JsonObject) { parseTag((JsonObject)tag, nbtSuggestions, allowPredictions); }
 		}
 
-		JsonElement tags = jsonObject.get("tags");
-		if (tags instanceof JsonArray)
+		if (applyTo != null)
 		{
-			for (JsonElement tagElement : (JsonArray)tags)
+			for (JsonElement tagElement : applyTo)
 			{
 				if (tagElement instanceof JsonPrimitive && ((JsonPrimitive)tagElement).isString())
 				{
@@ -89,52 +97,15 @@ public class ParseJson
 			}
 		}
 
-		if (name != null)
-		{
-			if (name.startsWith("tag/")) { NbtSuggestionManager.add(name.substring(4), nbtSuggestions); }
-			else if (name.startsWith("common/")) { NbtSuggestionManager.add(name, nbtSuggestions); }
-		}
+		if (id != null) { NbtSuggestionManager.add(id, nbtSuggestions); }
 		return nbtSuggestions;
 	}
 
-	private static void parseSuggestion(JsonObject suggestion, NbtSuggestions nbtSuggestions)
+	private static void parseTag(JsonObject suggestion, NbtSuggestions nbtSuggestions, boolean allowPredictions)
 	{
 		String tag = suggestion.get("tag").getAsString();
-		String typeString = suggestion.get("type").getAsString();
-
-		NbtSuggestion.Type type, listType;
-
-		int typeSlashPos = typeString.indexOf('/');
-		if (typeSlashPos == -1)
-		{
-			type = NbtSuggestion.Type.fromName(typeString);
-			listType = NbtSuggestion.Type.UNKNOWN;
-		}
-		else
-		{
-			type = NbtSuggestion.Type.fromName(typeString.substring(0, typeSlashPos));
-			listType = NbtSuggestion.Type.fromName(typeString.substring(typeSlashPos + 1));
-		}
-
-		NbtSuggestion.Subtype subtype = NbtSuggestion.Subtype.NONE;
-		String subtypeData = null;
-
-		JsonElement subtypeElement = suggestion.get("subtype");
-		if (subtypeElement instanceof JsonPrimitive && ((JsonPrimitive)subtypeElement).isString())
-		{
-			String subtypeString = subtypeElement.getAsString();
-			int subtypeSlashPos = subtypeString.indexOf('/');
-
-			if (subtypeSlashPos == -1)
-			{
-				subtype = NbtSuggestion.Subtype.fromName(subtypeString);
-			}
-			else
-			{
-				subtype = NbtSuggestion.Subtype.fromName(subtypeString.substring(0, subtypeSlashPos));
-				subtypeData = subtypeString.substring(subtypeSlashPos + 1);
-			}
-		}
+		Pair<NbtSuggestion.Type, NbtSuggestion.Type> type = parseType(suggestion.get("type").getAsString());
+		Pair<NbtSuggestionSubtype, String> subtype = parseSubtype(suggestion.get("subtype"));
 
 		String withString = null;
 		JsonElement withElement = suggestion.get("with");
@@ -143,18 +114,64 @@ public class ParseJson
 			withString = withElement.getAsString();
 		}
 
-		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type);
-		newSuggestion.listType = listType;
-		newSuggestion.subtype = subtype;
-		newSuggestion.subtypeData = subtypeData;
-		newSuggestion.subtypeWith = withString;
-
-		JsonElement subcompoundElement = suggestion.get("subcompound");
-		if (subcompoundElement instanceof JsonObject)
+		boolean recommended = false;
+		JsonElement recommendedElement  = suggestion.get("recommended");
+		if (recommendedElement instanceof JsonPrimitive && ((JsonPrimitive)recommendedElement).isBoolean())
 		{
-			newSuggestion.subcompound = parseObject(null, (JsonObject)subcompoundElement);
+			recommended = recommendedElement.getAsBoolean();
+		}
+
+		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type.getLeft());
+		newSuggestion.listType = type.getRight();
+		newSuggestion.subtype = subtype.getLeft();
+		newSuggestion.subtypeData = subtype.getRight();
+		newSuggestion.subtypeWith = withString;
+		newSuggestion.recommended = recommended;
+
+		JsonElement subcompoundElement = suggestion.get("tags");
+		if (subcompoundElement instanceof JsonArray)
+		{
+			newSuggestion.subcompound = parseObject(null, null, (JsonArray)subcompoundElement, allowPredictions);
 		}
 
 		nbtSuggestions.add(newSuggestion);
+	}
+
+	public static Pair<NbtSuggestion.Type, NbtSuggestion.Type> parseType(String typeString)
+	{
+		int typeSlashPos = typeString.indexOf('/');
+		if (typeSlashPos == -1)
+		{
+			return Pair.of(NbtSuggestion.Type.fromName(typeString), NbtSuggestion.Type.UNKNOWN);
+		}
+		else
+		{
+			return Pair.of(NbtSuggestion.Type.fromName(typeString.substring(0, typeSlashPos)),
+					NbtSuggestion.Type.fromName(typeString.substring(typeSlashPos + 1)));
+		}
+	}
+
+	private static Pair<NbtSuggestionSubtype, String> parseSubtype(@Nullable JsonElement subtypeElement)
+	{
+		String subtypeString = (subtypeElement instanceof JsonPrimitive && ((JsonPrimitive)subtypeElement).isString())
+				? subtypeElement.getAsString()
+				: null;
+		return parseSubtype(subtypeString);
+	}
+
+	private static Pair<NbtSuggestionSubtype, String> parseSubtype(@Nullable String subtypeString)
+	{
+		if (subtypeString == null) { return Pair.of(NbtSuggestionSubtype.NONE, null); }
+		int subtypeSlashPos = subtypeString.indexOf('/');
+
+		if (subtypeSlashPos == -1)
+		{
+			return Pair.of(NbtSuggestionSubtype.fromName(subtypeString), null);
+		}
+		else
+		{
+			return Pair.of(NbtSuggestionSubtype.fromName(subtypeString.substring(0, subtypeSlashPos)),
+					subtypeString.substring(subtypeSlashPos + 1));
+		}
 	}
 }

@@ -1,0 +1,49 @@
+{
+	"id": "compound/nbt_ac:attributes",
+
+	"tags":
+	[
+		{
+			"tag": "Name",
+			"type": "string",
+			"subtype": "registry_key/minecraft:attribute",
+			"recommended": true
+		},
+
+		{
+			"tag": "Base",
+			"type": "double",
+			"recommended": true
+		},
+
+		{
+			"tag": "Modifiers",
+			"type": "list/compound",
+
+			"tags":
+			[
+				{
+					"tag": "Name",
+					"type": "string"
+				},
+
+				{
+					"tag": "Amount",
+					"type": "double"
+				},
+
+				{
+					"tag": "Operation",
+					"type": "int",
+					"subtype": "described_enum/0;add;1;multiply_base;2;multiply"
+				},
+
+				{
+					"tag": "UUID",
+					"type": "uuid",
+					"subtype": "random_uuid"
+				}
+			]
+		}
+	]
+}

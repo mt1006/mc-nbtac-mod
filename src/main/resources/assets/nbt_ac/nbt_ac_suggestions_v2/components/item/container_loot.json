@@ -1,0 +1,19 @@
+{
+	"id": "item/minecraft:container_loot",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "loot_table",
+			"type": "string",
+			"subtype": "loot_table"
+		},
+
+		{
+			"tag": "seed",
+			"type": "long",
+			"subtype": "long_seed"
+		}
+	]
+}

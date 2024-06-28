@@ -48,6 +48,7 @@ public class ArgumentCommandNodeMixin
 		clientcommand issue: https://github.com/Earthcomputer/clientcommands/issues/547
 		NBT Autocomplete issue: https://github.com/mt1006/mc-nbtac-mod/issues/15
 	 */
+	//TODO: remove after abandoning 1.20.1
 	@Inject(method = "isValidInput", at = @At(value = "HEAD"), cancellable = true, remap = false)
 	private void atIsValidInput(String input, CallbackInfoReturnable<Boolean> cir)
 	{

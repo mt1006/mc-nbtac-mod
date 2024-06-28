@@ -1,0 +1,18 @@
+{
+	"id": "item/minecraft:container",
+	"type": "list/compound",
+
+	"tags":
+	[
+		{
+			"tag": "item",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "slot",
+			"type": "int"
+		}
+	]
+}
