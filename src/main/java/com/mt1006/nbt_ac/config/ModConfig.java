@@ -39,7 +39,7 @@ public class ModConfig
 	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
 	public static final ConfigFields.BooleanField useDisassembler = fields.add("use_disassembler", true);
 	public static final ConfigFields.BooleanField loadFromResources = fields.add("load_from_resources", true);
-	public static final ConfigFields.BooleanField allowBlockEntityExtraction = fields.add("allowBlockEntityExtraction", true);
+	public static final ConfigFields.BooleanField allowBlockEntityExtraction = fields.add("allow_block_entity_extraction", true);
 	public static final ConfigFields.BooleanField useCache = fields.add("use_cache", true);
 	public static final ConfigFields.IntegerField maxCachedInstances = fields.add("max_cached_instances", 32);
 
