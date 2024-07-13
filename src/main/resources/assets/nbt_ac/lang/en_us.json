@@ -107,8 +107,8 @@
   "nbt_ac.options.field.load_from_resources": "Load From Resources",
   "nbt_ac.options.field.load_from_resources.desc": "Loads suggestions from resource files (required to load item tags and tag predictions).",
 
-  "nbt_ac.options.field.allowBlockEntityExtraction": "Allow Block Entity Extraction",
-  "nbt_ac.options.field.allowBlockEntityExtraction.desc": "Allows for usage of block entity extraction method (similar to one used by disassembler) after suggestions are loaded.",
+  "nbt_ac.options.field.allow_block_entity_extraction": "Allow Block Entity Extraction",
+  "nbt_ac.options.field.allow_block_entity_extraction.desc": "Allows for usage of block entity extraction method (similar to one used by disassembler) after suggestions are loaded.",
 
   "nbt_ac.options.field.use_cache": "Use Cache",
   "nbt_ac.options.field.use_cache.desc": "Enables suggestion caching.",
