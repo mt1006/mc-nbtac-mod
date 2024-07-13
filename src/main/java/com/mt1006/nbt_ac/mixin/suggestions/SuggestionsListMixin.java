@@ -55,9 +55,13 @@ public abstract class SuggestionsListMixin
 	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawShadow(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/lang/String;FFI)I"), index = 4)
 	private int modifyTextColor(int color)
 	{
-		if (!NbtSuggestionManager.hasCustomSuggestions || !ModConfig.grayOutIrrelevant.val) { return color; }
+		if (!NbtSuggestionManager.hasCustomSuggestions || !ModConfig.grayOutIrrelevant.val || suggestionList.isEmpty())
+		{
+			return color;
+		}
 
-		CustomSuggestion.Data data = NbtSuggestionManager.dataMap.get(suggestionList.get(renderLoopI + offset));
+		int suggestionPos = Mth.clamp(renderLoopI + offset, 0, suggestionList.size() - 1);
+		CustomSuggestion.Data data = NbtSuggestionManager.dataMap.get(suggestionList.get(suggestionPos));
 		renderLoopI++;
 
 		if (data == null || data.priority >= 0) { return color; }
