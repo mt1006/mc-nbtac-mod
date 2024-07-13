@@ -107,8 +107,8 @@
   "nbt_ac.options.field.load_from_resources": "Ładuj z zasobów",
   "nbt_ac.options.field.load_from_resources.desc": "Ładuje sugestie z plików zasobów (wymagane aby załadować tagi przedmiotów i przewidywania tagów).",
 
-  "nbt_ac.options.field.allowBlockEntityExtraction": "Zezwalaj na ekstrakcję bytów bloków",
-  "nbt_ac.options.field.allowBlockEntityExtraction.desc": "Zezwala na użycie metody ekstrakcji bytów bloków (podobnej do tej używanej przez disassemblera) po załadowaniu sugestii.",
+  "nbt_ac.options.field.allow_block_entity_extraction": "Zezwalaj na ekstrakcję bytów bloków",
+  "nbt_ac.options.field.allow_block_entity_extraction.desc": "Zezwala na użycie metody ekstrakcji bytów bloków (podobnej do tej używanej przez disassemblera) po załadowaniu sugestii.",
 
   "nbt_ac.options.field.use_cache": "Użyj cache",
   "nbt_ac.options.field.use_cache.desc": "Włącza cache sugestii.",

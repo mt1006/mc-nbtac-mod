@@ -78,7 +78,7 @@ public abstract class ItemParserStateMixin
 
 		SuggestionList suggestionList = new SuggestionList();
 		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, null, true);
-		if (str.isEmpty() || str.equals("!")) { suggestionList.addRaw("!", "(remove component)", 200); }
+		if (str.isEmpty() || str.equals("!")) { suggestionList.addRaw("!", "(remove component)", 80); }
 		suggestionList.forEach((s) -> s.suggest(suggestionsBuilder));
 
 		cir.setReturnValue(suggestionsBuilder.buildFuture());
