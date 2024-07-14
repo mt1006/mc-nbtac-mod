@@ -6,7 +6,6 @@
   "client":
   [
     "suggestions.SuggestionsListMixin",
-    "suggestions.CommandDispatcherMixin",
     "suggestions.arguments.ComponentArgumentMixin",
     "suggestions.arguments.CompoundTagArgumentMixin",
     "suggestions.arguments.NbtPathArgumentMixin",
