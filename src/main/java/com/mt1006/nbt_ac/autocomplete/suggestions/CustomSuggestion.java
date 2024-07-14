@@ -84,6 +84,8 @@ public abstract class CustomSuggestion
 
 		if (!ModConfig.showTagHints.val) { return; }
 
+		NbtSuggestionManager.clearIfNeeded(suggestionsBuilder);
+
 		Suggestion lastAdded = getLastAddedSuggestion(suggestionsBuilder);
 		if (lastAdded != null) { NbtSuggestionManager.dataMap.put(lastAdded, new Data(subtext, priority, isEmptySuggestion)); }
 		NbtSuggestionManager.hasCustomSuggestions = true;
