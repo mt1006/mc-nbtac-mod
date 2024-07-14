@@ -3,7 +3,7 @@
 
 ===Version 1.3.1===
 -Added "CustomPotionColor" tripped arrow tag suggestions (thanks to GoldenTotem for reporting).
--Remove component symbol ("!") is no longer marked as recommended suggestion on version 1.21
+-Remove component symbol ("!") is no longer marked as recommended suggestion on version 1.21.
 -Renamed "allowBlockEntityExtraction" setting to "allow_block_entity_extraction" in order to match naming convention.
 -Fixed crash when scrolling from the bottom of the list with Smooth Scrolling installed (thanks to PovarRavop for reporting).
 
