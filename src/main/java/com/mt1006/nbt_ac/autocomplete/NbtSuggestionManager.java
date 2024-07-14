@@ -7,12 +7,10 @@ import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.CustomSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.RawSuggestion;
+import com.mt1006.nbt_ac.utils.Fields;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class NbtSuggestionManager
@@ -20,6 +18,9 @@ public class NbtSuggestionManager
 	private static final Map<String, NbtSuggestions> suggestionMap = new HashMap<>();
 	public static final Map<Suggestion, CustomSuggestion.Data> dataMap = new IdentityHashMap<>();
 	public static boolean hasCustomSuggestions = false;
+	private static @Nullable SuggestionsBuilder oldBuilder = null;
+	private static @Nullable List<Suggestion> oldSuggestionList = null;
+	private static int suggestionListCounter = 0;
 
 	public static void add(String key, NbtSuggestions suggestions)
 	{
@@ -107,5 +108,39 @@ public class NbtSuggestionManager
 	{
 		dataMap.clear();
 		hasCustomSuggestions = false;
+		suggestionListCounter = 0;
+	}
+
+	public static void clearIfNeeded(SuggestionsBuilder builder)
+	{
+		// prevents memory leak on Forge and NeoForge
+		if (Fields.suggestionsBuilderList == null) { return; }
+
+		try
+		{
+			List<Suggestion> suggestionList = (List<Suggestion>)Fields.suggestionsBuilderList.get(builder);
+			if (oldBuilder != null && (!builder.getInput().equals(oldBuilder.getInput())
+					|| builder.getStart() != oldBuilder.getStart()))
+			{
+				clearProvided();
+			}
+			else if (suggestionList != oldSuggestionList)
+			{
+				/*
+					This counter is used to prevent memory leak when refreshing suggestions with right arrow.
+					It may potentially cause some issues when suggestions are queried multiple times for single list;
+					in such cases using right arrow may cause additional data to be removed.
+					6 is used to prevent this from happening in case of "/tp @p[nbt={" which queries 2 times
+					and should also prevent this in case of suggestions being queried 3 or 6 times.
+				*/
+
+				suggestionListCounter++;
+				if (suggestionListCounter >= 6) { clearProvided(); }
+			}
+
+			oldBuilder = builder;
+			oldSuggestionList = suggestionList;
+		}
+		catch (Exception ignore) {}
 	}
 }

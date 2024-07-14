@@ -250,7 +250,8 @@ public class Disassembly
 	private static boolean isHiddenTag(String tag)
 	{
 		return (ModConfig.hideForgeTags.val
-				&& (tag.equals("ForgeCaps") || tag.equals("ForgeData") || tag.startsWith("forge:")));
+				&& (tag.equals("ForgeCaps") || tag.equals("ForgeData") || tag.startsWith("forge:")
+					|| tag.startsWith("neoforge:") || tag.equals("NeoForgeData")));
 	}
 
 	// Credits to: https://stackoverflow.com/a/48806265/18214530

@@ -2,53 +2,38 @@ plugins
 {
 	id "eclipse"
 	id "idea"
-	id "net.minecraftforge.gradle" version "[6.0.24,6.2)"
-	id "org.spongepowered.mixin" version "0.7.+"
-	id "org.parchmentmc.librarian.forgegradle" version "1.+"
+	id "net.neoforged.gradle.userdev" version "7.0.145"
 }
 
 version = mod_version
 group = mod_group_id
 
+repositories { mavenLocal() }
 base
 {
-	archivesName = "${mod_jar_name}-FORGE-${minecraft_version}"
+	archivesName = "${mod_jar_name}-NEOFORGE-${minecraft_version}"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-minecraft
+runs
 {
-	mappings channel: mapping_channel, version: mapping_version
-	reobf = false
-	copyIdeResources = true
-
-	runs
+	configureEach
 	{
-		configureEach
-		{
-			workingDirectory project.file("run")
-			property "forge.logging.markers", "REGISTRIES"
-			property "forge.logging.console.level", "debug"
-		}
-
-		client { property "forge.enabledGameTestNamespaces", mod_id }
-		server { property "forge.enabledGameTestNamespaces", mod_id }
+		systemProperty "forge.logging.markers", "REGISTRIES"
+		systemProperty "forge.logging.console.level", "debug"
+		modSource project.sourceSets.main
 	}
+
+	client { systemProperty "forge.enabledGameTestNamespaces", mod_id }
+	server { systemProperty "forge.enabledGameTestNamespaces", mod_id }
 }
 
 sourceSets.main.resources { srcDir "src/generated/resources" }
 
 dependencies
 {
-	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-	implementation("net.sf.jopt-simple:jopt-simple:5.0.4") { version { strictly "5.0.4" } }
-	annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-}
-
-mixin
-{
-	config "mixins.${mod_id}.json"
+	implementation "net.neoforged:neoforge:${neoforge_version}"
 }
 
 tasks.named("processResources", ProcessResources).configure
@@ -56,7 +41,7 @@ tasks.named("processResources", ProcessResources).configure
 	var replaceProperties =
 	[
 		minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-		forge_version: forge_version, forge_version_range: forge_version_range,
+		neoforge_version: neoforge_version, neoforge_version_range: neoforge_version_range,
 		loader_version_range: loader_version_range,
 		mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
 		mod_authors: mod_authors, mod_description: mod_description,
@@ -64,24 +49,16 @@ tasks.named("processResources", ProcessResources).configure
 	]
 	inputs.properties replaceProperties
 
-	filesMatching(["META-INF/mods.toml", "pack.mcmeta"]) { expand replaceProperties + [project: project] }
-}
-
-tasks.named("jar", Jar).configure
-{
-	manifest
-	{
-		attributes(["MixinConfigs": "mixins.${mod_id}.json"])
-	}
+	filesMatching(["META-INF/neoforge.mods.toml"]) { expand replaceProperties }
 }
 
 tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
 
-eclipse { synchronizationTasks "genEclipseRuns" }
-
-sourceSets.each
+idea
 {
-	def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-	it.output.resourcesDir = dir
-	it.java.destinationDirectory = dir
+	module
+	{
+		downloadSources = true
+		downloadJavadoc = true
+	}
 }

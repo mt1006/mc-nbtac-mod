@@ -6,7 +6,6 @@
   "client":
   [
     "suggestions.SuggestionsListMixin",
-    "suggestions.CommandDispatcherMixin",
     "suggestions.arguments.ComponentArgumentMixin",
     "suggestions.arguments.CompoundTagArgumentMixin",
     "suggestions.arguments.NbtPathArgumentMixin",
@@ -27,6 +26,5 @@
     "fields.DecoratedPotPatternsFields",
     "misc.RealmsMainScreenMixin"
   ],
-  "injectors": { "defaultRequire": 1 },
-  "refmap": "mixins.nbt_ac.refmap.json"
+  "injectors": { "defaultRequire": 1 }
 }

@@ -3,8 +3,8 @@ package com.mt1006.nbt_ac.autocomplete.loader.cache;
 import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.IModInfo;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforgespi.language.IModInfo;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.jetbrains.annotations.Nullable;
 
