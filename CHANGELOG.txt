@@ -1,3 +1,6 @@
+===Version 1.3.3===
+-Fixed compatibility issue on Fabric with Lithium BlockEntity ticking cache (thanks to Kichura for reporting).
+
 ===Version 1.3.2===
 -Fixed memory leak on Forge.
 
