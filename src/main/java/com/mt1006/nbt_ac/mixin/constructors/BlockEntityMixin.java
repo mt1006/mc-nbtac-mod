@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BlockEntity.class)
 public class BlockEntityMixin
 {
-	@Inject(method = "<init>", at = @At(value = "RETURN"))
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;validateBlockState(Lnet/minecraft/world/level/block/state/BlockState;)V"))
 	private void atConstructor(BlockEntityType<?> blockEntityType, BlockPos blockPos,
 							   BlockState blockState, CallbackInfo ci) throws Exception
 	{
