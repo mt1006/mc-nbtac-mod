@@ -4,7 +4,7 @@
 	"version": "${version}",
 
 	"name": "NBT Autocomplete",
-	"description": "Adds suggestions for NBT tags",
+	"description": "Adds suggestions for NBT tags.",
 	"authors": ["mt1006"],
 	"contact":
 	{

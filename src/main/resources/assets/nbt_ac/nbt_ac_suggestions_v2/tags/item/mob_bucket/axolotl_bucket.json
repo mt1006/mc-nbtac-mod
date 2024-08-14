@@ -10,7 +10,7 @@
 		},
 
 		{
-			"tag": "BucketVariantTag",
+			"tag": "Variant",
 			"type": "int"
 		}
 	]
