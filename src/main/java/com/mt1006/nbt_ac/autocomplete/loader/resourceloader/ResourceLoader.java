@@ -13,10 +13,10 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -26,9 +26,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class ResourceLoader extends SimplePreparableReloadListener<Map<ResourceLocation, JsonElement>>
 {
-	private static final String RESOURCE_DIRECTORY = "nbt_ac_suggestions";
-	public static final List<Pair<String, JsonObject>> common = new ArrayList<>();
-	public static final List<Pair<String, JsonObject>> tags = new ArrayList<>();
+	private static final String RESOURCE_DIRECTORY = "nbt_ac_suggestions_v2";
+	public static final List<TagStructure> tags = new ArrayList<>();
 	public static final List<Pair<JsonArray, JsonArray>> predictions = new ArrayList<>();
 	public static boolean firstCall = true;
 	public static CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -65,28 +64,61 @@ public class ResourceLoader extends SimplePreparableReloadListener<Map<ResourceL
 			try
 			{
 				JsonObject json = resourceEntry.getValue().getAsJsonObject();
-				MutablePair<JsonArray, JsonArray> predictionPair = new MutablePair<>(null, null);
+				MutablePair<JsonArray, JsonArray> predictionPair = new MutablePair<>();
+				TagStructure tagStructure = new TagStructure();
 
 				for (Map.Entry<String, JsonElement> entry : json.entrySet())
 				{
 					String key = entry.getKey();
 					JsonElement value = entry.getValue();
 
-					if (key.equals("conditions")) { predictionPair.left = value.getAsJsonArray(); }
-					else if (key.equals("operations")) { predictionPair.right = value.getAsJsonArray(); }
-					else if (key.startsWith("common/")) { common.add(new ImmutablePair<>(key, value.getAsJsonObject())); }
-					else if (key.startsWith("tag/")) { tags.add(new ImmutablePair<>(key, value.getAsJsonObject())); }
-					else if (key.startsWith("parent/")) { tags.add(new ImmutablePair<>(null, value.getAsJsonObject())); }
+					switch (key)
+					{
+						case "id" -> tagStructure.id = value.getAsString();
+						case "apply_to" -> tagStructure.applyTo = value.getAsJsonArray();
+						case "tags" -> tagStructure.tags = value.getAsJsonArray();
+						case "conditions" -> predictionPair.left = value.getAsJsonArray();
+						case "operations" -> predictionPair.right = value.getAsJsonArray();
+					}
 				}
 
-				if (predictionPair.left != null && predictionPair.right != null) { predictions.add(predictionPair); }
+				if (predictionPair.left != null && predictionPair.right != null)
+				{
+					predictions.add(predictionPair);
+					continue;
+				}
+
+				if (tagStructure.tags == null)
+				{
+					NBTac.LOGGER.warn("Failed to identify the resource: {}", resourceEntry.getKey());
+					continue;
+				}
+
+				if (tagStructure.id == null)
+				{
+					String path = resourceEntry.getKey().getPath();
+					if (!path.startsWith("tags/"))
+					{
+						NBTac.LOGGER.warn("Suggestion without ID outside of \"tags/\" directory: {}", resourceEntry.getKey());
+						continue;
+					}
+					tagStructure.id = path.substring(5);
+				}
+				tags.add(tagStructure);
 			}
 			catch (Exception exception)
 			{
-				NBTac.LOGGER.warn("Failed to load resource: " + resourceEntry.getKey().toString());
+				NBTac.LOGGER.warn("Failed to load the resource: {}", resourceEntry.getKey());
 			}
 		}
 
 		countDownLatch.countDown();
+	}
+
+	public static class TagStructure
+	{
+		public String id;
+		public @Nullable JsonArray applyTo;
+		public JsonArray tags;
 	}
 }

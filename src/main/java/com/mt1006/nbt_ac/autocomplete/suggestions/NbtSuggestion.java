@@ -1,23 +1,15 @@
 package com.mt1006.nbt_ac.autocomplete.suggestions;
 
 import com.mojang.brigadier.Message;
-import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
+import com.mt1006.nbt_ac.autocomplete.CustomTagParser;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
+import com.mt1006.nbt_ac.autocomplete.SuggestionList;
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
 import com.mt1006.nbt_ac.utils.ComparableLiteralMessage;
-import com.mt1006.nbt_ac.utils.RegistryUtils;
-import com.mt1006.nbt_ac.utils.TagType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.level.block.state.properties.Property;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
@@ -25,47 +17,50 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.analysis.Analyzer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-public class NbtSuggestion extends CustomSuggestion
+public class NbtSuggestion
 {
+	private static final NbtSuggestion DUMMY_COMPOUND = new NbtSuggestion("nbt_ac:dummy", Type.COMPOUND);
+	public static int createdInstanceCounter = 0;
 	public final String tag;
 	public Type type;
 	public Type listType = Type.UNKNOWN;
-	public Subtype subtype = Subtype.NONE;
+	public NbtSuggestionSubtype subtype = NbtSuggestionSubtype.NONE;
 	public @Nullable String subtypeData = null;
 	public @Nullable String subtypeWith = null;
-	public boolean subtypeWithParentTag = false;
 	public @Nullable NbtSuggestions subcompound = null;
-	public SuggestionType suggestionType = SuggestionType.NORMAL;
+	public Source source = Source.DEFAULT;
+	public boolean recommended = false;
 
 	public NbtSuggestion(String tag, Type type)
 	{
 		this.tag = tag;
 		this.type = type;
+		createdInstanceCounter++;
 	}
 
-	public NbtSuggestion(String tag, Type type, SuggestionType suggestionType)
+	public NbtSuggestion(String tag, Type type, Source source)
 	{
 		this(tag, type);
-		this.suggestionType = suggestionType;
+		this.source = source;
 	}
 
-	public NbtSuggestion(String tag, Type type, SuggestionType suggestionType, Type listType)
+	public NbtSuggestion(String tag, Type type, Source source, Type listType)
 	{
-		this(tag, type, suggestionType);
+		this(tag, type, source);
 		this.listType = listType;
 	}
 
 	public NbtSuggestion copy(boolean prediction, NbtSuggestions oldParent, NbtSuggestions newParent)
 	{
-		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type, suggestionType, listType);
+		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type, source, listType);
 		newSuggestion.subtype = subtype;
 		newSuggestion.subtypeData = subtypeData;
+		newSuggestion.subtypeWith = subtypeWith;
+		newSuggestion.recommended = recommended;
 
-		if (prediction) {newSuggestion.changeSuggestionType(SuggestionType.PREDICTION); }
+		if (prediction) {newSuggestion.changeSuggestionSource(Source.PREDICTION); }
 
 		if (subcompound != null)
 		{
@@ -75,329 +70,173 @@ public class NbtSuggestion extends CustomSuggestion
 			}
 			else
 			{
-				newSuggestion.subcompound = new NbtSuggestions();
+				newSuggestion.subcompound = new NbtSuggestions(true);
 				newSuggestion.subcompound.copyAll(subcompound, prediction);
 			}
 		}
 		return newSuggestion;
 	}
 
-	public NbtSuggestions addSubcompound()
+	public boolean hasSubcompound()
 	{
-		subcompound = new NbtSuggestions();
+		return type == Type.COMPOUND || listType == Type.COMPOUND;
+	}
+
+	public NbtSuggestions getSubcompound()
+	{
+		if (subcompound == null) { subcompound = new NbtSuggestions(true); }
 		return subcompound;
 	}
 
-	public <T> boolean getSubtypeSuggestions(List<CustomSuggestion> suggestionList, ParentInfo parentInfo)
+	public boolean getSubtypeSuggestions(SuggestionList suggestionList, ParentInfo parentInfo, CustomTagParser.Type parserType)
 	{
-		String finalData = getFinalSubtypeData(parentInfo);
-
-		switch (subtype)
-		{
-			case ENUM:
-				if (finalData == null) { break; }
-				suggestionList.clear();
-
-				for (String substring : finalData.split(";"))
-				{
-					suggestionList.add(new SimpleSuggestion(substring, null));
-				}
-				return true;
-
-			case DESCRIBED_ENUM:
-				if (finalData == null) { break; }
-				suggestionList.clear();
-
-				String suggestionText = null;
-				for (String substring : finalData.split(";"))
-				{
-					if (suggestionText == null)
-					{
-						suggestionText = substring;
-					}
-					else
-					{
-						suggestionList.add(new SimpleSuggestion(suggestionText, String.format("  §8<%s>", substring)));
-						suggestionText = null;
-					}
-				}
-				return true;
-
-			case REGISTRY_KEY:
-			case REGISTRY_ID:
-				if (finalData == null) { break; }
-
-				try
-				{
-					ResourceLocation registryLocation = new ResourceLocation(finalData);
-					Registry<T> registry = (Registry<T>)RegistryUtils.REGISTRY.get(registryLocation);
-					if (registry == null) { break; }
-
-					suggestionList.clear();
-					if (subtype == Subtype.REGISTRY_ID)
-					{
-						for (T object : registry)
-						{
-							suggestionList.add(new SimpleSuggestion(Integer.toString(registry.getId(object)),
-									"  §8\"" + registry.getKey(object) + "\" [#" + registryLocation.getPath() + "]"));
-						}
-					}
-					else
-					{
-						for (T object : registry)
-						{
-							suggestionList.add(new SimpleSuggestion(
-									"\"" + registry.getKey(object) + "\"", "  §8[#" + registryLocation.getPath() + "]"));
-						}
-					}
-				}
-				catch (Exception ignore) {}
-				return true;
-
-			case RECIPE:
-				ClientLevel level = Minecraft.getInstance().level;
-				if (level == null) { break; }
-
-				for (ResourceLocation id : level.getRecipeManager().getRecipeIds().toArray(ResourceLocation[]::new))
-				{
-					suggestionList.add(new SimpleSuggestion("\"" + id + "\"", null));
-				}
-				return true;
-
-			case JSON_TEXT:
-				suggestionList.clear();
-				suggestionList.add(new SimpleSuggestion("' \"", "  §8[#json_text]"));
-				return true;
-
-			case RANDOM_UUID:
-				suggestionList.clear();
-
-				UUID randomUUID = UUID.randomUUID();
-				int uuidInt0 = (int)randomUUID.getLeastSignificantBits();
-				int uuidInt1 = (int)(randomUUID.getLeastSignificantBits() >>> 32);
-				int uuidInt2 = (int)randomUUID.getMostSignificantBits();
-				int uuidInt3 = (int)(randomUUID.getMostSignificantBits() >>> 32);
-
-				String uuidString = String.format("[I;%d, %d, %d, %d]", uuidInt3, uuidInt2, uuidInt1, uuidInt0);
-				suggestionList.add(new SimpleSuggestion(uuidString, "  §8[#random_uuid]"));
-				return true;
-
-			case INVENTORY_SLOT:
-				suggestionList.clear();
-
-				for (int i = 0; i < 9; i++)
-				{
-					String subtext = String.format("  §8<Hotbar %d> [#inventory_slot]", i + 1);
-					suggestionList.add(new SimpleSuggestion(String.format("%d%s", i, type.suffix), subtext));
-				}
-
-				for (int i = 9; i < 35; i++)
-				{
-					int row = ((i - 9) / 9) + 1;
-					int column = ((i - 9) % 9) + 1;
-					String subtext = String.format("  §8<Storage %d:%d> [#inventory_slot]", row, column);
-					suggestionList.add(new SimpleSuggestion(String.format("%d%s", i, type.suffix), subtext));
-				}
-
-				suggestionList.add(new SimpleSuggestion("100" + type.suffix, "  §8<Feet> [#inventory_slot]"));
-				suggestionList.add(new SimpleSuggestion("101" + type.suffix, "  §8<Legs> [#inventory_slot]"));
-				suggestionList.add(new SimpleSuggestion("102" + type.suffix, "  §8<Chest> [#inventory_slot]"));
-				suggestionList.add(new SimpleSuggestion("103" + type.suffix, "  §8<Head> [#inventory_slot]"));
-				suggestionList.add(new SimpleSuggestion("-106" + type.suffix, "  §8<Off-hand> [#inventory_slot]"));
-				return true;
-		}
-
-		return false;
+		return subtype.getSubtypeSuggestions(this, suggestionList, getFinalSubtypeData(parentInfo), parserType);
 	}
 
-	public <T extends Comparable<T>> void getSubtypeTagSuggestions(List<CustomSuggestion> suggestionList, ParentInfo parentInfo)
+	public void getSubtypeTagSuggestions(SuggestionList suggestionList, ParentInfo parentInfo, CustomTagParser.Type parserType)
 	{
-		String finalData = getFinalSubtypeData(parentInfo);
-
-		switch (subtype)
-		{
-			case TAG:
-				if (finalData == null) { break; }
-				finalData = finalData.replace("block/item/", "block/");
-				finalData = finalData.replace("entity/item/", "entity/");
-
-				NbtSuggestions tagSuggestions = NbtSuggestionManager.get(finalData);
-				NbtSuggestionManager.addToList(suggestionList, tagSuggestions, finalData);
-				break;
-
-			case BLOCK_STATE_TAG:
-				try
-				{
-					if (finalData == null) { break; }
-
-					if (finalData.startsWith("block/")) { finalData = finalData.substring(6); }
-					else if (finalData.startsWith("item/")) { finalData = finalData.substring(5); }
-
-					Item blockItem = RegistryUtils.ITEM.get(new ResourceLocation(finalData));
-					if (!(blockItem instanceof BlockItem)) { break; }
-
-					for (Property<?> property : ((BlockItem)blockItem).getBlock().defaultBlockState().getProperties())
-					{
-						NbtSuggestion nbtSuggestion = new NbtSuggestion(property.getName(), NbtSuggestion.Type.STRING);
-						nbtSuggestion.subtype = NbtSuggestion.Subtype.ENUM;
-
-						StringBuilder enumStringBuilder = new StringBuilder();
-						for (T possibleValue : ((Property<T>)property).getPossibleValues())
-						{
-							enumStringBuilder.append("\"").append(((Property<T>)property).getName(possibleValue)).append("\";");
-						}
-						nbtSuggestion.subtypeData = enumStringBuilder.toString();
-
-						suggestionList.add(nbtSuggestion);
-					}
-				}
-				catch (Exception ignore) {}
-				break;
-
-			case SPAWN_EGG:
-				try
-				{
-					if (finalData == null) { break; }
-					if (finalData.startsWith("item/")) { finalData = finalData.substring(5); }
-
-					Item item = RegistryUtils.ITEM.get(new ResourceLocation(finalData));
-					if (item instanceof SpawnEggItem)
-					{
-						String key = RegistryUtils.ENTITY_TYPE.getKey(((SpawnEggItem)item).getType(null)).toString();
-						NbtSuggestions spawnEggSuggestions = NbtSuggestionManager.get("entity/" + key);
-						NbtSuggestionManager.addToList(suggestionList, spawnEggSuggestions, finalData);
-					}
-				}
-				catch (Exception ignore) {}
-				break;
-		}
-	}
-
-	public String getFinalTagName(ParentInfo parentInfo)
-	{
-		String finalData = getFinalSubtypeData(parentInfo);
-
-		if (subtype == Subtype.TAG && finalData != null)
-		{
-			return finalData.replace("block/item/", "block/");
-		}
-		return tag;
+		subtype.getSubtypeTagSuggestions(suggestionList, parentInfo, getFinalSubtypeData(parentInfo), parserType);
 	}
 
 	private @Nullable String getFinalSubtypeData(ParentInfo parentInfo)
 	{
 		if (subtypeWith != null && subtypeData != null && subtypeData.contains("*"))
 		{
-			if (subtypeWith.equals("#parent"))
+			if (subtypeWith.equals("#root"))
 			{
 				if (parentInfo.parentTag == null) { return null; }
 				return subtypeData.replace("*", parentInfo.parentTag);
 			}
-			else if (subtypeWith.equals("#parent2"))
+			else if (subtypeWith.equals("#parent/#root"))
 			{
 				if (parentInfo.secondParentTag == null) { return null; }
 				return subtypeData.replace("*", parentInfo.secondParentTag);
 			}
 			else
 			{
-				Map<String, String> map = subtypeWithParentTag ? parentInfo.parentTagMap : parentInfo.tagMap;
+				boolean useParentMap = subtypeWith.startsWith("#parent/");
+				Map<String, String> map = useParentMap ? parentInfo.parentTagMap : parentInfo.tagMap;
 				if (map == null) { return null; }
 
-				String tagValue = map.get(subtypeWith);
-				if (tagValue == null) { return null; }
+				String finalSubtypeWith = useParentMap ? subtypeWith.substring(8) : subtypeWith;
+				String tagValue = map.get(finalSubtypeWith);
 
-				return subtypeData.replace("*", tagValue);
+				return tagValue != null ? subtypeData.replace("*", tagValue) : null;
 			}
 		}
 		return subtypeData;
 	}
 
-	public void changeSuggestionType(SuggestionType newSuggestionType)
+	public String getFinalTagName(ParentInfo parentInfo)
 	{
-		if (newSuggestionType.level >= suggestionType.level) { suggestionType = newSuggestionType; }
-	}
-
-	@Override public String getSuggestionText()
-	{
-		//TODO: restore after adding custom suggestion sorting
-		/*boolean requiresQuotes = false;
-		for (char c : tag.toCharArray())
+		String finalData = getFinalSubtypeData(parentInfo);
+		if (subtype == NbtSuggestionSubtype.TAG && finalData != null)
 		{
-			if (!StringReader.isAllowedInUnquotedString(c))
-			{
-				requiresQuotes = true;
-				break;
-			}
+			return finalData.replace("block/item/", "block/");
 		}
-
-		return requiresQuotes ? String.format("\"%s\"", tag) : tag;*/
 		return tag;
 	}
 
-	@Override public String getSuggestionSubtext()
+	public void changeSuggestionSource(Source newSource)
 	{
-		return String.format("  §8%s[%s]", suggestionType.symbol, type.getName());
+		if (newSource.level >= source.level) { source = newSource; }
 	}
 
-	@Override public Message getSuggestionTooltip()
+	public static NbtSuggestion getDummyCompound(NbtSuggestions subcompound)
 	{
-		return new ComparableLiteralMessage(String.format("%s§r §8%s[%s]", tag, suggestionType.name, type.getName()));
+		DUMMY_COMPOUND.type = Type.COMPOUND;
+		DUMMY_COMPOUND.subcompound = subcompound;
+		return DUMMY_COMPOUND;
+	}
+
+	public String getSubtext()
+	{
+		return source.symbol + type.symbol;
+	}
+
+	public Message getTooltip()
+	{
+		return new ComparableLiteralMessage(String.format("%s§r §8%s%s", tag, source.name, type.symbol));
+	}
+
+	public void setType(Pair<Type, Type> pair)
+	{
+		type = pair.getLeft();
+		listType = pair.getRight();
+	}
+
+	//TODO: do something about "always relevant" being implemented in such a way
+	public void setAlwaysRelevant()
+	{
+		source = Source.ALWAYS_RELEVANT;
+	}
+
+	public boolean isAlwaysRelevant()
+	{
+		return source == Source.ALWAYS_RELEVANT;
 	}
 
 	public enum Type
 	{
 		NOT_FOUND((byte)-1),
 		UNKNOWN((byte)-1),
+		MULTIPLE((byte)-1),
 		BOOLEAN((byte)-1, "b"),
-		BYTE(TagType.BYTE, "b"),
-		SHORT(TagType.SHORT, "s"),
-		INT(TagType.INT),
-		LONG(TagType.LONG, "l"),
-		FLOAT(TagType.FLOAT, "f"),
-		DOUBLE(TagType.DOUBLE),
-		STRING(TagType.STRING),
-		LIST(TagType.LIST),
-		BYTE_ARRAY(TagType.BYTE_ARRAY),
-		INT_ARRAY(TagType.INT_ARRAY),
-		LONG_ARRAY(TagType.LONG_ARRAY),
-		COMPOUND(TagType.COMPOUND),
+		BYTE(Tag.TAG_BYTE, "b"),
+		SHORT(Tag.TAG_SHORT, "s"),
+		INT(Tag.TAG_INT),
+		LONG(Tag.TAG_LONG, "l"),
+		FLOAT(Tag.TAG_FLOAT, "f"),
+		DOUBLE(Tag.TAG_DOUBLE),
+		STRING(Tag.TAG_STRING),
+		LIST(Tag.TAG_LIST),
+		BYTE_ARRAY(Tag.TAG_BYTE_ARRAY),
+		INT_ARRAY(Tag.TAG_INT_ARRAY),
+		LONG_ARRAY(Tag.TAG_LONG_ARRAY),
+		COMPOUND(Tag.TAG_COMPOUND),
 		UUID((byte)-1);
 
+		private final static Type[] VALUES = values();
 		private static final HashMap<String, Type> nameMap = new HashMap<>();
 		private static final HashMap<String, Type> methodNameMap = new HashMap<>();
 		private static final HashMap<Byte, Type> idMap = new HashMap<>();
 		private final byte id;
+		private final String lowerCaseName;
+		public final String symbol;
 		public final String suffix;
 
 		Type(byte id)
 		{
 			this.id = id;
 			this.suffix = "";
+			this.lowerCaseName = name().toLowerCase();
+			this.symbol = String.format("[%s]", lowerCaseName);
 		}
 
 		Type(byte id, String suffix)
 		{
 			this.id = id;
 			this.suffix = suffix;
+			this.lowerCaseName = name().toLowerCase();
+			this.symbol = String.format("[%s]", lowerCaseName);
 		}
 
 		public String getName()
 		{
-			return name().toLowerCase();
+			return lowerCaseName;
 		}
 
 		public static void init()
 		{
-			for (Type type : values())
+			for (Type type : VALUES)
 			{
-				String typeName = type.getName();
-				nameMap.put(typeName, type);
+				nameMap.put(type.getName(), type);
 				idMap.put(type.id, type);
 			}
 
 			try
 			{
-				ClassNode classNode = Disassembly.loadClass(CompoundTag.class.getCanonicalName());
+				ClassNode classNode = Disassembly.loadClass(CompoundTag.class.getCanonicalName(), null);
 				for (MethodNode method : classNode.methods)
 				{
 					if ((method.access & Opcodes.ACC_PUBLIC) == 0) { continue; }
@@ -479,75 +318,46 @@ public class NbtSuggestion extends CustomSuggestion
 
 		public static Type fromOrdinal(int ordinal)
 		{
-			Type[] types = values();
-			return types.length > ordinal ? types[ordinal] : UNKNOWN;
+			return (ordinal < VALUES.length && ordinal >= 0) ? VALUES[ordinal] : UNKNOWN;
 		}
 	}
 
-	public enum Subtype
+	public enum Source
 	{
-		NONE,               // subtypeData = null
-		ENUM,               // subtypeData = "1;2;\"aaa\""
-		DESCRIBED_ENUM,     // subtypeData = "1;description;2;description;3;;4"
-		TAG,                // subtypeData = "item/minecraft:compass"
-		BLOCK_STATE_TAG,    // subtypeData = "minecraft:chest" (can also start with "block/" or "item/")
-		SPAWN_EGG,          // subtypeData = "minecraft:allay_spawn_egg" (can also start with "item/")
-		REGISTRY_ID,        // subtypeData = "minecraft:mob_effect"
-		REGISTRY_KEY,       // subtypeData = "minecraft:mob_effect"
-		RECIPE,             // subtypeData = null
-		ITEM_COMPOUND,      // subtypeData = null
-		JSON_TEXT,          // subtypeData = null
-		RANDOM_UUID,        // subtypeData = null
-		INVENTORY_SLOT;     // subtypeData = null
-
-		public String getName()
-		{
-			return name().toLowerCase();
-		}
-
-		public static Subtype fromName(String name)
-		{
-			for (Subtype subtype : values())
-			{
-				if (name.equals(subtype.getName())) { return subtype; }
-			}
-			return NONE;
-		}
-	}
-
-	public enum SuggestionType
-	{
-		NORMAL("", "", 0),
+		//TODO: remove compound prediction?
+		DEFAULT("", "", 0),
+		ALWAYS_RELEVANT("", "", 0), // used to mark item components as always relevant
 		UNCERTAIN("(?) ", "(uncertain) ", 1),
 		COMPOUND_PREDICTION("(C) ", "(compound prediction) ", 2),
 		SUBTYPE_PREDICTION("(S) ", "(subtype prediction) ", 3),
 		TYPE_PREDICTION("(T) ", "(type prediction) ", 4),
-		PREDICTION("(*) ", "(prediction) ", 5);
+		PREDICTION("(P) ", "(prediction) ", 5);
 
+		private final static Source[] VALUES = values();
 		public final String symbol;
 		public final String name;
 		public final int level;
 
-		SuggestionType(String symbol, String name, int level)
+		Source(String symbol, String name, int level)
 		{
 			this.symbol = symbol;
 			this.name = name;
 			this.level = level;
 		}
 
-		public static SuggestionType fromOrdinal(int ordinal)
+		public static Source fromOrdinal(int ordinal)
 		{
-			SuggestionType[] types = values();
-			return types.length > ordinal ? types[ordinal] : NORMAL;
+			return (ordinal < VALUES.length && ordinal >= 0) ? VALUES[ordinal] : DEFAULT;
 		}
 	}
 
 	public static class ParentInfo
 	{
-		public @Nullable Map<String, String> tagMap;
-		public @Nullable Map<String, String> parentTagMap;
-		public @Nullable String parentTag;
-		public @Nullable String secondParentTag;
+		private static final ParentInfo BLANK = new ParentInfo(new HashMap<>(), null, null, null);
+		public final @Nullable Map<String, String> tagMap;
+		public final @Nullable Map<String, String> parentTagMap;
+		public @Nullable String parentTag; //TODO: make it final
+		public final @Nullable String secondParentTag;
 
 		private ParentInfo(@Nullable Map<String, String> tagMap, @Nullable Map<String, String> parentTagMap,
 						   @Nullable String parentTag, @Nullable String secondParentTag)
@@ -583,7 +393,10 @@ public class NbtSuggestion extends CustomSuggestion
 
 		public static ParentInfo blank()
 		{
-			return new ParentInfo(new HashMap<>(), null, null, null);
+			if (BLANK.tagMap != null) { BLANK.tagMap.clear(); }
+			if (BLANK.parentTagMap != null) { BLANK.parentTagMap.clear(); }
+			BLANK.parentTag = null;
+			return BLANK;
 		}
 	}
 }

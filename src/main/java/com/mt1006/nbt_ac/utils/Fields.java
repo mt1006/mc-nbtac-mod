@@ -17,6 +17,7 @@ public class Fields
 	public static Field suggestionsBuilderList = null;
 	public static Field suggestionsBuilderInt = null;
 	public static Field suggestionsListRect = null;
+	public static Field suggestionsListList = null;
 	public static Field commandContextArguments = null;
 	public static List<Field> suggestionsBuilderStrings = null;
 
@@ -25,6 +26,7 @@ public class Fields
 		suggestionsBuilderList = getField(SuggestionsBuilder.class, List.class);
 		suggestionsBuilderInt = getField(SuggestionsBuilder.class, int.class);
 		suggestionsListRect = getField(CommandSuggestions.SuggestionsList.class, Rect2i.class);
+		suggestionsListList = getField(CommandSuggestions.SuggestionsList.class, List.class);
 		commandContextArguments = getField(CommandContext.class, Map.class);
 
 		suggestionsBuilderStrings = getFields(SuggestionsBuilder.class, String.class);
@@ -43,7 +45,6 @@ public class Fields
 				return field;
 			}
 		}
-
 		return null;
 	}
 
@@ -51,10 +52,10 @@ public class Fields
 	{
 		List<Field> fields = new ArrayList<>(Arrays.asList(declaringClass.getDeclaredFields()));
 
-		fields.removeIf(field -> !fieldType.isAssignableFrom(field.getType()));
-		fields.removeIf(field -> Modifier.isStatic(field.getModifiers()));
+		fields.removeIf((field) -> !fieldType.isAssignableFrom(field.getType()));
+		fields.removeIf((field) -> Modifier.isStatic(field.getModifiers()));
 
-		fields.forEach(field -> field.setAccessible(true));
+		fields.forEach((field) -> field.setAccessible(true));
 		return fields;
 	}
 }

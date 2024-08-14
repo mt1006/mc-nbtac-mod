@@ -1,0 +1,40 @@
+{
+	"id": "compound/nbt_ac:effect",
+
+	"tags":
+	[
+		{
+			"tag": "id",
+			"type": "int",
+			"subtype": "registry_key/minecraft:mob_effect",
+			"recommended": true
+		},
+
+		{
+			"tag": "amplifier",
+			"type": "byte",
+			"recommended": true
+		},
+
+		{
+			"tag": "duration",
+			"type": "int",
+			"recommended": true
+		},
+
+		{
+			"tag": "ambient",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "show_particles",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "show_icon",
+			"type": "boolean"
+		}
+	]
+}

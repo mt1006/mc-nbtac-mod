@@ -56,7 +56,7 @@ public class ItemParserMixin
 	{
 		Holder<Item> itemHolder = result.left().orElse(null);
 		if (itemHolder == null) { return Suggestions.empty(); }
-		Item item = itemHolder.get();
+		Item item = itemHolder.value();
 		ResourceLocation resourceLocation = RegistryUtils.ITEM.getKey(item);
 
 		String name = resourceLocation.toString();

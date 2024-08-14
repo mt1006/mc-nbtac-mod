@@ -1,0 +1,111 @@
+{
+	"tags":
+	[
+		{
+			"tag": "Enchantments",
+			"type": "list/compound",
+
+			"tags":
+			[
+				{
+					"tag": "id",
+					"type": "string",
+					"subtype": "registry_key/minecraft:enchantment"
+				},
+
+				{
+					"tag": "lvl",
+					"type": "int"
+				}
+			]
+		},
+
+		{
+			"tag": "display",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "Name",
+					"type": "string",
+					"subtype": "json_text"
+				},
+
+				{
+					"tag": "Lore",
+					"type": "list/string",
+					"subtype": "json_text"
+				},
+
+				{
+					"tag": "color",
+					"type": "int"
+				}
+			]
+		},
+
+		{
+			"tag": "Unbreakable",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "CanDestroy",
+			"type": "list/string",
+			"subtype": "registry_key/minecraft:block"
+		},
+
+		{
+			"tag": "AttributeModifiers",
+			"type": "list/compound",
+
+			"tags":
+			[
+				{
+					"tag": "AttributeName",
+					"type": "string",
+					"subtype": "registry_key/minecraft:attribute"
+				},
+
+				{
+					"tag": "Name",
+					"type": "string"
+				},
+
+				{
+					"tag": "Amount",
+					"type": "double"
+				},
+
+				{
+					"tag": "Operation",
+					"type": "int",
+					"subtype": "described_enum/0;add_value;1;add_multiplied_base;2;add_multiplied_total"
+				},
+
+				{
+					"tag": "Slot",
+					"type": "string",
+					"subtype": "enum/mainhand;offhand;head;chest;legs;feet"
+				},
+
+				{
+					"tag": "UUID",
+					"type": "uuid",
+					"subtype": "random_uuid"
+				}
+			]
+		},
+
+		{
+			"tag": "HideFlags",
+			"type": "int"
+		},
+
+		{
+			"tag": "CustomModelData",
+			"type": "int"
+		}
+	]
+}

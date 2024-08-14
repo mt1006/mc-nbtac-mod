@@ -54,9 +54,8 @@ public class Utils
 		catch (Exception exception) { return null; }
 
 		ParsedArgument<?, ?> argument = arguments.get(argumentName);
-		if (argument == null) { return null; }
 
-		return argument.getRange().get(ctx.getInput());
+		return argument != null ? argument.getRange().get(ctx.getInput()) : null;
 	}
 
 	public static String blockFromCoords(Coordinates coords)

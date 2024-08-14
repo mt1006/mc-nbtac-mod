@@ -1,0 +1,11 @@
+{
+	"id": "item/minecraft:writable_book",
+
+	"tags":
+	[
+		{
+			"tag": "pages",
+			"type": "list/string"
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+	"conditions":
+	[
+		{ "path": "*effects" }
+	],
+	
+	"operations":
+	[
+		{
+			"on": "id",
+			"type": "set_subtype",
+			"val": "registry_key/minecraft:mob_effect"
+		},
+
+		{
+			"on": "hidden_effect",
+			"type": "recursion"
+		}
+	]
+}

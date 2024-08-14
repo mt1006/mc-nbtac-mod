@@ -1,0 +1,24 @@
+{
+	"tags":
+	[
+		{
+			"tag": "BlockEntityTag",
+			"type": "compound",
+			"subtype": "tag/block/*",
+			"with": "#parent/#root"
+		},
+
+		{
+			"tag": "BlockStateTag",
+			"type": "compound",
+			"subtype": "block_state_tag/*",
+			"with": "#parent/#root"
+		},
+
+		{
+			"tag": "CanPlaceOn",
+			"type": "list/string",
+			"subtype": "registry_key/minecraft:block"
+		}
+	]
+}

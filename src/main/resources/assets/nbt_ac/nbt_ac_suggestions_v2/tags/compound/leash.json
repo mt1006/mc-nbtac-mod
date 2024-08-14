@@ -1,0 +1,26 @@
+{
+	"id": "compound/nbt_ac:leash",
+
+	"tags":
+	[
+		{
+			"tag": "UUID",
+			"type": "uuid"
+		},
+
+		{
+			"tag": "X",
+			"type": "int"
+		},
+
+		{
+			"tag": "Y",
+			"type": "int"
+		},
+
+		{
+			"tag": "Z",
+			"type": "int"
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"id": "item/minecraft:knowledge_book",
+
+	"tags":
+	[
+		{
+			"tag": "Recipes",
+			"type": "list/string",
+			"subtype": "recipe"
+		}
+	]
+}

@@ -1,0 +1,9 @@
+{
+	"tags":
+	[
+		{
+			"tag": "Passengers",
+			"type": "list/compound"
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"id": "item/minecraft:salmon_bucket",
+
+	"tags":
+	[
+		{
+			"tag": "EntityTag",
+			"type": "compound",
+			"subtype": "tag/entity/minecraft:salmon"
+		}
+	]
+}
