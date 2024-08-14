@@ -106,6 +106,7 @@ public class TypeLoader
 					{
 						NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", resourceName, throwable);
 					}
+					//TODO: improve error logging (add stacktrace), add logs for non-error throwable when lastObject==null
 				}
 				clazz = lastObject != null ? lastObject.getClass() : null;
 			}
