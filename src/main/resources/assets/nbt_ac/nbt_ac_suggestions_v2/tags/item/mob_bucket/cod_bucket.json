@@ -7,11 +7,6 @@
 			"tag": "EntityTag",
 			"type": "compound",
 			"subtype": "tag/entity/minecraft:cod"
-		},
-
-		{
-			"tag": "BucketVariantTag",
-			"type": "int"
 		}
 	]
 }
