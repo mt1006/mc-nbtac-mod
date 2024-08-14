@@ -1,0 +1,13 @@
+{
+	"id": "item/minecraft:item_frame",
+	"apply_to": ["item/minecraft:glow_item_frame"],
+
+	"tags":
+	[
+		{
+			"tag": "EntityTag",
+			"type": "compound",
+			"subtype": "tag/entity/minecraft:item_frame"
+		}
+	]
+}

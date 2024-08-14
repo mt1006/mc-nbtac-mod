@@ -1,0 +1,12 @@
+{
+	"id": "item/minecraft:goat_horn",
+
+	"tags":
+	[
+		{
+			"tag": "instrument",
+			"type": "string",
+			"subtype": "registry_key/minecraft:instrument"
+		}
+	]
+}

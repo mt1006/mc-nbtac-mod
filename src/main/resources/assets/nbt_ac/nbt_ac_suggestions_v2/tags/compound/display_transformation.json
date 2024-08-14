@@ -1,0 +1,52 @@
+{
+	"id": "compound/nbt_ac:display_transformation",
+
+	"tags":
+	[
+		{
+			"tag": "translation",
+			"type": "list/float"
+		},
+
+		{
+			"tag": "scale",
+			"type": "list/float"
+		},
+
+		{
+			"tag": "left_rotation",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "angle",
+					"type": "float"
+				},
+
+				{
+					"tag": "axis",
+					"type": "list/float"
+				}
+			]
+		},
+
+		{
+			"tag": "right_rotation",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "angle",
+					"type": "float"
+				},
+
+				{
+					"tag": "axis",
+					"type": "list/float"
+				}
+			]
+		}
+	]
+}

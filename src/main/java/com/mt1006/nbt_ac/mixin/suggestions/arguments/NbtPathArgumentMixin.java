@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Unique;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(NbtPathArgument.class)
-abstract public class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
+public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 {
 	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
 	{

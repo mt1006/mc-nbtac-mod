@@ -1,0 +1,25 @@
+{
+	"id": "item/minecraft:suspicious_stew",
+
+	"tags":
+	[
+		{
+			"tag": "effects",
+			"type": "list/compound",
+
+			"tags":
+			[
+				{
+					"tag": "id",
+					"type": "byte",
+					"subtype": "registry_key/minecraft:mob_effect"
+				},
+
+				{
+					"tag": "duration",
+					"type": "int"
+				}
+			]
+		}
+	]
+}

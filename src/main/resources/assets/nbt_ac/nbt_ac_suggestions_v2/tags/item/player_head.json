@@ -1,0 +1,11 @@
+{
+	"id": "item/minecraft:player_head",
+
+	"tags":
+	[
+		{
+			"tag": "SkullOwner",
+			"type": "string"
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"id": "item/minecraft:tadpole_bucket",
+
+	"tags":
+	[
+		{
+			"tag": "EntityTag",
+			"type": "compound",
+			"subtype": "tag/entity/minecraft:tadpole"
+		}
+	]
+}

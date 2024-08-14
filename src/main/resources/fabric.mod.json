@@ -5,13 +5,14 @@
 
 	"name": "NBT Autocomplete",
 	"description": "Adds suggestions for NBT tags.",
-	"authors": ["mt1006 (mt1006x)"],
+	"authors": ["mt1006"],
 	"contact":
 	{
 		"homepage": "https://modrinth.com/mod/nbt-autocomplete",
 		"sources": "https://github.com/mt1006/mc-nbtac-mod",
 		"issues": "https://github.com/mt1006/mc-nbtac-mod/issues"
 	},
+
 	"license": "LGPL-3.0-only",
 	"icon": "logo.png",
 
@@ -25,9 +26,9 @@
 
 	"depends":
 	{
-		"fabricloader": ">=0.14.25",
-		"fabric-api": "*",
 		"minecraft": ">=1.20.3 <1.20.5",
+		"fabricloader": ">=0.15.0",
+		"fabric-api": "*",
 		"java": ">=17"
 	}
 }

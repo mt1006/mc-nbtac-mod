@@ -1,0 +1,29 @@
+{
+	"id": "item/minecraft:potion",
+
+	"apply_to":
+	[
+		"item/minecraft:splash_potion",
+		"item/minecraft:lingering_potion"
+	],
+
+	"tags":
+	[
+		{
+			"tag": "Potion",
+			"type": "string",
+			"subtype": "registry_key/minecraft:potion"
+		},
+
+		{
+			"tag": "CustomPotionColor",
+			"type": "int"
+		},
+
+		{
+			"tag": "custom_potion_effects",
+			"type": "list/compound",
+			"subtype": "tag/compound/nbt_ac:effect"
+		}
+	]
+}
