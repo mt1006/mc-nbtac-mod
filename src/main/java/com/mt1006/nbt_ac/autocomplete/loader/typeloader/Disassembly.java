@@ -383,7 +383,7 @@ public class Disassembly
 
 		@Override public TrackedValue merge(TrackedValue value1, TrackedValue value2)
 		{
-			if (value1.compare(value2)) { return value1; }
+			if (value1.equals(value2)) { return value1; }
 			BasicValue basicValue = basicInterpreter.merge(value1.basicValue, value2.basicValue);
 
 			if (basicValue.equals(value1.basicValue) && (value1.basicValue.equals(value2.basicValue))) { return value1; }
@@ -480,9 +480,12 @@ public class Disassembly
 			return basicValue != null ? new TrackedValue(Type.UNKNOWN, null, basicValue) : null;
 		}
 
-		public boolean compare(TrackedValue valueToCompare)
+		@Override public boolean equals(Object obj)
 		{
-			if (this == valueToCompare) { return true; }
+			if (this == obj) { return true; }
+			if (!(obj instanceof TrackedValue)) { return false; }
+
+			TrackedValue valueToCompare = (TrackedValue)obj;
 			if (type != valueToCompare.type) { return false; }
 			if ((object == null) != (valueToCompare.object == null)) { return false; }
 			if (object != null && !object.equals(valueToCompare.object)) { return false; }
