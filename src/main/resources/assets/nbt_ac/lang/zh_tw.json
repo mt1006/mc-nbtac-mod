@@ -1,0 +1,148 @@
+{
+  "nbt_ac.options": "NBT Autocomplete《NBT 自動完成》設定",
+
+  "nbt_ac.options.style": "樣式",
+  "nbt_ac.options.suggestions": "建議",
+  "nbt_ac.options.suggestion_priority": "建議優先順序",
+  "nbt_ac.options.item_components": "物品元件",
+  "nbt_ac.options.mods_and_plugins_support": "模組與插件支援",
+  "nbt_ac.options.advanced_settings": "進階設定",
+  "nbt_ac.options.debugging_options": "除錯選項",
+
+
+
+  "nbt_ac.options.field.short_boolean": "簡短布林值",
+  "nbt_ac.options.field.short_boolean.desc": "建議對布林值使用 1b/0b 而不是 true/false。請注意，它不適用於原始 JSON 格式，因為它需要 true/false 形式。",
+
+  "nbt_ac.options.field.tag_quotation_marks": "將標籤放在引號中",
+  "nbt_ac.options.field.tag_quotation_marks.false": "必要時",
+  "nbt_ac.options.field.tag_quotation_marks.true": "總是",
+  "nbt_ac.options.field.tag_quotation_marks.desc": "將標籤名稱放在引號中。\ntrue - 總是\nfalse - 必要時",
+
+  "nbt_ac.options.field.string_quotation_marks": "將字串放在引號中",
+  "nbt_ac.options.field.string_quotation_marks.false": "必要時",
+  "nbt_ac.options.field.string_quotation_marks.true": "總是",
+  "nbt_ac.options.field.string_quotation_marks.desc": "將字串類型的值放在引號中。\ntrue - 總是\nfalse - 必要時",
+
+  "nbt_ac.options.field.default_quotation_mark_type": "預設引號類型",
+  "nbt_ac.options.field.default_quotation_mark_type.1": "單引號 (')",
+  "nbt_ac.options.field.default_quotation_mark_type.2": "雙引號 (\")",
+  "nbt_ac.options.field.default_quotation_mark_type.desc": "定義預設情況下將使用哪種引號。\n1 - 單引號 (')\n2 - 雙引號 (\")\n其他值將被視為 2。\n如果您使用的是 1.19.4 或更舊的版本，請注意將其設定為單引號（尤其是在「將標籤放在引號中」設定為「總是」的情況下）可能會由於 MC-175504 錯誤而導致 NBT 路徑出現一些問題。它也不適用於 JSON 文字元件。",
+
+  "nbt_ac.options.field.json_string_suggestion": "JSON 字串建議",
+  "nbt_ac.options.field.json_string_suggestion.0": "無",
+  "nbt_ac.options.field.json_string_suggestion.1": "建議",
+  "nbt_ac.options.field.json_string_suggestion.2": "字串預設值",
+  "nbt_ac.options.field.json_string_suggestion.3": "舊版，分隔 (' \")",
+  "nbt_ac.options.field.json_string_suggestion.4": "舊版，合併 ('\")",
+  "nbt_ac.options.field.json_string_suggestion.5": "舊版，反斜線 (\"\\\\\")",
+  "nbt_ac.options.field.json_string_suggestion.desc": "定義 JSON 文字元件的簡單字串開頭建議。\n0 - 無\n1 - 建議 - 在 1.20.4 及更新版本上與 2 相同，在舊版本上與 3 相同。\n2 - 字串預設值 - 使用「預設引號類型」設定中的引號類型。\n3 - 舊版，分隔 (' \")\n4 - 舊版，合併 ('\") - 與 3 類似，但沒有空格。\n5 - 舊版，反斜線 (\"\\\\\")\n其他值將被視為 1。",
+
+  "nbt_ac.options.field.hide_mc_namespace_in_tags": "隱藏標籤中的 Minecraft 命名空間",
+  "nbt_ac.options.field.hide_mc_namespace_in_tags.desc": "從標籤建議中隱藏 \"minecraft:\" 命名空間。",
+
+  "nbt_ac.options.field.hide_mc_namespace_in_strings": "隱藏字串中的 Minecraft 命名空間",
+  "nbt_ac.options.field.hide_mc_namespace_in_strings.desc": "從字串建議中隱藏 \"minecraft:\" 命名空間。",
+
+
+  "nbt_ac.options.field.ignore_letter_case": "忽略字母大小寫",
+  "nbt_ac.options.field.ignore_letter_case.desc": "在提供標籤名稱建議時忽略字母大小寫。",
+
+  "nbt_ac.options.field.show_tag_hints": "顯示標籤提示",
+  "nbt_ac.options.field.show_tag_hints.desc": "在建議清單中，標籤名稱旁邊顯示標籤提示（例如其類型或來源）。",
+
+  "nbt_ac.options.field.hide_forge_tags": "隱藏 Forge 標籤",
+  "nbt_ac.options.field.hide_forge_tags.desc": "隱藏 Forge 特定標籤。需要移除 \"./minecraft/cache/nbt_ac\" 並重新啟動遊戲才能生效。",
+
+
+  "nbt_ac.options.field.custom_sorting": "自訂排序",
+  "nbt_ac.options.field.custom_sorting.desc": "允許模組使用非字母順序的建議排序。",
+
+  "nbt_ac.options.field.mark_recommended": "標記建議",
+  "nbt_ac.options.field.mark_recommended.desc": "在提示中使用 \"<*>\" 標記建議的建議。",
+
+  "nbt_ac.options.field.recommended_at_the_top": "建議置頂",
+  "nbt_ac.options.field.recommended_at_the_top.desc": "將建議的建議放在清單頂部。需要自訂排序。",
+
+  "nbt_ac.options.field.mark_irrelevant": "標記不相關",
+  "nbt_ac.options.field.mark_irrelevant.desc": "在提示中使用 \"<I>\" 標記不相關的建議。",
+
+  "nbt_ac.options.field.gray_out_irrelevant": "灰顯不相關",
+  "nbt_ac.options.field.gray_out_irrelevant.desc": "將不相關的建議灰顯。",
+
+  "nbt_ac.options.field.placing_of_irrelevant": "不相關項目的位置",
+  "nbt_ac.options.field.placing_of_irrelevant.0": "正常",
+  "nbt_ac.options.field.placing_of_irrelevant.1": "底部",
+  "nbt_ac.options.field.placing_of_irrelevant.2": "隱藏",
+  "nbt_ac.options.field.placing_of_irrelevant.desc": "指定不相關建議的位置。\n0 - 正常\n1 - 底部\n2 - 隱藏\n其他值將被視為 1。\n除「正常」以外的值需要自訂排序。",
+
+
+  "nbt_ac.options.field.hide_mc_namespace_in_components": "隱藏元件中的 Minecraft 命名空間",
+  "nbt_ac.options.field.hide_mc_namespace_in_components.desc": "從物品元件建議中隱藏 \"minecraft:\" 命名空間。",
+
+  "nbt_ac.options.field.show_custom_data_as_relevant": "將 \"custom_data\" 顯示為相關",
+  "nbt_ac.options.field.show_custom_data_as_relevant.desc": "啟用後，它將始終顯示 \"minecraft:custom_data\" 物品元件作為相關建議。停用後，它將始終顯示為不相關。",
+
+  "nbt_ac.options.field.show_custom_model_data_as_relevant": "將 \"custom_model_data\" 顯示為相關",
+  "nbt_ac.options.field.show_custom_model_data_as_relevant.desc": "啟用後，它將始終顯示 \"minecraft:custom_model_data\" 物品元件作為相關建議。停用後，它將始終顯示為不相關。",
+
+
+  "nbt_ac.options.field.vanilla_ids_sorting": "原版 ID 排序",
+  "nbt_ac.options.field.vanilla_ids_sorting.0": "無自訂排序",
+  "nbt_ac.options.field.vanilla_ids_sorting.1": "取決於",
+  "nbt_ac.options.field.vanilla_ids_sorting.2": "始終置頂",
+  "nbt_ac.options.field.vanilla_ids_sorting.3": "始終居中",
+  "nbt_ac.options.field.vanilla_ids_sorting.desc": "指定原版 ID（在 \"minecraft:\" 命名空間中）相對於非原版 ID（來自模組）的排序方法。它僅適用於 NBT 自動完成提供的建議。此設定也與「隱藏字串中的 Minecraft 命名空間」設定密切相關。\n0 - 無自訂排序 - 隱藏原版命名空間將導致 ID 散佈在來自模組的 ID 周圍，因此不建議使用。\n1 - 取決於 - 僅在命名空間隱藏時置頂，否則居中。\n2 - 始終置頂\n3 - 始終居中\n其他值將被視為 1。",
+
+  "nbt_ac.options.field.support_command_namespace": "支援指令命名空間",
+  "nbt_ac.options.field.support_command_namespace.desc": "忽略 \"minecraft:\" 作為指令前綴。當與將 Minecraft 指令置於此命名空間下的插件一起使用時很有用。",
+
+
+  "nbt_ac.options.field.use_new_thread": "使用新執行緒",
+  "nbt_ac.options.field.use_new_thread.desc": "使用新執行緒在 Minecraft 載入期間載入建議。",
+
+  "nbt_ac.options.field.use_disassembler": "使用反組譯器",
+  "nbt_ac.options.field.use_disassembler.desc": "透過對實體和方塊實體的 \"load\" 方法使用反組譯器來載入建議。",
+
+  "nbt_ac.options.field.load_from_resources": "從資源載入",
+  "nbt_ac.options.field.load_from_resources.desc": "從資源檔案載入建議（載入物品標籤和標籤預測所需）。",
+
+  "nbt_ac.options.field.allow_block_entity_extraction": "允許方塊實體提取",
+  "nbt_ac.options.field.allow_block_entity_extraction.desc": "允許在載入建議後使用方塊實體提取方法（類似於反組譯器使用的方法）。",
+
+  "nbt_ac.options.field.use_cache": "使用快取",
+  "nbt_ac.options.field.use_cache.desc": "啟用建議快取。",
+
+  "nbt_ac.options.field.max_cached_instances": "最大快取執行個體數",
+  "nbt_ac.options.field.max_cached_instances.-1": "[無限制]",
+  "nbt_ac.options.field.max_cached_instances.desc": "快取的 Minecraft 執行個體的最大數量。使用 -1 停用限制。",
+
+
+  "nbt_ac.options.field.max_stack_traces": "記錄的最大堆疊追蹤數",
+  "nbt_ac.options.field.max_stack_traces.-1": "[無限制]",
+  "nbt_ac.options.field.max_stack_traces.0": "0（已停用）",
+  "nbt_ac.options.field.max_stack_traces.desc": "例外狀況的已列印堆疊追蹤限制。\n-1 - 無限制\n 0 - 堆疊追蹤已停用",
+
+  "nbt_ac.options.field.debug_mode": "除錯模式",
+  "nbt_ac.options.field.debug_mode.desc": "啟用對除錯有用的額外訊息和檢查。",
+
+  "nbt_ac.options.field.debug_sleep": "除錯載入睡眠",
+  "nbt_ac.options.field.debug_sleep.0": "[已停用]",
+  "nbt_ac.options.field.debug_sleep.desc": "延遲建議載入以更好地測量所需時間（值以毫秒為單位，建議設定為幾千）。",
+
+  "nbt_ac.options.field.debug_config_screen": "除錯設定畫面",
+  "nbt_ac.options.field.debug_config_screen.desc": "在退出領域畫面後顯示設定圖形介面。它不會被圖形介面重設按鈕重設為預設值！",
+
+  "nbt_ac.options.field.save_suggestions": "儲存建議",
+  "nbt_ac.options.field.save_suggestions.0": "已停用",
+  "nbt_ac.options.field.save_suggestions.1": "已啟用",
+  "nbt_ac.options.field.save_suggestions.2": "已啟用並排序",
+  "nbt_ac.options.field.save_suggestions.desc": "將建議儲存到檔案 - \".minecraft/nbt_ac_output.txt\".\n0 - 已停用\n1 - 已啟用\n2 - 已啟用並排序（更容易比較）\n其他值將被視為 0。",
+
+
+
+  "nbt_ac.options.common.tooltip": "%s\n§8預設值：%s",
+  "nbt_ac.options.common.reset_settings": "重設設定",
+  "nbt_ac.options.common.undefined": "[未定義]",
+  "nbt_ac.options.common.gui_debug_warning": "設定畫面除錯模式已啟用！"
+}
