@@ -81,18 +81,18 @@
   "nbt_ac.options.field.hide_mc_namespace_in_components.desc": "從物品元件建議中隱藏 \"minecraft:\" 命名空間。",
 
   "nbt_ac.options.field.show_custom_data_as_relevant": "將 \"custom_data\" 顯示為相關",
-  "nbt_ac.options.field.show_custom_data_as_relevant.desc": "啟用後，它將始終顯示 \"minecraft:custom_data\" 物品元件作為相關建議。停用後，它將始終顯示為不相關。",
+  "nbt_ac.options.field.show_custom_data_as_relevant.desc": "啟用後，它將一律顯示 \"minecraft:custom_data\" 物品元件作為相關建議。停用後，它將一律顯示為不相關。",
 
   "nbt_ac.options.field.show_custom_model_data_as_relevant": "將 \"custom_model_data\" 顯示為相關",
-  "nbt_ac.options.field.show_custom_model_data_as_relevant.desc": "啟用後，它將始終顯示 \"minecraft:custom_model_data\" 物品元件作為相關建議。停用後，它將始終顯示為不相關。",
+  "nbt_ac.options.field.show_custom_model_data_as_relevant.desc": "啟用後，它將一律顯示 \"minecraft:custom_model_data\" 物品元件作為相關建議。停用後，它將一律顯示為不相關。",
 
 
   "nbt_ac.options.field.vanilla_ids_sorting": "原版 ID 排序",
   "nbt_ac.options.field.vanilla_ids_sorting.0": "無自訂排序",
   "nbt_ac.options.field.vanilla_ids_sorting.1": "取決於",
-  "nbt_ac.options.field.vanilla_ids_sorting.2": "始終置頂",
-  "nbt_ac.options.field.vanilla_ids_sorting.3": "始終居中",
-  "nbt_ac.options.field.vanilla_ids_sorting.desc": "指定原版 ID（在 \"minecraft:\" 命名空間中）相對於非原版 ID（來自模組）的排序方法。它僅適用於 NBT 自動完成提供的建議。此設定也與「隱藏字串中的 Minecraft 命名空間」設定密切相關。\n0 - 無自訂排序 - 隱藏原版命名空間將導致 ID 散佈在來自模組的 ID 周圍，因此不建議使用。\n1 - 取決於 - 僅在命名空間隱藏時置頂，否則居中。\n2 - 始終置頂\n3 - 始終居中\n其他值將被視為 1。",
+  "nbt_ac.options.field.vanilla_ids_sorting.2": "一律置頂",
+  "nbt_ac.options.field.vanilla_ids_sorting.3": "一律置中",
+  "nbt_ac.options.field.vanilla_ids_sorting.desc": "指定原版 ID（在 \"minecraft:\" 命名空間中）相對於非原版 ID（來自模組）的排序方法。它僅適用於 NBT 自動完成提供的建議。此設定也與「隱藏字串中的 Minecraft 命名空間」設定密切相關。\n0 - 無自訂排序 - 隱藏原版命名空間將導致 ID 散佈在來自模組的 ID 周圍，因此不建議使用。\n1 - 取決於 - 僅在命名空間隱藏時置頂，否則置中。\n2 - 一律置頂\n3 - 一律置中\n其他值將被視為 1。",
 
   "nbt_ac.options.field.support_command_namespace": "支援指令命名空間",
   "nbt_ac.options.field.support_command_namespace.desc": "忽略 \"minecraft:\" 作為指令前綴。當與將 Minecraft 指令置於此命名空間下的插件一起使用時很有用。",
@@ -131,7 +131,7 @@
   "nbt_ac.options.field.debug_sleep.desc": "延遲建議載入以更好地測量所需時間（值以毫秒為單位，建議設定為幾千）。",
 
   "nbt_ac.options.field.debug_config_screen": "除錯設定畫面",
-  "nbt_ac.options.field.debug_config_screen.desc": "在退出領域畫面後顯示設定圖形介面。它不會被圖形介面重設按鈕重設為預設值！",
+  "nbt_ac.options.field.debug_config_screen.desc": "在退出 Reamls 畫面後顯示設定圖形介面。它不會被圖形介面重設按鈕重設為預設值！",
 
   "nbt_ac.options.field.save_suggestions": "儲存建議",
   "nbt_ac.options.field.save_suggestions.0": "已停用",
