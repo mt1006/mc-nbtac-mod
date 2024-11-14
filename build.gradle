@@ -1,49 +1,56 @@
-plugins
+subprojects
 {
-	id "fabric-loom" version "1.7-SNAPSHOT"
-}
+	apply plugin: "java"
+	java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 
-version = project.mod_version
-group = project.maven_group
-
-base
-{
-	archivesName = "${project.archives_base_name}-FABRIC-${project.minecraft_version}"
-}
-
-repositories
-{
-	maven { url = "https://maven.parchmentmc.org/" }
-	maven { url = "https://maven.terraformersmc.com/releases/" }
-}
-
-dependencies
-{
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.layered()
+	base
 	{
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${project.mappings_version}@zip")
+		archivesName = "${mod_jar_name}-${project.name.toUpperCase()}-${minecraft_version}"
 	}
 
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	processResources
+	{
+		var replaceProperties =
+		[
+			"mod_name"                  : mod_name,
+			"mod_jar_name"              : mod_jar_name,
+			"mod_id"                    : mod_id,
+			"mod_group"                 : mod_group,
+			"mod_author"                : mod_author,
+			"version"                   : version,
+			"license"                   : license,
+			"homepage"                  : homepage,
+			"source_url"                : source_url,
+			"issue_tracker"             : issue_tracker,
+			"mod_description"           : mod_description,
+			"minecraft_version"         : minecraft_version,
+			"java_version"              : java_version,
+			"version_range_fabric"      : version_range_fabric,
+			"version_range_forge"       : version_range_forge,
+			"version_range_neoforge"    : version_range_neoforge,
+			"fabric_loader_version"     : fabric_loader_version,
+			"fabric_api_version"        : fabric_api_version,
+			"forge_version"             : forge_version,
+			"neoforge_version"          : neoforge_version,
+		]
 
-	modApi("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
-}
+		filesMatching(["pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "*.mixins.json"])
+		{
+			expand replaceProperties
+		}
+		inputs.properties replaceProperties
+	}
 
-processResources
-{
-	inputs.property "version", project.version
-	filesMatching("fabric.mod.json") { expand "version": project.version }
-}
+	tasks.withType(JavaCompile).configureEach { it.options.encoding = "UTF-8" }
 
-tasks.withType(JavaCompile).configureEach { it.options.release = 21 }
+	if (project.name != "common")
+	{
+		dependencies
+		{
+			compileOnly project(":common")
+		}
 
-java
-{
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+		processResources { from project(":common").sourceSets.main.resources }
+		tasks.named("compileJava", JavaCompile) { source project(":common").sourceSets.main.allSource }
+	}
 }
