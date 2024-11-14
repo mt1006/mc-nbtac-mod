@@ -1,0 +1,36 @@
+plugins
+{
+	id "net.minecraftforge.gradle" version "${forge_gradle_version}"
+	id "org.spongepowered.mixin" version "0.7.+"
+}
+
+minecraft
+{
+	mappings channel: "official", version: minecraft_version
+
+	runs
+	{
+		client
+		server
+	}
+}
+
+dependencies
+{
+	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+	annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+}
+
+mixin
+{
+	add sourceSets.main, "${mod_id}.mixins.refmap.json"
+	config "${mod_id}.mixins.json"
+}
+
+tasks.named("jar", Jar).configure
+{
+	manifest
+	{
+		attributes(["MixinConfigs": "${mod_id}.mixins.json"])
+	}
+}
