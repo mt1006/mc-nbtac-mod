@@ -45,10 +45,11 @@ public class NbtSuggestionManager
 		return suggestionMap.entrySet();
 	}
 
-	public static CompletableFuture<Suggestions> loadFromName(String name, String tag, SuggestionsBuilder suggestionsBuilder, boolean suggestPath)
+	public static CompletableFuture<Suggestions> loadFromName(@Nullable String name, String tag, SuggestionsBuilder suggestionsBuilder, boolean suggestPath)
 	{
+		//TODO: fix nullable name (https://github.com/mt1006/mc-nbtac-mod/issues/39)?
 		//TODO: improve it
-		if (name.equals("block/minecraft:repeating_command_block") || name.equals("block/minecraft:chain_command_block"))
+		if (name != null && (name.equals("block/minecraft:repeating_command_block") || name.equals("block/minecraft:chain_command_block")))
 		{
 			name = "block/minecraft:command_block";
 		}

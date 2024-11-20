@@ -1,3 +1,5 @@
+-Fixed crash when using "nbt" argument with non-player entity selector (thanks to kurait for reporting).
+
 ===Version 1.3.8===
 -Added Korean translation (thanks to good7777865).
 -Improved Chinese [traditional] translation (thanks to notlin4).
