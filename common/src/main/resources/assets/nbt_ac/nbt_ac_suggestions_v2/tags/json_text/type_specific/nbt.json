@@ -1,0 +1,31 @@
+{
+	"tags":
+	[
+		{
+			"tag": "source",
+			"type": "string",
+			"subtype": "enum/block;entity;storage"
+		},
+
+		{
+			"tag": "interpret",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "block",
+			"type": "string"
+		},
+
+		{
+			"tag": "entity",
+			"type": "string",
+			"subtype": "entity_selector"
+		},
+
+		{
+			"tag": "storage",
+			"type": "string"
+		}
+	]
+}

@@ -1,0 +1,19 @@
+{
+	"conditions":
+	[
+		{ "path": "Gossips" }
+	],
+
+	"operations":
+	[
+		{
+			"type": "set_type",
+			"val": "list/compound"
+		},
+
+		{
+			"type": "set_subcompound",
+			"val": "compound/nbt_ac:villager/gossip"
+		}
+	]
+}

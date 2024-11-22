@@ -1,0 +1,19 @@
+{
+	"conditions":
+	[
+		{ "path": "Offers" }
+	],
+
+	"operations":
+	[
+		{
+			"type": "override_unknown",
+			"val": "compound"
+		},
+
+		{
+			"type": "set_subcompound",
+			"val": "compound/nbt_ac:villager/offers"
+		}
+	]
+}

@@ -1,0 +1,6 @@
+{
+	"id": "item/minecraft:item_name",
+	"type": "string",
+	"subtype": "json_text",
+	"always_relevant": true
+}

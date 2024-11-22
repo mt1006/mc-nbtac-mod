@@ -1,0 +1,16 @@
+{
+	"id": "item/minecraft:entity_data",
+	"type": "compound",
+	"subtype": "tag/entity/*",
+	"with": "id",
+
+	"tags":
+	[
+		{
+			"tag": "id",
+			"type": "string",
+			"subtype": "registry_key/minecraft:entity_type",
+			"recommended": true
+		}
+	]
+}

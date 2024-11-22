@@ -1,0 +1,17 @@
+{
+	"id": "item/minecraft:dyed_color",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "rgb",
+			"type": "int"
+		},
+
+		{
+			"tag": "show_in_tooltip",
+			"type": "boolean"
+		}
+	]
+}

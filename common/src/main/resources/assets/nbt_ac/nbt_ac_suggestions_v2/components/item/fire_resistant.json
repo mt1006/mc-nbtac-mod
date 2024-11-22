@@ -1,0 +1,6 @@
+{
+	"id": "item/minecraft:fire_resistant",
+	"type": "compound",
+	"subtype": "empty_compound",
+	"always_relevant": true
+}

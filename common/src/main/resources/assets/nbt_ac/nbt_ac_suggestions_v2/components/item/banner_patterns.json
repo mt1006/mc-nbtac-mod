@@ -1,0 +1,19 @@
+{
+	"id": "item/minecraft:banner_patterns",
+	"type": "list/compound",
+
+	"tags":
+	[
+		{
+			"tag": "color",
+			"type": "string",
+			"subtype": "dye_color"
+		},
+
+		{
+			"tag": "pattern",
+			"type": "string",
+			"subtype": "banner_pattern"
+		}
+	]
+}

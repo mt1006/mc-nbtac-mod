@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.mt1006.nbt_ac.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client":
+  [
+	"fabric.ArgumentCommandNodeMixin",
+	"fabric.BlockEntityFabricMixin",
+	"fabric.CommandDispatcherMixin",
+	"fabric.MinecraftMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

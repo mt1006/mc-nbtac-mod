@@ -1,0 +1,37 @@
+{
+	"id": "item/minecraft:potion_contents",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "potion",
+			"type": "string",
+			"subtype": "registry_key/minecraft:potion"
+		},
+
+		{
+			"tag": "custom_color",
+			"type": "int"
+		},
+
+		{
+			"tag": "custom_effects",
+			"type": "list/compound",
+
+			"tags":
+			[
+				{
+					"tag": "effect",
+					"type": "compound",
+					"subtype": "tag/compound/nbt_ac:effect"
+				},
+
+				{
+					"tag": "probability",
+					"type": "float"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,6 @@
+{
+	"id": "item/minecraft:rarity",
+	"type": "string",
+	"subtype": "ordered_enum/common;uncommon;rare;epic",
+	"always_relevant": true
+}

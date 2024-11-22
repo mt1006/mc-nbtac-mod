@@ -1,0 +1,21 @@
+{
+	"tags":
+	[
+		{
+			"tag": "name",
+			"type": "compound",
+			"subtype": "json_text_compound"
+		},
+
+		{
+			"tag": "type",
+			"type": "string",
+			"subtype": "registry_key/minecraft:entity_type"
+		},
+
+		{
+			"tag": "id",
+			"type": "list/int"
+		}
+	]
+}

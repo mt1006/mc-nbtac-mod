@@ -1,0 +1,12 @@
+{
+	"id": "item/minecraft:unbreakable",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "show_in_tooltip",
+			"type": "boolean"
+		}
+	]
+}

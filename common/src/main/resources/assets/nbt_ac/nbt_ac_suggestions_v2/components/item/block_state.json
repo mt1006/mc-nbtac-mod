@@ -1,0 +1,6 @@
+{
+	"id": "item/minecraft:block_state",
+	"type": "compound",
+	"subtype": "block_state_tag/*",
+	"with": "#parent/#root"
+}

@@ -1,0 +1,56 @@
+{
+	"tags":
+	[
+		{
+			"tag": "type",
+			"type": "string",
+			"subtype": "enum/text;translatable;score;selector;keybind;nbt"
+		},
+
+		{
+			"tag": "text",
+			"type": "string"
+		},
+
+		{
+			"tag": "translate",
+			"type": "string",
+			"subtype": "translation_key"
+		},
+
+		{
+			"tag": "score",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "name",
+					"type": "string"
+				},
+
+				{
+					"tag": "objective",
+					"type": "string"
+				}
+			]
+		},
+
+		{
+			"tag": "selector",
+			"type": "string",
+			"subtype": "entity_selector"
+		},
+
+		{
+			"tag": "keybind",
+			"type": "string",
+			"subtype": "keybind"
+		},
+
+		{
+			"tag": "nbt",
+			"type": "string"
+		}
+	]
+}

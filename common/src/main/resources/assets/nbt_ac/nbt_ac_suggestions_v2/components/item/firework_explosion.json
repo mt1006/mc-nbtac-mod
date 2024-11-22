@@ -1,0 +1,33 @@
+{
+	"id": "item/minecraft:firework_explosion",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "shape",
+			"type": "string",
+			"subtype": "enum/small_ball;large_ball;star;creeper;burst"
+		},
+
+		{
+			"tag": "color",
+			"type": "int"
+		},
+
+		{
+			"tag": "fade_colors",
+			"type": "int"
+		},
+
+		{
+			"tag": "has_trail",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "has_twinkle",
+			"type": "boolean"
+		}
+	]
+}

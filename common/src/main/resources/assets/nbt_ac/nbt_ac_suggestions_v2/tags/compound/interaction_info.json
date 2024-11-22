@@ -1,0 +1,16 @@
+{
+	"id": "compound/nbt_ac:interaction_info",
+
+	"tags":
+	[
+		{
+			"tag": "player",
+			"type": "uuid"
+		},
+
+		{
+			"tag": "timestamp",
+			"type": "long"
+		}
+	]
+}

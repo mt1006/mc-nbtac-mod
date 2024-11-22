@@ -1,0 +1,43 @@
+{
+	"id": "item/minecraft:tool",
+	"type": "compound",
+	"always_relevant": true,
+
+	"tags":
+	[
+		{
+			"tag": "default_mining_speed",
+			"type": "float"
+		},
+
+		{
+			"tag": "damage_per_block",
+			"type": "int"
+		},
+
+		{
+			"tag": "rules",
+			"type": "list/compound",
+
+			"tags":
+			[
+				{
+					"tag": "blocks",
+					"type": "list/string",
+					"subtype": "registry_key/minecraft:block",
+					"recommended": true
+				},
+
+				{
+					"tag": "speed",
+					"type": "float"
+				},
+
+				{
+					"tag": "correct_for_drops",
+					"type": "boolean"
+				}
+			]
+		}
+	]
+}

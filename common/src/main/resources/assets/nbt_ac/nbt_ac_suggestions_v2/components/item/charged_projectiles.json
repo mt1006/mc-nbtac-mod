@@ -1,0 +1,5 @@
+{
+	"id": "item/minecraft:charged_projectiles",
+	"type": "list/compound",
+	"subtype": "tag/compound/nbt_ac:item"
+}

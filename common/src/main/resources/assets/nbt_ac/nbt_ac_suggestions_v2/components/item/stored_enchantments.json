@@ -1,0 +1,18 @@
+{
+	"id": "item/minecraft:stored_enchantments",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "levels",
+			"type": "compound",
+			"subtype": "enchantments"
+		},
+
+		{
+			"tag": "show_in_tooltip",
+			"type": "boolean"
+		}
+	]
+}

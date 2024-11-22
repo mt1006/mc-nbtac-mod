@@ -1,0 +1,5 @@
+{
+	"id": "item/minecraft:bundle_contents",
+	"type": "list/compound",
+	"subtype": "tag/compound/nbt_ac:item"
+}

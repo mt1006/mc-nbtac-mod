@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "root": "entity/minecraft:player" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "add_compound",
+			"val": "SelectedItem/compound/nbt_ac:inventory"
+		}
+	]
+}

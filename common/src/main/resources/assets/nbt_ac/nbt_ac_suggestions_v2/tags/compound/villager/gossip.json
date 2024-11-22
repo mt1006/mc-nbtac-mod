@@ -1,0 +1,22 @@
+{
+	"id": "compound/nbt_ac:villager/gossip",
+
+	"tags":
+	[
+		{
+			"tag": "Type",
+			"type": "string",
+			"subtype": "enum/major_negative;minor_negative;minor_positive;major_positive;trading"
+		},
+
+		{
+			"tag": "Target",
+			"type": "uuid"
+		},
+
+		{
+			"tag": "Value",
+			"type": "int"
+		}
+	]
+}

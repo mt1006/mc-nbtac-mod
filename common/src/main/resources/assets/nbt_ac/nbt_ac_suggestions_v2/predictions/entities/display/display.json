@@ -1,0 +1,29 @@
+{
+	"conditions":
+	[
+		{ "root": "entity/minecraft:block_display" },
+		{ "root": "entity/minecraft:item_display" },
+		{ "root": "entity/minecraft:text_display" }
+	],
+	
+	"operations":
+	[
+		{
+			"on": "billboard",
+			"type": "set_type",
+			"val": "string@enum/fixed;vertical;horizontal;center"
+		},
+		
+		{
+			"on": "brightness",
+			"type": "set_subcompound",
+			"val": "compound/nbt_ac:display_brightness"
+		},
+		
+		{
+			"on": "transformation",
+			"type": "set_subcompound",
+			"val": "compound/nbt_ac:display_transformation"
+		}
+	]
+}

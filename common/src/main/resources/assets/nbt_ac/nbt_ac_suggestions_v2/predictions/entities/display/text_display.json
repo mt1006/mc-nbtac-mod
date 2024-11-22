@@ -1,0 +1,15 @@
+{
+	"conditions":
+	[
+		{ "root": "entity/minecraft:text_display" }
+	],
+	
+	"operations":
+	[
+		{
+			"on": "alignment",
+			"type": "set_type",
+			"val": "string@enum/center;left;right"
+		}
+	]
+}

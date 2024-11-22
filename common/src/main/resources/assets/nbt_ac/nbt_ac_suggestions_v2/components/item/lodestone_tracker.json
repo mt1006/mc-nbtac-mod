@@ -1,0 +1,30 @@
+{
+	"id": "item/minecraft:lodestone_tracker",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "target",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "pos",
+					"type": "int_array"
+				},
+
+				{
+					"tag": "dimension",
+					"type": "string"
+				}
+			]
+		},
+
+		{
+			"tag": "tracked",
+			"type": "boolean"
+		}
+	]
+}

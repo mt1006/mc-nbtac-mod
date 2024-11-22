@@ -1,0 +1,19 @@
+{
+	"id": "item/minecraft:enchantments",
+	"type": "compound",
+	"always_relevant": true,
+
+	"tags":
+	[
+		{
+			"tag": "levels",
+			"type": "compound",
+			"subtype": "enchantments"
+		},
+
+		{
+			"tag": "show_in_tooltip",
+			"type": "boolean"
+		}
+	]
+}

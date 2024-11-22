@@ -1,0 +1,10 @@
+{
+	"tags":
+	[
+		{
+			"tag": "separator",
+			"type": "compound",
+			"subtype": "json_text_compound"
+		}
+	]
+}

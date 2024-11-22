@@ -1,0 +1,17 @@
+{
+	"conditions":
+	[
+		{ "path": "*Item" },
+		{ "path": "Book" },
+		{ "path": "Trident" },
+		{ "path": "item" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "copy_tags",
+			"val": "compound/nbt_ac:item"
+		}
+	]
+}

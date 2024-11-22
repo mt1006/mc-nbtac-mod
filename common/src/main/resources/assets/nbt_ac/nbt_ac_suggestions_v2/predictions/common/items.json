@@ -1,0 +1,19 @@
+{
+	"conditions":
+	[
+		{ "path": "*Items" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "override_unknown",
+			"val": "list/compound"
+		},
+
+		{
+			"type": "copy_tags",
+			"val": "compound/nbt_ac:item"
+		}
+	]
+}

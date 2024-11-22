@@ -1,0 +1,16 @@
+{
+	"tags":
+	[
+		{
+			"tag": "fallback",
+			"type": "string",
+			"subtype": "translation_key"
+		},
+
+		{
+			"tag": "with",
+			"type": "list/string",
+			"subtype": "json_text_compound"
+		}
+	]
+}

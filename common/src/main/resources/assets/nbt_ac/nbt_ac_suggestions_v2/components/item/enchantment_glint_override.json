@@ -1,0 +1,5 @@
+{
+	"id": "item/minecraft:enchantment_glint_override",
+	"type": "boolean",
+	"always_relevant": true
+}

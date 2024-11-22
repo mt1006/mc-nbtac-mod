@@ -1,0 +1,17 @@
+{
+	"conditions":
+	[
+		{
+			"root": "entity/minecraft:player",
+			"path": "Inventory"
+		}
+	],
+	
+	"operations":
+	[
+		{
+			"type": "add_tag",
+			"val": "Slot/byte/inventory_slot"
+		}
+	]
+}

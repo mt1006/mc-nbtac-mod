@@ -1,0 +1,16 @@
+{
+	"id": "compound/nbt_ac:display_brightness",
+
+	"tags":
+	[
+		{
+			"tag": "block",
+			"type": "int"
+		},
+
+		{
+			"tag": "sky",
+			"type": "int"
+		}
+	]
+}

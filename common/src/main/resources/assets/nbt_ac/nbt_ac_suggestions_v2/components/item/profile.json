@@ -1,0 +1,40 @@
+{
+	"id": "item/minecraft:profile",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "name",
+			"type": "string"
+		},
+
+		{
+			"tag": "id",
+			"type": "uuid"
+		},
+
+		{
+			"tag": "properties",
+			"type": "list/compound",
+
+			"tags":
+			[
+				{
+					"tag": "name",
+					"type": "string"
+				},
+
+				{
+					"tag": "value",
+					"type": "string"
+				},
+
+				{
+					"tag": "signature",
+					"type": "string"
+				}
+			]
+		}
+	]
+}

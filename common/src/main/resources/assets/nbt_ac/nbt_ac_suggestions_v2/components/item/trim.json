@@ -1,0 +1,24 @@
+{
+	"id": "item/minecraft:trim",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "pattern",
+			"type": "string",
+			"subtype": "trim_pattern"
+		},
+
+		{
+			"tag": "material",
+			"type": "string",
+			"subtype": "trim_material"
+		},
+
+		{
+			"tag": "show_in_tooltip",
+			"type": "boolean"
+		}
+	]
+}

@@ -1,0 +1,148 @@
+{
+  "nbt_ac.options": "NBT Autocomplete Settings",
+
+  "nbt_ac.options.style": "Style",
+  "nbt_ac.options.suggestions": "Suggestions",
+  "nbt_ac.options.suggestion_priority": "Suggestion Priority",
+  "nbt_ac.options.item_components": "Item Components",
+  "nbt_ac.options.mods_and_plugins_support": "Mods and Plugins Support",
+  "nbt_ac.options.advanced_settings": "Advanced Settings",
+  "nbt_ac.options.debugging_options": "Debugging Options",
+
+
+
+  "nbt_ac.options.field.short_boolean": "Short Boolean",
+  "nbt_ac.options.field.short_boolean.desc": "Suggests 1b/0b instead of true/false for boolean value. Note that it doesn't apply to raw JSON format, as it requires true/false form.",
+
+  "nbt_ac.options.field.tag_quotation_marks": "Put Tags In Quotation Marks",
+  "nbt_ac.options.field.tag_quotation_marks.false": "When necessary",
+  "nbt_ac.options.field.tag_quotation_marks.true": "Always",
+  "nbt_ac.options.field.tag_quotation_marks.desc": "Puts tag names in quotation marks.\ntrue - Always\nfalse - When necessary",
+
+  "nbt_ac.options.field.string_quotation_marks": "Put Strings In Quotation Marks",
+  "nbt_ac.options.field.string_quotation_marks.false": "When necessary",
+  "nbt_ac.options.field.string_quotation_marks.true": "Always",
+  "nbt_ac.options.field.string_quotation_marks.desc": "Puts values of string type in quotation marks.\ntrue - Always\nfalse - When necessary",
+
+  "nbt_ac.options.field.default_quotation_mark_type": "Default Quotation Mark Type",
+  "nbt_ac.options.field.default_quotation_mark_type.1": "Single (')",
+  "nbt_ac.options.field.default_quotation_mark_type.2": "Double (\")",
+  "nbt_ac.options.field.default_quotation_mark_type.desc": "Defines what kind of quotation mark will be used by default.\n1 - Single (')\n2 - Double (\")\nOther values will be treated as 2.\nIf you're using version 1.19.4 or older, note that setting it to single (especially with \"Put Tags In Quotation Marks\" set to \"Always\") may cause some issues with NBT paths due to MC-175504 bug. It also doesn't apply to JSON text components.",
+
+  "nbt_ac.options.field.json_string_suggestion": "JSON String Suggestion",
+  "nbt_ac.options.field.json_string_suggestion.0": "None",
+  "nbt_ac.options.field.json_string_suggestion.1": "Recommended",
+  "nbt_ac.options.field.json_string_suggestion.2": "Default For Strings",
+  "nbt_ac.options.field.json_string_suggestion.3": "Legacy, Separated (' \")",
+  "nbt_ac.options.field.json_string_suggestion.4": "Legacy, Merged ('\")",
+  "nbt_ac.options.field.json_string_suggestion.5": "Legacy, Backslash (\"\\\")",
+  "nbt_ac.options.field.json_string_suggestion.desc": "Defines simple string opening suggestion for JSON text components.\n0 - None\n1 - Recommended - same as 2 on 1.20.4 and newer, same as 3 on older.\n2 - Default For Strings - uses quote type from \"Default Quotation Mark Type\" setting.\n3 - Legacy, Separated (' \")\n4 - Legacy, Merged ('\") - similar to 3, but without space.\n5 - Legacy, Backslash (\"\\\")\nOther values will be treated as 1.",
+
+  "nbt_ac.options.field.hide_mc_namespace_in_tags": "Hide Minecraft Namespace In Tags",
+  "nbt_ac.options.field.hide_mc_namespace_in_tags.desc": "Hides \"minecraft:\" namespace from tag suggestions.",
+
+  "nbt_ac.options.field.hide_mc_namespace_in_strings": "Hide Minecraft Namespace In Strings",
+  "nbt_ac.options.field.hide_mc_namespace_in_strings.desc": "Hides \"minecraft:\" namespace from string suggestions.",
+
+
+  "nbt_ac.options.field.ignore_letter_case": "Ignore Letter Case",
+  "nbt_ac.options.field.ignore_letter_case.desc": "Ignores letter case when providing tag name suggestions.",
+
+  "nbt_ac.options.field.show_tag_hints": "Show Tag Hints",
+  "nbt_ac.options.field.show_tag_hints.desc": "Shows tag hints (like its type or source) next to its name in a suggestion list.",
+
+  "nbt_ac.options.field.hide_forge_tags": "Hide Forge Tags",
+  "nbt_ac.options.field.hide_forge_tags.desc": "Hides Forge specific tags. Requires removing \"./minecraft/cache/nbt_ac\" and game restart to take effect.",
+
+
+  "nbt_ac.options.field.custom_sorting": "Custom Sorting",
+  "nbt_ac.options.field.custom_sorting.desc": "Allows the mod to use non-alphabetical suggestion sorting.",
+
+  "nbt_ac.options.field.mark_recommended": "Mark Recommended",
+  "nbt_ac.options.field.mark_recommended.desc": "Marks recommended suggestions with \"<*>\" in a hint.",
+
+  "nbt_ac.options.field.recommended_at_the_top": "Recommended At The Top",
+  "nbt_ac.options.field.recommended_at_the_top.desc": "Places recommended suggestions at the top of the list. Requires custom sorting.",
+
+  "nbt_ac.options.field.mark_irrelevant": "Mark Irrelevant",
+  "nbt_ac.options.field.mark_irrelevant.desc": "Marks irrelevant suggestions with \"<I>\" in a hint.",
+
+  "nbt_ac.options.field.gray_out_irrelevant": "Gray Out Irrelevant",
+  "nbt_ac.options.field.gray_out_irrelevant.desc": "Grays out irrelevant suggestions.",
+
+  "nbt_ac.options.field.placing_of_irrelevant": "Placing Of Irrelevant",
+  "nbt_ac.options.field.placing_of_irrelevant.0": "Normal",
+  "nbt_ac.options.field.placing_of_irrelevant.1": "At The Bottom",
+  "nbt_ac.options.field.placing_of_irrelevant.2": "Hidden",
+  "nbt_ac.options.field.placing_of_irrelevant.desc": "Specifies the placing of irrelevant suggestions.\n0 - Normal\n1 - At The Bottom\n2 - Hidden\nOther values will be treated as 1.\nValues other than \"Normal\" require custom sorting.",
+
+
+  "nbt_ac.options.field.hide_mc_namespace_in_components": "Hide Minecraft Namespace In Components",
+  "nbt_ac.options.field.hide_mc_namespace_in_components.desc": "Hides \"minecraft:\" namespace from item component suggestions.",
+
+  "nbt_ac.options.field.show_custom_data_as_relevant": "Show \"custom_data\" As Relevant",
+  "nbt_ac.options.field.show_custom_data_as_relevant.desc": "When enabled it will always show \"minecraft:custom_data\" item component as relevant suggestion. When disabled it will always be shown as irrelevant.",
+
+  "nbt_ac.options.field.show_custom_model_data_as_relevant": "Show \"custom_model_data\" As Relevant",
+  "nbt_ac.options.field.show_custom_model_data_as_relevant.desc": "When enabled it will always show \"minecraft:custom_model_data\" item component as relevant suggestion. When disabled it will always be shown as irrelevant.",
+
+
+  "nbt_ac.options.field.vanilla_ids_sorting": "Vanilla IDs Sorting",
+  "nbt_ac.options.field.vanilla_ids_sorting.0": "Without Custom Sorting",
+  "nbt_ac.options.field.vanilla_ids_sorting.1": "Depends",
+  "nbt_ac.options.field.vanilla_ids_sorting.2": "Always At The Top",
+  "nbt_ac.options.field.vanilla_ids_sorting.3": "Always In The Middle",
+  "nbt_ac.options.field.vanilla_ids_sorting.desc": "Specifies the method vanilla IDs (in \"minecraft:\" namespace) are sorted in relation to non-vanilla IDs (from mods). It applies only to suggestions provided by NBT Autocomplete. This setting is also strongly related to \"Hide Minecraft Namespace In Strings\" setting.\n0 - Without Custom Sorting - with hidden vanilla namespace it will cause IDs to be scattered around IDs from mods, therefore it isn't recommended.\n1 - Depends - placed at the top only with namespace hidden, otherwise in the middle.\n2 - Always At The Top\n3 - Always In The Middle\nOther values will be treated as 1.",
+
+  "nbt_ac.options.field.support_command_namespace": "Support For Command Namespace",
+  "nbt_ac.options.field.support_command_namespace.desc": "Ignores the \"minecraft:\" as command prefix. Useful when using with plugins which put Minecraft commands under this namespace.",
+
+
+  "nbt_ac.options.field.use_new_thread": "Use New Thread",
+  "nbt_ac.options.field.use_new_thread.desc": "Uses new thread to load suggestions during Minecraft loading.",
+
+  "nbt_ac.options.field.use_disassembler": "Use Disassembler",
+  "nbt_ac.options.field.use_disassembler.desc": "Loads suggestions by using disassembler on \"load\" methods of entities and block entities.",
+
+  "nbt_ac.options.field.load_from_resources": "Load From Resources",
+  "nbt_ac.options.field.load_from_resources.desc": "Loads suggestions from resource files (required to load item tags and tag predictions).",
+
+  "nbt_ac.options.field.allow_block_entity_extraction": "Allow Block Entity Extraction",
+  "nbt_ac.options.field.allow_block_entity_extraction.desc": "Allows for usage of block entity extraction method (similar to one used by disassembler) after suggestions are loaded.",
+
+  "nbt_ac.options.field.use_cache": "Use Cache",
+  "nbt_ac.options.field.use_cache.desc": "Enables suggestion caching.",
+
+  "nbt_ac.options.field.max_cached_instances": "Max Cached Instances",
+  "nbt_ac.options.field.max_cached_instances.-1": "[unlimited]",
+  "nbt_ac.options.field.max_cached_instances.desc": "Maximum number of cached Minecraft instances. Use -1 to disable the limit.",
+
+
+  "nbt_ac.options.field.max_stack_traces": "Max Logged Stack Traces",
+  "nbt_ac.options.field.max_stack_traces.-1": "[unlimited]",
+  "nbt_ac.options.field.max_stack_traces.0": "0 (disabled)",
+  "nbt_ac.options.field.max_stack_traces.desc": "Limit of printed stack traces for exceptions.\n-1 - Unlimited\n 0 - Stack traces disabled",
+
+  "nbt_ac.options.field.debug_mode": "Debug Mode",
+  "nbt_ac.options.field.debug_mode.desc": "Enables additional messages and checks useful for debugging.",
+
+  "nbt_ac.options.field.debug_sleep": "Debug Loading Sleep",
+  "nbt_ac.options.field.debug_sleep.0": "[disabled]",
+  "nbt_ac.options.field.debug_sleep.desc": "Delays suggestion loading to better measure time it takes (value in milliseconds, recommended to set to a few thousand).",
+
+  "nbt_ac.options.field.debug_config_screen": "Debug Config Screen",
+  "nbt_ac.options.field.debug_config_screen.desc": "Shows settings GUI after exiting realms screen. It isn't reset to default value by GUI reset button!",
+
+  "nbt_ac.options.field.save_suggestions": "Save Suggestions",
+  "nbt_ac.options.field.save_suggestions.0": "Disabled",
+  "nbt_ac.options.field.save_suggestions.1": "Enabled",
+  "nbt_ac.options.field.save_suggestions.2": "Enabled and Sorted",
+  "nbt_ac.options.field.save_suggestions.desc": "Saves suggestions to file - \".minecraft/nbt_ac_output.txt\".\n0 - Disabled\n1 - Enabled\n2 - Enabled and sorted (easier for comparing)\nOther values will be treated as 0.",
+
+
+
+  "nbt_ac.options.common.tooltip": "%s\n§8Default value: %s",
+  "nbt_ac.options.common.reset_settings": "Reset Settings",
+  "nbt_ac.options.common.undefined": "[undefined]",
+  "nbt_ac.options.common.gui_debug_warning": "Config screen debug mode is enabled!"
+}
