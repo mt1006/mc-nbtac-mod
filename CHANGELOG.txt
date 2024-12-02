@@ -1,3 +1,4 @@
+===Version 1.3.10===
 -Fixed improper structure of potion_contents item component (thanks to YOMA8338 for reporting).
 -Fixed entity argument compatibility issue with Paper servers (thanks to donutStudio for reporting).
 
