@@ -16,6 +16,7 @@
     "fields.KeyMappingFields",
     "fields.MinecraftFields",
     "fields.TextColorFields",
+    "misc.ArgumentCommandNodeMixin",
     "misc.RealmsMainScreenMixin",
     "suggestions.SuggestionsListMixin",
     "suggestions.arguments.ComponentArgumentMixin",
