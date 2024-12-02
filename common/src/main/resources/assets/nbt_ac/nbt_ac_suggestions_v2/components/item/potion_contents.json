@@ -18,20 +18,7 @@
 		{
 			"tag": "custom_effects",
 			"type": "list/compound",
-
-			"tags":
-			[
-				{
-					"tag": "effect",
-					"type": "compound",
-					"subtype": "tag/compound/nbt_ac:effect"
-				},
-
-				{
-					"tag": "probability",
-					"type": "float"
-				}
-			]
+			"subtype": "tag/compound/nbt_ac:effect"
 		}
 	]
 }
