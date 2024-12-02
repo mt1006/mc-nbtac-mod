@@ -1,4 +1,5 @@
 -Fixed improper structure of potion_contents item component (thanks to YOMA8338 for reporting).
+-Fixed entity argument compatibility issue with Paper servers (thanks to donutStudio for reporting).
 
 ===Version 1.3.9===
 -Fixed crash when using "nbt" argument with non-player entity selector (thanks to kurait for reporting).
