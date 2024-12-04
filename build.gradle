@@ -26,15 +26,13 @@ subprojects
 			"minecraft_version"         : minecraft_version,
 			"java_version"              : java_version,
 			"version_range_fabric"      : version_range_fabric,
-			"version_range_forge"       : version_range_forge,
 			"version_range_neoforge"    : version_range_neoforge,
 			"fabric_loader_version"     : fabric_loader_version,
 			"fabric_api_version"        : fabric_api_version,
-			"forge_version"             : forge_version,
 			"neoforge_version"          : neoforge_version,
 		]
 
-		filesMatching(["pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "*.mixins.json"])
+		filesMatching(["pack.mcmeta", "fabric.mod.json", "META-INF/neoforge.mods.toml", "*.mixins.json"])
 		{
 			expand replaceProperties
 		}
