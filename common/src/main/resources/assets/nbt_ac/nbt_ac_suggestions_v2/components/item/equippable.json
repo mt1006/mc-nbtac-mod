@@ -19,7 +19,7 @@
 		},
 
 		{
-			"tag": "model",
+			"tag": "asset_id",
 			"type": "string"
 		},
 
