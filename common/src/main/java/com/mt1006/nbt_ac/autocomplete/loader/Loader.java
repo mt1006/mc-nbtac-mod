@@ -6,8 +6,6 @@ import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.loader.cache.TypeCache;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ParseJson;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ResourceLoader;
-import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
-import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.client.Minecraft;
@@ -26,6 +24,7 @@ public class Loader
 	private static final int MAX_PRINTER_DEPTH = 32;
 	private static volatile Thread thread;
 	private static final AtomicInteger printedStackTraces = new AtomicInteger();
+	private static TypeCache.Results cacheStatus = TypeCache.Results.NOT_LOADED;
 	public static volatile boolean finished = false;
 
 	public static void load()
@@ -44,23 +43,17 @@ public class Loader
 		long start = System.currentTimeMillis();
 		thread = Thread.currentThread();
 
-		if (ModConfig.useDisassembler.val)
+		cacheStatus = TypeCache.load();
+		/*if (!cacheLoaded)
 		{
-			boolean cacheEnabled = TypeCache.isEnabled();
-			boolean cacheLoaded = cacheEnabled && TypeCache.load();
-			if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Cache loaded: {}", cacheLoaded); }
+			Disassembly.init();
+			TypeLoader.loadBlockEntityTypes();
+			TypeLoader.loadEntityTypes();
+			Disassembly.clear();
 
-			if (!cacheLoaded)
-			{
-				Disassembly.init();
-				TypeLoader.loadBlockEntityTypes();
-				TypeLoader.loadEntityTypes();
-				Disassembly.clear();
-
-				if (cacheEnabled) { TypeCache.add(); }
-			}
-			if (cacheEnabled) { TypeCache.updateIndex(); }
-		}
+			if (cacheEnabled) { TypeCache.add(); }
+		}*/
+		if (cacheStatus == TypeCache.Results.FROM_FILE) { TypeCache.updateIndex(); }
 
 		long interruptionStart = System.currentTimeMillis();
 		try

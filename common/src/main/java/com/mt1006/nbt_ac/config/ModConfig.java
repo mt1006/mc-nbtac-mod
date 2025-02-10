@@ -37,10 +37,8 @@ public class ModConfig
 	public static final ConfigFields.BooleanField supportCommandNamespace = fields.add("support_command_namespace", true);
 
 	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
-	public static final ConfigFields.BooleanField useDisassembler = fields.add("use_disassembler", true);
 	public static final ConfigFields.BooleanField loadFromResources = fields.add("load_from_resources", true);
 	public static final ConfigFields.BooleanField allowBlockEntityExtraction = fields.add("allow_block_entity_extraction", true);
-	public static final ConfigFields.BooleanField useCache = fields.add("use_cache", true);
 	public static final ConfigFields.IntegerField maxCachedInstances = fields.add("max_cached_instances", 32);
 
 	public static final ConfigFields.IntegerField maxStackTraces = fields.add("max_stack_traces", 6);
@@ -87,10 +85,8 @@ public class ModConfig
 
 		list.addLabel("advanced_settings");
 		list.add(useNewThread.createSwitch());
-		list.add(useDisassembler.createSwitch());
 		list.add(loadFromResources.createSwitch());
 		list.add(allowBlockEntityExtraction.createSwitch());
-		list.add(useCache.createSwitch());
 		list.add(maxCachedInstances.createSlider(-1, 64, 1, List.of(-1)));
 
 		list.addLabel("debugging_options");

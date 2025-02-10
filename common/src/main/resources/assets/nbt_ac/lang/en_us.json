@@ -101,17 +101,11 @@
   "nbt_ac.options.field.use_new_thread": "Use New Thread",
   "nbt_ac.options.field.use_new_thread.desc": "Uses new thread to load suggestions during Minecraft loading.",
 
-  "nbt_ac.options.field.use_disassembler": "Use Disassembler",
-  "nbt_ac.options.field.use_disassembler.desc": "Loads suggestions by using disassembler on \"load\" methods of entities and block entities.",
-
   "nbt_ac.options.field.load_from_resources": "Load From Resources",
   "nbt_ac.options.field.load_from_resources.desc": "Loads suggestions from resource files (required to load item tags and tag predictions).",
 
   "nbt_ac.options.field.allow_block_entity_extraction": "Allow Block Entity Extraction",
   "nbt_ac.options.field.allow_block_entity_extraction.desc": "Allows for usage of block entity extraction method (similar to one used by disassembler) after suggestions are loaded.",
-
-  "nbt_ac.options.field.use_cache": "Use Cache",
-  "nbt_ac.options.field.use_cache.desc": "Enables suggestion caching.",
 
   "nbt_ac.options.field.max_cached_instances": "Max Cached Instances",
   "nbt_ac.options.field.max_cached_instances.-1": "[unlimited]",

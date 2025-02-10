@@ -50,7 +50,7 @@ public class CacheIndex
 		if (element == null) { return false; }
 
 		File file = getFile(directory, element.pos);
-		if (!CacheFile.load(file, id)) { return false; }
+		if (!CacheFile.loadFromFile(file, id)) { return false; }
 
 		element.timestamp = System.currentTimeMillis();
 		return true;

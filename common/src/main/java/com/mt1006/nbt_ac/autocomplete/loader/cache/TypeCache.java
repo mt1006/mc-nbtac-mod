@@ -1,7 +1,7 @@
 package com.mt1006.nbt_ac.autocomplete.loader.cache;
 
 import com.mt1006.nbt_ac.NBTac;
-import com.mt1006.nbt_ac.config.ModConfig;
+import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,26 +19,31 @@ public class TypeCache
 	private static String id, idHash;
 	private static CacheIndex index = null;
 
-	public static boolean isEnabled()
-	{
-		return ModConfig.useCache.val;
-	}
-
-	public static boolean load()
+	public static Results load()
 	{
 		directory = new File(Minecraft.getInstance().gameDirectory, DIRECTORY_NAME);
-		directory.mkdirs();
 
 		id = genInstanceId();
 		idHash = getMD5(id);
 
 		index = new CacheIndex(new File(directory, INDEX_FILENAME));
-		return index.findAndLoad(directory, id, idHash);
+		boolean cacheFromFileLoaded = index.findAndLoad(directory, id, idHash);
+
+		if (!cacheFromFileLoaded)
+		{
+			NbtSuggestionManager.clearSuggestionMap();
+			return CacheFile.loadFromJar() ? Results.FROM_JAR : Results.ERROR;
+		}
+		else
+		{
+			return Results.FROM_FILE;
+		}
 	}
 
 	public static void add()
 	{
 		int elementPos = index.getNextFilePos();
+		directory.mkdirs();
 		CacheFile.save(CacheIndex.getFile(directory, elementPos), id);
 		index.add(idHash, elementPos);
 	}
@@ -50,8 +55,7 @@ public class TypeCache
 
 	private static String genInstanceId()
 	{
-		String modVersionTag = String.format("%s;", CacheFile.MAX_RADIX);
-		StringBuilder builder = new StringBuilder(modVersionTag);
+		StringBuilder builder = new StringBuilder(String.format("%d;", CacheFile.MAX_RADIX));
 
 		TreeSet<String> mods = new TreeSet<>();
 		NBTac.loaderInterface.appendModVersionIds(mods);
@@ -76,5 +80,10 @@ public class TypeCache
 			return builder.toString();
 		}
 		catch (NoSuchAlgorithmException exception) { return null; }
+	}
+
+	public enum Results
+	{
+		NOT_LOADED, ERROR, FROM_JAR, FROM_FILE
 	}
 }

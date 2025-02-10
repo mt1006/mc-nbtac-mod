@@ -101,17 +101,11 @@
   "nbt_ac.options.field.use_new_thread": "使用新執行緒",
   "nbt_ac.options.field.use_new_thread.desc": "使用新執行緒在 Minecraft 載入期間載入建議。",
 
-  "nbt_ac.options.field.use_disassembler": "使用反組譯器",
-  "nbt_ac.options.field.use_disassembler.desc": "透過對實體和方塊實體的 \"load\" 方法使用反組譯器來載入建議。",
-
   "nbt_ac.options.field.load_from_resources": "從資源載入",
   "nbt_ac.options.field.load_from_resources.desc": "從資源檔案載入建議（載入物品標籤和標籤預測所需）。",
 
   "nbt_ac.options.field.allow_block_entity_extraction": "允許方塊實體提取",
   "nbt_ac.options.field.allow_block_entity_extraction.desc": "允許在載入建議後使用方塊實體提取方法（類似於反組譯器使用的方法）。",
-
-  "nbt_ac.options.field.use_cache": "使用快取",
-  "nbt_ac.options.field.use_cache.desc": "啟用建議快取。",
 
   "nbt_ac.options.field.max_cached_instances": "最大快取執行個體數",
   "nbt_ac.options.field.max_cached_instances.-1": "[無限制]",

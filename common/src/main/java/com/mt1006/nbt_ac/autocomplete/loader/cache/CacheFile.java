@@ -6,20 +6,34 @@ import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CacheFile
 {
-	private static final String END_SEQUENCE = "###END###";
 	public static final int MAX_RADIX = Math.min(Character.MAX_RADIX, 36);
 
-	public static boolean load(File file, String desiredId)
+	public static boolean loadFromJar()
+	{
+		try (InputStream inputStream = NBTac.class.getResourceAsStream(String.format("/assets/%s/data.txt", NBTac.MOD_ID)))
+		{
+			if (inputStream == null) { throw new Exception("inputStream is null!"); }
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+			reader.readLine();
+			return parseFile(reader);
+		}
+		catch (Exception exception)
+		{
+			NBTac.LOGGER.error("Failed to load suggestions from JAR!");
+			Loader.printStackTrace(exception);
+			return false;
+		}
+	}
+
+	public static boolean loadFromFile(File file, String desiredId)
 	{
 		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
@@ -33,7 +47,7 @@ public class CacheFile
 		}
 		catch (Exception exception)
 		{
-			NBTac.LOGGER.error("Failed to load cache file!");
+			NBTac.LOGGER.error("Failed to load cache from file!");
 			Loader.printStackTrace(exception);
 			return false;
 		}
@@ -78,8 +92,7 @@ public class CacheFile
 			}
 		}
 
-		if ((line = reader.readLine()) == null) { return false; }
-		return line.equals(END_SEQUENCE);
+		return true;
 	}
 
 	public static void save(File file, String id)
@@ -96,7 +109,6 @@ public class CacheFile
 
 			writer.println(id);
 			builder.finish(writer);
-			writer.print(END_SEQUENCE);
 		}
 		catch (Exception exception)
 		{
