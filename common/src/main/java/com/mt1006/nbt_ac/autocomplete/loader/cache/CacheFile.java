@@ -25,10 +25,10 @@ public class CacheFile
 			reader.readLine();
 			return parseFile(reader);
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			NBTac.LOGGER.error("Failed to load suggestions from JAR!");
-			Loader.printStackTrace(exception);
+			Loader.printStackTrace(e);
 			return false;
 		}
 	}
@@ -45,10 +45,10 @@ public class CacheFile
 			}
 			return parseFile(reader);
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			NBTac.LOGGER.error("Failed to load cache from file!");
-			Loader.printStackTrace(exception);
+			Loader.printStackTrace(e);
 			return false;
 		}
 	}
@@ -110,10 +110,10 @@ public class CacheFile
 			writer.println(id);
 			builder.finish(writer);
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			NBTac.LOGGER.error("Failed to save cache file");
-			Loader.printStackTrace(exception);
+			Loader.printStackTrace(e);
 		}
 	}
 
@@ -210,7 +210,7 @@ public class CacheFile
 				listType = NbtSuggestion.Type.fromOrdinal(Integer.parseInt(values[1]));
 				source = NbtSuggestion.Source.fromOrdinal(Integer.parseInt(values[2]));
 			}
-			catch (Exception exception) { throw new Exception(); }
+			catch (Exception e) { throw new Exception(); }
 		}
 
 		public NbtSuggestion getSuggestion()

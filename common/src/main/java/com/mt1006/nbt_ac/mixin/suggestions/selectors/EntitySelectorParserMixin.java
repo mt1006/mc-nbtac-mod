@@ -51,11 +51,11 @@ public class EntitySelectorParserMixin
 			{
 				modifier.handle(parser);
 			}
-			catch (CommandSyntaxException exception)
+			catch (CommandSyntaxException e)
 			{
 				reader.setCursor(cursor);
 				suggestions = this::suggestNbt;
-				throw exception;
+				throw e;
 			}
 		}
 		else

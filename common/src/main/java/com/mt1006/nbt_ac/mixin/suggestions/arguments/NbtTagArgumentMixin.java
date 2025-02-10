@@ -42,7 +42,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 				return NbtSuggestionManager.loadFromSuggestion(nbtSuggestion, tag, suggestionsBuilder);
 			}
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			return Suggestions.empty();
 		}

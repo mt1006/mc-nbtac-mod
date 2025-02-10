@@ -41,11 +41,11 @@ public class BlockStateParserMixin
 		{
 			nbt = (new TagParser(reader)).readStruct();
 		}
-		catch (CommandSyntaxException exception)
+		catch (CommandSyntaxException e)
 		{
 			reader.setCursor(cursorPos);
 			suggestions = this::suggestNbt;
-			throw exception;
+			throw e;
 		}
 	}
 

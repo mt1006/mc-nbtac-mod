@@ -36,7 +36,7 @@ public class Loader
 		{
 			NBTac.LOGGER.info("Debug sleep enabled! - Sleeping: {} ms", debugSleep);
 			try { Thread.sleep(debugSleep); }
-			catch (InterruptedException exception) { NBTac.LOGGER.error("Unexpected debug sleep interruption!"); }
+			catch (InterruptedException e) { NBTac.LOGGER.error("Unexpected debug sleep interruption!"); }
 		}
 
 		if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Loader started!"); }
@@ -60,7 +60,7 @@ public class Loader
 		{
 			ResourceLoader.countDownLatch.await();
 		}
-		catch (InterruptedException exception) { NBTac.LOGGER.error("Unexpected \"ResourceLoader.countDownLatch.await()\" interruption!"); }
+		catch (InterruptedException e) { NBTac.LOGGER.error("Unexpected \"ResourceLoader.countDownLatch.await()\" interruption!"); }
 		long interruptionDuration = System.currentTimeMillis() - interruptionStart;
 
 		if (ModConfig.loadFromResources.val)
@@ -116,7 +116,7 @@ public class Loader
 				}
 
 			}
-			catch (Exception exception) { NBTac.LOGGER.warn("Failed to save suggestions!"); }
+			catch (Exception e) { NBTac.LOGGER.warn("Failed to save suggestions!"); }
 		}
 	}
 
