@@ -30,11 +30,15 @@ public class ConfigScreen extends Screen
 		resetButton = Button.builder(Component.translatable("nbt_ac.options.common.reset_settings"), (b) -> onResetPress(list))
 				.pos(width / 2 + 5, height - 27).size(150, 20).build();
 
+		Component generatorButtonText = Component.translatable("nbt_ac.options.generate_suggestions.title");
+		list.add(Button.builder(generatorButtonText, (b) -> onGeneratorPress(generatorButtonText)).
+				size(ModOptionList.ELEMENT_WIDTH, ModOptionList.ELEMENT_HEIGHT).build());
+
 		ModConfig.initWidgets(list);
 
-		addWidget(list);
-		addWidget(doneButton);
-		addWidget(resetButton);
+		addRenderableWidget(list);
+		addRenderableWidget(doneButton);
+		addRenderableWidget(resetButton);
 	}
 
 	private static void onDonePress(Screen lastScreen)
@@ -49,6 +53,11 @@ public class ConfigScreen extends Screen
 		list.updateValues();
 	}
 
+	private static void onGeneratorPress(Component component)
+	{
+		Minecraft.getInstance().setScreen(new GeneratorScreen(component));
+	}
+
 	@Override public void onClose()
 	{
 		ModConfig.save();
@@ -58,9 +67,6 @@ public class ConfigScreen extends Screen
 	@Override public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
 	{
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
-		list.render(guiGraphics, mouseX, mouseY, partialTick);
-		doneButton.render(guiGraphics, mouseX, mouseY, partialTick);
-		resetButton.render(guiGraphics, mouseX, mouseY, partialTick);
 		guiGraphics.drawCenteredString(font, title, width / 2, 20, 16777215);
 	}
 }

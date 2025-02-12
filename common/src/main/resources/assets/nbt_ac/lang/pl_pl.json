@@ -135,6 +135,10 @@
 
 
 
+  "nbt_ac.options.generate_suggestions.title": "Generuj listę sugestii",
+
+
+
   "nbt_ac.options.common.tooltip": "%s\n§8Domyślna wartość: %s",
   "nbt_ac.options.common.reset_settings": "Zresetuj ustawienia",
   "nbt_ac.options.common.undefined": "[niezdefiniowane]",

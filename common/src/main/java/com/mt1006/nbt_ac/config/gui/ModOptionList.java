@@ -20,8 +20,8 @@ import java.util.function.Supplier;
 
 public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.ListWidget>
 {
-	protected static final int ELEMENT_WIDTH = 310;
-	protected static final int ELEMENT_HEIGHT = 20;
+	public static final int ELEMENT_WIDTH = 310;
+	public static final int ELEMENT_HEIGHT = 20;
 	private final Font font;
 	private final List<MutableWidget> mutableWidgets = new ArrayList<>();
 
