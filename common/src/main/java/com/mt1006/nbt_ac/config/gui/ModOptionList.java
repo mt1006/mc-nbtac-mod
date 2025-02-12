@@ -60,7 +60,7 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 
 	@Override protected int scrollBarY()
 	{
-		return super.scrollBarY() + 32;
+		return super.scrollBarY();
 	}
 
 	protected static class ListWidget extends Entry<ListWidget>
