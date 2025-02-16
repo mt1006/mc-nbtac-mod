@@ -6,8 +6,11 @@ import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.loader.cache.TypeCache;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ParseJson;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ResourceLoader;
+import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
+import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
+import com.mt1006.nbt_ac.config.gui.GeneratorScreen;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
@@ -39,21 +42,31 @@ public class Loader
 			catch (InterruptedException e) { NBTac.LOGGER.error("Unexpected debug sleep interruption!"); }
 		}
 
+		loadSuggestions(false);
+	}
+
+	public static void loadSuggestions(boolean useDisassembler)
+	{
+		finished = false;
 		if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Loader started!"); }
 		long start = System.currentTimeMillis();
 		thread = Thread.currentThread();
 
-		cacheStatus = TypeCache.load();
-		/*if (!cacheLoaded)
+		if (useDisassembler)
 		{
 			Disassembly.init();
 			TypeLoader.loadBlockEntityTypes();
 			TypeLoader.loadEntityTypes();
 			Disassembly.clear();
 
-			if (cacheEnabled) { TypeCache.add(); }
-		}*/
-		if (cacheStatus == TypeCache.Results.FROM_FILE) { TypeCache.updateIndex(); }
+			TypeCache.add();
+			cacheStatus = TypeCache.Results.REPLACED;
+		}
+		else
+		{
+			cacheStatus = TypeCache.load();
+			if (cacheStatus == TypeCache.Results.FROM_FILE) { TypeCache.updateIndex(); }
+		}
 
 		long interruptionStart = System.currentTimeMillis();
 		try
@@ -79,6 +92,13 @@ public class Loader
 		}
 
 		saveSuggestions(SaveSuggestionsMode.get(ModConfig.saveSuggestions.val));
+	}
+
+	public static void generate(GeneratorScreen screen)
+	{
+		NbtSuggestionManager.clearSuggestionMap();
+		Loader.loadSuggestions(true);
+		screen.generated = true;
 	}
 
 	private static void saveSuggestions(SaveSuggestionsMode mode)

@@ -13,7 +13,6 @@ public class ConfigScreen extends Screen
 {
 	private final Screen lastScreen;
 	private ModOptionList list;
-	private Button doneButton, resetButton;
 
 	public ConfigScreen(Screen lastScreen)
 	{
@@ -21,14 +20,14 @@ public class ConfigScreen extends Screen
 		this.lastScreen = lastScreen;
 	}
 
-	@Override public void init()
+	@Override protected void init()
 	{
 		list = new ModOptionList(Minecraft.getInstance(), width, height - 64, 32, 25, font);
 
-		doneButton = Button.builder(CommonComponents.GUI_DONE, (b) -> onDonePress(lastScreen))
-				.pos(width / 2 - 155, height - 27).size(150, 20).build();
-		resetButton = Button.builder(Component.translatable("nbt_ac.options.common.reset_settings"), (b) -> onResetPress(list))
-				.pos(width / 2 + 5, height - 27).size(150, 20).build();
+		Button doneButton = Button.builder(CommonComponents.GUI_DONE,
+				(b) -> onDonePress(lastScreen)).pos(width / 2 - 155, height - 27).size(150, 20).build();
+		Button resetButton = Button.builder(Component.translatable("nbt_ac.options.common.reset_settings"),
+				(b) -> onResetPress(list)).pos(width / 2 + 5, height - 27).size(150, 20).build();
 
 		Component generatorButtonText = Component.translatable("nbt_ac.options.generate_suggestions.title");
 		list.add(Button.builder(generatorButtonText, (b) -> onGeneratorPress(generatorButtonText)).
@@ -53,9 +52,9 @@ public class ConfigScreen extends Screen
 		list.updateValues();
 	}
 
-	private static void onGeneratorPress(Component component)
+	private void onGeneratorPress(Component component)
 	{
-		Minecraft.getInstance().setScreen(new GeneratorScreen(component));
+		Minecraft.getInstance().setScreen(new GeneratorScreen(this, component));
 	}
 
 	@Override public void onClose()

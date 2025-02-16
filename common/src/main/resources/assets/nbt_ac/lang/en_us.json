@@ -136,6 +136,10 @@
 
 
   "nbt_ac.options.generate_suggestions.title": "Generate Suggestion List",
+  "nbt_ac.options.generate_suggestions.start_generating": "Start Generating",
+  "nbt_ac.options.generate_suggestions.generating": "Generating...",
+  "nbt_ac.options.generate_suggestions.remove_generated": "Remove Generated",
+  "nbt_ac.options.generate_suggestions.description": "NBT Autocomplete comes with suggestion list for vanilla. If you want to get suggestions for NBT of entities or block entities from other mods you need to generate own suggestion list.",
 
 
 

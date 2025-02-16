@@ -84,6 +84,6 @@ public class TypeCache
 
 	public enum Results
 	{
-		NOT_LOADED, ERROR, FROM_JAR, FROM_FILE
+		NOT_LOADED, ERROR, FROM_JAR, FROM_FILE, REPLACED
 	}
 }

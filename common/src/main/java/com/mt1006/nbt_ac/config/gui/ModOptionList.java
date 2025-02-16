@@ -58,11 +58,6 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 		return 400;
 	}
 
-	@Override protected int scrollBarY()
-	{
-		return super.scrollBarY();
-	}
-
 	protected static class ListWidget extends Entry<ListWidget>
 	{
 		private final AbstractWidget widget;
