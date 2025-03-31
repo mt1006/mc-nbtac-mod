@@ -61,7 +61,7 @@ public abstract class ItemParserStateMixin
 		reader.setCursor(currentCursor);
 	}
 
-	@Inject(method = "readComponents", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/item/ItemParser$State;readComponent(Lnet/minecraft/core/component/DataComponentType;)V"))
+	@Inject(method = "readComponents", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/item/ItemParser$State;readComponent(Lnet/minecraft/nbt/TagParser;Lnet/minecraft/resources/RegistryOps;Lnet/minecraft/core/component/DataComponentType;)V"))
 	private void atReadComponents(CallbackInfo ci)
 	{
 		visitor.visitSuggestions(this::suggestComponentData);

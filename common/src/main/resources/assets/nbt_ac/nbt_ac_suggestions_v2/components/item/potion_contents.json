@@ -23,7 +23,8 @@
 
 		{
 			"tag": "custom_name",
-			"type": "json_text"
+			"type": "list/compound",
+			"subtype": "json_text_compound"
 		}
 	]
 }

@@ -509,10 +509,9 @@ public enum NbtSuggestionSubtype
 	//TODO: move json-related methods to a new class
 	public static void getJsonTextPrefixSuggestions(SuggestionList suggestionList, boolean inner)
 	{
-		String jsonSuggestion = inner ? ModConfig.getJsonStringSuggestion() : "\"";
-		if (jsonSuggestion != null) { suggestionList.addRaw(jsonSuggestion, "(simple string) [#json_text]", 3); }
-		suggestionList.addRaw(inner ? "'{" : "{", "(json structure) [#json_text]", 2);
-		suggestionList.addRaw(inner ? "'[" : "[", "(json list) [#json_text]", 1);
+		suggestionList.addRaw(ModConfig.getDefaultQuotationMarkStr(false), "(simple string) [#text_component]", 3);
+		suggestionList.addRaw("{", "(text component) [#text_component]", 2);
+		suggestionList.addRaw("[", "(test component list) [#text_component]", 1);
 	}
 
 	private static void getJsonCompoundSuggestions(SuggestionList suggestionList, NbtSuggestion.ParentInfo parentInfo,

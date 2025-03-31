@@ -1,6 +1,6 @@
 {
 	"id": "item/minecraft:custom_name",
-	"type": "string",
-	"subtype": "json_text",
+	"type": "compound",
+	"subtype": "json_text_compound",
 	"always_relevant": true
 }

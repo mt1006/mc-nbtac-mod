@@ -24,6 +24,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class ResourceLoader
 {
+	public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(NBTac.MOD_ID, "resource_loader");
 	private static final String RESOURCE_DIRECTORY = "nbt_ac_suggestions_v2";
 	public static final List<TagStructure> tags = new ArrayList<>();
 	public static final List<ComponentStructure> components = new ArrayList<>();

@@ -59,7 +59,7 @@ public class ModConfig
 		list.add(tagQuotationMarks.createDescribedSwitch());
 		list.add(stringQuotationMarks.createDescribedSwitch());
 		list.add(defaultQuotationMarkType.createSwitch(List.of(1, 2)));
-		list.add(jsonStringSuggestion.createSwitch(List.of(0, 1, 2, 3, 4, 5)));
+		//list.add(jsonStringSuggestion.createSwitch(List.of(0, 1, 2, 3, 4, 5)));
 		list.add(hideMcNamespaceInTags.createSwitch());
 		list.add(hideMcNamespaceInStrings.createSwitch());
 
@@ -120,6 +120,11 @@ public class ModConfig
 	public static char getDefaultQuotationMark(boolean isRawJson)
 	{
 		return (defaultQuotationMarkType.val == 1 && !isRawJson) ? '\'' : '"';
+	}
+
+	public static String getDefaultQuotationMarkStr(boolean isRawJson)
+	{
+		return (defaultQuotationMarkType.val == 1 && !isRawJson) ? "'" : "\"";
 	}
 
 	public static @Nullable String getJsonStringSuggestion()

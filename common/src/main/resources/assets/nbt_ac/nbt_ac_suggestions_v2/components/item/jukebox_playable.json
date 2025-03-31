@@ -9,11 +9,6 @@
 			"tag": "song",
 			"type": "string",
 			"subtype": "jukebox_song"
-		},
-
-		{
-			"tag": "show_in_tooltip",
-			"type": "boolean"
 		}
 	]
 }

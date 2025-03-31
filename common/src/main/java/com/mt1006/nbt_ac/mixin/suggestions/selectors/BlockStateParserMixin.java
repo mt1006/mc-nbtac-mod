@@ -1,7 +1,6 @@
 package com.mt1006.nbt_ac.mixin.suggestions.selectors;
 
 import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
@@ -32,16 +31,16 @@ public class BlockStateParserMixin
 	@Shadow private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions;
 
 	@Inject(method = "readNbt", at = @At(value = "HEAD"), cancellable = true)
-	protected void atReadNbt(CallbackInfo ci) throws CommandSyntaxException
+	protected void atReadNbt(CallbackInfo ci) throws Exception
 	{
 		ci.cancel();
 		int cursorPos = reader.getCursor();
 
 		try
 		{
-			nbt = (new TagParser(reader)).readStruct();
+			nbt = TagParser.parseCompoundAsArgument(reader);
 		}
-		catch (CommandSyntaxException exception)
+		catch (Exception exception)
 		{
 			reader.setCursor(cursorPos);
 			suggestions = this::suggestNbt;

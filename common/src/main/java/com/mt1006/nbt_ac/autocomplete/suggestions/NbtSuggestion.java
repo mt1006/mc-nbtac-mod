@@ -1,20 +1,19 @@
 package com.mt1006.nbt_ac.autocomplete.suggestions;
 
 import com.mojang.brigadier.Message;
+import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.CustomTagParser;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.SuggestionList;
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
+import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.ComparableLiteralMessage;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.analysis.Analyzer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -237,10 +236,41 @@ public class NbtSuggestion
 			try
 			{
 				ClassNode classNode = Disassembly.loadClass(CompoundTag.class.getCanonicalName(), null);
-				for (MethodNode method : classNode.methods)
+				int containsFunPos = -1; // "contains()" function position
+
+				for (int i = 0; i < classNode.methods.size(); i++)
 				{
-					if ((method.access & Opcodes.ACC_PUBLIC) == 0) { continue; }
-					Type type = fromMethodObject(classNode, method);
+					MethodNode method = classNode.methods.get(i);
+					if (method.desc.substring(method.desc.indexOf(')') + 1).equals("Z")) // if returns boolean
+					{
+						containsFunPos = i;
+						break;
+					}
+				}
+
+				for (int i = 0; i < classNode.methods.size(); i++)
+				{
+					Type type = switch (i - containsFunPos - 2)
+					{
+						case -3, -1 -> UNKNOWN;
+						case 0, 1 -> BYTE;
+						case 2, 3 -> SHORT;
+						case 4, 5 -> INT;
+						case 6, 7 -> LONG;
+						case 8, 9 -> FLOAT;
+						case 10, 11 -> DOUBLE;
+						case 12, 13 -> STRING;
+						case 14 -> BYTE_ARRAY;
+						case 15 -> INT_ARRAY;
+						case 16 -> LONG_ARRAY;
+						case 17, 18 -> COMPOUND;
+						case 19, 20 -> LIST;
+						case 21, 22 -> BOOLEAN;
+						default -> NOT_FOUND;
+					};
+
+					MethodNode method = classNode.methods.get(i);
+					if (ModConfig.debugMode.val) { NBTac.LOGGER.info("{} {} {}", method.name, method.desc, type.name()); }
 					if (type != NOT_FOUND) { methodNameMap.put(method.name, type); }
 				}
 			}
@@ -254,66 +284,12 @@ public class NbtSuggestion
 
 		public static Type fromMethodName(String name)
 		{
-			return methodNameMap.getOrDefault(name, NOT_FOUND);
+			return methodNameMap.getOrDefault(name, UNKNOWN);
 		}
 
 		public static Type fromID(byte id)
 		{
 			return idMap.getOrDefault(id, UNKNOWN);
-		}
-
-		private static Type fromMethodObject(ClassNode classNode, MethodNode method)
-		{
-			String methodArguments = "(Ljava/lang/String;)";
-			String signature = method.desc;
-
-			if (!signature.startsWith(methodArguments))
-			{
-				String getListSignature = "(Ljava/lang/String;I)L" + ListTag.class.getName().replace('.', '/') + ";";
-				if (method.desc.equals(getListSignature)) { return LIST; }
-				return NOT_FOUND;
-			}
-
-			String retTypeSignature = signature.substring(signature.indexOf(')') + 1);
-
-			if (retTypeSignature.equals("L" + Tag.class.getName().replace('.', '/') + ";")) { return UNKNOWN; }
-			if (retTypeSignature.equals("L" + CompoundTag.class.getName().replace('.', '/') + ";")) { return COMPOUND; }
-
-			switch (retTypeSignature)
-			{
-				case "S": return SHORT;
-				case "I": return INT;
-				case "J": return LONG;
-				case "F": return FLOAT;
-				case "D": return DOUBLE;
-				case "[B": return BYTE_ARRAY;
-				case "[I": return INT_ARRAY;
-				case "[J": return LONG_ARRAY;
-				case "Ljava/lang/String;": return STRING;
-				case "Ljava/util/UUID;": return UUID;
-
-				case "B":
-				case "Z":
-					break;
-
-				default: return NOT_FOUND;
-			}
-
-			try
-			{
-				Disassembly.ValueTracker valueTracker = new Disassembly.ValueTracker(null, false, true);
-				Analyzer<Disassembly.TrackedValue> analyzer = new Analyzer<>(valueTracker);
-				analyzer.analyze(classNode.name, method);
-
-				for (Disassembly.InvokeInfo invokeInfo : valueTracker.invokes)
-				{
-					if (invokeInfo.insn.desc.equals("(Ljava/lang/String;I)Z")) { return BYTE; }
-					if (invokeInfo.insn.desc.equals("(Ljava/lang/String;)B")) { return BOOLEAN; }
-				}
-			}
-			catch (Exception ignore) {}
-
-			return NOT_FOUND;
 		}
 
 		public static Type fromOrdinal(int ordinal)

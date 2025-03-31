@@ -35,10 +35,9 @@ public class CustomTagParser
 	{
 		if (!inner && !Loader.finished) { return Pair.of(Suggestion.NONE, 0); } //TODO: add "not loaded" message
 
-		boolean isList = str.startsWith("[");
 		JSON_DUMMY_NBT_SUGGESTION.subtype = NbtSuggestionSubtype.JSON_TEXT_COMPOUND;
 
-		CustomTagParser jsonParser = new CustomTagParser(str, isList ? Type.JSON_LIST : Type.JSON);
+		CustomTagParser jsonParser = new CustomTagParser(str, Type.COMPONENT);
 		SuggestionList jsonSuggestions = new SuggestionList();
 		Suggestion jsonSuggestion = jsonParser.read(jsonSuggestions, JSON_DUMMY_NBT_SUGGESTION, null);
 
@@ -50,7 +49,7 @@ public class CustomTagParser
 	{
 		JSON_DUMMY_NBT_SUGGESTION.subtype = NbtSuggestionSubtype.JSON_STYLE_COMPOUND;
 
-		CustomTagParser jsonParser = new CustomTagParser(str, Type.JSON);
+		CustomTagParser jsonParser = new CustomTagParser(str, Type.COMPONENT);
 		SuggestionList jsonSuggestions = new SuggestionList();
 		Suggestion jsonSuggestion = jsonParser.read(jsonSuggestions, JSON_DUMMY_NBT_SUGGESTION, null);
 
@@ -277,7 +276,7 @@ public class CustomTagParser
 			if (suggestion == null || expectedType == NbtSuggestion.Type.LIST) { return Suggestion.fromNbtType(expectedType); }
 
 			if (suggestion.subtype == NbtSuggestionSubtype.JSON_TEXT
-					&& (str.startsWith("{") || str.startsWith("[")) && reader.peek() == '\'')
+					&& (str.startsWith("{") || str.startsWith("[")))
 			{
 				Pair<Suggestion, Integer> results = parseJsonComponent(suggestionList, str, true);
 				reader.setCursor(cursor + results.getRight() + 1);
@@ -345,9 +344,9 @@ public class CustomTagParser
 		reader.read();
 		reader.skipWhitespace();
 
-		if (!reader.canRead()) { throw TagParser.ERROR_EXPECTED_KEY.createWithContext(reader); }
+		if (!reader.canRead()) { throw TagParser.ERROR_TRAILING_DATA.create(); }
 		else if (key == 'B' || key == 'L' || key == 'I') { readArrayElements(); }
-		else { throw TagParser.ERROR_EXPECTED_KEY.createWithContext(reader); }
+		else { throw TagParser.ERROR_TRAILING_DATA.create(); }
 	}
 
 	private void readArrayElements() throws CommandSyntaxException
@@ -360,7 +359,7 @@ public class CustomTagParser
 
 				if (readElementSeparator())
 				{
-					if (!reader.canRead()) { throw TagParser.ERROR_EXPECTED_VALUE.createWithContext(reader); }
+					if (!reader.canRead()) { throw TagParser.ERROR_TRAILING_DATA.create(); }
 					continue;
 				}
 			}

@@ -8,7 +8,7 @@
 	[
 		{
 			"type": "set_subtype",
-			"val": "json_text"
+			"val": "json_text_compound"
 		}
 	]
 }

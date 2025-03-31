@@ -14,11 +14,6 @@
 			"tag": "material",
 			"type": "string",
 			"subtype": "trim_material"
-		},
-
-		{
-			"tag": "show_in_tooltip",
-			"type": "boolean"
 		}
 	]
 }

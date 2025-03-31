@@ -47,6 +47,11 @@
 		{
 			"tag": "camera_overlay",
 			"type": "string"
+		},
+
+		{
+			"tag": "equip_on_interact",
+			"type": "boolean"
 		}
 	]
 }

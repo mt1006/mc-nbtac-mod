@@ -29,7 +29,7 @@ public class Fields
 	public static Field commandContextArguments = null;
 	public static List<Field> suggestionsBuilderStrings = null;
 	public static @Nullable Pair<String, Class<?>[]> itemUseOnMethodData = null;
-	public static @Nullable Pair<String, Class<?>[]> itemAppendHoverTextMethodData = null;
+	public static @Nullable Pair<String, Class<?>[]> itemAppendHoverTextMethodData = null; //TODO: remove?
 
 	public static void init()
 	{

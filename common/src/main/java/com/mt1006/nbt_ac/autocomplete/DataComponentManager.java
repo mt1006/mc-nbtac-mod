@@ -80,11 +80,6 @@ public class DataComponentManager
 		if (ModConfig.showCustomModelDataAsRelevant.val) { relevant.add(DataComponents.CUSTOM_MODEL_DATA); }
 		if (item.builtInRegistryHolder().is(ItemTags.DYEABLE)) { relevant.add(DataComponents.DYED_COLOR); }
 
-		if (Fields.isMethodOverridden(Fields.itemAppendHoverTextMethodData, item, Item.class))
-		{
-			relevant.add(DataComponents.HIDE_ADDITIONAL_TOOLTIP);
-		}
-
 		if (item instanceof SpawnEggItem || item instanceof HangingEntityItem || item instanceof ArmorStandItem
 				|| item instanceof MinecartItem || item instanceof BoatItem)
 		{
@@ -111,7 +106,7 @@ public class DataComponentManager
 			if (item == Items.DEBUG_STICK) { relevant.add(DataComponents.DEBUG_STICK_STATE); }
 			if (item == Items.OMINOUS_BOTTLE) { relevant.add(DataComponents.OMINOUS_BOTTLE_AMPLIFIER); }
 			if (item == Items.ENCHANTED_BOOK) { relevant.add(DataComponents.STORED_ENCHANTMENTS); }
-			if (item instanceof FireworkStarItem) { relevant.add(DataComponents.FIREWORK_EXPLOSION); }
+			if (item == Items.FILLED_MAP) { relevant.add(DataComponents.FIREWORK_EXPLOSION); }
 			if (item instanceof FireworkRocketItem) { relevant.add(DataComponents.FIREWORKS); }
 			if (item instanceof InstrumentItem) { relevant.add(DataComponents.INSTRUMENT); }
 			if (item instanceof CrossbowItem) { relevant.add(DataComponents.CHARGED_PROJECTILES); }
@@ -121,7 +116,7 @@ public class DataComponentManager
 			if (item instanceof WritableBookItem) { relevant.add(DataComponents.WRITABLE_BOOK_CONTENT); }
 			if (item instanceof WrittenBookItem) { relevant.add(DataComponents.WRITTEN_BOOK_CONTENT); }
 
-			if (item instanceof ArmorItem)
+			if (item.components().has(DataComponents.EQUIPPABLE)) //TODO: improve
 			{
 				relevant.add(DataComponents.TRIM);
 			}
@@ -129,6 +124,7 @@ public class DataComponentManager
 			if (item instanceof PotionItem || item instanceof TippedArrowItem)
 			{
 				relevant.add(DataComponents.POTION_CONTENTS);
+				relevant.add(DataComponents.POTION_DURATION_SCALE);
 			}
 
 			if (item instanceof MapItem)

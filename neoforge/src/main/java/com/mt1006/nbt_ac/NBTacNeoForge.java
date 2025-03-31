@@ -1,11 +1,10 @@
 package com.mt1006.nbt_ac;
 
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
+import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ResourceLoader;
 import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.neoforge.ConfigScreenFactory;
 import com.mt1006.nbt_ac.neoforge.NeoForgeResourceLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
@@ -13,6 +12,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforgespi.language.IModInfo;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -28,15 +28,20 @@ public class NBTacNeoForge implements NBTacLoaderInterface
 	{
 		if (isDedicatedServer) { return; }
 		ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, ConfigScreenFactory::new);
-		((ReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener(new NeoForgeResourceLoader());
 
 		modEventBus.addListener(this::setup);
+		modEventBus.addListener(this::addReloadListeners);
 		modEventBus.addListener(this::loadComplete);
 	}
 
-	public void setup(final FMLCommonSetupEvent event)
+	public void setup(FMLCommonSetupEvent event)
 	{
 		NBTac.init(isDedicatedServer, this);
+	}
+
+	public void addReloadListeners(AddClientReloadListenersEvent event)
+	{
+		event.addListener(ResourceLoader.ID, new NeoForgeResourceLoader());
 	}
 
 	public void loadComplete(FMLLoadCompleteEvent event)

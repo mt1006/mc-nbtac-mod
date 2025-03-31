@@ -38,6 +38,11 @@
 					"type": "boolean"
 				}
 			]
+		},
+
+		{
+			"tag": "can_destroy_blocks_in_creative",
+			"type": "boolean"
 		}
 	]
 }

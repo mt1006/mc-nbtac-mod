@@ -1,49 +1,36 @@
 {
 	"id": "item/minecraft:attribute_modifiers",
-	"type": "compound",
+	"type": "list/compound",
 	"always_relevant": true,
 
 	"tags":
 	[
 		{
-			"tag": "modifiers",
-			"type": "list/compound",
-
-			"tags":
-			[
-				{
-					"tag": "type",
-					"type": "string",
-					"subtype": "registry_key/minecraft:attribute"
-				},
-
-				{
-					"tag": "slot",
-					"type": "string",
-					"subtype": "enum/any;hand;armor;mainhand;offhand;head;chest;legs;feet;body"
-				},
-
-				{
-					"tag": "id",
-					"type": "string"
-				},
-
-				{
-					"tag": "amount",
-					"type": "double"
-				},
-
-				{
-					"tag": "operation",
-					"type": "string",
-					"subtype": "enum/add_value;add_multiplied_base;add_multiplied_total"
-				}
-			]
+			"tag": "type",
+			"type": "string",
+			"subtype": "registry_key/minecraft:attribute"
 		},
 
 		{
-			"tag": "show_in_tooltip",
-			"type": "boolean"
+			"tag": "slot",
+			"type": "string",
+			"subtype": "enum/any;hand;armor;mainhand;offhand;head;chest;legs;feet;body"
+		},
+
+		{
+			"tag": "id",
+			"type": "string"
+		},
+
+		{
+			"tag": "amount",
+			"type": "double"
+		},
+
+		{
+			"tag": "operation",
+			"type": "string",
+			"subtype": "enum/add_value;add_multiplied_base;add_multiplied_total"
 		}
 	]
 }

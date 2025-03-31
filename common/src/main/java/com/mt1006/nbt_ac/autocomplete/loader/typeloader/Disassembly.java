@@ -401,7 +401,8 @@ public class Disassembly
 			NbtSuggestion.Type type = NbtSuggestion.Type.fromMethodName(methodInsn.name);
 			NbtSuggestion.Type listType = NbtSuggestion.Type.UNKNOWN;
 
-			if (type == NbtSuggestion.Type.LIST && values.size() == 3)
+			//TODO: fix list type detection?
+			/*if (type == NbtSuggestion.Type.LIST && values.size() == 3)
 			{
 				if (values.get(2).type == TrackedValue.Type.INTEGER)
 				{
@@ -411,7 +412,7 @@ public class Disassembly
 			else if (values.size() != 2)
 			{
 				return TrackedValue.unknown(basicValue);
-			}
+			}*/
 
 			Template suggestions = (Template)values.get(0).object;
 			String tagName = (String)values.get(1).object;
@@ -431,10 +432,11 @@ public class Disassembly
 			else if (type == NbtSuggestion.Type.LIST)
 			{
 				newSuggestion.listType = listType;
-				if (listType == NbtSuggestion.Type.COMPOUND)
-				{
-					return TrackedValue.create(TrackedValue.Type.LIST_TAG, newSuggestion.addSubcompound(), basicValue);
-				}
+				//TODO: restore?
+				//if (listType == NbtSuggestion.Type.COMPOUND)
+				//{
+				//	return TrackedValue.create(TrackedValue.Type.LIST_TAG, newSuggestion.addSubcompound(), basicValue);
+				//}
 			}
 
 			return TrackedValue.unknown(basicValue);
