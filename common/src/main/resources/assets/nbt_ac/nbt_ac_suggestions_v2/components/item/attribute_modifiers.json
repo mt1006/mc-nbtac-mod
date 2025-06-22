@@ -31,6 +31,25 @@
 			"tag": "operation",
 			"type": "string",
 			"subtype": "enum/add_value;add_multiplied_base;add_multiplied_total"
+		},
+
+		{
+			"tag": "display",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "type",
+					"type": "string",
+					"subtype": "enum/default;hidden;override"
+				},
+
+				{
+					"tag": "value",
+					"type": "string"
+				}
+			]
 		}
 	]
 }

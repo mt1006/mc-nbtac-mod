@@ -5,11 +5,10 @@ import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -24,13 +23,12 @@ import java.util.*;
 public class Disassembly
 {
 	private static final int MAX_DISASSEMBLY_DEPTH = 16;
-	private static final String METHOD_LOAD_SIGNATURE = "(L" + CompoundTag.class.getName().replace('.', '/') + ";)V";
-	private static final String METHOD_LOAD_BLOCK_SIGNATURE = "(L" + CompoundTag.class.getName().replace('.', '/') +
-			";L" + HolderLookup.Provider.class.getName().replace('.', '/') + ";)V";
-	private static final String COMPOUND_TAG_SIGNATURE = CompoundTag.class.getName().replace('.', '/');
-	private static final String LIST_TAG_SIGNATURE = ListTag.class.getName().replace('.', '/');
-	private static final String COMPOUND_TAG_ARG_SIGNATURE = CompoundTag.class.getName();
-	private static final String LIST_TAG_ARG_SIGNATURE = ListTag.class.getName();
+	private static final String METHOD_LOAD_SIGNATURE = "(L" + ValueInput.class.getName().replace('.', '/') + ";)V";
+	private static final String METHOD_LOAD_BLOCK_SIGNATURE = "(L" + ValueInput.class.getName().replace('.', '/') + ";)V";
+	private static final String COMPOUND_TAG_SIGNATURE = ValueInput.class.getName().replace('.', '/');
+	private static final String LIST_TAG_SIGNATURE = ValueInput.ValueInputList.class.getName().replace('.', '/');
+	private static final String COMPOUND_TAG_ARG_SIGNATURE = ValueInput.class.getName();
+	private static final String LIST_TAG_ARG_SIGNATURE = ValueInput.ValueInputList.class.getName();
 	private static final String STRING_ARG_SIGNATURE = String.class.getName();
 	private static final Map<String, ClassNode> classMap = new HashMap<>();
 	private static final Stack<String> disassemblingStack = new Stack<>();
@@ -130,7 +128,8 @@ public class Disassembly
 
 	public static void disassemblyEntity(Class<?> clazz, NbtSuggestions arg) throws Exception
 	{
-		disassemblyLoadMethod(Entity.class, null, METHOD_LOAD_SIGNATURE, Opcodes.ACC_PUBLIC, clazz, arg);
+		disassemblyLoadMethod(Entity.class, null, METHOD_LOAD_SIGNATURE,
+				Opcodes.ACC_PROTECTED | Opcodes.ACC_PUBLIC, clazz, arg);
 	}
 
 	public static void disassemblyBlockEntity(Class<?> clazz, NbtSuggestions arg) throws Exception
@@ -363,11 +362,12 @@ public class Disassembly
 			if (insnSet.add(insn)
 					&& (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
 					|| insn.getOpcode() == Opcodes.INVOKESTATIC
-					|| insn.getOpcode() == Opcodes.INVOKESPECIAL))
+					|| insn.getOpcode() == Opcodes.INVOKESPECIAL
+					|| insn.getOpcode() == Opcodes.INVOKEINTERFACE))
 			{
 				MethodInsnNode methodInsn = (MethodInsnNode)insn;
 
-				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && !keepAllInvokes)
+				if (insn.getOpcode() == Opcodes.INVOKEINTERFACE && !keepAllInvokes)
 				{
 					if (methodInsn.owner.equals(COMPOUND_TAG_SIGNATURE)) { return onCompoundTagInvoke(methodInsn, values, basicValue); }
 					else if (methodInsn.owner.equals(LIST_TAG_SIGNATURE)) { return onListTagInvoke(methodInsn, values, basicValue); }

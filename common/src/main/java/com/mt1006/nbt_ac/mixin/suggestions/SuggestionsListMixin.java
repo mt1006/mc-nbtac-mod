@@ -52,7 +52,7 @@ public abstract class SuggestionsListMixin
 		renderLoopI = 0;
 	}
 
-	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)I"), index = 4)
+	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"), index = 4)
 	private int modifyTextColor(int color)
 	{
 		if (!NbtSuggestionManager.hasCustomSuggestions || !ModConfig.grayOutIrrelevant.val || suggestionList.isEmpty())

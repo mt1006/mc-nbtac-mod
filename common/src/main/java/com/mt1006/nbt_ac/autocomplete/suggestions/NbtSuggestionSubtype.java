@@ -9,6 +9,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.font.FontManager;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.equipment.trim.TrimPatterns;
 import net.minecraft.world.level.block.entity.BannerPatterns;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -202,10 +204,14 @@ public enum NbtSuggestionSubtype
 				MinecraftServer singlePlayerServer = Minecraft.getInstance().getSingleplayerServer();
 				if (singlePlayerServer == null) { break; }
 
+				Optional<? extends HolderLookup.RegistryLookup<LootTable>> lootTableReg =
+						singlePlayerServer.reloadableRegistries().lookup().lookup(Registries.LOOT_TABLE);
+				if (lootTableReg.isEmpty()) { break; }
+
 				suggestionList.clear();
-				for (ResourceLocation id : singlePlayerServer.reloadableRegistries().getKeys(Registries.LOOT_TABLE))
+				for (ResourceKey<LootTable> id : lootTableReg.get().listElementIds().toList())
 				{
-					suggestionList.add(new IdSuggestion(id, null, parserType));
+					suggestionList.add(new IdSuggestion(id.location(), null, parserType));
 				}
 				return true;
 

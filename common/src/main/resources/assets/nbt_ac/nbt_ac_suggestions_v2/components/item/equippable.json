@@ -52,6 +52,17 @@
 		{
 			"tag": "equip_on_interact",
 			"type": "boolean"
+		},
+
+		{
+			"tag": "can_be_sheared",
+			"type": "boolean"
+		},
+
+		{
+			"tag": "shearing_sound",
+			"type": "string",
+			"subtype": "registry_key/minecraft:sound_event"
 		}
 	]
 }

@@ -8,8 +8,8 @@ import com.mt1006.nbt_ac.autocomplete.SuggestionList;
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
 import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.ComparableLiteralMessage;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.ClassNode;
@@ -235,37 +235,24 @@ public class NbtSuggestion
 
 			try
 			{
-				ClassNode classNode = Disassembly.loadClass(CompoundTag.class.getCanonicalName(), null);
-				int containsFunPos = -1; // "contains()" function position
+				ClassNode classNode = Disassembly.loadClass(ValueInput.class.getCanonicalName(), null);
 
 				for (int i = 0; i < classNode.methods.size(); i++)
 				{
-					MethodNode method = classNode.methods.get(i);
-					if (method.desc.substring(method.desc.indexOf(')') + 1).equals("Z")) // if returns boolean
+					Type type = switch (i)
 					{
-						containsFunPos = i;
-						break;
-					}
-				}
-
-				for (int i = 0; i < classNode.methods.size(); i++)
-				{
-					Type type = switch (i - containsFunPos - 2)
-					{
-						case -3, -1 -> UNKNOWN;
-						case 0, 1 -> BYTE;
-						case 2, 3 -> SHORT;
-						case 4, 5 -> INT;
-						case 6, 7 -> LONG;
-						case 8, 9 -> FLOAT;
-						case 10, 11 -> DOUBLE;
-						case 12, 13 -> STRING;
-						case 14 -> BYTE_ARRAY;
-						case 15 -> INT_ARRAY;
-						case 16 -> LONG_ARRAY;
-						case 17, 18 -> COMPOUND;
-						case 19, 20 -> LIST;
-						case 21, 22 -> BOOLEAN;
+						case 0, 1 -> UNKNOWN;
+						case 2, 3 -> COMPOUND;
+						case 4, 5, 6, 7	-> LIST;
+						case 8 -> BOOLEAN;
+						case 9 -> BYTE;
+						case 10 -> SHORT;
+						case 11, 12 -> INT;
+						case 13, 14 -> LONG;
+						case 15 -> FLOAT;
+						case 16 -> DOUBLE;
+						case 17, 18 -> STRING;
+						case 19 -> INT_ARRAY;
 						default -> NOT_FOUND;
 					};
 
@@ -285,11 +272,6 @@ public class NbtSuggestion
 		public static Type fromMethodName(String name)
 		{
 			return methodNameMap.getOrDefault(name, UNKNOWN);
-		}
-
-		public static Type fromID(byte id)
-		{
-			return idMap.getOrDefault(id, UNKNOWN);
 		}
 
 		public static Type fromOrdinal(int ordinal)
