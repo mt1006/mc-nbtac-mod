@@ -62,7 +62,8 @@ public enum NbtSuggestionSubtype
 	JSON_TEXT_COLOR,      // subtypeData = null
 	JSON_STYLE_COMPOUND,  // subtypeData = null
 	ENTITY_SELECTOR,      // subtypeData = null
-	HOVER_EVENT_CONTENTS, // subtypeData = null //TODO: replace with more generic subtype (and improve suggestions for show_text)
+	HOVER_EVENT,          // subtypeData = "show_text" //TODO: replace with more generic subtype
+	CLICK_EVENT,          // subtypeData = "open_url" //TODO: replace with more generic subtype
 	DYE_COLOR,            // subtypeData = null
 	EMPTY_COMPOUND,       // subtypeData = null
 	ENCHANTMENTS,         // subtypeData = null
@@ -471,8 +472,12 @@ public enum NbtSuggestionSubtype
 				suggestionList.addAll(NbtSuggestionManager.get("json_text/style"), parserType);
 				break;
 
-			case HOVER_EVENT_CONTENTS:
-				getHoverEventContentsSuggestions(suggestionList, parentInfo, data, parserType);
+			case HOVER_EVENT:
+				getHoverEventSuggestions(suggestionList, data, parserType);
+				break;
+
+			case CLICK_EVENT:
+				getClickEventSuggestions(suggestionList, data, parserType);
 				break;
 
 			case ENCHANTMENTS:
@@ -574,17 +579,34 @@ public enum NbtSuggestionSubtype
 		return tag.equals("translate") ? "translatable" : tag;
 	}
 
-	private static void getHoverEventContentsSuggestions(SuggestionList suggestionList, NbtSuggestion.ParentInfo parentInfo,
-														 @Nullable String data, CustomTagParser.Type parserType)
+	private static void getHoverEventSuggestions(SuggestionList suggestionList, @Nullable String data, CustomTagParser.Type parserType)
 	{
-		//TODO: improve suggestions for "show_text"
-		if (parentInfo.parentTagMap == null || !parentInfo.parentTagMap.containsKey("action")) { return; }
-		String hoverEvent = parentInfo.parentTagMap.get("action");
-		switch (hoverEvent)
+		String compoundPath = switch (data)
 		{
-			case "show_text" -> JSON_TEXT_COMPOUND.getSubtypeTagSuggestions(suggestionList, parentInfo, data, parserType);
-			case "show_item" -> suggestionList.addAll(NbtSuggestionManager.get("json_text/compound/hover_event_show_item"), parserType);
-			case "show_entity" -> suggestionList.addAll(NbtSuggestionManager.get("json_text/compound/hover_event_show_entity"), parserType);
+			case "show_text" -> "json_text/compound/hover_event_show_text";
+			case "show_item" -> "json_text/compound/hover_event_show_item";
+			case "show_entity" -> "json_text/compound/hover_event_show_entity";
+			case null, default -> null;
+		};
+		if (compoundPath != null) { suggestionList.addAll(NbtSuggestionManager.get(compoundPath), parserType); }
+	}
+
+	private static void getClickEventSuggestions(SuggestionList suggestionList, @Nullable String data, CustomTagParser.Type parserType)
+	{
+		String tagName = switch (data)
+		{
+			case "open_url" -> "url";
+			case "open_file" -> "path";
+			case "run_command", "suggest_command" -> "command"; //TODO: suggestions for commands
+			case "change_page" -> "page";
+			case "copy_to_clipboard" -> "value";
+			case null, default -> null;
+		};
+
+		if (tagName != null)
+		{
+			NbtSuggestion.Type type = data.equals("change_page") ? NbtSuggestion.Type.INT : NbtSuggestion.Type.STRING;
+			suggestionList.add(new TagSuggestion(new NbtSuggestion(tagName, type), parserType));
 		}
 	}
 }
