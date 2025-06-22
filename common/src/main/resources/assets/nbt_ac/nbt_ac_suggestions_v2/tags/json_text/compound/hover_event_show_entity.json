@@ -8,13 +8,13 @@
 		},
 
 		{
-			"tag": "type",
+			"tag": "id",
 			"type": "string",
 			"subtype": "registry_key/minecraft:entity_type"
 		},
 
 		{
-			"tag": "id",
+			"tag": "uuid",
 			"type": "list/int"
 		}
 	]

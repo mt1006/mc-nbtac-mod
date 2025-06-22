@@ -44,8 +44,10 @@
 		},
 
 		{
-			"tag": "clickEvent",
+			"tag": "click_event",
 			"type": "compound",
+			"subtype": "click_event/*",
+			"with": "action",
 
 			"tags":
 			[
@@ -53,18 +55,15 @@
 					"tag": "action",
 					"type": "string",
 					"subtype": "enum/open_url;open_file;run_command;suggest_command;change_page;copy_to_clipboard"
-				},
-
-				{
-					"tag": "value",
-					"type": "string"
 				}
 			]
 		},
 
 		{
-			"tag": "hoverEvent",
+			"tag": "hover_event",
 			"type": "compound",
+			"subtype": "hover_event/*",
+			"with": "action",
 
 			"tags":
 			[
@@ -72,12 +71,6 @@
 					"tag": "action",
 					"type": "string",
 					"subtype": "enum/show_text;show_item;show_entity"
-				},
-
-				{
-					"tag": "contents",
-					"type": "compound",
-					"subtype": "hover_event_contents"
 				}
 			]
 		}
