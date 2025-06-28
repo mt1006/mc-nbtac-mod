@@ -18,8 +18,8 @@ import java.util.Map;
 
 public class CustomTagParser
 {
-	private static final NbtSuggestion JSON_DUMMY_NBT_SUGGESTION = new NbtSuggestion("nbt_ac:json_dummy",
-			NbtSuggestion.Type.LIST, NbtSuggestion.Source.DEFAULT, NbtSuggestion.Type.COMPOUND);
+	private static final NbtSuggestion JSON_DUMMY_NBT_SUGGESTION = new NbtSuggestion(
+			"nbt_ac:json_dummy", NbtSuggestion.Type.LIST, NbtSuggestion.Type.COMPOUND);
 
 	private final StringReader reader;
 	private final Type parserType;

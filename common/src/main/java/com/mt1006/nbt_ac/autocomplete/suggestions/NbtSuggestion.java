@@ -1,19 +1,13 @@
 package com.mt1006.nbt_ac.autocomplete.suggestions;
 
 import com.mojang.brigadier.Message;
-import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.CustomTagParser;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
 import com.mt1006.nbt_ac.autocomplete.SuggestionList;
-import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
-import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.ComparableLiteralMessage;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.storage.ValueInput;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +23,6 @@ public class NbtSuggestion
 	public @Nullable String subtypeData = null;
 	public @Nullable String subtypeWith = null;
 	public @Nullable NbtSuggestions subcompound = null;
-	public Source source = Source.DEFAULT;
 	public boolean recommended = false;
 
 	public NbtSuggestion(String tag, Type type)
@@ -39,27 +32,19 @@ public class NbtSuggestion
 		createdInstanceCounter++;
 	}
 
-	public NbtSuggestion(String tag, Type type, Source source)
+	public NbtSuggestion(String tag, Type type, Type listType)
 	{
 		this(tag, type);
-		this.source = source;
-	}
-
-	public NbtSuggestion(String tag, Type type, Source source, Type listType)
-	{
-		this(tag, type, source);
 		this.listType = listType;
 	}
 
-	public NbtSuggestion copy(boolean prediction, NbtSuggestions oldParent, NbtSuggestions newParent)
+	public NbtSuggestion copy(NbtSuggestions oldParent, NbtSuggestions newParent)
 	{
-		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type, source, listType);
+		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type, listType);
 		newSuggestion.subtype = subtype;
 		newSuggestion.subtypeData = subtypeData;
 		newSuggestion.subtypeWith = subtypeWith;
 		newSuggestion.recommended = recommended;
-
-		if (prediction) {newSuggestion.changeSuggestionSource(Source.PREDICTION); }
 
 		if (subcompound != null)
 		{
@@ -69,8 +54,8 @@ public class NbtSuggestion
 			}
 			else
 			{
-				newSuggestion.subcompound = new NbtSuggestions(true);
-				newSuggestion.subcompound.copyAll(subcompound, prediction);
+				newSuggestion.subcompound = new NbtSuggestions();
+				newSuggestion.subcompound.copyAll(subcompound);
 			}
 		}
 		return newSuggestion;
@@ -83,7 +68,7 @@ public class NbtSuggestion
 
 	public NbtSuggestions getSubcompound()
 	{
-		if (subcompound == null) { subcompound = new NbtSuggestions(true); }
+		if (subcompound == null) { subcompound = new NbtSuggestions(); }
 		return subcompound;
 	}
 
@@ -136,11 +121,6 @@ public class NbtSuggestion
 		return tag;
 	}
 
-	public void changeSuggestionSource(Source newSource)
-	{
-		if (newSource.level >= source.level) { source = newSource; }
-	}
-
 	public static NbtSuggestion getDummyCompound(NbtSuggestions subcompound)
 	{
 		DUMMY_COMPOUND.type = Type.COMPOUND;
@@ -150,12 +130,12 @@ public class NbtSuggestion
 
 	public String getSubtext()
 	{
-		return source.symbol + type.symbol;
+		return type.symbol;
 	}
 
 	public Message getTooltip()
 	{
-		return new ComparableLiteralMessage(String.format("%s§r §8%s%s", tag, source.name, type.symbol));
+		return new ComparableLiteralMessage(String.format("%s§r §8%s", tag, type.symbol));
 	}
 
 	public void setType(Pair<Type, Type> pair)
@@ -164,15 +144,11 @@ public class NbtSuggestion
 		listType = pair.getRight();
 	}
 
-	//TODO: do something about "always relevant" being implemented in such a way
-	public void setAlwaysRelevant()
-	{
-		source = Source.ALWAYS_RELEVANT;
-	}
-
 	public boolean isAlwaysRelevant()
 	{
-		return source == Source.ALWAYS_RELEVANT;
+		//TODO: fix
+		return false;
+		//return source == Source.ALWAYS_RELEVANT;
 	}
 
 	public enum Type
@@ -197,7 +173,6 @@ public class NbtSuggestion
 
 		private final static Type[] VALUES = values();
 		private static final HashMap<String, Type> nameMap = new HashMap<>();
-		private static final HashMap<String, Type> methodNameMap = new HashMap<>();
 		private static final HashMap<Byte, Type> idMap = new HashMap<>();
 		private final byte id;
 		private final String lowerCaseName;
@@ -232,36 +207,6 @@ public class NbtSuggestion
 				nameMap.put(type.getName(), type);
 				idMap.put(type.id, type);
 			}
-
-			try
-			{
-				ClassNode classNode = Disassembly.loadClass(ValueInput.class.getCanonicalName(), null);
-
-				for (int i = 0; i < classNode.methods.size(); i++)
-				{
-					Type type = switch (i)
-					{
-						case 0, 1 -> UNKNOWN;
-						case 2, 3 -> COMPOUND;
-						case 4, 5, 6, 7	-> LIST;
-						case 8 -> BOOLEAN;
-						case 9 -> BYTE;
-						case 10 -> SHORT;
-						case 11, 12 -> INT;
-						case 13, 14 -> LONG;
-						case 15 -> FLOAT;
-						case 16 -> DOUBLE;
-						case 17, 18 -> STRING;
-						case 19 -> INT_ARRAY;
-						default -> NOT_FOUND;
-					};
-
-					MethodNode method = classNode.methods.get(i);
-					if (ModConfig.debugMode.val) { NBTac.LOGGER.info("{} {} {}", method.name, method.desc, type.name()); }
-					if (type != NOT_FOUND) { methodNameMap.put(method.name, type); }
-				}
-			}
-			catch (Exception ignore) {}
 		}
 
 		public static Type fromName(String name)
@@ -269,43 +214,9 @@ public class NbtSuggestion
 			return nameMap.getOrDefault(name, NOT_FOUND);
 		}
 
-		public static Type fromMethodName(String name)
-		{
-			return methodNameMap.getOrDefault(name, UNKNOWN);
-		}
-
 		public static Type fromOrdinal(int ordinal)
 		{
 			return (ordinal < VALUES.length && ordinal >= 0) ? VALUES[ordinal] : UNKNOWN;
-		}
-	}
-
-	public enum Source
-	{
-		//TODO: remove compound prediction?
-		DEFAULT("", "", 0),
-		ALWAYS_RELEVANT("", "", 0), // used to mark item components as always relevant
-		UNCERTAIN("(?) ", "(uncertain) ", 1),
-		COMPOUND_PREDICTION("(C) ", "(compound prediction) ", 2),
-		SUBTYPE_PREDICTION("(S) ", "(subtype prediction) ", 3),
-		TYPE_PREDICTION("(T) ", "(type prediction) ", 4),
-		PREDICTION("(P) ", "(prediction) ", 5);
-
-		private final static Source[] VALUES = values();
-		public final String symbol;
-		public final String name;
-		public final int level;
-
-		Source(String symbol, String name, int level)
-		{
-			this.symbol = symbol;
-			this.name = name;
-			this.level = level;
-		}
-
-		public static Source fromOrdinal(int ordinal)
-		{
-			return (ordinal < VALUES.length && ordinal >= 0) ? VALUES[ordinal] : DEFAULT;
 		}
 	}
 

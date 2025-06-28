@@ -19,7 +19,6 @@ public class ParseJson
 	{
 		parseTags();
 		parseComponents();
-		parsePredictions();
 	}
 
 	private static void parseTags()
@@ -28,7 +27,7 @@ public class ParseJson
 		{
 			try
 			{
-				parseObject(tag.id, tag.applyTo, tag.tags, true);
+				parseObject(tag.id, tag.applyTo, tag.tags);
 			}
 			catch (Exception e) { NBTac.LOGGER.warn("Failed to parse tag: {}", tag.id); }
 		}
@@ -49,43 +48,30 @@ public class ParseJson
 		}
 	}
 
-	private static void parsePredictions()
-	{
-		for (Pair<JsonArray, JsonArray> prediction : ResourceLoader.predictions)
-		{
-			try
-			{
-				new Prediction(prediction).execute();
-			}
-			catch (Exception e) { NBTac.LOGGER.warn("Failed to parse prediction!"); }
-		}
-	}
-
 	private static void parseComponent(String id, String typeString, @Nullable String subtypeString,
 									   @Nullable String with, boolean alwaysRelevant, @Nullable JsonArray tags)
 	{
 		Pair<NbtSuggestion.Type, NbtSuggestion.Type> type = parseType(typeString);
 		Pair<NbtSuggestionSubtype, String> subtype = parseSubtype(subtypeString);
-		NbtSuggestions suggestions = tags != null ? parseObject(null, null, tags, false) : null;
+		NbtSuggestions suggestions = tags != null ? parseObject(null, null, tags) : null;
 
-		NbtSuggestion component = new NbtSuggestion(id, type.getLeft(), NbtSuggestion.Source.DEFAULT, type.getRight());
+		NbtSuggestion component = new NbtSuggestion(id, type.getLeft(), type.getRight());
 		component.subtype = subtype.getLeft();
 		component.subtypeData = subtype.getRight();
 		component.subcompound = suggestions;
 		component.subtypeWith = with;
-		if (alwaysRelevant) { component.setAlwaysRelevant(); }
+		//if (alwaysRelevant) { component.setAlwaysRelevant(); } //TODO: fix
 
 		DataComponentManager.componentMap.put(id, component);
 	}
 
-	private static NbtSuggestions parseObject(@Nullable String id, @Nullable JsonArray applyTo,
-											  JsonArray tags, boolean allowPredictions)
+	private static NbtSuggestions parseObject(@Nullable String id, @Nullable JsonArray applyTo, JsonArray tags)
 	{
-		NbtSuggestions nbtSuggestions = new NbtSuggestions(allowPredictions);
+		NbtSuggestions nbtSuggestions = new NbtSuggestions();
 
 		for (JsonElement tag : tags)
 		{
-			if (tag instanceof JsonObject) { parseTag((JsonObject)tag, nbtSuggestions, allowPredictions); }
+			if (tag instanceof JsonObject) { parseTag((JsonObject)tag, nbtSuggestions); }
 		}
 
 		if (applyTo != null)
@@ -103,7 +89,7 @@ public class ParseJson
 		return nbtSuggestions;
 	}
 
-	private static void parseTag(JsonObject suggestion, NbtSuggestions nbtSuggestions, boolean allowPredictions)
+	private static void parseTag(JsonObject suggestion, NbtSuggestions nbtSuggestions)
 	{
 		String tag = suggestion.get("tag").getAsString();
 		Pair<NbtSuggestion.Type, NbtSuggestion.Type> type = parseType(suggestion.get("type").getAsString());
@@ -133,7 +119,7 @@ public class ParseJson
 		JsonElement subcompoundElement = suggestion.get("tags");
 		if (subcompoundElement instanceof JsonArray)
 		{
-			newSuggestion.subcompound = parseObject(null, null, (JsonArray)subcompoundElement, allowPredictions);
+			newSuggestion.subcompound = parseObject(null, null, (JsonArray)subcompoundElement);
 		}
 
 		nbtSuggestions.add(newSuggestion);

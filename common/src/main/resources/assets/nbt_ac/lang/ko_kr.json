@@ -70,8 +70,6 @@
   "nbt_ac.options.field.support_command_namespace.desc": "명령 접두사로 \"minecraft:\"를 무시합니다. 이 네임스페이스 아래에 명령어을 추가하는 플러그인과 함께 사용할 때 유용합니다.",
   "nbt_ac.options.field.use_new_thread": "새 스레드 사용",
   "nbt_ac.options.field.use_new_thread.desc": "마인크래프트 로딩 중에 새 스레드를 사용하여 제안을 로드합니다.",
-  "nbt_ac.options.field.use_disassembler": "디스어셈블러 사용",
-  "nbt_ac.options.field.use_disassembler.desc": "엔티티 및 블록 엔티티의 \"로드\" 메서드에서 디스어셈블러를 사용하여 제안을 로드합니다.",
   "nbt_ac.options.field.load_from_resources": " 리소스에서 로드",
   "nbt_ac.options.field.load_from_resources.desc": "리소스 파일에서 제안을 로드합니다(아이템 태그와 태그 예측을 로드하는 데 필요함).",
   "nbt_ac.options.field.allow_block_entity_extraction": "블록 엔티티 추출 허용",

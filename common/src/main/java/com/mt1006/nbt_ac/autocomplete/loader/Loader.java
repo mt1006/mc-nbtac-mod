@@ -3,11 +3,8 @@ package com.mt1006.nbt_ac.autocomplete.loader;
 import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
-import com.mt1006.nbt_ac.autocomplete.loader.cache.TypeCache;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ParseJson;
 import com.mt1006.nbt_ac.autocomplete.loader.resourceloader.ResourceLoader;
-import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
-import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.client.Minecraft;
@@ -43,24 +40,6 @@ public class Loader
 		if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Loader started!"); }
 		long start = System.currentTimeMillis();
 		thread = Thread.currentThread();
-
-		if (ModConfig.useDisassembler.val)
-		{
-			boolean cacheEnabled = TypeCache.isEnabled();
-			boolean cacheLoaded = cacheEnabled && TypeCache.load();
-			if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Cache loaded: {}", cacheLoaded); }
-
-			if (!cacheLoaded)
-			{
-				Disassembly.init();
-				TypeLoader.loadBlockEntityTypes();
-				TypeLoader.loadEntityTypes();
-				Disassembly.clear();
-
-				if (cacheEnabled) { TypeCache.add(); }
-			}
-			if (cacheEnabled) { TypeCache.updateIndex(); }
-		}
 
 		long interruptionStart = System.currentTimeMillis();
 		try
@@ -135,8 +114,8 @@ public class Loader
 		{
 			if (mode == SaveSuggestionsMode.ENABLED_SORTED) { writer.print(key); }
 			for (int i = 0; i < depth; i++) { writer.print("-"); }
-			writer.printf("%s (%s) [%s/%s] - %s/%s\n", suggestion.tag, suggestion.source.name,
-					suggestion.type.getName(), suggestion.listType.getName(), suggestion.subtype.getName(), suggestion.subtypeData);
+			writer.printf("%s [%s/%s] - %s/%s\n", suggestion.tag, suggestion.type.getName(),
+					suggestion.listType.getName(), suggestion.subtype.getName(), suggestion.subtypeData);
 
 			if (suggestion.subcompound != null && suggestions != suggestion.subcompound)
 			{
@@ -152,11 +131,6 @@ public class Loader
 			exception.printStackTrace();
 			printedStackTraces.incrementAndGet();
 		}
-	}
-
-	public static Thread getLoaderThread()
-	{
-		return thread;
 	}
 
 	private enum SaveSuggestionsMode

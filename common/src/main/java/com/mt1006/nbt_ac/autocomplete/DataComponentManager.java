@@ -1,6 +1,6 @@
 package com.mt1006.nbt_ac.autocomplete;
 
-import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
+import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.suggestions.ComponentSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.TagIdSuggestion;
@@ -8,6 +8,7 @@ import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.Fields;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.PlayerHeadBlock;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -30,6 +32,10 @@ public class DataComponentManager
 {
 	private static final NbtSuggestion UNKNOWN_COMPONENT = new NbtSuggestion("nbt_ac:empty", NbtSuggestion.Type.UNKNOWN);
 	public static final Map<String, NbtSuggestion> componentMap = new HashMap<>();
+
+	//TODO: move it somewhere else
+	public static @Nullable Thread blockCatcher = null;
+	public static @Nullable Object blockLastObject = null;
 
 	public static void loadSuggestions(SuggestionList suggestionList, String str, Set<DataComponentType<?>> usedComponents,
 									   @Nullable Item item, @Nullable CustomTagParser.Type parserType, boolean addSuffix)
@@ -148,12 +154,41 @@ public class DataComponentManager
 		relevant.add(DataComponents.BLOCK_ENTITY_DATA);
 
 		// this blockEntity SHOULDN'T be used with anything other than instanceof
-		BlockEntity blockEntity = TypeLoader.blockEntityFromBlock(block);
+		BlockEntity blockEntity = blockEntityFromBlock(block);
 		if (blockEntity instanceof Container)
 		{
 			relevant.add(DataComponents.CONTAINER);
 			if (blockEntity instanceof RandomizableContainer) { relevant.add(DataComponents.CONTAINER_LOOT); }
 			if (blockEntity instanceof BaseContainerBlockEntity) { relevant.add(DataComponents.LOCK); }
 		}
+	}
+
+	public static @Nullable BlockEntity blockEntityFromBlock(Block block)
+	{
+		if (!ModConfig.allowBlockEntityExtraction.val) { return null; }
+		ResourceLocation resLoc = RegistryUtils.BLOCK.getKey(block);
+		if (resLoc == null) { return null; }
+
+		BlockEntityType<?> blockEntityType = RegistryUtils.BLOCK_ENTITY_TYPE.get(resLoc);
+		if (blockEntityType == null) { return null; }
+
+		if (blockCatcher != null && blockCatcher != Thread.currentThread()) { return null; }
+		blockCatcher = Thread.currentThread();
+		blockLastObject = null;
+
+		try
+		{
+			blockEntityType.create(BlockPos.ZERO, null);
+		}
+		catch (Throwable throwable)
+		{
+			if (throwable instanceof Error)
+			{
+				NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", resLoc, throwable);
+			}
+		}
+
+		blockCatcher = null;
+		return (blockLastObject instanceof BlockEntity) ? (BlockEntity)blockLastObject : null;
 	}
 }

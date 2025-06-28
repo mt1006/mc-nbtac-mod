@@ -101,9 +101,6 @@
   "nbt_ac.options.field.use_new_thread": "Użyj nowego wątku",
   "nbt_ac.options.field.use_new_thread.desc": "Używa nowego wątku do załadowania sugestii po załadowaniu Minecraft'a.",
 
-  "nbt_ac.options.field.use_disassembler": "Użyj disassemblera",
-  "nbt_ac.options.field.use_disassembler.desc": "Ładuje sugestie używając disassemblera na metodach \"load\" bytów i bytów bloków.",
-
   "nbt_ac.options.field.load_from_resources": "Ładuj z zasobów",
   "nbt_ac.options.field.load_from_resources.desc": "Ładuje sugestie z plików zasobów (wymagane aby załadować tagi przedmiotów i przewidywania tagów).",
 

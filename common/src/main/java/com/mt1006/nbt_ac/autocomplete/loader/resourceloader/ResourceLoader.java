@@ -11,8 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +26,6 @@ public class ResourceLoader
 	private static final String RESOURCE_DIRECTORY = "nbt_ac_suggestions_v2";
 	public static final List<TagStructure> tags = new ArrayList<>();
 	public static final List<ComponentStructure> components = new ArrayList<>();
-	public static final List<Pair<JsonArray, JsonArray>> predictions = new ArrayList<>();
 	private static boolean firstCall = true;
 	public static CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -62,7 +59,6 @@ public class ResourceLoader
 			try
 			{
 				JsonObject json = resourceEntry.getValue().getAsJsonObject();
-				MutablePair<JsonArray, JsonArray> predictionPair = new MutablePair<>();
 				TagStructure tagStructure = new TagStructure();
 				ComponentStructure componentStructure = new ComponentStructure(tagStructure);
 
@@ -80,15 +76,7 @@ public class ResourceLoader
 						case "subtype" -> componentStructure.subtype = value.getAsString();
 						case "with" -> componentStructure.with = value.getAsString();
 						case "always_relevant" -> componentStructure.alwaysRelevant = value.getAsBoolean();
-						case "conditions" -> predictionPair.left = value.getAsJsonArray();
-						case "operations" -> predictionPair.right = value.getAsJsonArray();
 					}
-				}
-
-				if (predictionPair.left != null && predictionPair.right != null)
-				{
-					predictions.add(predictionPair);
-					continue;
 				}
 
 				if (componentStructure.getId() != null && componentStructure.type != null)

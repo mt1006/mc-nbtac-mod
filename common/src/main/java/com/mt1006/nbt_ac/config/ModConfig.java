@@ -35,9 +35,7 @@ public class ModConfig
 
 	//public static final ConfigFields.IntegerField vanillaIdsSorting = fields.add("vanilla_ids_sorting", 1); //TODO: implement
 	public static final ConfigFields.BooleanField supportCommandNamespace = fields.add("support_command_namespace", true);
-
 	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
-	public static final ConfigFields.BooleanField useDisassembler = fields.add("use_disassembler", true);
 	public static final ConfigFields.BooleanField loadFromResources = fields.add("load_from_resources", true);
 	public static final ConfigFields.BooleanField allowBlockEntityExtraction = fields.add("allow_block_entity_extraction", true);
 	public static final ConfigFields.BooleanField useCache = fields.add("use_cache", true);
@@ -87,7 +85,6 @@ public class ModConfig
 
 		list.addLabel("advanced_settings");
 		list.add(useNewThread.createSwitch());
-		list.add(useDisassembler.createSwitch());
 		list.add(loadFromResources.createSwitch());
 		list.add(allowBlockEntityExtraction.createSwitch());
 		list.add(useCache.createSwitch());

@@ -33,8 +33,8 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 
 			if (nbtSuggestion.subcompound == null)
 			{
-				NbtSuggestionManager.simpleSuggestion("", String.format("%s[%s]",
-						nbtSuggestion.source.symbol, nbtSuggestion.type.getName()), suggestionsBuilder);
+				NbtSuggestionManager.simpleSuggestion("", String.format("[%s]",
+						nbtSuggestion.type.getName()), suggestionsBuilder);
 				return suggestionsBuilder.buildFuture();
 			}
 			else

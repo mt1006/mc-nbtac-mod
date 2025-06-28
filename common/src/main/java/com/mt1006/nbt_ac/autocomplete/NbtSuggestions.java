@@ -16,11 +16,9 @@ public class NbtSuggestions
 	public static final Multimap<String, NbtSuggestion> suffixFullMap = HashMultimap.create();
 	public static final Multimap<String, NbtSuggestion> fullMap = HashMultimap.create();
 	private final Map<String, NbtSuggestion> suggestions = new HashMap<>();
-	private final boolean allowPredictions;
 
-	public NbtSuggestions(boolean allowPredictions)
+	public NbtSuggestions()
 	{
-		this.allowPredictions = allowPredictions;
 		createdInstanceCounter++;
 	}
 
@@ -28,7 +26,6 @@ public class NbtSuggestions
 	{
 		String key = suggestion.tag;
 		NbtSuggestion oldVal = suggestions.put(key, suggestion);
-		if (!allowPredictions) { return; }
 
 		String prefix = key.substring(0, firstSeparator(key));
 		String suffix = key.substring(lastSeparator(key));
@@ -45,9 +42,9 @@ public class NbtSuggestions
 		fullMap.put(key, suggestion);
 	}
 
-	public void copyAll(NbtSuggestions nbtSuggestions, boolean prediction)
+	public void copyAll(NbtSuggestions nbtSuggestions)
 	{
-		nbtSuggestions.getAll().forEach((suggestion) -> add(suggestion.copy(prediction, nbtSuggestions, this)));
+		nbtSuggestions.getAll().forEach((suggestion) -> add(suggestion.copy(nbtSuggestions, this)));
 	}
 
 	public @Nullable NbtSuggestion get(String key)

@@ -6,8 +6,6 @@
   "client":
   [
     "constructors.BlockEntityMixin",
-    "constructors.EntityMixin",
-    "constructors.EntityTypeMixin",
     "fields.ClientLevelFields",
     "fields.CommandSuggestionsFields",
     "fields.DecoratedPotPatternsFields",

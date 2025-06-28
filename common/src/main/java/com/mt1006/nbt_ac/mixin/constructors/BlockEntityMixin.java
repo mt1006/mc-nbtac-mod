@@ -1,6 +1,6 @@
 package com.mt1006.nbt_ac.mixin.constructors;
 
-import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
+import com.mt1006.nbt_ac.autocomplete.DataComponentManager;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,9 +14,9 @@ public class BlockEntityMixin
 	@Inject(method = "validateBlockState", at = @At(value = "HEAD"))
 	private void atValidateBlockState(BlockState blockState, CallbackInfo ci) throws Exception
 	{
-		if (TypeLoader.objectCatcher != null && TypeLoader.objectCatcher == Thread.currentThread())
+		if (DataComponentManager.blockCatcher != null && DataComponentManager.blockCatcher == Thread.currentThread())
 		{
-			TypeLoader.lastObject = this;
+			DataComponentManager.blockLastObject = this;
 			throw new Exception();
 		}
 	}

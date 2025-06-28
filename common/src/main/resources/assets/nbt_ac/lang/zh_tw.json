@@ -101,9 +101,6 @@
   "nbt_ac.options.field.use_new_thread": "使用新執行緒",
   "nbt_ac.options.field.use_new_thread.desc": "使用新執行緒在 Minecraft 載入期間載入建議。",
 
-  "nbt_ac.options.field.use_disassembler": "使用反組譯器",
-  "nbt_ac.options.field.use_disassembler.desc": "透過對實體和方塊實體的 \"load\" 方法使用反組譯器來載入建議。",
-
   "nbt_ac.options.field.load_from_resources": "從資源載入",
   "nbt_ac.options.field.load_from_resources.desc": "從資源檔案載入建議（載入物品標籤和標籤預測所需）。",
 
