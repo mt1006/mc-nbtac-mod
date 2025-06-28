@@ -121,6 +121,6 @@ public class Fields
 			}
 			return list;
 		}
-		catch (Exception exception) { return List.of(); }
+		catch (Exception e) { return List.of(); }
 	}
 }

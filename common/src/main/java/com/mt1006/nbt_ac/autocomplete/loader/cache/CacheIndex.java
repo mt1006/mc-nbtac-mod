@@ -28,12 +28,12 @@ public class CacheIndex
 				elementMap.put(element.hash, element);
 			}
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
-			if (exception instanceof FileNotFoundException) { return; }
+			if (e instanceof FileNotFoundException) { return; }
 			
 			NBTac.LOGGER.error("Exception while loading cache index!");
-			Loader.printStackTrace(exception);
+			Loader.printStackTrace(e);
 			clear();
 		}
 	}
@@ -62,10 +62,10 @@ public class CacheIndex
 		{
 			elements.forEach((e) -> writer.println(e.str()));
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			NBTac.LOGGER.error("Exception while saving cache index!");
-			Loader.printStackTrace(exception);
+			Loader.printStackTrace(e);
 		}
 	}
 

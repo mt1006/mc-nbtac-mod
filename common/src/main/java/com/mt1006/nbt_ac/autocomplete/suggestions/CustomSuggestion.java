@@ -111,7 +111,7 @@ public abstract class CustomSuggestion
 			suggestions.add(new Suggestion(StringRange.between(start, len), "", tooltip));
 			return true;
 		}
-		catch (Exception exception) { return false; }
+		catch (Exception e) { return false; }
 	}
 
 	private static @Nullable Suggestion getLastAddedSuggestion(SuggestionsBuilder suggestionsBuilder)
@@ -123,7 +123,7 @@ public abstract class CustomSuggestion
 			List<Suggestion> suggestionList = (List<Suggestion>)Fields.suggestionsBuilderList.get(suggestionsBuilder);
 			return suggestionList.get(suggestionList.size() - 1);
 		}
-		catch (Exception exception) { return null; }
+		catch (Exception e) { return null; }
 	}
 
 	private static @Nullable String getMarkedSubtext(@Nullable String subtext, int priority)

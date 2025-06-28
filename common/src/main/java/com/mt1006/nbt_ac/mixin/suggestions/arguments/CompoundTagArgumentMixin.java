@@ -33,7 +33,7 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 
 			return NbtSuggestionManager.loadFromName(name, tag, suggestionsBuilder, false);
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			return Suggestions.empty();
 		}

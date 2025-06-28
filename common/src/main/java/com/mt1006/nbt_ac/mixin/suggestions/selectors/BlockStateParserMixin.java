@@ -40,11 +40,11 @@ public class BlockStateParserMixin
 		{
 			nbt = TagParser.parseCompoundAsArgument(reader);
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			reader.setCursor(cursorPos);
 			suggestions = this::suggestNbt;
-			throw exception;
+			throw e;
 		}
 	}
 
