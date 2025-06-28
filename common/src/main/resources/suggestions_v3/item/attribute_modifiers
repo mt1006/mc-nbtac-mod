@@ -1,0 +1,11 @@
+:list<compound> @AlwaysRelevant
+
++type :RegistryKey(minecraft:attribute)
++slot :Enum(any, hand, armor, mainhand, offhand, head, chest, legs, feet, body)
++id :string
++amount :double
++operation :Enum(add_value, add_multiplied_base, add_multiplied_total)
+
++display :compound
+	+type :Enum(default, hidden, override)
+	+subtype :BannerPattern

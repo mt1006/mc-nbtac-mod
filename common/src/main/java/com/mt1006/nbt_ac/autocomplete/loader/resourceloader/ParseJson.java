@@ -36,6 +36,8 @@ public class ParseJson
 
 	private static void parseComponents()
 	{
+		//List<SuggestionFile> files = SuggestionDirReader.openDir("/suggestions_v3/item");
+
 		for (ResourceLoader.ComponentStructure component : ResourceLoader.components)
 		{
 			try
