@@ -47,10 +47,10 @@ public class Disassembly
 			if (methodNode == null) { throw new Exception("Failed to find \"load\" method"); }
 			blockEntityLoadMethod = methodNode.name;
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
-			NBTac.LOGGER.error("Failed to initialize disassembler: {}", exception.toString());
-			Loader.printStackTrace(exception);
+			NBTac.LOGGER.error("Failed to initialize disassembler: {}", e.toString());
+			Loader.printStackTrace(e);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class Disassembly
 			reader = new ClassReader(classStream);
 			classStream.close();
 		}
-		catch (ClassNotFoundException exception)
+		catch (ClassNotFoundException e)
 		{
 			throw new IOException("Class not found! - " + classPath);
 		}

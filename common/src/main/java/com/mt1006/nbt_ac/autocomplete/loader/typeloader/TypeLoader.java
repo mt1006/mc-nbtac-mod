@@ -61,10 +61,10 @@ public class TypeLoader
 					Disassembly.disassemblyEntity(clazz, suggestions);
 					NbtSuggestionManager.add("entity/" + resourceName, suggestions);
 				}
-				catch (Exception exception)
+				catch (Exception e)
 				{
-					NBTac.LOGGER.error("Failed to load entity \"{}\": {}", resourceName, exception);
-					Loader.printStackTrace(exception);
+					NBTac.LOGGER.error("Failed to load entity \"{}\": {}", resourceName, e);
+					Loader.printStackTrace(e);
 				}
 			}
 			else
@@ -120,10 +120,10 @@ public class TypeLoader
 					Disassembly.disassemblyBlockEntity(clazz, suggestions);
 					NbtSuggestionManager.add("block/" + resourceName, suggestions);
 				}
-				catch (Exception exception)
+				catch (Exception e)
 				{
-					NBTac.LOGGER.error("Failed to load block entity \"{}\": {}", resourceName, exception);
-					Loader.printStackTrace(exception);
+					NBTac.LOGGER.error("Failed to load block entity \"{}\": {}", resourceName, e);
+					Loader.printStackTrace(e);
 				}
 			}
 			else

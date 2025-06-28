@@ -93,7 +93,7 @@ public class ConfigFields
 				loadedCount++;
 			}
 		}
-		catch (IOException exception) { save(); }
+		catch (IOException e) { save(); }
 
 		if (loadedCount != fields.size() || rewrite) { save(); }
 	}
@@ -120,7 +120,7 @@ public class ConfigFields
 				defaultLanguageKeys.put(entry.getKey(), str);
 			}
 		}
-		catch (JsonParseException | IOException exception)
+		catch (JsonParseException | IOException e)
 		{
 			NBTac.LOGGER.error("Failed to load default language keys!");
 		}
@@ -154,7 +154,7 @@ public class ConfigFields
 		protected void load(String str) throws IOException
 		{
 			try { fromString(str); }
-			catch (NumberFormatException exception) { throw new IOException(); }
+			catch (NumberFormatException e) { throw new IOException(); }
 		}
 
 		public void reset()

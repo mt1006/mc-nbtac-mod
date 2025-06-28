@@ -31,10 +31,10 @@ public class CacheFile
 			}
 			return parseFile(reader);
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			NBTac.LOGGER.error("Failed to load cache file!");
-			Loader.printStackTrace(exception);
+			Loader.printStackTrace(e);
 			return false;
 		}
 	}
@@ -98,10 +98,10 @@ public class CacheFile
 			builder.finish(writer);
 			writer.print(END_SEQUENCE);
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			NBTac.LOGGER.error("Failed to save cache file");
-			Loader.printStackTrace(exception);
+			Loader.printStackTrace(e);
 		}
 	}
 
@@ -198,7 +198,7 @@ public class CacheFile
 				listType = NbtSuggestion.Type.fromOrdinal(Integer.parseInt(values[1]));
 				source = NbtSuggestion.Source.fromOrdinal(Integer.parseInt(values[2]));
 			}
-			catch (Exception exception) { throw new Exception(); }
+			catch (Exception e) { throw new Exception(e); }
 		}
 
 		public NbtSuggestion getSuggestion()

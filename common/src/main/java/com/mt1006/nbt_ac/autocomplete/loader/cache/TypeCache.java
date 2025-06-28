@@ -75,6 +75,6 @@ public class TypeCache
 			}
 			return builder.toString();
 		}
-		catch (NoSuchAlgorithmException exception) { return null; }
+		catch (NoSuchAlgorithmException e) { return null; }
 	}
 }

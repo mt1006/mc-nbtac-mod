@@ -31,7 +31,7 @@ public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 
 			return NbtSuggestionManager.loadFromName(name, tag, suggestionsBuilder, true);
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
 			return Suggestions.empty();
 		}

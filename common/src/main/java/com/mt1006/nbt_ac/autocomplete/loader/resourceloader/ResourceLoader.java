@@ -115,7 +115,7 @@ public class ResourceLoader
 				}
 				tags.add(tagStructure);
 			}
-			catch (Exception exception)
+			catch (Exception e)
 			{
 				NBTac.LOGGER.warn("Failed to load the resource: {}", resourceEntry.getKey());
 			}
