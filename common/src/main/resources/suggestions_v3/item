@@ -1,0 +1,106 @@
+attribute_modifiers :list<compound> @AlwaysRelevant
++type :RegistryKey(minecraft:attribute)
++slot :Enum(any, hand, armor, mainhand, offhand, head, chest, legs, feet, body)
++id :string
++amount :double
++operation :Enum(add_value, add_multiplied_base, add_multiplied_total)
++display :compound
+	+type :Enum(default, hidden, override)
+	+subtype :BannerPattern
+
+banner_patterns :list<compound>
++color :DyeColor
++pattern :BannerPattern
+
+base_color :DyeColor
+
+bees :list<compound>
++entity_data :TagsWithId(minecraft:bee)
++min_ticks_in_hive :int
++ticks_in_hive :int
+
+block_entity_data :TagsWithId(block/$..$)
+
+block_state :BlockStateTags($..$)
+
+block_attacks :compound @AlwaysRelevant
++block_delay_seconds :int
++disable_cooldown_scale :int
++bypassed_by :string
++block_sound :RegistryKey(minecraft:sound_event)
++disabled_sound :RegistryKey(minecraft:sound_event)
++damage_reductions :list<compound>
+	+type :string
+	+base :float
+	+factor :float
+	+horizontal_blocking_angle :float
++item_damage :compound
+	+threshold :float
+	+base :float
+	+factor :float
+
+break_sound :RegistryKey(minecraft:sound_event)
+
+bucket_entity_data :compound
++NoAI :boolean
++Silent :boolean
++NoGravity :boolean
++Glowing :boolean
++Invulnerable :boolean
++Health :float
++Age :int
++Variant :int
++HuntingCooldown :long
++BucketVariantTag :int
+
+bundle_contents :List<Tags(compound/nbtac:item)>
+
+can_break :List<Tags(compound/nbtac:block_predicate_new)> @AlwaysRelevant
+
+can_place_on :List<Tags(compound/nbtac:block_predicate_new)>
+
+charged_projectiles :List<Tags(compound/nbtac:item)>
+
+consumable :compound @AlwaysRelevant
++consume_seconds :float
++animation :Enum(none, block, bow, brush, crossbow, drink, eat, spear, spyglass, toot_horn)
++sound :RegistryKey(minecraft:sound_event)
++has_consume_particles :boolean
++on_consume_effects :List<Tags(compound/nbtac:item_effect)>
+
+container :List<compound>
++item :Tags(compound/nbtac:item)
++slot :int
+
+container_loot :compound
++loot_table :LootTable
++seed :LongSeed
+
+custom_data :compound
+
+custom_model_data :compound
++floats :List<float>
++flags :List<boolean>
++strings :List<string>
++colors :List<int>
+
+custom_name :TextComponent @AlwaysRelevant
+
+damage :int
+
+damage_resistant :compound @AlwaysRelevant
++types :DamageType
+
+death_protection :compound @AlwaysRelevant
++death_effects List<Tags(compound/nbtac:item_effect)>
+
+debug_stick_state :compound
+
+dyed_color :int
+
+enchantable :compound @AlwaysRelevant
++value :int
+
+enchantment_glint_override :boolean @AlwaysRelevant
+
+enchantments :Enchantments @AlwaysRelevant

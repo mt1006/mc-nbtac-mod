@@ -24,7 +24,7 @@ public class TagSuggestion extends StringSuggestion
 
 	public TagSuggestion(NbtSuggestion suggestion, CustomTagParser.Type parserType)
 	{
-		this(suggestion, null, parserType, suggestion.recommended ? 100 : 0);
+		this(suggestion, null, parserType, suggestion.isRecommended() ? 100 : 0);
 	}
 
 	public NbtSuggestion getSourceSuggestion()

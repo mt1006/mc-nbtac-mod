@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class NbtSuggestionManager
 {
-	private static final Map<String, NbtSuggestions> suggestionMap = new HashMap<>();
+	private static final Map<String, NbtSuggestionMap> suggestionsMap = new HashMap<>();
 	public static final Map<Suggestion, CustomSuggestion.Data> dataMap = new IdentityHashMap<>();
 	public static boolean hasCustomSuggestions = false;
 
@@ -28,21 +28,21 @@ public class NbtSuggestionManager
 	// legacy counterpart of dataMap, left on Fabric not to break NBT Editor - NBTac integration
 	public static final Map<Suggestion, String> subtextMap = new LegacyDataMapWrapper();
 
-	public static void add(String key, NbtSuggestions suggestions)
+	public static void add(String key, NbtSuggestionMap suggestions)
 	{
-		suggestionMap.put(key, suggestions);
+		suggestionsMap.put(key, suggestions);
 	}
 
-	public static @Nullable NbtSuggestions get(@Nullable String key)
+	public static @Nullable NbtSuggestionMap get(@Nullable String key)
 	{
 		//TODO: check if null check is necessary (1.4)
 		if (key == null) { return null; }
-		return suggestionMap.get(key);
+		return suggestionsMap.get(key);
 	}
 
-	public static Set<Map.Entry<String, NbtSuggestions>> suggestionSet()
+	public static Set<Map.Entry<String, NbtSuggestionMap>> suggestionSet()
 	{
-		return suggestionMap.entrySet();
+		return suggestionsMap.entrySet();
 	}
 
 	public static CompletableFuture<Suggestions> loadFromName(@Nullable String name, String tag, SuggestionsBuilder suggestionsBuilder, boolean suggestPath)
@@ -61,7 +61,7 @@ public class NbtSuggestionManager
 		return load(suggestion.subcompound, tag, suggestionsBuilder, false, null, suggestion);
 	}
 
-	public static CompletableFuture<Suggestions> load(@Nullable NbtSuggestions suggestions, String tag, SuggestionsBuilder suggestionsBuilder,
+	public static CompletableFuture<Suggestions> load(@Nullable NbtSuggestionMap suggestions, String tag, SuggestionsBuilder suggestionsBuilder,
 													  boolean suggestPath, @Nullable String rootTag, @Nullable NbtSuggestion rootSuggestion)
 	{
 		if (!Loader.finished)

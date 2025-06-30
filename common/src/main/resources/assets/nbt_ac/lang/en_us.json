@@ -101,18 +101,8 @@
   "nbt_ac.options.field.use_new_thread": "Use New Thread",
   "nbt_ac.options.field.use_new_thread.desc": "Uses new thread to load suggestions during Minecraft loading.",
 
-  "nbt_ac.options.field.load_from_resources": "Load From Resources",
-  "nbt_ac.options.field.load_from_resources.desc": "Loads suggestions from resource files (required to load item tags and tag predictions).",
-
   "nbt_ac.options.field.allow_block_entity_extraction": "Allow Block Entity Extraction",
   "nbt_ac.options.field.allow_block_entity_extraction.desc": "Allows for usage of block entity extraction method (similar to one used by disassembler) after suggestions are loaded.",
-
-  "nbt_ac.options.field.use_cache": "Use Cache",
-  "nbt_ac.options.field.use_cache.desc": "Enables suggestion caching.",
-
-  "nbt_ac.options.field.max_cached_instances": "Max Cached Instances",
-  "nbt_ac.options.field.max_cached_instances.-1": "[unlimited]",
-  "nbt_ac.options.field.max_cached_instances.desc": "Maximum number of cached Minecraft instances. Use -1 to disable the limit.",
 
 
   "nbt_ac.options.field.max_stack_traces": "Max Logged Stack Traces",
@@ -131,10 +121,7 @@
   "nbt_ac.options.field.debug_config_screen.desc": "Shows settings GUI after exiting realms screen. It isn't reset to default value by GUI reset button!",
 
   "nbt_ac.options.field.save_suggestions": "Save Suggestions",
-  "nbt_ac.options.field.save_suggestions.0": "Disabled",
-  "nbt_ac.options.field.save_suggestions.1": "Enabled",
-  "nbt_ac.options.field.save_suggestions.2": "Enabled and Sorted",
-  "nbt_ac.options.field.save_suggestions.desc": "Saves suggestions to file - \".minecraft/nbt_ac_output.txt\".\n0 - Disabled\n1 - Enabled\n2 - Enabled and sorted (easier for comparing)\nOther values will be treated as 0.",
+  "nbt_ac.options.field.save_suggestions.desc": "Saves suggestions to file - \".minecraft/nbt_ac_output.txt\".",
 
 
 

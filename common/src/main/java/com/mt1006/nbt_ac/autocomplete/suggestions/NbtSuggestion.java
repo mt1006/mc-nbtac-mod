@@ -2,28 +2,24 @@ package com.mt1006.nbt_ac.autocomplete.suggestions;
 
 import com.mojang.brigadier.Message;
 import com.mt1006.nbt_ac.autocomplete.CustomTagParser;
-import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
+import com.mt1006.nbt_ac.autocomplete.NbtSuggestionMap;
 import com.mt1006.nbt_ac.autocomplete.SuggestionList;
+import com.mt1006.nbt_ac.autocomplete.type.Type;
 import com.mt1006.nbt_ac.utils.ComparableLiteralMessage;
-import net.minecraft.nbt.Tag;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NbtSuggestion
 {
-	private static final NbtSuggestion DUMMY_COMPOUND = new NbtSuggestion("nbt_ac:dummy", Type.COMPOUND);
 	public static int createdInstanceCounter = 0;
 	public final String tag;
-	public Type type;
-	public Type listType = Type.UNKNOWN;
-	public NbtSuggestionSubtype subtype = NbtSuggestionSubtype.NONE;
-	public @Nullable String subtypeData = null;
-	public @Nullable String subtypeWith = null;
-	public @Nullable NbtSuggestions subcompound = null;
-	public boolean recommended = false;
+	public final Type type;
+	public @Nullable NbtSuggestionMap subcompound = null;
+	private @Nullable Map<Annotation, List<String>> annotations = null;
 
 	public NbtSuggestion(String tag, Type type)
 	{
@@ -32,57 +28,31 @@ public class NbtSuggestion
 		createdInstanceCounter++;
 	}
 
-	public NbtSuggestion(String tag, Type type, Type listType)
-	{
-		this(tag, type);
-		this.listType = listType;
-	}
-
-	public NbtSuggestion copy(NbtSuggestions oldParent, NbtSuggestions newParent)
-	{
-		NbtSuggestion newSuggestion = new NbtSuggestion(tag, type, listType);
-		newSuggestion.subtype = subtype;
-		newSuggestion.subtypeData = subtypeData;
-		newSuggestion.subtypeWith = subtypeWith;
-		newSuggestion.recommended = recommended;
-
-		if (subcompound != null)
-		{
-			if (subcompound == oldParent)
-			{
-				newSuggestion.subcompound = newParent;
-			}
-			else
-			{
-				newSuggestion.subcompound = new NbtSuggestions();
-				newSuggestion.subcompound.copyAll(subcompound);
-			}
-		}
-		return newSuggestion;
-	}
-
 	public boolean hasSubcompound()
 	{
-		return type == Type.COMPOUND || listType == Type.COMPOUND;
+		return subcompound != null;
 	}
 
-	public NbtSuggestions getSubcompound()
+	public boolean addAnnotation(String name, List<String> args)
 	{
-		if (subcompound == null) { subcompound = new NbtSuggestions(); }
-		return subcompound;
+		Annotation annotation = Annotation.fromName(name);
+		if (annotation == null || (args.isEmpty()) == annotation.argumentsExpected) { return false; }
+
+		if (annotations == null) { annotations = new IdentityHashMap<>(); }
+		return (annotations.put(annotation, args) == null);
 	}
 
-	public boolean getSubtypeSuggestions(SuggestionList suggestionList, ParentInfo parentInfo, CustomTagParser.Type parserType)
+	public void getSuggestions(SuggestionList suggestionList, CustomTagParser.Type parserType, ParentInfo parentInfo)
 	{
-		return subtype.getSubtypeSuggestions(this, suggestionList, getFinalSubtypeData(parentInfo), parserType);
+		type.getSuggestions(new Type.SuggestionListContext(suggestionList, parserType, parentInfo));
 	}
 
-	public void getSubtypeTagSuggestions(SuggestionList suggestionList, ParentInfo parentInfo, CustomTagParser.Type parserType)
+	public void getCompoundSuggestions(SuggestionList suggestionList, CustomTagParser.Type parserType, ParentInfo parentInfo)
 	{
-		subtype.getSubtypeTagSuggestions(suggestionList, parentInfo, getFinalSubtypeData(parentInfo), parserType);
+		type.getCompoundSuggestions(new Type.SuggestionListContext(suggestionList, parserType, parentInfo));
 	}
 
-	private @Nullable String getFinalSubtypeData(ParentInfo parentInfo)
+	/*private @Nullable String getFinalSubtypeData(ParentInfo parentInfo)
 	{
 		if (subtypeWith != null && subtypeData != null && subtypeData.contains("*"))
 		{
@@ -109,9 +79,9 @@ public class NbtSuggestion
 			}
 		}
 		return subtypeData;
-	}
+	}*/
 
-	public String getFinalTagName(ParentInfo parentInfo)
+	/*public String getFinalTagName(ParentInfo parentInfo)
 	{
 		String finalData = getFinalSubtypeData(parentInfo);
 		if (subtype == NbtSuggestionSubtype.TAG && finalData != null)
@@ -119,105 +89,27 @@ public class NbtSuggestion
 			return finalData.replace("block/item/", "block/");
 		}
 		return tag;
-	}
-
-	public static NbtSuggestion getDummyCompound(NbtSuggestions subcompound)
-	{
-		DUMMY_COMPOUND.type = Type.COMPOUND;
-		DUMMY_COMPOUND.subcompound = subcompound;
-		return DUMMY_COMPOUND;
-	}
+	}*/
 
 	public String getSubtext()
 	{
-		return type.symbol;
+		return type.getSubtext();
 	}
 
 	public Message getTooltip()
 	{
-		return new ComparableLiteralMessage(String.format("%s§r §8%s", tag, type.symbol));
+		return new ComparableLiteralMessage(String.format("%s§r §8%s", tag, type.getSubtext()));
 	}
 
-	public void setType(Pair<Type, Type> pair)
+	public boolean isRelevant()
 	{
-		type = pair.getLeft();
-		listType = pair.getRight();
+		//TODO: finish
+		return annotations != null && annotations.containsKey(Annotation.ALWAYS_RELEVANT);
 	}
 
-	public boolean isAlwaysRelevant()
+	public boolean isRecommended()
 	{
-		//TODO: fix
-		return false;
-		//return source == Source.ALWAYS_RELEVANT;
-	}
-
-	public enum Type
-	{
-		NOT_FOUND((byte)-1),
-		UNKNOWN((byte)-1),
-		MULTIPLE((byte)-1),
-		BOOLEAN((byte)-1, "b"),
-		BYTE(Tag.TAG_BYTE, "b"),
-		SHORT(Tag.TAG_SHORT, "s"),
-		INT(Tag.TAG_INT),
-		LONG(Tag.TAG_LONG, "l"),
-		FLOAT(Tag.TAG_FLOAT, "f"),
-		DOUBLE(Tag.TAG_DOUBLE),
-		STRING(Tag.TAG_STRING),
-		LIST(Tag.TAG_LIST),
-		BYTE_ARRAY(Tag.TAG_BYTE_ARRAY),
-		INT_ARRAY(Tag.TAG_INT_ARRAY),
-		LONG_ARRAY(Tag.TAG_LONG_ARRAY),
-		COMPOUND(Tag.TAG_COMPOUND),
-		UUID((byte)-1);
-
-		private final static Type[] VALUES = values();
-		private static final HashMap<String, Type> nameMap = new HashMap<>();
-		private static final HashMap<Byte, Type> idMap = new HashMap<>();
-		private final byte id;
-		private final String lowerCaseName;
-		public final String symbol;
-		public final String suffix;
-
-		Type(byte id)
-		{
-			this.id = id;
-			this.suffix = "";
-			this.lowerCaseName = name().toLowerCase();
-			this.symbol = String.format("[%s]", lowerCaseName);
-		}
-
-		Type(byte id, String suffix)
-		{
-			this.id = id;
-			this.suffix = suffix;
-			this.lowerCaseName = name().toLowerCase();
-			this.symbol = String.format("[%s]", lowerCaseName);
-		}
-
-		public String getName()
-		{
-			return lowerCaseName;
-		}
-
-		public static void init()
-		{
-			for (Type type : VALUES)
-			{
-				nameMap.put(type.getName(), type);
-				idMap.put(type.id, type);
-			}
-		}
-
-		public static Type fromName(String name)
-		{
-			return nameMap.getOrDefault(name, NOT_FOUND);
-		}
-
-		public static Type fromOrdinal(int ordinal)
-		{
-			return (ordinal < VALUES.length && ordinal >= 0) ? VALUES[ordinal] : UNKNOWN;
-		}
+		return annotations != null && annotations.containsKey(Annotation.RECOMMENDED);
 	}
 
 	public static class ParentInfo
@@ -246,7 +138,8 @@ public class NbtSuggestion
 		{
 			if (suggestion == null) { return new ParentInfo(new HashMap<>(), tagMap, "[undefined]", parentTag); }
 			ParentInfo newParentInfo = new ParentInfo(new HashMap<>(), tagMap, suggestion.tag, parentTag);
-			newParentInfo.parentTag = suggestion.getFinalTagName(newParentInfo);
+			//newParentInfo.parentTag = suggestion.getFinalTagName(newParentInfo); //TODO: test
+			newParentInfo.parentTag = suggestion.tag;
 			return newParentInfo;
 		}
 
@@ -266,6 +159,33 @@ public class NbtSuggestion
 			if (BLANK.parentTagMap != null) { BLANK.parentTagMap.clear(); }
 			BLANK.parentTag = null;
 			return BLANK;
+		}
+	}
+
+	public enum Annotation
+	{
+		ALWAYS_RELEVANT("AlwaysRelevant", false),
+		RELEVANT_IF_EQ("RelevantIfEq", true),
+		ARG_SWITCH("ArgSwitch", true),
+		RECOMMENDED("Recommended", false);
+
+		private static final Annotation[] VALUES = values();
+		private final String name;
+		private final boolean argumentsExpected;
+
+		Annotation(String name, boolean argumentExpected)
+		{
+			this.name = name;
+			this.argumentsExpected = argumentExpected;
+		}
+
+		public static @Nullable Annotation fromName(String name)
+		{
+			for (Annotation annotation : VALUES)
+			{
+				if (annotation.name.equals(name)) { return annotation; }
+			}
+			return null;
 		}
 	}
 }

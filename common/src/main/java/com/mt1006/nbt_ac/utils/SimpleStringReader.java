@@ -28,7 +28,7 @@ public class SimpleStringReader
 			char ch = (pos != len) ? chars[pos] : '\0';
 
 			if ((ch < 'a' || ch > 'z') && (ch < 'A' || ch > 'Z') && (ch < '0' || ch > '9')
-				&& ch != '_' && ch != '-' && ch != ':' && ch != '/' && ch != '$')
+				&& ch != '_' && ch != '-' && ch != '.' && ch != ':' && ch != '/' && ch != '$')
 			{
 				if (startPos == pos) { throw new ReaderException(); }
 				return str.substring(startPos, pos);
@@ -89,12 +89,7 @@ public class SimpleStringReader
 		if (pos != len) { throw new ReaderException(); }
 	}
 
-	public void throwException()
-	{
-		throw new ReaderException();
-	}
-
-	private class ReaderException extends RuntimeException
+	public class ReaderException extends RuntimeException
 	{
 		public ReaderException()
 		{

@@ -101,18 +101,8 @@
   "nbt_ac.options.field.use_new_thread": "使用新執行緒",
   "nbt_ac.options.field.use_new_thread.desc": "使用新執行緒在 Minecraft 載入期間載入建議。",
 
-  "nbt_ac.options.field.load_from_resources": "從資源載入",
-  "nbt_ac.options.field.load_from_resources.desc": "從資源檔案載入建議（載入物品標籤和標籤預測所需）。",
-
   "nbt_ac.options.field.allow_block_entity_extraction": "允許方塊實體提取",
   "nbt_ac.options.field.allow_block_entity_extraction.desc": "允許在載入建議後使用方塊實體提取方法（類似於反組譯器使用的方法）。",
-
-  "nbt_ac.options.field.use_cache": "使用快取",
-  "nbt_ac.options.field.use_cache.desc": "啟用建議快取。",
-
-  "nbt_ac.options.field.max_cached_instances": "最大快取執行個體數",
-  "nbt_ac.options.field.max_cached_instances.-1": "[無限制]",
-  "nbt_ac.options.field.max_cached_instances.desc": "快取的 Minecraft 執行個體的最大數量。使用 -1 停用限制。",
 
 
   "nbt_ac.options.field.max_stack_traces": "記錄的最大堆疊追蹤數",
@@ -131,10 +121,7 @@
   "nbt_ac.options.field.debug_config_screen.desc": "在退出 Reamls 畫面後顯示設定圖形介面。它不會被圖形介面重設按鈕重設為預設值！",
 
   "nbt_ac.options.field.save_suggestions": "儲存建議",
-  "nbt_ac.options.field.save_suggestions.0": "已停用",
-  "nbt_ac.options.field.save_suggestions.1": "已啟用",
-  "nbt_ac.options.field.save_suggestions.2": "已啟用並排序",
-  "nbt_ac.options.field.save_suggestions.desc": "將建議儲存到檔案 - \".minecraft/nbt_ac_output.txt\".\n0 - 已停用\n1 - 已啟用\n2 - 已啟用並排序（更容易比較）\n其他值將被視為 0。",
+  "nbt_ac.options.field.save_suggestions.desc": "將建議儲存到檔案 - \".minecraft/nbt_ac_output.txt\".",
 
 
 

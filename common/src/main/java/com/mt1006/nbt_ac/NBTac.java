@@ -1,6 +1,5 @@
 package com.mt1006.nbt_ac;
 
-import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.Fields;
 import org.slf4j.Logger;
@@ -23,7 +22,6 @@ public class NBTac
 		NBTac.loaderInterface = loaderInterface;
 		ModConfig.load();
 		Fields.init();
-		NbtSuggestion.Type.init();
 		return true;
 	}
 }

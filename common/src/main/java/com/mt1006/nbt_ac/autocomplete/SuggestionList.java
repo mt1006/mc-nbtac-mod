@@ -26,19 +26,19 @@ public class SuggestionList extends ArrayList<CustomSuggestion>
 		add(new RawSuggestion(text, subtext, priority));
 	}
 
-	public void addAll(@Nullable NbtSuggestions suggestions, CustomTagParser.Type parserType, int priority)
+	public void addAll(@Nullable NbtSuggestionMap suggestions, CustomTagParser.Type parserType, int priority)
 	{
 		if (suggestions == null) { return; }
 		suggestions.getAll().forEach((s) -> add(new TagSuggestion(s, parserType, priority)));
 	}
 
-	public void addAll(@Nullable NbtSuggestions suggestions, CustomTagParser.Type parserType)
+	public void addAll(@Nullable NbtSuggestionMap suggestions, CustomTagParser.Type parserType)
 	{
 		if (suggestions == null) { return; }
 		suggestions.getAll().forEach((s) -> add(new TagSuggestion(s, parserType)));
 	}
 
-	public void addAll(@Nullable NbtSuggestions suggestions, @Nullable String rootTag, CustomTagParser.Type parserType)
+	public void addAll(@Nullable NbtSuggestionMap suggestions, @Nullable String rootTag, CustomTagParser.Type parserType)
 	{
 		addAll(suggestions, parserType);
 		getCommonSuggestions(rootTag).forEach((s) -> addAll(s, parserType));
@@ -50,10 +50,10 @@ public class SuggestionList extends ArrayList<CustomSuggestion>
 		addAll(suggestions);
 	}
 
-	private static List<NbtSuggestions> getCommonSuggestions(@Nullable String tag)
+	private static List<NbtSuggestionMap> getCommonSuggestions(@Nullable String tag)
 	{
 		if (tag == null) { return List.of(); }
-		List<NbtSuggestions> list = new ArrayList<>();
+		List<NbtSuggestionMap> list = new ArrayList<>();
 
 		if (tag.startsWith("item/"))
 		{

@@ -4,6 +4,7 @@ import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.suggestions.ComponentSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.TagIdSuggestion;
+import com.mt1006.nbt_ac.autocomplete.type.PrimitiveType;
 import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.Fields;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
@@ -30,7 +31,7 @@ import java.util.*;
 
 public class DataComponentManager
 {
-	private static final NbtSuggestion UNKNOWN_COMPONENT = new NbtSuggestion("nbt_ac:empty", NbtSuggestion.Type.UNKNOWN);
+	private static final NbtSuggestion UNKNOWN_COMPONENT = new NbtSuggestion("nbt_ac:empty", PrimitiveType.UNKNOWN);
 	public static final Map<String, NbtSuggestion> componentMap = new HashMap<>();
 
 	//TODO: move it somewhere else
@@ -57,7 +58,7 @@ public class DataComponentManager
 			NbtSuggestion component = DataComponentManager.componentMap.get("item/" + resLoc);
 			if (component == null) { component = UNKNOWN_COMPONENT; }
 			boolean relevant = predefinedComponents.contains(componentType)
-					|| hardcodedRelevancy.contains(componentType) || component.isAlwaysRelevant();
+					|| hardcodedRelevancy.contains(componentType) || component.isRelevant();
 
 			if (parserType != null)
 			{

@@ -7,6 +7,8 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.NBTac;
 import com.mt1006.nbt_ac.autocomplete.CustomTagParser;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
+import com.mt1006.nbt_ac.autocomplete.type.PrimitiveType;
+import com.mt1006.nbt_ac.autocomplete.type.Type;
 import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.Fields;
 import org.jetbrains.annotations.Nullable;
@@ -27,10 +29,10 @@ public abstract class CustomSuggestion
 		this.priority = priority;
 	}
 
-	public static CustomSuggestion fromType(String text, @Nullable String subtext, NbtSuggestion.Type type,
+	public static CustomSuggestion fromType(String text, @Nullable String subtext, Type type,
 											CustomTagParser.Type parserType, int priority)
 	{
-		return type == NbtSuggestion.Type.STRING
+		return type.getPrimitive() == PrimitiveType.STRING
 				? new StringSuggestion(text, subtext, parserType, priority)
 				: new RawSuggestion(text, subtext, priority);
 	}

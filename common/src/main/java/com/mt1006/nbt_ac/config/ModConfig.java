@@ -35,16 +35,14 @@ public class ModConfig
 
 	//public static final ConfigFields.IntegerField vanillaIdsSorting = fields.add("vanilla_ids_sorting", 1); //TODO: implement
 	public static final ConfigFields.BooleanField supportCommandNamespace = fields.add("support_command_namespace", true);
+
 	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
-	public static final ConfigFields.BooleanField loadFromResources = fields.add("load_from_resources", true);
 	public static final ConfigFields.BooleanField allowBlockEntityExtraction = fields.add("allow_block_entity_extraction", true);
-	public static final ConfigFields.BooleanField useCache = fields.add("use_cache", true);
-	public static final ConfigFields.IntegerField maxCachedInstances = fields.add("max_cached_instances", 32);
 
 	public static final ConfigFields.IntegerField maxStackTraces = fields.add("max_stack_traces", 6);
 	public static final ConfigFields.BooleanField debugMode = fields.add("debug_mode", false);
 	public static final ConfigFields.IntegerField debugSleep = fields.add("debug_sleep", 0);
-	public static final ConfigFields.IntegerField saveSuggestions = fields.add("save_suggestions", 0);
+	public static final ConfigFields.BooleanField saveSuggestions = fields.add("save_suggestions", false);
 	public static final ConfigFields.BooleanField debugConfigScreen = fields.add("debug_config_screen", false);
 
 
@@ -85,16 +83,13 @@ public class ModConfig
 
 		list.addLabel("advanced_settings");
 		list.add(useNewThread.createSwitch());
-		list.add(loadFromResources.createSwitch());
 		list.add(allowBlockEntityExtraction.createSwitch());
-		list.add(useCache.createSwitch());
-		list.add(maxCachedInstances.createSlider(-1, 64, 1, List.of(-1)));
 
 		list.addLabel("debugging_options");
 		list.add(maxStackTraces.createSlider(-1, 96, 1, List.of(-1, 0)));
 		list.add(debugMode.createSwitch());
 		list.add(debugSleep.createSlider(0, 100, 200, List.of(0)));
-		list.add(saveSuggestions.createSwitch(List.of(0, 1, 2)));
+		list.add(saveSuggestions.createSwitch());
 	}
 
 	public static void load()
@@ -126,7 +121,6 @@ public class ModConfig
 
 	public static @Nullable String getJsonStringSuggestion()
 	{
-		//TODO: (PORT) change case 1 for 1.20.1
 		return switch (jsonStringSuggestion.val)
 		{
 			case 0 -> null;

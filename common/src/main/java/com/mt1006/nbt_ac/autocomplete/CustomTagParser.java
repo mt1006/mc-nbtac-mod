@@ -6,8 +6,11 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.autocomplete.loader.Loader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.CustomSuggestion;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
-import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestionSubtype;
 import com.mt1006.nbt_ac.autocomplete.suggestions.TagSuggestion;
+import com.mt1006.nbt_ac.autocomplete.type.ListType;
+import com.mt1006.nbt_ac.autocomplete.type.PrimitiveType;
+import com.mt1006.nbt_ac.autocomplete.type.complex.TagsType;
+import com.mt1006.nbt_ac.autocomplete.type.complex.TextComponentType;
 import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.nbt.TagParser;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,8 +21,10 @@ import java.util.Map;
 
 public class CustomTagParser
 {
-	private static final NbtSuggestion JSON_DUMMY_NBT_SUGGESTION = new NbtSuggestion(
-			"nbt_ac:json_dummy", NbtSuggestion.Type.LIST, NbtSuggestion.Type.COMPOUND);
+	private static final NbtSuggestion TEXT_COMPONENT_DUMMY =
+			new NbtSuggestion("nbt_ac:text_component_dummy", TextComponentType.INSTANCE);
+	private static final NbtSuggestion TEXT_STYLE_DUMMY =
+			new NbtSuggestion("nbt_ac:text_style_dummy", new TagsType("text/nbtac:style", false));
 
 	private final StringReader reader;
 	private final Type parserType;
@@ -35,11 +40,9 @@ public class CustomTagParser
 	{
 		if (!inner && !Loader.finished) { return Pair.of(Suggestion.NONE, 0); } //TODO: add "not loaded" message
 
-		JSON_DUMMY_NBT_SUGGESTION.subtype = NbtSuggestionSubtype.JSON_TEXT_COMPOUND;
-
 		CustomTagParser jsonParser = new CustomTagParser(str, Type.COMPONENT);
 		SuggestionList jsonSuggestions = new SuggestionList();
-		Suggestion jsonSuggestion = jsonParser.read(jsonSuggestions, JSON_DUMMY_NBT_SUGGESTION, null);
+		Suggestion jsonSuggestion = jsonParser.read(jsonSuggestions, TEXT_COMPONENT_DUMMY, null);
 
 		if (jsonSuggestion == Suggestion.TAG) { suggestionList.replaceWith(jsonSuggestions); }
 		return Pair.of(jsonSuggestion.asJsonSuggestion(inner), jsonParser.getCursor());
@@ -47,17 +50,15 @@ public class CustomTagParser
 
 	public static Pair<Suggestion, Integer> parseJsonStyle(SuggestionList suggestionList, String str)
 	{
-		JSON_DUMMY_NBT_SUGGESTION.subtype = NbtSuggestionSubtype.JSON_STYLE_COMPOUND;
-
 		CustomTagParser jsonParser = new CustomTagParser(str, Type.COMPONENT);
-		SuggestionList jsonSuggestions = new SuggestionList();
-		Suggestion jsonSuggestion = jsonParser.read(jsonSuggestions, JSON_DUMMY_NBT_SUGGESTION, null);
+		SuggestionList textSuggestions = new SuggestionList();
+		Suggestion jsonSuggestion = jsonParser.read(textSuggestions, TEXT_STYLE_DUMMY, null);
 
-		if (jsonSuggestion == Suggestion.TAG) { suggestionList.replaceWith(jsonSuggestions); }
+		if (jsonSuggestion == Suggestion.TAG) { suggestionList.replaceWith(textSuggestions); }
 		return Pair.of(jsonSuggestion.asJsonSuggestion(false), jsonParser.getCursor());
 	}
 
-	public SuggestionList prepareSuggestionList(@Nullable NbtSuggestions suggestions, @Nullable String rootTag)
+	public SuggestionList prepareSuggestionList(@Nullable NbtSuggestionMap suggestions, @Nullable String rootTag)
 	{
 		SuggestionList suggestionList = new SuggestionList();
 		suggestionList.addAll(suggestions, rootTag, parserType);
@@ -146,7 +147,7 @@ public class CustomTagParser
 				NbtSuggestion.ParentInfo tempParentInfo = parentInfo.withTagMap(tempTagMap);
 
 				tempSuggestionList.addAll(suggestion.subcompound, parserType);
-				suggestion.getSubtypeTagSuggestions(tempSuggestionList, tempParentInfo, parserType);
+				suggestion.getCompoundSuggestions(tempSuggestionList, parserType, tempParentInfo);
 
 				int oldPos = reader.getCursor();
 
@@ -156,12 +157,12 @@ public class CustomTagParser
 				}
 				catch (Exception ignore) {}
 
-				suggestion.getSubtypeTagSuggestions(suggestionList, tempParentInfo, parserType);
+				suggestion.getCompoundSuggestions(suggestionList, parserType, tempParentInfo);
 				reader.setCursor(oldPos);
 			}
 			else
 			{
-				suggestion.getSubtypeTagSuggestions(suggestionList, parentInfo, parserType);
+				suggestion.getCompoundSuggestions(suggestionList, parserType, parentInfo);
 			}
 		}
 
@@ -250,9 +251,10 @@ public class CustomTagParser
 	private Suggestion readSimpleValue(SuggestionList suggestionList, @Nullable NbtSuggestion suggestion,
 									   NbtSuggestion.ParentInfo parentInfo, boolean fromList)
 	{
-		NbtSuggestion.Type expectedType = suggestion != null
-				? (fromList ? suggestion.listType : suggestion.type)
-				: NbtSuggestion.Type.UNKNOWN;
+		com.mt1006.nbt_ac.autocomplete.type.Type expectedType = suggestion != null
+				? ((fromList && suggestion.type instanceof ListType)
+					? (((ListType)suggestion.type).elementType) : suggestion.type)
+				: PrimitiveType.UNKNOWN;
 
 		reader.skipWhitespace();
 		int cursor = reader.getCursor();
@@ -267,28 +269,32 @@ public class CustomTagParser
 		//TODO: clean it up
 		if (!reader.canRead() || !finished)
 		{
-			if (expectedType == NbtSuggestion.Type.STRING && stringResults.quoted && finished)
+			if (expectedType.getPrimitive() == PrimitiveType.STRING && stringResults.quoted && finished)
 			{
 				return Suggestion.CONTINUE;
 			}
 
 			reader.setCursor(cursor);
-			if (suggestion == null || expectedType == NbtSuggestion.Type.LIST) { return Suggestion.fromNbtType(expectedType); }
+			if (suggestion == null || expectedType.getPrimitive() == PrimitiveType.LIST)
+			{
+				return Suggestion.fromNbtType(expectedType.getPrimitive());
+			}
 
-			if (suggestion.subtype == NbtSuggestionSubtype.JSON_TEXT
+			if (suggestion.type instanceof TextComponentType
 					&& (str.startsWith("{") || str.startsWith("[")))
 			{
 				Pair<Suggestion, Integer> results = parseJsonComponent(suggestionList, str, true);
 				reader.setCursor(cursor + results.getRight() + 1);
 				return results.getLeft();
 			}
-			else if (suggestion.getSubtypeSuggestions(suggestionList, parentInfo, parserType))
+			else if (expectedType != expectedType.getPrimitive())
 			{
+				suggestion.getSuggestions(suggestionList, parserType, parentInfo);
 				suggestionList.removeIf((s) -> !s.matchUnfinished(str));
 				return Suggestion.TAG;
 			}
 
-			return Suggestion.fromNbtType(expectedType);
+			return Suggestion.fromNbtType(expectedType.getPrimitive());
 		}
 
 		return Suggestion.CONTINUE;
@@ -540,23 +546,24 @@ public class CustomTagParser
 			};
 		}
 
-		private String getTypeName()
+		private @Nullable String getTypeName()
 		{
-			return switch (this)
+			PrimitiveType type = switch (this)
 			{
-				case TYPE_BYTE -> NbtSuggestion.Type.BYTE.getName();
-				case TYPE_SHORT -> NbtSuggestion.Type.SHORT.getName();
-				case TYPE_INT -> NbtSuggestion.Type.INT.getName();
-				case TYPE_LONG -> NbtSuggestion.Type.LONG.getName();
-				case TYPE_FLOAT -> NbtSuggestion.Type.FLOAT.getName();
-				case TYPE_DOUBLE -> NbtSuggestion.Type.DOUBLE.getName();
-				case BOOLEAN, JSON_BOOLEAN -> NbtSuggestion.Type.BOOLEAN.getName();
-				case STRING -> NbtSuggestion.Type.STRING.getName();
-				case BYTE_ARRAY -> NbtSuggestion.Type.BYTE_ARRAY.getName();
-				case INT_ARRAY -> NbtSuggestion.Type.INT_ARRAY.getName();
-				case LONG_ARRAY -> NbtSuggestion.Type.LONG_ARRAY.getName();
+				case TYPE_BYTE -> PrimitiveType.BYTE;
+				case TYPE_SHORT -> PrimitiveType.SHORT;
+				case TYPE_INT -> PrimitiveType.INT;
+				case TYPE_LONG -> PrimitiveType.LONG;
+				case TYPE_FLOAT -> PrimitiveType.FLOAT;
+				case TYPE_DOUBLE -> PrimitiveType.DOUBLE;
+				case BOOLEAN, JSON_BOOLEAN -> PrimitiveType.BOOLEAN;
+				case STRING -> PrimitiveType.STRING;
+				case BYTE_ARRAY -> PrimitiveType.BYTE_ARRAY;
+				case INT_ARRAY -> PrimitiveType.INT_ARRAY;
+				case LONG_ARRAY -> PrimitiveType.LONG_ARRAY;
 				default -> null;
 			};
+			return type != null ? type.getName() : null;
 		}
 
 		public Suggestion asJsonSuggestion(boolean inner)
@@ -569,7 +576,7 @@ public class CustomTagParser
 			};
 		}
 
-		public static Suggestion fromNbtType(NbtSuggestion.Type type)
+		public static Suggestion fromNbtType(PrimitiveType type)
 		{
 			return switch (type)
 			{
@@ -585,7 +592,7 @@ public class CustomTagParser
 				case LONG -> TYPE_LONG;
 				case FLOAT -> TYPE_FLOAT;
 				case DOUBLE -> TYPE_DOUBLE;
-				case INT_ARRAY, UUID -> INT_ARRAY;
+				case INT_ARRAY -> INT_ARRAY;
 				default -> NONE;
 			};
 		}

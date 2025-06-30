@@ -1,13 +1,10 @@
 package com.mt1006.nbt_ac;
 
-import com.mt1006.nbt_ac.fabric.FabricResourceLoader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.server.packs.PackType;
 
 import java.util.Set;
 
@@ -18,8 +15,7 @@ public class NBTacFabric implements ModInitializer, NBTacLoaderInterface
 
 	@Override public void onInitialize()
 	{
-		if (!NBTac.init(isDedicatedServer, this)) { return; }
-		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new FabricResourceLoader());
+		NBTac.init(isDedicatedServer, this);
 	}
 
 	@Override public void appendModVersionIds(Set<String> mods)

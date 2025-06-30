@@ -7,7 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.datafixers.types.templates.Tag;
 import com.mt1006.nbt_ac.autocomplete.CustomTagParser;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
-import com.mt1006.nbt_ac.autocomplete.NbtSuggestions;
+import com.mt1006.nbt_ac.autocomplete.NbtSuggestionMap;
 import com.mt1006.nbt_ac.autocomplete.SuggestionList;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.utils.Utils;
@@ -31,10 +31,10 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 
 			String tag = suggestionsBuilder.getRemaining();
 
-			if (nbtSuggestion.subcompound == null)
+			if (!nbtSuggestion.hasSubcompound())
 			{
 				NbtSuggestionManager.simpleSuggestion("", String.format("[%s]",
-						nbtSuggestion.type.getName()), suggestionsBuilder);
+						nbtSuggestion.type.getPrimitive().getName()), suggestionsBuilder);
 				return suggestionsBuilder.buildFuture();
 			}
 			else
@@ -84,7 +84,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 
 		if (root == null) { return null; }
 
-		NbtSuggestions rootSuggestions = NbtSuggestionManager.get(root);
+		NbtSuggestionMap rootSuggestions = NbtSuggestionManager.get(root);
 		if (rootSuggestions == null) { return null; }
 
 		CustomTagParser pathParser = new CustomTagParser(path, CustomTagParser.Type.PATH);

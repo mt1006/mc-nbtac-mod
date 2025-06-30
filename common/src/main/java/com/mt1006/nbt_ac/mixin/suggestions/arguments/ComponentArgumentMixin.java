@@ -7,7 +7,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mt1006.nbt_ac.autocomplete.CustomTagParser;
 import com.mt1006.nbt_ac.autocomplete.NbtSuggestionManager;
 import com.mt1006.nbt_ac.autocomplete.SuggestionList;
-import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestionSubtype;
 import net.minecraft.commands.arguments.ComponentArgument;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,7 +26,8 @@ public abstract class ComponentArgumentMixin implements ArgumentType<Component>
 
 			if (tag.isEmpty())
 			{
-				NbtSuggestionSubtype.getJsonTextPrefixSuggestions(suggestionList, false);
+				//TODO: fix
+				//NbtSuggestionSubtype.getJsonTextPrefixSuggestions(suggestionList, false);
 				return NbtSuggestionManager.finishSuggestions(suggestionList, suggestionsBuilder, null, 0);
 			}
 
