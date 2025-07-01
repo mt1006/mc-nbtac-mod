@@ -25,9 +25,6 @@ public class NbtSuggestionManager
 	private static @Nullable List<Suggestion> oldSuggestionList = null;
 	private static int suggestionListCounter = 0;
 
-	// legacy counterpart of dataMap, left on Fabric not to break NBT Editor - NBTac integration
-	public static final Map<Suggestion, String> subtextMap = new LegacyDataMapWrapper();
-
 	public static void add(String key, NbtSuggestionMap suggestions)
 	{
 		suggestionsMap.put(key, suggestions);
@@ -119,23 +116,8 @@ public class NbtSuggestionManager
 	public static void clearProvided()
 	{
 		dataMap.clear();
-		subtextMap.clear();
 		hasCustomSuggestions = false;
 		suggestionListCounter = 0;
-	}
-
-	public static class LegacyDataMapWrapper extends HashMap<Suggestion, String>
-	{
-		@Override public String put(Suggestion key, String value)
-		{
-			dataMap.put(key, new CustomSuggestion.Data(value, 0, false));
-			return value;
-		}
-
-		@Override public String remove(Object key)
-		{
-			return dataMap.remove(key).subtext;
-		}
 	}
 
 	public static void clearIfNeeded(SuggestionsBuilder builder)
