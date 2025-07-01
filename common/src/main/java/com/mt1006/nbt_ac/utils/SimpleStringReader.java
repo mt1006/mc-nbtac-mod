@@ -21,6 +21,7 @@ public class SimpleStringReader
 	public String readString()
 	{
 		if (pos == len) { throw new ReaderException(); }
+		if (chars[pos] == '\"') { return readQuotedString(); }
 
 		int startPos = pos;
 		while (true)
@@ -34,6 +35,17 @@ public class SimpleStringReader
 				return str.substring(startPos, pos);
 			}
 			pos++;
+		}
+	}
+
+	private String readQuotedString()
+	{
+		expect('\"');
+		int startPos = pos;
+		while (true)
+		{
+			if (pos == len) { throw new ReaderException(); }
+			if (chars[pos++] == '\"') { return str.substring(startPos, pos - 1); }
 		}
 	}
 

@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:provides_trim_material",
-	"type": "string",
-	"subtype": "trim_material",
-	"always_relevant": true
-}

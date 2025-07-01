@@ -92,7 +92,7 @@ damage_resistant :compound @AlwaysRelevant
 +types :DamageType
 
 death_protection :compound @AlwaysRelevant
-+death_effects List<Tags(compound/nbtac:item_effect)>
++death_effects :List<Tags(compound/nbtac:item_effect)>
 
 debug_stick_state :compound
 
@@ -104,3 +104,154 @@ enchantable :compound @AlwaysRelevant
 enchantment_glint_override :boolean @AlwaysRelevant
 
 enchantments :Enchantments @AlwaysRelevant
+
+entity_data :Tags(entity/$./id$)
++id :RegistryKey(minecraft:entity_type) @Recommended
+
+equippable :compound @AlwaysRelevant
++slot :Enum(head, chest, legs, feet, body, mainhand, offhand) @Recommended
++equip_sound :RegistryKey(minecraft:sound_event)
++asset_id :string
++allowed_entities :List<RegistryKey(minecraft:entity_type)>
++dispensable :boolean
++swappable :boolean
++damage_on_hurt :boolean
++camera_overlay :string
++equip_on_interact :boolean
++can_be_sheared :boolean
++shearing_sound :RegistryKey(minecraft:sound_event)
+
+fire_resistant :EmptyCompound @AlwaysRelevant
+
+firework_explosion :compound
++shape :Enum(small_ball, large_ball, star, creeper, burst)
++color :int
++fade_colors :int
++has_trail :boolean
++has_twinkle :boolean
+
+food :compound @AlwaysRelevant
++nutrition :int @Recommended
++saturation :float @Recommended
++can_always_eat :boolean
+
+glider :EmptyCompound @AlwaysRelevant
+
+instrument :RegistryKey(minecraft:instrument)
+
+intangible_projectile :EmptyCompound
+
+item_model :RegistryKey(minecraft:item)
+
+item_name :TextComponent @AlwaysRelevant
+
+jukebox_playable :compound @AlwaysRelevant
++song :JukeboxSong
+
+lock :compound
++items :List<RegistryKey(minecraft:item)>
++count :compound
+	+min :int
+	+max :int
++components :compound
++predicates :compound
+
+lodestone_tracker :compound
++target :compound
+	+pos :int_array
+	+dimension :string
++tracked :boolean
+
+lore :List<TextComponent>
+
+map_color :int @AlwaysRelevant
+
+map_decorations :MapDecorations
+
+map_id :int
+
+max_damage :int
+
+max_stack_size :int
+
+note_block_sound :RegistryKey(minecraft:sound_event)
+
+ominous_bottle_amplifier :int
+
+pot_decorations :List<PotDecoration>
+
+potion_contents :compound
++potion :RegistryKey(minecraft:potion)
++custom_color :int
++custom_effects :List<Tags(compound/nbtac:effect)>
++custom_name :string
+
+potion_duration_scale :float
+
+profile :compound
++name :string
++id :UUID
++properties :List<compound>
+	+name :string
+	+value :string
+	+signature :string
+
+provides_banner_patterns :BannerPattern @AlwaysRelevant
+
+provides_trim_material :TrimMaterial @AlwaysRelevant
+
+rarity :OrderedEnum(common, uncommon, rare, epic) @AlwaysRelevant
+
+recipes :List<Recipe>
+
+repair_cost :int
+
+repairable :compound @AlwaysRelevant
++items :List<RegistryKey(minecraft:item)>
+
+stored_enchantments :Enchantments
+
+suspicious_stew_effects :List<compound>
++id :RegistryKey(minecraft:mob_effect)
++duration :int
+
+tool :compound @AlwaysRelevant
++default_mining_speed :float
++damage_per_block :int
++rules :List<compound>
+	+blocks :List<RegistryKey(minecraft:block)>
+	+speed :float
+	+correct_for_drops :boolean
++can_destroy_blocks_in_creative :boolean
+
+tooltip_display :compound @AlwaysRelevant
++hide_tooltip :boolean
++hidden_components :List<string>
+
+tooltip_style :string @AlwaysRelevant
+
+trim :compound
++pattern :TrimPattern
++material :TrimMaterial
+
+unbreakable :EmptyCompound
+
+use_cooldown :compound @AlwaysRelevant
++seconds :float @Recommended
++cooldown_group :string
+
+use_remainder :Tags(compound/nbtac:item) @AlwaysRelevant
+
+weapon :compound @AlwaysRelevant
++item_damage_per_attack :int
++disable_blocking_for_seconds :int
+
+writable_book_content :compound
++pages :List<string>
+
+written_book_content :compound
++pages :List<TextComponent>
++title :string
++author :string
++generation :DescribedEnum<int>(0, original, 1, "copy of original", 2, "copy of copy", 3, tattered)
++resolved :boolean

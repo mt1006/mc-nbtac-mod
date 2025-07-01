@@ -34,6 +34,7 @@ public interface Type
 			Map.entry("Enchantments", (s, a) -> EnchantmentsType.INSTANCE),
 			Map.entry("EntitySelector", (s, a) -> EntitySelectorType.INSTANCE),
 			Map.entry("Enum", (s, a) -> new EnumType(s, a, false)),
+			Map.entry("OrderedEnum", (s, a) -> new EnumType(s, a, true)),
 			Map.entry("Font", (s, a) -> FontType.INSTANCE),
 			Map.entry("InventorySlot", (s, a) -> new InventorySlotType(s)),
 			Map.entry("Keybind", (s, a) -> KeybindType.INSTANCE),

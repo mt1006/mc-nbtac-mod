@@ -166,6 +166,7 @@ public class NbtSuggestion
 	{
 		ALWAYS_RELEVANT("AlwaysRelevant", false),
 		RELEVANT_IF_EQ("RelevantIfEq", true),
+		RELEVANT_IF_DEF("RelevantIfDef", true),
 		ARG_SWITCH("ArgSwitch", true),
 		RECOMMENDED("Recommended", false);
 

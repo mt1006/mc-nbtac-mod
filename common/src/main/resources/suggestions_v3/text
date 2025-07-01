@@ -1,13 +1,24 @@
 initial_content
 +type :Enum(text, translatable, score, selector, keybind, nbt)
-+text :String
++text :string
 +translate :TranslationKey
 +selector :EntitySelector
 +keybind :Keybind
-+nbt :String
++nbt :string
 +score :compound
 	+name :string
 	+objective :string
+
+common
++extra :TextComponent
++separator :TextComponent @RelevantIfEq(type, selector, nbt) @RelevantIfDef(selector, nbt)
++source :Enum(block, entity, storage) @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
++interpret :boolean @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
++block :string @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
++entity :EntitySelector @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
++storage :string @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
++fallback :TranslationKey @RelevantIfEq(type, translatable) @RelevantIfDef(translate)
++with :List<TextComponent> @RelevantIfEq(type, translatable) @RelevantIfDef(translate)
 
 style
 +color :TextColor

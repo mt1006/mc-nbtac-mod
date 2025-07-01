@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:use_remainder",
-	"type": "compound",
-	"subtype": "tag/compound/nbt_ac:item",
-	"always_relevant": true
-}

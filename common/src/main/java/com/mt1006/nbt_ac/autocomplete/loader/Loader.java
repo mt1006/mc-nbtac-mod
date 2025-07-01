@@ -39,6 +39,7 @@ public class Loader
 
 		//TODO: finish
 		SuggestionFileParser.parseDataComponents("item", "minecraft");
+		SuggestionFileParser.parseNbtSuggestions("text", "nbtac");
 
 		NBTac.LOGGER.info("Finished in: {} ms", System.currentTimeMillis() - start);
 		finished = true;
