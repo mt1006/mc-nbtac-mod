@@ -10,6 +10,7 @@ import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.nbt.CompoundTag;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
+import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,6 +31,7 @@ public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 		}
 		catch (Exception e)
 		{
+			if (ModConfig.debugMode.val) { e.printStackTrace(); }
 			return Suggestions.empty();
 		}
 	}

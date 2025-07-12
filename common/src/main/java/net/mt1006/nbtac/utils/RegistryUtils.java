@@ -40,9 +40,9 @@ public class RegistryUtils
 			return registry.getKey(val);
 		}
 
-		public @Nullable T get(ResourceLocation resLoc)
+		public @Nullable T get(ResourceLocation id)
 		{
-			Holder.Reference<T> ref = registry.get(resLoc).orElse(null);
+			Holder.Reference<T> ref = registry.get(id).orElse(null);
 			return ref != null ? ref.value() : null;
 		}
 

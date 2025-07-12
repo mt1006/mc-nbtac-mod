@@ -18,14 +18,7 @@ public abstract class ComponentArgumentMixin implements ArgumentType<Component>
 {
 	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> ctx, SuggestionsBuilder builder)
 	{
-		try
-		{
-			CustomTagParser parser = CustomTagParser.forValueOfType(builder.getRemaining(), TextComponentType.INSTANCE);
-			return SuggestionManager.finishSuggestions(parser.parse(), builder);
-		}
-		catch (Exception e)
-		{
-			return Suggestions.empty();
-		}
+		CustomTagParser parser = CustomTagParser.forValueOfType(builder.getRemaining(), TextComponentType.INSTANCE);
+		return SuggestionManager.finishSuggestions(parser::parse, builder);
 	}
 }

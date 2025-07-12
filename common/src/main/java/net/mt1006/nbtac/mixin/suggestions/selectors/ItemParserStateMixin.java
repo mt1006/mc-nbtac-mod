@@ -100,18 +100,18 @@ public abstract class ItemParserStateMixin
 	@Unique private @Nullable ResourceLocation findParsedItemId()
 	{
 		if (cursorBeforeItem == -1) { return null; }
-		ResourceLocation resLoc = null;
+		ResourceLocation id = null;
 
 		int currentCursor = reader.getCursor();
 		reader.setCursor(cursorBeforeItem);
 		try
 		{
-			resLoc = ResourceLocation.read(reader);
+			id = ResourceLocation.read(reader);
 		}
 		catch (CommandSyntaxException ignore) {}
 		reader.setCursor(currentCursor);
 
-		return resLoc;
+		return id;
 	}
 
 	@Unique private @Nullable Item findParsedItem()
@@ -128,6 +128,6 @@ public abstract class ItemParserStateMixin
 
 		String val = reader.getString().substring(cursorBeforeComponent);
 		CustomTagParser parser = CustomTagParser.forDataComponentValue(val, component.getType(), findParsedItemId());
-		return SuggestionManager.finishSuggestions(parser.parse(), builder);
+		return SuggestionManager.finishSuggestions(parser::parse, builder);
 	}
 }

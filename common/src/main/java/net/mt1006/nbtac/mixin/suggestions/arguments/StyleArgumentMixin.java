@@ -18,14 +18,7 @@ public abstract class StyleArgumentMixin implements ArgumentType<Style>
 {
 	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> ctx, SuggestionsBuilder builder)
 	{
-		try
-		{
-			CustomTagParser parser = CustomTagParser.forNbtCompound(builder.getRemaining(), NbtTagManager.get("text/nbtac:style"));
-			return SuggestionManager.finishSuggestions(parser.parse(), builder);
-		}
-		catch (Exception e)
-		{
-			return Suggestions.empty();
-		}
+		CustomTagParser parser = CustomTagParser.forNbtCompound(builder.getRemaining(), NbtTagManager.get("text/nbtac:style"));
+		return SuggestionManager.finishSuggestions(parser::parse, builder);
 	}
 }

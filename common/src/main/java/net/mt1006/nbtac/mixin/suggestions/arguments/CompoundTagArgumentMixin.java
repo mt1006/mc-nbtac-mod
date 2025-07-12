@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
+import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,6 +33,7 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		}
 		catch (Exception e)
 		{
+			if (ModConfig.debugMode.val) { e.printStackTrace(); }
 			return Suggestions.empty();
 		}
 	}
@@ -44,8 +46,8 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		{
 			case "summon":
 				EntityType<?> entityType = (EntityType<?>)ctx.getArgument("entity", Holder.Reference.class).value();
-				ResourceLocation resourceLocation = EntityType.getKey(entityType);
-				return "entity/" + resourceLocation;
+				ResourceLocation id = EntityType.getKey(entityType);
+				return "entity/" + id;
 
 			case "data":
 				return getResourceNameForDataCommand(ctx);

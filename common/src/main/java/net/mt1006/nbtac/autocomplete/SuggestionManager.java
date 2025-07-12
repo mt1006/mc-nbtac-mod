@@ -9,6 +9,7 @@ import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.suggestions.CustomSuggestion;
 import net.mt1006.nbtac.autocomplete.suggestions.RawSuggestion;
 import net.mt1006.nbtac.autocomplete.type.Type;
+import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.utils.Fields;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class SuggestionManager
 {
@@ -41,7 +43,7 @@ public class SuggestionManager
 		CustomTagParser parser = suggestPath
 				? CustomTagParser.forNbtPath(str, tagMap)
 				: CustomTagParser.forNbtCompound(str, tagMap);
-		return finishSuggestions(parser.parse(), builder);
+		return finishSuggestions(parser::parse, builder);
 	}
 
 	public static CompletableFuture<Suggestions> loadFromType(String str, Type type, SuggestionsBuilder builder)
@@ -53,11 +55,22 @@ public class SuggestionManager
 		}
 
 		CustomTagParser parser = CustomTagParser.forValueOfType(str, type);
-		return finishSuggestions(parser.parse(), builder);
+		return finishSuggestions(parser::parse, builder);
 	}
 
-	public static CompletableFuture<Suggestions> finishSuggestions(SuggestionList list, SuggestionsBuilder builder)
+	public static CompletableFuture<Suggestions> finishSuggestions(Supplier<SuggestionList> supplier, SuggestionsBuilder builder)
 	{
+		SuggestionList list;
+		try
+		{
+			list = supplier.get();
+		}
+		catch (Exception e)
+		{
+			if (ModConfig.debugMode.val) { e.printStackTrace(); }
+			return Suggestions.empty();
+		}
+		
 		int maxOffset = builder.getInput().length();
 		int newOffset = builder.getStart() + list.cursor;
 		if (newOffset > maxOffset)

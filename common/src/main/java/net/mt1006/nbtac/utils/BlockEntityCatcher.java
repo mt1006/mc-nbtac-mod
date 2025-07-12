@@ -16,10 +16,10 @@ public class BlockEntityCatcher
 	public static @Nullable Class<?> catchFromBlock(Block block)
 	{
 		if (!ModConfig.allowBlockEntityExtraction.val) { return null; }
-		ResourceLocation resLoc = RegistryUtils.BLOCK.getKey(block);
-		if (resLoc == null) { return null; }
+		ResourceLocation id = RegistryUtils.BLOCK.getKey(block);
+		if (id == null) { return null; }
 
-		BlockEntityType<?> blockEntityType = RegistryUtils.BLOCK_ENTITY_TYPE.get(resLoc);
+		BlockEntityType<?> blockEntityType = RegistryUtils.BLOCK_ENTITY_TYPE.get(id);
 		if (blockEntityType == null) { return null; }
 
 		if (thread != null && thread != Thread.currentThread()) { return null; }
@@ -34,7 +34,7 @@ public class BlockEntityCatcher
 		{
 			if (throwable instanceof Error)
 			{
-				NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", resLoc, throwable);
+				NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", id, throwable);
 			}
 		}
 
