@@ -39,7 +39,6 @@ public class ModConfig
 	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
 	public static final ConfigFields.BooleanField allowBlockEntityExtraction = fields.add("allow_block_entity_extraction", true);
 
-	public static final ConfigFields.IntegerField maxStackTraces = fields.add("max_stack_traces", 6); //TODO: remove?
 	public static final ConfigFields.BooleanField debugMode = fields.add("debug_mode", false);
 	public static final ConfigFields.IntegerField debugSleep = fields.add("debug_sleep", 0);
 	public static final ConfigFields.BooleanField saveSuggestions = fields.add("save_suggestions", false);
@@ -86,7 +85,6 @@ public class ModConfig
 		list.add(allowBlockEntityExtraction.createSwitch());
 
 		list.addLabel("debugging_options");
-		list.add(maxStackTraces.createSlider(-1, 96, 1, List.of(-1, 0)));
 		list.add(debugMode.createSwitch());
 		list.add(debugSleep.createSlider(0, 100, 200, List.of(0)));
 		list.add(saveSuggestions.createSwitch());

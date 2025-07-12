@@ -102,13 +102,8 @@
   "nbtac.options.field.use_new_thread.desc": "Uses new thread to load suggestions during Minecraft loading.",
 
   "nbtac.options.field.allow_block_entity_extraction": "Allow Block Entity Extraction",
-  "nbtac.options.field.allow_block_entity_extraction.desc": "Allows for usage of block entity extraction method (similar to one used by disassembler) after suggestions are loaded.",
+  "nbtac.options.field.allow_block_entity_extraction.desc": "Allows for usage of block entity extraction method after suggestions are loaded.",
 
-
-  "nbtac.options.field.max_stack_traces": "Max Logged Stack Traces",
-  "nbtac.options.field.max_stack_traces.-1": "[unlimited]",
-  "nbtac.options.field.max_stack_traces.0": "0 (disabled)",
-  "nbtac.options.field.max_stack_traces.desc": "Limit of printed stack traces for exceptions.\n-1 - Unlimited\n 0 - Stack traces disabled",
 
   "nbtac.options.field.debug_mode": "Debug Mode",
   "nbtac.options.field.debug_mode.desc": "Enables additional messages and checks useful for debugging.",

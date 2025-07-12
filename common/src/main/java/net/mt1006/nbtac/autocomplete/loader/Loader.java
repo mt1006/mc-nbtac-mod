@@ -14,13 +14,11 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Loader
 {
 	private static final String SAVE_SUGGESTIONS_FILE = "nbtac_output.txt";
 	private static final int MAX_PRINTER_DEPTH = 32;
-	private static final AtomicInteger printedStackTraces = new AtomicInteger();
 	public static volatile boolean finished = false;
 
 	public static void load()
@@ -95,15 +93,6 @@ public class Loader
 
 			try { printTags(writer, tag.getType().getSubcompound(), depth + 1); }
 			catch (UnsupportedOperationException ignore) {}
-		}
-	}
-
-	public static void printStackTrace(Exception exception)
-	{
-		if (ModConfig.maxStackTraces.val > printedStackTraces.get())
-		{
-			exception.printStackTrace();
-			printedStackTraces.incrementAndGet();
 		}
 	}
 }

@@ -102,13 +102,8 @@
   "nbtac.options.field.use_new_thread.desc": "Używa nowego wątku do załadowania sugestii po załadowaniu Minecraft'a.",
 
   "nbtac.options.field.allow_block_entity_extraction": "Zezwalaj na ekstrakcję bytów bloków",
-  "nbtac.options.field.allow_block_entity_extraction.desc": "Zezwala na użycie metody ekstrakcji bytów bloków (podobnej do tej używanej przez disassemblera) po załadowaniu sugestii.",
+  "nbtac.options.field.allow_block_entity_extraction.desc": "Zezwala na użycie metody ekstrakcji bytów bloków po załadowaniu sugestii.",
 
-
-  "nbtac.options.field.max_stack_traces": "Limit stack trace'ów w logach",
-  "nbtac.options.field.max_stack_traces.-1": "[bez limitu]",
-  "nbtac.options.field.max_stack_traces.0": "0 (wyłączone)",
-  "nbtac.options.field.max_stack_traces.desc": "Limit wypisywanych stack trace'ów dla wyjątków.\n-1 - Bez limitu\n 0 - Stack trace'y wyłączone",
 
   "nbtac.options.field.debug_mode": "Tryb debugowania",
   "nbtac.options.field.debug_mode.desc": "Włącza dodatkowe wiadomości i sprawdzenia przydatne przy debugowaniu.",
