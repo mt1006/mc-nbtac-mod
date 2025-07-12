@@ -22,7 +22,7 @@
 		"main": ["net.mt1006.nbtac.NBTacFabric"],
 		"modmenu": ["net.mt1006.nbtac.fabric.ModMenuApiImpl"]
 	},
-	"mixins": ["nbt_ac.mixins.json", "nbt_ac.fabric.mixins.json"],
+	"mixins": ["nbtac.mixins.json", "nbtac.fabric.mixins.json"],
 
 	"depends":
 	{
