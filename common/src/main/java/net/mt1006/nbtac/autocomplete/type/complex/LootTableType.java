@@ -6,6 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 
@@ -20,7 +21,7 @@ public class LootTableType extends ComplexType
 		super(PrimitiveType.STRING);
 	}
 
-	@Override public void getSuggestions(SuggestionListContext ctx)
+	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
 		MinecraftServer singlePlayerServer = Minecraft.getInstance().getSingleplayerServer();
 		if (singlePlayerServer == null) { return; }
@@ -31,7 +32,7 @@ public class LootTableType extends ComplexType
 
 		for (ResourceKey<LootTable> id : lootTableReg.get().listElementIds().toList())
 		{
-			ctx.list().add(new IdSuggestion(id.location(), null, ctx.parserType()));
+			list.add(new IdSuggestion(id.location(), null, ctx.parserType()));
 		}
 	}
 }

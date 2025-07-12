@@ -1,55 +1,31 @@
 package net.mt1006.nbtac.autocomplete.suggestions;
 
 import net.minecraft.resources.ResourceLocation;
-import net.mt1006.nbtac.autocomplete.CustomTagParser;
+import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class IdSuggestion extends StringSuggestion
 {
-	private final List<String> matchingIds = new ArrayList<>();
-
-	public IdSuggestion(@Nullable ResourceLocation id, @Nullable String subtext,
-						CustomTagParser.Type parserType, int priority, boolean isTagId)
+	public IdSuggestion(@Nullable ResourceLocation id, @Nullable String subtext, ParserType parserType)
 	{
-		super((isTagId ? "#" : "") + (id != null ? id.toString() : "_error"), subtext,
+		this(id, subtext, parserType, 0, false);
+	}
+
+	public IdSuggestion(@Nullable ResourceLocation id, @Nullable String subtext, ParserType parserType, int priority, boolean isTagId)
+	{
+		super((isTagId ? "#" : "") + (id != null ? id.toString() : "error"), subtext,
 				parserType, parserType.requiresNamespace ? StringType.FULL_ID : StringType.ID, priority);
 
 		if (id != null)
 		{
-			matchingIds.add(id.toString());
-			if (isTagId) { matchingIds.add("#" + id); }
+			matching.add(id.toString());
+			if (isTagId) { matching.add("#" + id); }
 
 			if (id.getNamespace().equals("minecraft"))
 			{
-				matchingIds.add(id.getPath());
-				if (isTagId) { matchingIds.add("#" + id.getPath()); }
+				matching.add(id.getPath());
+				if (isTagId) { matching.add("#" + id.getPath()); }
 			}
 		}
-	}
-
-	public IdSuggestion(@Nullable ResourceLocation resLoc, @Nullable String subtext, CustomTagParser.Type parserType)
-	{
-		this(resLoc, subtext, parserType, 0, false);
-	}
-
-	@Override public boolean match(String str)
-	{
-		for (String id : matchingIds)
-		{
-			if (id.equals(str)) { return true; }
-		}
-		return false;
-	}
-
-	@Override public boolean matchUnfinished(String str)
-	{
-		for (String id : matchingIds)
-		{
-			if (matchPrefix(id, str)) { return true; }
-		}
-		return false;
 	}
 }

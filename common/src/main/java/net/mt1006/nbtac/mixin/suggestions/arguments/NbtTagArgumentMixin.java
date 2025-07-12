@@ -8,12 +8,12 @@ import com.mojang.datafixers.types.templates.Tag;
 import net.minecraft.commands.arguments.NbtTagArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.mt1006.nbtac.autocomplete.CustomTagParser;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionManager;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionMap;
-import net.mt1006.nbtac.autocomplete.SuggestionList;
-import net.mt1006.nbtac.autocomplete.suggestions.NbtSuggestion;
+import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.NbtTagMap;
+import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
+import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.utils.Utils;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -22,25 +22,13 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(NbtTagArgument.class)
 public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 {
-	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
+	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> ctx, SuggestionsBuilder builder)
 	{
 		try
 		{
-			NbtSuggestion nbtSuggestion = getSuggestion(commandContext);
-			if (nbtSuggestion == null) { return Suggestions.empty(); }
-
-			String tag = suggestionsBuilder.getRemaining();
-
-			if (!nbtSuggestion.hasSubcompound())
-			{
-				NbtSuggestionManager.simpleSuggestion("", String.format("[%s]",
-						nbtSuggestion.type.getPrimitive().getName()), suggestionsBuilder);
-				return suggestionsBuilder.buildFuture();
-			}
-			else
-			{
-				return NbtSuggestionManager.loadFromSuggestion(nbtSuggestion, tag, suggestionsBuilder);
-			}
+			String str = builder.getRemaining();
+			Type tagType = getTagType(ctx);
+			return tagType != null ? NbtTagManager.loadFromType(str, tagType, builder) : Suggestions.empty();
 		}
 		catch (Exception e)
 		{
@@ -48,15 +36,15 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		}
 	}
 
-	@Unique private NbtSuggestion getSuggestion(CommandContext<?> ctx)
+	@Unique private @Nullable Type getTagType(CommandContext<?> ctx)
 	{
 		String commandName = Utils.getCommandName(ctx);
-		if (commandName.equals("data")) { return getSuggestionForDataCommand(ctx); }
-		else if (ctx.getChild() != null) { return getSuggestion(ctx.getChild()); }
+		if (commandName.equals("data")) { return getTagTypeForDataCommand(ctx); }
+		else if (ctx.getChild() != null) { return getTagType(ctx.getChild()); }
 		return null;
 	}
 
-	@Unique private NbtSuggestion getSuggestionForDataCommand(CommandContext<?> ctx)
+	@Unique private @Nullable Type getTagTypeForDataCommand(CommandContext<?> ctx)
 	{
 		String instruction = Utils.getNodeString(ctx, 1);
 		if (!instruction.equals("modify")) { return null; }
@@ -65,12 +53,11 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		String path = Utils.getArgumentString(ctx, "targetPath");
 
 		String root;
-
 		switch (type)
 		{
 			case "block":
 				Coordinates coords = ctx.getArgument("targetPos", Coordinates.class);
-				root =  Utils.blockFromCoords(coords);
+				root = Utils.blockFromCoords(coords);
 				break;
 
 			case "entity":
@@ -81,16 +68,13 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 			default:
 				return null;
 		}
-
 		if (root == null) { return null; }
 
-		NbtSuggestionMap rootSuggestions = NbtSuggestionManager.get(root);
-		if (rootSuggestions == null) { return null; }
+		NbtTagMap rootTagMap = NbtTagManager.get(root);
+		if (rootTagMap == null) { return null; }
 
-		CustomTagParser pathParser = new CustomTagParser(path, CustomTagParser.Type.PATH);
-		SuggestionList suggestionList = pathParser.prepareSuggestionList(rootSuggestions, root);
-		pathParser.read(suggestionList, null, root);
-
-		return pathParser.lastFoundSuggestion;
+		CustomTagParser parser = CustomTagParser.forNbtPath(path, rootTagMap);
+		parser.parse();
+		return parser.parsedPathType;
 	}
 }

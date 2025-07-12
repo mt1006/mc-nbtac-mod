@@ -1,7 +1,6 @@
 package net.mt1006.nbtac.autocomplete;
 
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
@@ -15,14 +14,13 @@ import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.PlayerHeadBlock;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.mt1006.nbtac.NBTac;
-import net.mt1006.nbtac.autocomplete.suggestions.ComponentSuggestion;
-import net.mt1006.nbtac.autocomplete.suggestions.NbtSuggestion;
-import net.mt1006.nbtac.autocomplete.suggestions.TagIdSuggestion;
+import net.mt1006.nbtac.autocomplete.parser.ParserType;
+import net.mt1006.nbtac.autocomplete.suggestions.DataComponentSuggestion;
+import net.mt1006.nbtac.autocomplete.suggestions.IdTagSuggestion;
+import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.config.ModConfig;
+import net.mt1006.nbtac.utils.BlockEntityCatcher;
 import net.mt1006.nbtac.utils.Fields;
 import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
@@ -31,15 +29,11 @@ import java.util.*;
 
 public class DataComponentManager
 {
-	private static final NbtSuggestion UNKNOWN_COMPONENT = new NbtSuggestion("nbtac:empty", PrimitiveType.UNKNOWN);
-	public static final Map<String, NbtSuggestion> componentMap = new HashMap<>();
-
-	//TODO: move it somewhere else
-	public static @Nullable Thread blockCatcher = null;
-	public static @Nullable Object blockLastObject = null;
+	private static final DefinedNbtTag UNKNOWN_COMPONENT = new DefinedNbtTag("nbtac:empty", PrimitiveType.UNKNOWN);
+	public static final Map<String, DefinedNbtTag> componentMap = new HashMap<>();
 
 	public static void loadSuggestions(SuggestionList suggestionList, String str, Set<DataComponentType<?>> usedComponents,
-									   @Nullable Item item, @Nullable CustomTagParser.Type parserType, boolean addSuffix)
+									   @Nullable Item item, @Nullable ParserType parserType, boolean addSuffix)
 	{
 		List<Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>>> entryList = new ArrayList<>();
 		SharedSuggestionProvider.filterResources(RegistryUtils.DATA_COMPONENT_TYPE.entrySet(), str,
@@ -51,23 +45,23 @@ public class DataComponentManager
 		for (Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>> entry : entryList)
 		{
 			// https://minecraft.wiki/w/Data_component_format#Non-encoded_components
-			ResourceLocation resLoc = entry.getKey().location();
+			ResourceLocation id = entry.getKey().location();
 			DataComponentType<?> componentType = entry.getValue();
 			if (componentType.codec() == null || usedComponents.contains(componentType)) { continue; }
 
-			NbtSuggestion component = DataComponentManager.componentMap.get("item/" + resLoc);
+			DefinedNbtTag component = DataComponentManager.componentMap.get("item/" + id);
 			if (component == null) { component = UNKNOWN_COMPONENT; }
 			boolean relevant = predefinedComponents.contains(componentType)
-					|| hardcodedRelevancy.contains(componentType) || component.isRelevant();
+					|| hardcodedRelevancy.contains(componentType) || component.isRelevant(false, null);
 
 			if (parserType != null)
 			{
-				suggestionList.add(new TagIdSuggestion(component, resLoc, parserType, relevant));
+				suggestionList.add(new IdTagSuggestion(component, id, parserType, relevant ? 0 : -1));
 			}
 			else
 			{
 				String subtext = component.getSubtext();
-				suggestionList.add(new ComponentSuggestion(resLoc, subtext, relevant, addSuffix));
+				suggestionList.add(new DataComponentSuggestion(id, subtext, relevant, addSuffix));
 			}
 		}
 	}
@@ -154,42 +148,14 @@ public class DataComponentManager
 	{
 		relevant.add(DataComponents.BLOCK_ENTITY_DATA);
 
-		// this blockEntity SHOULDN'T be used with anything other than instanceof
-		BlockEntity blockEntity = blockEntityFromBlock(block);
-		if (blockEntity instanceof Container)
+		Class<?> clazz = BlockEntityCatcher.catchFromBlock(block);
+		if (clazz == null) { return; }
+
+		if (Container.class.isAssignableFrom(clazz))
 		{
 			relevant.add(DataComponents.CONTAINER);
-			if (blockEntity instanceof RandomizableContainer) { relevant.add(DataComponents.CONTAINER_LOOT); }
-			if (blockEntity instanceof BaseContainerBlockEntity) { relevant.add(DataComponents.LOCK); }
+			if (RandomizableContainer.class.isAssignableFrom(clazz)) { relevant.add(DataComponents.CONTAINER_LOOT); }
+			if (BaseContainerBlockEntity.class.isAssignableFrom(clazz)) { relevant.add(DataComponents.LOCK); }
 		}
-	}
-
-	public static @Nullable BlockEntity blockEntityFromBlock(Block block)
-	{
-		if (!ModConfig.allowBlockEntityExtraction.val) { return null; }
-		ResourceLocation resLoc = RegistryUtils.BLOCK.getKey(block);
-		if (resLoc == null) { return null; }
-
-		BlockEntityType<?> blockEntityType = RegistryUtils.BLOCK_ENTITY_TYPE.get(resLoc);
-		if (blockEntityType == null) { return null; }
-
-		if (blockCatcher != null && blockCatcher != Thread.currentThread()) { return null; }
-		blockCatcher = Thread.currentThread();
-		blockLastObject = null;
-
-		try
-		{
-			blockEntityType.create(BlockPos.ZERO, null);
-		}
-		catch (Throwable throwable)
-		{
-			if (throwable instanceof Error)
-			{
-				NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", resLoc, throwable);
-			}
-		}
-
-		blockCatcher = null;
-		return (blockLastObject instanceof BlockEntity) ? (BlockEntity)blockLastObject : null;
 	}
 }

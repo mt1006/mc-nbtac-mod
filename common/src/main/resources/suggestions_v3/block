@@ -1,0 +1,11 @@
+command_block
++test1 :int_array
++test2 :byte_array
++test3 :long_array
++test4 :compound
+	+aaa :unknown
+	+bbb :boolean
+
+repeating_command_block =command_block
+
+chain_command_block =command_block

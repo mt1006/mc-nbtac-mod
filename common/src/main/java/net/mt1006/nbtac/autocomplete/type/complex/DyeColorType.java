@@ -1,6 +1,7 @@
 package net.mt1006.nbtac.autocomplete.type.complex;
 
 import net.minecraft.world.item.DyeColor;
+import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.StringSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 
@@ -13,11 +14,11 @@ public class DyeColorType extends ComplexType
 		super(PrimitiveType.STRING);
 	}
 
-	@Override public void getSuggestions(SuggestionListContext ctx)
+	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
 		for (DyeColor color : DyeColor.values())
 		{
-			ctx.list().add(new StringSuggestion(color.getName(), "[#dye_color]", ctx.parserType()));
+			list.add(new StringSuggestion(color.getName(), "[#dye_color]", ctx.parserType()));
 		}
 	}
 }

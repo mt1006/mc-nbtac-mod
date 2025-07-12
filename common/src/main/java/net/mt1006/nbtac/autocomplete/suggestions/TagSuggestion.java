@@ -1,35 +1,26 @@
 package net.mt1006.nbtac.autocomplete.suggestions;
 
 import com.mojang.brigadier.Message;
-import net.mt1006.nbtac.autocomplete.CustomTagParser;
+import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
+import net.mt1006.nbtac.autocomplete.parser.ParserType;
+import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import org.jetbrains.annotations.Nullable;
 
 public class TagSuggestion extends StringSuggestion
 {
-	private final NbtSuggestion sourceSuggestion;
 	private final Message tooltip;
 
-	protected TagSuggestion(NbtSuggestion suggestion, @Nullable String tag, CustomTagParser.Type parserType, int priority)
+	protected TagSuggestion(NbtTag tag, String tagName, ParserType parserType, StringType stringType, int priority)
 	{
-		super(tag == null ? suggestion.tag : tag, suggestion.getSubtext(), parserType,
-				tag == null ? StringType.TAG : StringType.TAG_ID, priority);
-		this.sourceSuggestion = suggestion;
-		this.tooltip = suggestion.getTooltip();
+		super(tagName, tag.getSubtext(), parserType, stringType, priority);
+		this.tooltip = tag.getTooltip();
 	}
 
-	public TagSuggestion(NbtSuggestion suggestion, CustomTagParser.Type parserType, int priority)
+	public static TagSuggestion create(NbtTag tag, ParserType parserType, @Nullable ParsedCompound compound)
 	{
-		this(suggestion, null, parserType, priority);
-	}
-
-	public TagSuggestion(NbtSuggestion suggestion, CustomTagParser.Type parserType)
-	{
-		this(suggestion, null, parserType, suggestion.isRecommended() ? 100 : 0);
-	}
-
-	public NbtSuggestion getSourceSuggestion()
-	{
-		return sourceSuggestion;
+		return tag.getNameAsId() != null
+				? new IdTagSuggestion(tag, tag.getNameAsId(), parserType, tag.getPriority(compound))
+				: new TagSuggestion(tag, tag.getName(), parserType, StringType.TAG, tag.getPriority(compound));
 	}
 
 	@Override public @Nullable Message getTooltip()

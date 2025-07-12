@@ -2,6 +2,7 @@ package net.mt1006.nbtac.autocomplete.type.complex;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
+import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.StringSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.mixin.fields.KeyMappingFields;
@@ -18,7 +19,7 @@ public class KeybindType extends ComplexType
 		super(PrimitiveType.STRING);
 	}
 
-	@Override public void getSuggestions(SuggestionListContext ctx)
+	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
 		Map<String, KeyMapping> keyMap = KeyMappingFields.getALL();
 		if (keyMap == null) { return; }
@@ -26,7 +27,7 @@ public class KeybindType extends ComplexType
 		for (String str : keyMap.keySet())
 		{
 			String subtext = "\"" + Component.translatable(str).getString() + "\" [#keybind]";
-			ctx.list().add(new StringSuggestion(str, subtext, ctx.parserType()));
+			list.add(new StringSuggestion(str, subtext, ctx.parserType()));
 		}
 	}
 }

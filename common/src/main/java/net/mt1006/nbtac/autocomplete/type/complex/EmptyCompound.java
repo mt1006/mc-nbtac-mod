@@ -1,5 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type.complex;
 
+import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 
 public class EmptyCompound extends ComplexType
@@ -11,8 +12,8 @@ public class EmptyCompound extends ComplexType
 		super(PrimitiveType.COMPOUND);
 	}
 
-	@Override public void getSuggestions(SuggestionListContext ctx)
+	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		ctx.list().addRaw("{}", "[#empty_compound]");
+		list.addRaw("{}", "[#empty_compound]");
 	}
 }

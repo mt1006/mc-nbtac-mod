@@ -1,9 +1,13 @@
 package net.mt1006.nbtac.autocomplete.type;
 
-import net.mt1006.nbtac.autocomplete.CustomTagParser;
+import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
-import net.mt1006.nbtac.autocomplete.suggestions.NbtSuggestion;
+import net.mt1006.nbtac.autocomplete.parser.ParsedValue;
+import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.type.complex.*;
+import net.mt1006.nbtac.autocomplete.type.compound.*;
+import net.mt1006.nbtac.autocomplete.type.string.EntitySelectorType;
+import net.mt1006.nbtac.utils.SimpleStringReader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -21,12 +25,11 @@ public interface Type
 			Map.entry("float", (s, a) -> PrimitiveType.FLOAT),
 			Map.entry("double", (s, a) -> PrimitiveType.DOUBLE),
 			Map.entry("string", (s, a) -> PrimitiveType.STRING),
-			Map.entry("byte_array", (s, a) -> PrimitiveType.BYTE_ARRAY),
-			Map.entry("int_array", (s, a) -> PrimitiveType.INT_ARRAY),
-			Map.entry("long_array", (s, a) -> PrimitiveType.LONG_ARRAY),
-			Map.entry("compound", (s, a) -> PrimitiveType.COMPOUND),
-			Map.entry("list", (s, a) -> PrimitiveType.LIST),
-			Map.entry("List", (s, a) -> new ListType(s)),
+			Map.entry("byte_array", (s, a) -> ArrayType.BYTE),
+			Map.entry("int_array", (s, a) -> ArrayType.INT),
+			Map.entry("long_array", (s, a) -> ArrayType.LONG),
+			Map.entry("compound", (s, a) -> new CompoundType()),
+			Map.entry("list", (s, a) -> new ListType(s.getFirst())),
 			Map.entry("BlockStateTags", (s, a) -> new BlockStateTagsType(firstOrNull(a))),
 			Map.entry("DescribedEnum", DescribedEnumType::new),
 			Map.entry("DyeColor", (s, a) -> DyeColorType.INSTANCE),
@@ -36,7 +39,7 @@ public interface Type
 			Map.entry("Enum", (s, a) -> new EnumType(s, a, false)),
 			Map.entry("OrderedEnum", (s, a) -> new EnumType(s, a, true)),
 			Map.entry("Font", (s, a) -> FontType.INSTANCE),
-			Map.entry("InventorySlot", (s, a) -> new InventorySlotType(s)),
+			Map.entry("InventorySlot", (s, a) -> new InventorySlotType(s.getFirst())),
 			Map.entry("Keybind", (s, a) -> KeybindType.INSTANCE),
 			Map.entry("LongSeed", (s, a) -> LongSeedType.INSTANCE),
 			Map.entry("LootTable", (s, a) -> LootTableType.INSTANCE),
@@ -52,8 +55,9 @@ public interface Type
 			Map.entry("TrimMaterial", (s, a) -> StaticIdsType.TRIM_MATERIAL),
 			Map.entry("JukeboxSong", (s, a) -> StaticIdsType.JUKEBOX_SONG),
 			Map.entry("DamageType", (s, a) -> StaticIdsType.DAMAGE_TYPE),
-			Map.entry("Tags", (s, a) -> new TagsType(firstOrNull(a), false)),
-			Map.entry("TagsWithId", (s, a) -> new TagsType(firstOrNull(a), true)),
+			Map.entry("Tags", (s, a) -> new TagsType(firstOrNull(a), null, false)),
+			Map.entry("TagsWithId", (s, a) -> new TagsType(firstOrNull(a), null, true)),
+			Map.entry("TagsFromId", (s, a) -> new TagsType(a.size() > 1 ? a.get(1) : null, a.getFirst(), true)),
 			Map.entry("TextColor", (s, a) -> TextColorType.INSTANCE),
 			Map.entry("TextComponent", (s, a) -> TextComponentType.INSTANCE),
 			Map.entry("TranslationKey", (s, a) -> TranslationKeyType.INSTANCE),
@@ -61,25 +65,48 @@ public interface Type
 			Map.entry("RandomUUID", (s, a) -> UUIDType.RANDOM)
 	);
 
-	void getSuggestions(SuggestionListContext ctx);
+	@Nullable SuggestionList getSuggestions(SuggestionListContext ctx);
 
-	default void getCompoundSuggestions(SuggestionListContext ctx) {}
-
-	String getSubtext();
+	default String getSubtext()
+	{
+		return getPrimitive().getSubtext();
+	}
 
 	PrimitiveType getPrimitive();
 
-	private static @Nullable String firstOrNull(List<String> args)
+	default NbtTagMap getSubcompound()
 	{
-		return !args.isEmpty() ? args.getFirst() : null;
+		throw new UnsupportedOperationException();
 	}
 
-	record SuggestionListContext(SuggestionList list,
-								 CustomTagParser.Type parserType,
-								 NbtSuggestion.ParentInfo parentInfo) {}
+	default void setSubcompound(@Nullable NbtTagMap subcompound)
+	{
+		if (subcompound != null) { throw new UnsupportedOperationException(); }
+	}
+
+	private static <T> @Nullable T firstOrNull(List<T> args)
+	{
+		return args.isEmpty() ? null : args.getFirst();
+	}
+
+	record SuggestionListContext(ParsedValue parsed,
+								 ParserType parserType,
+								 SimpleStringReader reader,
+								 @Nullable SuggestionList expectedOperators)
+	{
+		public SuggestionListContext child(ParsedValue newParsed)
+		{
+			return new SuggestionListContext(newParsed, parserType, reader, expectedOperators);
+		}
+
+		public String getRemaining()
+		{
+			return reader.substring(parsed.pos);
+		}
+	}
 
 	interface TypeConstructor
 	{
-		Type create(@Nullable Type subtype, List<String> args);
+		Type create(List<Type> subtypes, List<String> args);
 	}
 }

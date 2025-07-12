@@ -5,8 +5,8 @@ import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.mt1006.nbtac.NBTac;
-import net.mt1006.nbtac.autocomplete.CustomTagParser;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionManager;
+import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.config.ModConfig;
@@ -18,60 +18,50 @@ import java.util.List;
 
 public abstract class CustomSuggestion
 {
-	protected final String text;
 	private final @Nullable String subtext;
 	private final int priority;
 
-	protected CustomSuggestion(String text, @Nullable String subtext, int priority)
+	protected CustomSuggestion(@Nullable String subtext, int priority)
 	{
-		this.text = text;
 		this.subtext = getMarkedSubtext(subtext, priority);
 		this.priority = priority;
 	}
 
 	public static CustomSuggestion fromType(String text, @Nullable String subtext, Type type,
-											CustomTagParser.Type parserType, int priority)
+											ParserType parserType, int priority)
 	{
 		return type.getPrimitive() == PrimitiveType.STRING
 				? new StringSuggestion(text, subtext, parserType, priority)
 				: new RawSuggestion(text, subtext, priority);
 	}
 
-	public String getVisibleText()
-	{
-		return text;
-	}
+	public abstract String getText();
 
 	public @Nullable Message getTooltip()
 	{
 		return null;
 	}
 
-	public boolean match(String str)
-	{
-		return text.equals(str);
-	}
+	public abstract boolean match(String str);
 
-	public boolean matchUnfinished(String str)
-	{
-		return matchPrefix(text, str);
-	}
+	public abstract boolean matchPrefix(String prefix);
 
 	protected static boolean matchPrefix(String str, String prefix)
 	{
-		if (ModConfig.ignoreLetterCase.val) { return str.toLowerCase().startsWith(prefix.toLowerCase()); }
-		else { return str.startsWith(prefix); }
+		return ModConfig.ignoreLetterCase.val
+				? str.toLowerCase().startsWith(prefix.toLowerCase())
+				: str.startsWith(prefix);
 	}
 
-	public void suggest(SuggestionsBuilder suggestionsBuilder)
+	public void suggest(SuggestionsBuilder builder)
 	{
-		String visibleText = getVisibleText();
+		String visibleText = getText();
 		Message tooltip = getTooltip();
 		boolean isEmptySuggestion;
 
-		if (visibleText.isEmpty() && suggestionsBuilder.getRemaining().isEmpty())
+		if (visibleText.isEmpty())
 		{
-			if (!addEmptySuggestion(suggestionsBuilder, tooltip))
+			if (!addEmptySuggestion(builder, tooltip))
 			{
 				NBTac.LOGGER.error("Something went wrong while adding empty suggestion!");
 				return;
@@ -80,33 +70,33 @@ public abstract class CustomSuggestion
 		}
 		else
 		{
-			suggestionsBuilder.suggest(visibleText, tooltip);
+			builder.suggest(visibleText, tooltip);
 			isEmptySuggestion = false;
 		}
 
 		if (!ModConfig.showTagHints.val) { return; }
 
-		NbtSuggestionManager.clearIfNeeded(suggestionsBuilder);
+		NbtTagManager.clearIfNeeded(builder);
 
-		Suggestion lastAdded = getLastAddedSuggestion(suggestionsBuilder);
-		if (lastAdded != null) { NbtSuggestionManager.dataMap.put(lastAdded, new Data(subtext, priority, isEmptySuggestion)); }
-		NbtSuggestionManager.hasCustomSuggestions = true;
+		Suggestion lastAdded = getLastAddedSuggestion(builder);
+		if (lastAdded != null) { NbtTagManager.dataMap.put(lastAdded, new Data(subtext, priority, isEmptySuggestion)); }
+		NbtTagManager.hasCustomSuggestions = true;
 	}
 
-	private static boolean addEmptySuggestion(SuggestionsBuilder suggestionsBuilder, @Nullable Message tooltip)
+	private static boolean addEmptySuggestion(SuggestionsBuilder builder, @Nullable Message tooltip)
 	{
 		if (!ModConfig.showTagHints.val) { return true; }
 		if (Fields.suggestionsBuilderList == null) { return false; }
 
 		try
 		{
-			List<Suggestion> suggestions = (List<Suggestion>)Fields.suggestionsBuilderList.get(suggestionsBuilder);
-			int start = (int)Fields.suggestionsBuilderInt.get(suggestionsBuilder);
+			List<Suggestion> suggestions = (List<Suggestion>)Fields.suggestionsBuilderList.get(builder);
+			int start = (int)Fields.suggestionsBuilderInt.get(builder);
 
 			int len = 0;
 			for (Field stringField : Fields.suggestionsBuilderStrings)
 			{
-				String val = (String)stringField.get(suggestionsBuilder);
+				String val = (String)stringField.get(builder);
 				if (val != null && val.length() > len) { len = val.length(); }
 			}
 
@@ -116,14 +106,14 @@ public abstract class CustomSuggestion
 		catch (Exception e) { return false; }
 	}
 
-	private static @Nullable Suggestion getLastAddedSuggestion(SuggestionsBuilder suggestionsBuilder)
+	private static @Nullable Suggestion getLastAddedSuggestion(SuggestionsBuilder builder)
 	{
 		if (Fields.suggestionsBuilderList == null) { return null; }
 
 		try
 		{
-			List<Suggestion> suggestionList = (List<Suggestion>)Fields.suggestionsBuilderList.get(suggestionsBuilder);
-			return suggestionList.get(suggestionList.size() - 1);
+			List<Suggestion> suggestionList = (List<Suggestion>)Fields.suggestionsBuilderList.get(builder);
+			return suggestionList.getLast();
 		}
 		catch (Exception e) { return null; }
 	}

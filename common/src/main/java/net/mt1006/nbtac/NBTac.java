@@ -15,7 +15,7 @@ public class NBTac
 	{
 		if (isDedicatedServer)
 		{
-			NBTac.LOGGER.info("Dedicated server detected - mod setup stopped!");
+			LOGGER.info("Dedicated server detected - mod setup stopped!");
 			return false;
 		}
 

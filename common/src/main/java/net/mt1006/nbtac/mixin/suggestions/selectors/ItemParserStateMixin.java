@@ -8,11 +8,11 @@ import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.mt1006.nbtac.autocomplete.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.DataComponentManager;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionManager;
+import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
-import net.mt1006.nbtac.autocomplete.suggestions.NbtSuggestion;
+import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
+import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -57,7 +57,7 @@ public abstract class ItemParserStateMixin
 			parsedComponents.add(componentType);
 			lastAdded = componentType;
 		}
-		catch (CommandSyntaxException ignored) {}
+		catch (CommandSyntaxException ignore) {}
 		reader.setCursor(currentCursor);
 	}
 
@@ -69,34 +69,31 @@ public abstract class ItemParserStateMixin
 	}
 
 	@Inject(method = "suggestComponentAssignmentOrRemoval", at = @At(value = "HEAD"), cancellable = true)
-	private void atSuggestComponentAssignment(SuggestionsBuilder suggestionsBuilder,
-											  CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
+	private void atSuggestComponentAssignment(SuggestionsBuilder builder, CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
 	{
-		//TODO: add setting to disable it?
 		Item item = findParsedItem();
-		String str = suggestionsBuilder.getRemaining().toLowerCase();
+		String str = builder.getRemaining().toLowerCase();
 
 		SuggestionList suggestionList = new SuggestionList();
 		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, null, true);
 		if (str.isEmpty() || str.equals("!")) { suggestionList.addRaw("!", "(remove component)", 80); }
-		suggestionList.forEach((s) -> s.suggest(suggestionsBuilder));
+		suggestionList.forEach((s) -> s.suggest(builder));
 
-		cir.setReturnValue(suggestionsBuilder.buildFuture());
+		cir.setReturnValue(builder.buildFuture());
 		cir.cancel();
 	}
 
 	@Inject(method = "suggestComponent(Lcom/mojang/brigadier/suggestion/SuggestionsBuilder;)Ljava/util/concurrent/CompletableFuture;", at = @At(value = "HEAD"), cancellable = true)
-	private void atSuggestComponentRemoval(SuggestionsBuilder suggestionsBuilder,
-										   CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
+	private void atSuggestComponentRemoval(SuggestionsBuilder builder, CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
 	{
 		Item item = findParsedItem();
-		String str = suggestionsBuilder.getRemaining().toLowerCase();
+		String str = builder.getRemaining().toLowerCase();
 
 		SuggestionList suggestionList = new SuggestionList();
 		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, null, false);
-		suggestionList.forEach((s) -> s.suggest(suggestionsBuilder));
+		suggestionList.forEach((s) -> s.suggest(builder));
 
-		cir.setReturnValue(suggestionsBuilder.buildFuture());
+		cir.setReturnValue(builder.buildFuture());
 		cir.cancel();
 	}
 
@@ -111,7 +108,7 @@ public abstract class ItemParserStateMixin
 		{
 			resLoc = ResourceLocation.read(reader);
 		}
-		catch (CommandSyntaxException ignored) {}
+		catch (CommandSyntaxException ignore) {}
 		reader.setCursor(currentCursor);
 
 		return resLoc;
@@ -119,28 +116,18 @@ public abstract class ItemParserStateMixin
 
 	@Unique private @Nullable Item findParsedItem()
 	{
-		ResourceLocation resLoc = findParsedItemId();
-
-		//TODO: remove null check (set RegistryUtils arguments as nullable if safe on older versions)
-		if (resLoc == null) { return null; }
-		return RegistryUtils.ITEM.get(resLoc);
+		ResourceLocation id = findParsedItemId();
+		return id != null ? RegistryUtils.ITEM.get(id) : null;
 	}
 
-	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder suggestionsBuilder)
+	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder builder)
 	{
-		ResourceLocation resLoc = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
-		NbtSuggestion component = resLoc != null ? DataComponentManager.componentMap.get("item/" + resLoc) : null;
-		if (component == null || cursorBeforeComponent == -1) { return suggestionsBuilder.buildFuture(); }
+		ResourceLocation componentId = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
+		NbtTag component = componentId != null ? DataComponentManager.componentMap.get("item/" + componentId) : null;
+		if (component == null || cursorBeforeComponent == -1) { return Suggestions.empty(); }
 
-		String tag = reader.getString().substring(cursorBeforeComponent);
-		ResourceLocation itemId = findParsedItemId();
-		SuggestionList suggestionList = new SuggestionList();
-		CustomTagParser tagParser = new CustomTagParser(tag, CustomTagParser.Type.COMPONENT);
-		CustomTagParser.Suggestion suggestion =
-				tagParser.read(suggestionList, component, itemId != null ? itemId.toString() : null);
-
-		//TODO: make it safer
-		int cursorShift = cursorBeforeComponent + tagParser.getCursor() - suggestionsBuilder.getStart();
-		return NbtSuggestionManager.finishSuggestions(suggestionList, suggestionsBuilder, suggestion, cursorShift);
+		String val = reader.getString().substring(cursorBeforeComponent);
+		CustomTagParser parser = CustomTagParser.forDataComponentValue(val, component.getType(), findParsedItemId());
+		return NbtTagManager.finishSuggestions(parser.parse(), builder);
 	}
 }

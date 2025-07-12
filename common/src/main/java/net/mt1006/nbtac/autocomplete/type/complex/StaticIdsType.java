@@ -6,6 +6,7 @@ import net.minecraft.world.item.JukeboxSongs;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.minecraft.world.item.equipment.trim.TrimPatterns;
 import net.minecraft.world.level.block.entity.BannerPatterns;
+import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.utils.Fields;
@@ -31,8 +32,8 @@ public class StaticIdsType extends ComplexType
 		this.isTagId = isTagId;
 	}
 
-	@Override public void getSuggestions(SuggestionListContext ctx)
+	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		resourceKeys.forEach((key) -> ctx.list().add(new IdSuggestion(key.location(), subtext, ctx.parserType(), 0, isTagId)));
+		resourceKeys.forEach((key) -> list.add(new IdSuggestion(key.location(), subtext, ctx.parserType(), 0, isTagId)));
 	}
 }

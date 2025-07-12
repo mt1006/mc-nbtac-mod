@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionManager;
+import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -48,14 +48,14 @@ public class BlockStateParserMixin
 		}
 	}
 
-	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder suggestionsBuilder)
+	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder builder)
 	{
 		if (state == null) { return Suggestions.empty(); }
-		ResourceLocation resourceLocation = RegistryUtils.BLOCK.getKey(state.getBlock());
+		ResourceLocation id = RegistryUtils.BLOCK.getKey(state.getBlock());
+		if (id == null) { return Suggestions.empty(); }
 
-		String name = resourceLocation.toString();
-		String tag = suggestionsBuilder.getRemaining();
-
-		return NbtSuggestionManager.loadFromName("block/" + name, tag, suggestionsBuilder, false);
+		String str = builder.getRemaining();
+		String name = id.toString();
+		return NbtTagManager.loadFromName(str, "block/" + name, builder, false);
 	}
 }

@@ -29,7 +29,9 @@ public class Fields
 	public static Field commandContextArguments = null;
 	public static List<Field> suggestionsBuilderStrings = null;
 	public static @Nullable Pair<String, Class<?>[]> itemUseOnMethodData = null;
-	public static @Nullable Pair<String, Class<?>[]> itemAppendHoverTextMethodData = null; //TODO: remove?
+
+	//TODO: remove after dropping support for 1.21.4 and older
+	public static @Nullable Pair<String, Class<?>[]> itemAppendHoverTextMethodData = null;
 
 	public static void init()
 	{

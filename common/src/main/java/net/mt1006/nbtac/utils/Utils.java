@@ -71,7 +71,7 @@ public class Utils
 		return "block/" + RegistryUtils.BLOCK.getKey(block);
 	}
 
-	public static String entityFromEntitySelector(EntitySelector entitySelector)
+	public static @Nullable String entityFromEntitySelector(EntitySelector entitySelector)
 	{
 		return entityFromSelectorData(
 				((EntitySelectorFields)entitySelector).getType(),
@@ -79,7 +79,7 @@ public class Utils
 				((EntitySelectorFields)entitySelector).getPlayerName());
 	}
 
-	public static String entityFromSelectorData(EntityTypeTest<Entity, ?> typeTest, @Nullable UUID uuid, @Nullable String playerName)
+	public static @Nullable String entityFromSelectorData(EntityTypeTest<Entity, ?> typeTest, @Nullable UUID uuid, @Nullable String playerName)
 	{
 		if (typeTest instanceof EntityType)
 		{

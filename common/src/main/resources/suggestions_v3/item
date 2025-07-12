@@ -15,7 +15,7 @@ banner_patterns :list<compound>
 base_color :DyeColor
 
 bees :list<compound>
-+entity_data :TagsWithId(minecraft:bee)
++entity_data :TagsWithId(entity/minecraft:bee)
 +min_ticks_in_hive :int
 +ticks_in_hive :int
 
@@ -53,22 +53,22 @@ bucket_entity_data :compound
 +HuntingCooldown :long
 +BucketVariantTag :int
 
-bundle_contents :List<Tags(compound/nbtac:item)>
+bundle_contents :list<Tags(compound/nbtac:item)>
 
-can_break :List<Tags(compound/nbtac:block_predicate_new)> @AlwaysRelevant
+can_break :list<Tags(compound/nbtac:block_predicate_new)> @AlwaysRelevant
 
-can_place_on :List<Tags(compound/nbtac:block_predicate_new)>
+can_place_on :list<Tags(compound/nbtac:block_predicate_new)>
 
-charged_projectiles :List<Tags(compound/nbtac:item)>
+charged_projectiles :list<Tags(compound/nbtac:item)>
 
 consumable :compound @AlwaysRelevant
 +consume_seconds :float
 +animation :Enum(none, block, bow, brush, crossbow, drink, eat, spear, spyglass, toot_horn)
 +sound :RegistryKey(minecraft:sound_event)
 +has_consume_particles :boolean
-+on_consume_effects :List<Tags(compound/nbtac:item_effect)>
++on_consume_effects :list<Tags(compound/nbtac:item_effect)>
 
-container :List<compound>
+container :list<compound>
 +item :Tags(compound/nbtac:item)
 +slot :int
 
@@ -79,10 +79,10 @@ container_loot :compound
 custom_data :compound
 
 custom_model_data :compound
-+floats :List<float>
-+flags :List<boolean>
-+strings :List<string>
-+colors :List<int>
++floats :list<float>
++flags :list<boolean>
++strings :list<string>
++colors :list<int>
 
 custom_name :TextComponent @AlwaysRelevant
 
@@ -92,7 +92,7 @@ damage_resistant :compound @AlwaysRelevant
 +types :DamageType
 
 death_protection :compound @AlwaysRelevant
-+death_effects :List<Tags(compound/nbtac:item_effect)>
++death_effects :list<Tags(compound/nbtac:item_effect)>
 
 debug_stick_state :compound
 
@@ -105,14 +105,13 @@ enchantment_glint_override :boolean @AlwaysRelevant
 
 enchantments :Enchantments @AlwaysRelevant
 
-entity_data :Tags(entity/$./id$)
-+id :RegistryKey(minecraft:entity_type) @Recommended
+entity_data :TagsFromId(minecraft:entity_type, entity/$id$)
 
 equippable :compound @AlwaysRelevant
 +slot :Enum(head, chest, legs, feet, body, mainhand, offhand) @Recommended
 +equip_sound :RegistryKey(minecraft:sound_event)
 +asset_id :string
-+allowed_entities :List<RegistryKey(minecraft:entity_type)>
++allowed_entities :list<RegistryKey(minecraft:entity_type)>
 +dispensable :boolean
 +swappable :boolean
 +damage_on_hurt :boolean
@@ -149,7 +148,7 @@ jukebox_playable :compound @AlwaysRelevant
 +song :JukeboxSong
 
 lock :compound
-+items :List<RegistryKey(minecraft:item)>
++items :list<RegistryKey(minecraft:item)>
 +count :compound
 	+min :int
 	+max :int
@@ -162,7 +161,7 @@ lodestone_tracker :compound
 	+dimension :string
 +tracked :boolean
 
-lore :List<TextComponent>
+lore :list<TextComponent>
 
 map_color :int @AlwaysRelevant
 
@@ -178,12 +177,12 @@ note_block_sound :RegistryKey(minecraft:sound_event)
 
 ominous_bottle_amplifier :int
 
-pot_decorations :List<PotDecoration>
+pot_decorations :list<PotDecoration>
 
 potion_contents :compound
 +potion :RegistryKey(minecraft:potion)
 +custom_color :int
-+custom_effects :List<Tags(compound/nbtac:effect)>
++custom_effects :list<Tags(compound/nbtac:effect)>
 +custom_name :string
 
 potion_duration_scale :float
@@ -191,7 +190,7 @@ potion_duration_scale :float
 profile :compound
 +name :string
 +id :UUID
-+properties :List<compound>
++properties :list<compound>
 	+name :string
 	+value :string
 	+signature :string
@@ -202,31 +201,31 @@ provides_trim_material :TrimMaterial @AlwaysRelevant
 
 rarity :OrderedEnum(common, uncommon, rare, epic) @AlwaysRelevant
 
-recipes :List<Recipe>
+recipes :list<Recipe>
 
 repair_cost :int
 
 repairable :compound @AlwaysRelevant
-+items :List<RegistryKey(minecraft:item)>
++items :list<RegistryKey(minecraft:item)>
 
 stored_enchantments :Enchantments
 
-suspicious_stew_effects :List<compound>
+suspicious_stew_effects :list<compound>
 +id :RegistryKey(minecraft:mob_effect)
 +duration :int
 
 tool :compound @AlwaysRelevant
 +default_mining_speed :float
 +damage_per_block :int
-+rules :List<compound>
-	+blocks :List<RegistryKey(minecraft:block)>
++rules :list<compound>
+	+blocks :list<RegistryKey(minecraft:block)>
 	+speed :float
 	+correct_for_drops :boolean
 +can_destroy_blocks_in_creative :boolean
 
 tooltip_display :compound @AlwaysRelevant
 +hide_tooltip :boolean
-+hidden_components :List<string>
++hidden_components :list<string>
 
 tooltip_style :string @AlwaysRelevant
 
@@ -247,10 +246,10 @@ weapon :compound @AlwaysRelevant
 +disable_blocking_for_seconds :int
 
 writable_book_content :compound
-+pages :List<string>
++pages :list<string>
 
 written_book_content :compound
-+pages :List<TextComponent>
++pages :list<TextComponent>
 +title :string
 +author :string
 +generation :DescribedEnum<int>(0, original, 1, "copy of original", 2, "copy of copy", 3, tattered)

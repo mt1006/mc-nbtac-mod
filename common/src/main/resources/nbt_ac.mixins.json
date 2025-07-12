@@ -6,11 +6,13 @@
   "client":
   [
     "constructors.BlockEntityMixin",
+    "fields.ClientLanguageFields",
     "fields.ClientLevelFields",
     "fields.CommandSuggestionsFields",
     "fields.DecoratedPotPatternsFields",
     "fields.EntitySelectorFields",
     "fields.FontManagerFields",
+    "fields.I18nFields",
     "fields.KeyMappingFields",
     "fields.MinecraftFields",
     "fields.TextColorFields",

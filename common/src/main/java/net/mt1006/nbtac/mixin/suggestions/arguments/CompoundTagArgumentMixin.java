@@ -11,7 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionManager;
+import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,16 +22,13 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(CompoundTagArgument.class)
 public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundTag>
 {
-	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
+	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> ctx, SuggestionsBuilder builder)
 	{
 		try
 		{
-			String name = getResourceName(commandContext);
-			if (name == null) { return Suggestions.empty(); }
-
-			String tag = suggestionsBuilder.getRemaining();
-
-			return NbtSuggestionManager.loadFromName(name, tag, suggestionsBuilder, false);
+			String str = builder.getRemaining();
+			String name = getResourceName(ctx);
+			return NbtTagManager.loadFromName(str, name, builder, false);
 		}
 		catch (Exception e)
 		{

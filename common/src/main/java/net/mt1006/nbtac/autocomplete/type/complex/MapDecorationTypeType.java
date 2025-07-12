@@ -2,7 +2,9 @@ package net.mt1006.nbtac.autocomplete.type.complex;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.utils.Fields;
@@ -18,14 +20,13 @@ public class MapDecorationTypeType extends ComplexType
 		super(PrimitiveType.STRING);
 	}
 
-	@Override public void getSuggestions(SuggestionListContext ctx)
+	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		//TODO: check why it even works?
 		List<Holder> decorationTypes = Fields.getStaticFields(MapDecorationTypes.class, Holder.class);
-		for (Holder<ResourceKey> holder : decorationTypes)
+		for (Holder<MapDecorationType> holder : decorationTypes)
 		{
 			ResourceKey<?> key = holder.unwrapKey().orElse(null);
-			if (key != null) { ctx.list().add(new IdSuggestion(key.location(), "[#map_decoration_type]", ctx.parserType())); }
+			if (key != null) { list.add(new IdSuggestion(key.location(), "[#map_decoration_type]", ctx.parserType())); }
 		}
 	}
 }

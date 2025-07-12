@@ -1,21 +1,36 @@
 package net.mt1006.nbtac.autocomplete;
 
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
 import net.mt1006.nbtac.autocomplete.suggestions.CustomSuggestion;
 import net.mt1006.nbtac.autocomplete.suggestions.RawSuggestion;
-import net.mt1006.nbtac.autocomplete.suggestions.TagSuggestion;
-import net.mt1006.nbtac.utils.RegistryUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
-public class SuggestionList extends ArrayList<CustomSuggestion>
+public class SuggestionList implements Iterable<CustomSuggestion>
 {
+	private final List<CustomSuggestion> list = new ArrayList<>();
+	public int cursor = 0;
+
+	public SuggestionList() {}
+
+	public SuggestionList(int cursor)
+	{
+		this.cursor = cursor;
+	}
+
+	public static SuggestionList empty()
+	{
+		return new SuggestionList();
+	}
+
+	public void add(CustomSuggestion suggestion)
+	{
+		list.add(suggestion);
+	}
+
 	public void addRaw(String text, @Nullable String subtext)
 	{
 		add(new RawSuggestion(text, subtext));
@@ -26,57 +41,45 @@ public class SuggestionList extends ArrayList<CustomSuggestion>
 		add(new RawSuggestion(text, subtext, priority));
 	}
 
-	public void addAll(@Nullable NbtSuggestionMap suggestions, CustomTagParser.Type parserType, int priority)
+	public SuggestionList withOperators(String... ops)
 	{
-		if (suggestions == null) { return; }
-		suggestions.getAll().forEach((s) -> add(new TagSuggestion(s, parserType, priority)));
-	}
-
-	public void addAll(@Nullable NbtSuggestionMap suggestions, CustomTagParser.Type parserType)
-	{
-		if (suggestions == null) { return; }
-		suggestions.getAll().forEach((s) -> add(new TagSuggestion(s, parserType)));
-	}
-
-	public void addAll(@Nullable NbtSuggestionMap suggestions, @Nullable String rootTag, CustomTagParser.Type parserType)
-	{
-		addAll(suggestions, parserType);
-		getCommonSuggestions(rootTag).forEach((s) -> addAll(s, parserType));
-	}
-
-	public void replaceWith(Collection<CustomSuggestion> suggestions)
-	{
-		clear();
-		addAll(suggestions);
-	}
-
-	private static List<NbtSuggestionMap> getCommonSuggestions(@Nullable String tag)
-	{
-		if (tag == null) { return List.of(); }
-		List<NbtSuggestionMap> list = new ArrayList<>();
-
-		if (tag.startsWith("item/"))
+		for (String op : ops)
 		{
-			Item item = RegistryUtils.ITEM.get(tag.substring(5));
-			if (item != null)
-			{
-				if (item instanceof BlockItem) { list.add(NbtSuggestionManager.get("common/block_item")); }
-				if (item instanceof SpawnEggItem) { list.add(NbtSuggestionManager.get("common/spawn_egg_item")); }
-				//TODO: (PORT) restore for 1.20.4
-				//if (item.canBeDepleted()) { list.add(get("common/damageable")); }
-			}
-			list.add(NbtSuggestionManager.get("common/item"));
+			add(new RawSuggestion(op, null));
 		}
-		else if (tag.startsWith("block/"))
-		{
-			list.add(NbtSuggestionManager.get("common/block"));
-		}
-		else if (tag.startsWith("entity/"))
-		{
-			list.add(NbtSuggestionManager.get("common/entity"));
-		}
+		return this;
+	}
 
-		list.removeIf(Objects::isNull);
-		return list;
+	public boolean hasMatch(String str)
+	{
+		for (CustomSuggestion suggestion : this)
+		{
+			if (suggestion.match(str)) { return true; }
+		}
+		return false;
+	}
+
+	public void removeByName(@Nullable String str)
+	{
+		if (str == null) { return; }
+		list.removeIf((s) -> s.match(str));
+	}
+
+	public void filterByPrefix(String prefix)
+	{
+		list.removeIf((s) -> !s.matchPrefix(prefix));
+	}
+
+	public @Nullable SuggestionList matchOrFiler(String str)
+	{
+		if (hasMatch(str)) { return null; }
+
+		filterByPrefix(str);
+		return this;
+	}
+
+	@Override public @NotNull Iterator<CustomSuggestion> iterator()
+	{
+		return list.iterator();
 	}
 }

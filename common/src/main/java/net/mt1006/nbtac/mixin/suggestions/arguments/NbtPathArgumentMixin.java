@@ -9,7 +9,7 @@ import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.nbt.CompoundTag;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionManager;
+import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,16 +20,13 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(NbtPathArgument.class)
 public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 {
-	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder)
+	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder builder)
 	{
 		try
 		{
-			String name = getResourceName(commandContext, suggestionsBuilder.getStart());
-			if (name == null) { return Suggestions.empty(); }
-
-			String tag = suggestionsBuilder.getRemaining();
-
-			return NbtSuggestionManager.loadFromName(name, tag, suggestionsBuilder, true);
+			String str = builder.getRemaining();
+			String name = getResourceName(commandContext, builder.getStart());
+			return NbtTagManager.loadFromName(str, name, builder, true);
 		}
 		catch (Exception e)
 		{
@@ -109,7 +106,7 @@ public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 		return getResourceNameForArguments(ctx, type, isIf ? "sourcePos" : "targetPos", isIf ? "source" : "target");
 	}
 
-	@Unique private String getResourceNameForArguments(CommandContext<?> ctx, String type, String blockArgument, String entityArgument)
+	@Unique private @Nullable String getResourceNameForArguments(CommandContext<?> ctx, String type, String blockArgument, String entityArgument)
 	{
 		switch (type)
 		{

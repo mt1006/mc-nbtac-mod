@@ -3,3 +3,11 @@ map_decoration
 +x :double
 +z :double
 +rotation :float
+
+effect
++id :RegistryKey(minecraft:mob_effect) @Recommended
++amplifier :byte @Recommended
++duration :int @Recommended
++ambient :boolean
++show_particles :boolean
++show_icon :boolean

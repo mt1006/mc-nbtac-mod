@@ -2,9 +2,10 @@ package net.mt1006.nbtac.autocomplete.loader;
 
 import net.minecraft.client.Minecraft;
 import net.mt1006.nbtac.NBTac;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionManager;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionMap;
-import net.mt1006.nbtac.autocomplete.suggestions.NbtSuggestion;
+import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.NbtTagMap;
+import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
+import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.config.ModConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,22 +38,32 @@ public class Loader
 		if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Loader started!"); }
 		long start = System.currentTimeMillis();
 
-		//TODO: finish
-		SuggestionFileParser.parseDataComponents("item", "minecraft");
-		SuggestionFileParser.parseNbtSuggestions("text", "nbtac");
+		try
+		{
+			SuggestionFileParser.parseDataComponents("item", "minecraft");
+			SuggestionFileParser.parseNbtSuggestions("block", "minecraft");
+			SuggestionFileParser.parseNbtSuggestions("entity", "minecraft");
+			SuggestionFileParser.parseNbtSuggestions("text", "nbtac");
+			SuggestionFileParser.parseNbtSuggestions("compound", "nbtac");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return;
+		}
 
 		NBTac.LOGGER.info("Finished in: {} ms", System.currentTimeMillis() - start);
 		finished = true;
 
 		if (ModConfig.debugMode.val)
 		{
-			NBTac.LOGGER.info("Created NbtSuggestion instances: {}", NbtSuggestion.createdInstanceCounter);
+			NBTac.LOGGER.info("Created NbtSuggestion instances: {}", DefinedNbtTag.instanceCounter);
 		}
 
-		if (ModConfig.saveSuggestions.val) { saveSuggestions(); }
+		if (ModConfig.saveSuggestions.val) { saveTags(); }
 	}
 
-	private static void saveSuggestions()
+	private static void saveTags()
 	{
 		File outputFile = new File(Minecraft.getInstance().gameDirectory, SAVE_SUGGESTIONS_FILE);
 
@@ -61,10 +72,10 @@ public class Loader
 			StringWriter stringWriter = new StringWriter();
 			PrintWriter writer = new PrintWriter(stringWriter);
 
-			for (Map.Entry<String, NbtSuggestionMap> suggestions : NbtSuggestionManager.suggestionSet())
+			for (Map.Entry<String, NbtTagMap> suggestions : NbtTagManager.tagMapSet())
 			{
 				writer.println(suggestions.getKey());
-				printSuggestions(writer, suggestions.getValue(), 1);
+				printTags(writer, suggestions.getValue(), 1);
 				writer.println("");
 			}
 
@@ -73,21 +84,17 @@ public class Loader
 		catch (Exception e) { NBTac.LOGGER.warn("Failed to save suggestions!"); }
 	}
 
-	private static void printSuggestions(PrintWriter writer, @Nullable NbtSuggestionMap suggestions, int depth)
+	private static void printTags(PrintWriter writer, @Nullable NbtTagMap tagMap, int depth)
 	{
-		if (suggestions == null || depth > MAX_PRINTER_DEPTH) { return; }
+		if (tagMap == null || depth > MAX_PRINTER_DEPTH) { return; }
 
-		for (NbtSuggestion suggestion : suggestions.getAll())
+		for (NbtTag tag : tagMap.getAll())
 		{
 			for (int i = 0; i < depth; i++) { writer.print("-"); }
-			writer.printf("%s (%s)\n", suggestion.tag, suggestion.type.getPrimitive().getName());
+			writer.printf("%s (%s)\n", tag.getName(), tag.getType().getPrimitive().getName());
 
-			if (suggestions != suggestion.subcompound) //TODO: is it still necessary?
-			{
-				NBTac.LOGGER.error("Loop detected!");
-				continue;
-			}
-			printSuggestions(writer, suggestion.subcompound, depth + 1);
+			try { printTags(writer, tag.getType().getSubcompound(), depth + 1); }
+			catch (UnsupportedOperationException ignore) {}
 		}
 	}
 

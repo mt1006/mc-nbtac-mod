@@ -11,14 +11,14 @@ initial_content
 
 common
 +extra :TextComponent
-+separator :TextComponent @RelevantIfEq(type, selector, nbt) @RelevantIfDef(selector, nbt)
-+source :Enum(block, entity, storage) @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
-+interpret :boolean @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
-+block :string @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
-+entity :EntitySelector @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
-+storage :string @RelevantIfEq(type, nbt) @RelevantIfDef(nbt)
-+fallback :TranslationKey @RelevantIfEq(type, translatable) @RelevantIfDef(translate)
-+with :List<TextComponent> @RelevantIfEq(type, translatable) @RelevantIfDef(translate)
++separator :TextComponent @RelevantIfEq(type, selector, nbt) @RelevantIfNotDef(text, translate, keybind, score)
++source :Enum(block, entity, storage) @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++interpret :boolean @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++block :string @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++entity :EntitySelector @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++storage :string @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++fallback :TranslationKey @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score)
++with :list<TextComponent> @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score)
 
 style
 +color :TextColor
@@ -32,7 +32,7 @@ style
 +hover_event :compound
 	+action :Enum(show_text, show_item, show_entity)
 	+value :string @RelevantIfEq(action, show_text)
-	+id :RegistryKey @RelevantIfEq(action, show_item, show_entity) @ArgSwitch(action, show_item, minecraft:item, show_entity, minecraft:entity_type)
+	+id :RegistryKey("$@action@show_item;minecraft:item;show_entity;minecraft:entity_type$") @RelevantIfEq(action, show_item, show_entity)
 	+count :int @RelevantIfEq(action, show_item)
 	+components :compound @RelevantIfEq(action, show_item)
 	+name :TextComponent @RelevantIfEq(action, show_entity)

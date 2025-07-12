@@ -1,9 +1,10 @@
 package net.mt1006.nbtac.autocomplete.loader;
 
 import net.mt1006.nbtac.autocomplete.DataComponentManager;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionManager;
-import net.mt1006.nbtac.autocomplete.NbtSuggestionMap;
-import net.mt1006.nbtac.autocomplete.suggestions.NbtSuggestion;
+import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.NbtTagMap;
+import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
+import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.autocomplete.type.DynamicArgumentType;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.utils.SimpleStringReader;
@@ -19,18 +20,36 @@ import java.util.Stack;
 
 public class SuggestionFileParser
 {
+	private static final String MOD_NAMESPACE = "nbtac";
 	private static final String ROOT_DIR = "/suggestions_v3/";
 
 	public static void parseNbtSuggestions(String filename, String namespace)
 	{
-		String keyPrefix = filename + "/" + namespace + ":";
+		String keyDefaultPrefix = filename + "/" + namespace + ":";
+		String keyModPrefix = MOD_NAMESPACE + "/" + namespace + ":";
+
 		for (Entry entry : parseFile(filename))
 		{
 			SimpleStringReader reader = new SimpleStringReader(entry.header);
-			String entryName = reader.readString();
-			reader.expectEnd();
+			String entryKey = parseNbtEntryName(reader.readFileString(), keyDefaultPrefix, keyModPrefix);
 
-			NbtSuggestionManager.add(keyPrefix + entryName, parseSuggestions(entry.suggestions));
+			if (reader.peek() != ' ')
+			{
+				reader.expectEnd();
+				NbtTagManager.add(entryKey, parseSuggestions(entry.suggestions));
+			}
+			else
+			{
+				reader.skipChar();
+				reader.expect('=');
+
+				String referencedKey = parseNbtEntryName(reader.readFileString(), keyDefaultPrefix, keyModPrefix);
+				NbtTagMap tagMap = NbtTagManager.get(referencedKey);
+				if (tagMap == null) { throw reader.new ReaderException(); }
+
+				NbtTagManager.add(entryKey, tagMap);
+				reader.expectEnd();
+			}
 		}
 	}
 
@@ -40,17 +59,17 @@ public class SuggestionFileParser
 		for (Entry entry : parseFile(filename))
 		{
 			SimpleStringReader reader = new SimpleStringReader(entry.header);
-			String entryName = reader.readString();
+			String entryName = reader.readFileString();
 			reader.expect(' ');
 			reader.expect(':');
 			Type type = parseType(reader);
 
-			NbtSuggestion suggestion = new NbtSuggestion(entryName, type);
-			parseAnnotations(reader, suggestion);
+			DefinedNbtTag tag = new DefinedNbtTag(entryName, type);
+			parseAnnotations(reader, tag);
 			reader.expectEnd();
 
-			suggestion.subcompound = parseSuggestions(entry.suggestions);
-			DataComponentManager.componentMap.put(keyPrefix + entryName, suggestion);
+			tag.getType().setSubcompound(parseSuggestions(entry.suggestions));
+			DataComponentManager.componentMap.put(keyPrefix + entryName, tag);
 		}
 	}
 
@@ -86,10 +105,11 @@ public class SuggestionFileParser
 		catch (IOException e) { throw new RuntimeException(e); }
 	}
 
-	private static @Nullable NbtSuggestionMap parseSuggestions(List<String> lines)
+	private static @Nullable NbtTagMap parseSuggestions(List<String> lines)
 	{
-		Stack<NbtSuggestion> suggestionStack = new Stack<>();
-		NbtSuggestionMap outputMap = null;
+		if (lines.isEmpty()) { return null; }
+		Stack<NbtTag> suggestionStack = new Stack<>();
+		NbtTagMap outputMap = new NbtTagMap();
 
 		for (String line : lines)
 		{
@@ -97,17 +117,17 @@ public class SuggestionFileParser
 
 			int tabCount = reader.readTabs();
 			reader.expect('+');
-			String name = reader.readString();
+			String name = reader.readFileString();
 			reader.expect(' ');
 			reader.expect(':');
 
 			Type type = parseType(reader);
-			NbtSuggestion suggestion = new NbtSuggestion(name, type);
-			parseAnnotations(reader, suggestion);
+			DefinedNbtTag tag = new DefinedNbtTag(name, type);
+			parseAnnotations(reader, tag);
 
 			if (suggestionStack.size() == tabCount)
 			{
-				suggestionStack.push(suggestion);
+				suggestionStack.push(tag);
 			}
 			else if (suggestionStack.size() < tabCount)
 			{
@@ -116,19 +136,17 @@ public class SuggestionFileParser
 			else
 			{
 				suggestionStack.setSize(tabCount + 1);
-				suggestionStack.set(tabCount, suggestion);
+				suggestionStack.set(tabCount, tag);
 			}
 
 			if (tabCount == 0)
 			{
-				if (outputMap == null) { outputMap = new NbtSuggestionMap(); }
-				if (!outputMap.add(suggestion)) { throw reader.new ReaderException(); }
+				if (!outputMap.add(tag)) { throw reader.new ReaderException(); }
 			}
 			else
 			{
-				NbtSuggestion nbtSuggestion = suggestionStack.get(tabCount - 1);
-				if (nbtSuggestion.subcompound == null) { nbtSuggestion.subcompound = new NbtSuggestionMap(); }
-				if (!nbtSuggestion.subcompound.add(suggestion)) { throw reader.new ReaderException(); }
+				NbtTag nbtTag = suggestionStack.get(tabCount - 1);
+				if (!nbtTag.getType().getSubcompound().add(tag)) { throw reader.new ReaderException(); }
 			}
 			reader.expectEnd();
 		}
@@ -137,29 +155,16 @@ public class SuggestionFileParser
 
 	private static Type parseType(SimpleStringReader reader)
 	{
-		String name = reader.readString();
+		String name = reader.readFileString();
+		List<Type> subtypes = reader.parseList(SuggestionFileParser::parseType, '<', '>');
+		List<String> args = reader.parseList(SimpleStringReader::readFileString, '(', ')');
 
-		Type subtype = null;
-		if (reader.peek() == '<')
+		int firstDynamicArg = -1;
+		for (int i = 0; i < args.size(); i++)
 		{
-			reader.skipChar();
-			subtype = parseType(reader);
-			reader.expect('>');
-		}
-
-		List<String> args = List.of();
-		if (reader.peek() == '(')
-		{
-			reader.skipChar();
-			args = reader.parseList(SimpleStringReader::readString, ')');
-		}
-
-		boolean useDynamicType = false;
-		for (String arg : args)
-		{
-			if (arg.contains("$"))
+			if (args.get(i).contains("$"))
 			{
-				useDynamicType = true;
+				firstDynamicArg = i;
 				break;
 			}
 		}
@@ -167,28 +172,27 @@ public class SuggestionFileParser
 		Type.TypeConstructor constructor = Type.MAP.get(name);
 		if (constructor == null) { throw reader.new ReaderException(); }
 
-		return useDynamicType
-				? new DynamicArgumentType(constructor, subtype, args)
-				: constructor.create(subtype, args);
+		return firstDynamicArg != -1
+				? new DynamicArgumentType(constructor, subtypes, args, firstDynamicArg)
+				: constructor.create(subtypes, args);
 	}
 
-	private static void parseAnnotations(SimpleStringReader reader, NbtSuggestion suggestion)
+	private static void parseAnnotations(SimpleStringReader reader, DefinedNbtTag tag)
 	{
 		while (reader.peek() == ' ')
 		{
-			reader.skipChar();
+			reader.skipChar(); // skip space
 			reader.expect('@');
-			String name = reader.readString();
+			String name = reader.readFileString();
+			List<String> args = reader.parseList(SimpleStringReader::readFileString, '(', ')');
 
-			List<String> args = List.of();
-			if (reader.peek() == '(')
-			{
-				reader.skipChar();
-				args = reader.parseList(SimpleStringReader::readString, ')');
-			}
-
-			if (!suggestion.addAnnotation(name, args)) { throw reader.new ReaderException(); }
+			if (!tag.addAnnotation(name, args)) { throw reader.new ReaderException(); }
 		}
+	}
+
+	private static String parseNbtEntryName(String str, String keyDefaultPrefix, String keyModPrefix)
+	{
+		return str.startsWith("!") ? keyModPrefix + str.substring(1) : keyDefaultPrefix + str;
 	}
 
 	private static class Entry

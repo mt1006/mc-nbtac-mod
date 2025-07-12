@@ -3,6 +3,7 @@ package net.mt1006.nbtac.autocomplete.type.complex;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.utils.RegistryUtils;
@@ -29,13 +30,13 @@ public class RegistryKeyType extends ComplexType
 		}
 	}
 
-	@Override public void getSuggestions(SuggestionListContext ctx)
+	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
 		if (registryId == null || registry == null) { return; }
 		String subtext = "[#" + registryId.getPath() + "]";
 		for (Object obj : registry)
 		{
-			ctx.list().add(new IdSuggestion(((Registry<Object>)registry).getKey(obj), subtext, ctx.parserType()));
+			list.add(new IdSuggestion(((Registry<Object>)registry).getKey(obj), subtext, ctx.parserType()));
 		}
 	}
 }

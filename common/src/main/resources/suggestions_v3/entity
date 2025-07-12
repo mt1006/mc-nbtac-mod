@@ -1,0 +1,16 @@
+allay
++test1 :string
++test2 :int
++test3 :UUID
++test4 :list<float>
++test5 :compound
++test6 :Enum(aaa, aaa123, bbb)
++x1 :TranslationKey
++x2 :compound
+	+a1 :int
+	+a2 :float
+	+a3 :compound
+		+b1 :unknown
+		+b2 :byte_array
++x3 :list<compound>
+	+c123 :double
