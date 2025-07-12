@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -56,6 +56,6 @@ public class BlockStateParserMixin
 
 		String str = builder.getRemaining();
 		String name = id.toString();
-		return NbtTagManager.loadFromName(str, "block/" + name, builder, false);
+		return SuggestionManager.loadFromName(str, "block/" + name, builder, false);
 	}
 }

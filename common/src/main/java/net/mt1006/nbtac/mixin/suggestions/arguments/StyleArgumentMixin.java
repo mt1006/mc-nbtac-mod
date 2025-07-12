@@ -7,6 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.arguments.StyleArgument;
 import net.minecraft.network.chat.Style;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -15,12 +16,12 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(StyleArgument.class)
 public abstract class StyleArgumentMixin implements ArgumentType<Style>
 {
-	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder builder)
+	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> ctx, SuggestionsBuilder builder)
 	{
 		try
 		{
 			CustomTagParser parser = CustomTagParser.forNbtCompound(builder.getRemaining(), NbtTagManager.get("text/nbtac:style"));
-			return NbtTagManager.finishSuggestions(parser.parse(), builder);
+			return SuggestionManager.finishSuggestions(parser.parse(), builder);
 		}
 		catch (Exception e)
 		{

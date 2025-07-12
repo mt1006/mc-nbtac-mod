@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.CommandSuggestions;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.suggestions.CustomSuggestion;
 import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.mixin.fields.CommandSuggestionsFields;
@@ -39,7 +39,7 @@ public abstract class SuggestionsListMixin
 							   List<Suggestion> suggestions, boolean narrated, CallbackInfo ci)
 	{
 		addTypeNames = false;
-		if (!NbtTagManager.hasCustomSuggestions) { return; }
+		if (!SuggestionManager.hasCustomSuggestions) { return; }
 
 		if (ModConfig.showTagHints.val) { initSubtext(commandSuggestions, suggestions); }
 		if (ModConfig.customSorting.val) { provideCustomSorting(suggestions); }
@@ -54,13 +54,13 @@ public abstract class SuggestionsListMixin
 	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"), index = 4)
 	private int modifyTextColor(int color)
 	{
-		if (!NbtTagManager.hasCustomSuggestions || !ModConfig.grayOutIrrelevant.val || suggestionList.isEmpty())
+		if (!SuggestionManager.hasCustomSuggestions || !ModConfig.grayOutIrrelevant.val || suggestionList.isEmpty())
 		{
 			return color;
 		}
 
 		int suggestionPos = Math.clamp(renderLoopI + offset, 0, suggestionList.size() - 1);
-		CustomSuggestion.Data data = NbtTagManager.dataMap.get(suggestionList.get(suggestionPos));
+		CustomSuggestion.Data data = SuggestionManager.dataMap.get(suggestionList.get(suggestionPos));
 		renderLoopI++;
 
 		if (data == null || data.priority >= 0) { return color; }
@@ -80,7 +80,7 @@ public abstract class SuggestionsListMixin
 
 		for (int i = 0; i < height; ++i)
 		{
-			String subtext = NbtTagManager.getSubtext(suggestionList.get(i + offset));
+			String subtext = SuggestionManager.getSubtext(suggestionList.get(i + offset));
 			if (subtext == null) { continue; }
 
 			guiGraphics.drawString(fontToUse, subtext, rect.getX() + rect.getWidth() - fontToUse.width(subtext) - 1,
@@ -99,7 +99,7 @@ public abstract class SuggestionsListMixin
 			int newW = 0;
 			for (Suggestion suggestion : suggestions)
 			{
-				String subtext = NbtTagManager.getSubtext(suggestion);
+				String subtext = SuggestionManager.getSubtext(suggestion);
 				if (subtext == null)
 				{
 					// this is going to break if suggestions with and without subtext are mixed
@@ -127,14 +127,14 @@ public abstract class SuggestionsListMixin
 		int highestNotRecommended = 0;
 		if (!sortRecommended)
 		{
-			for (CustomSuggestion.Data data : NbtTagManager.dataMap.values())
+			for (CustomSuggestion.Data data : SuggestionManager.dataMap.values())
 			{
 				if (data.priority >= 100) { continue; }
 				if (data.priority > highestNotRecommended) { highestNotRecommended = data.priority; }
 			}
 		}
 
-		for (CustomSuggestion.Data data : NbtTagManager.dataMap.values())
+		for (CustomSuggestion.Data data : SuggestionManager.dataMap.values())
 		{
 			if (data.priority >= 100) { data.order = sortRecommended ? data.priority : highestNotRecommended; }
 			else if (data.priority >= 0) { data.order = data.priority; }
@@ -144,7 +144,7 @@ public abstract class SuggestionsListMixin
 		List<Pair<Suggestion, CustomSuggestion.Data>> listToSort = new ArrayList<>();
 		for (Suggestion suggestion : suggestions)
 		{
-			CustomSuggestion.Data data = NbtTagManager.dataMap.get(suggestion);
+			CustomSuggestion.Data data = SuggestionManager.dataMap.get(suggestion);
 			if (data == null) { data = CustomSuggestion.Data.error(); }
 
 			if (data.priority < 0 && removeIrrelevant) { continue; }

@@ -11,7 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +28,7 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		{
 			String str = builder.getRemaining();
 			String name = getResourceName(ctx);
-			return NbtTagManager.loadFromName(str, name, builder, false);
+			return SuggestionManager.loadFromName(str, name, builder, false);
 		}
 		catch (Exception e)
 		{

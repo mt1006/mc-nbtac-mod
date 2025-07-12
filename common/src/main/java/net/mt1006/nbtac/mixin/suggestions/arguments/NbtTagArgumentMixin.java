@@ -10,6 +10,7 @@ import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.utils.Utils;
@@ -28,7 +29,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		{
 			String str = builder.getRemaining();
 			Type tagType = getTagType(ctx);
-			return tagType != null ? NbtTagManager.loadFromType(str, tagType, builder) : Suggestions.empty();
+			return tagType != null ? SuggestionManager.loadFromType(str, tagType, builder) : Suggestions.empty();
 		}
 		catch (Exception e)
 		{

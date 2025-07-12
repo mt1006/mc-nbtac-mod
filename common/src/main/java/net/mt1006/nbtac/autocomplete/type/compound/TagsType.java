@@ -38,7 +38,7 @@ public class TagsType extends ComplexCompoundType
 		}
 
 		if (id == null) { return; }
-		NbtTagMap tagSuggestions = NbtTagManager.get(id);
-		map.addAll(tagSuggestions);
+		NbtTagMap tagMap = NbtTagManager.get(id);
+		map.addAll(tagMap);
 	}
 }

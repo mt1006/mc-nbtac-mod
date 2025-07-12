@@ -9,8 +9,8 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.mt1006.nbtac.autocomplete.DataComponentManager;
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.utils.RegistryUtils;
@@ -128,6 +128,6 @@ public abstract class ItemParserStateMixin
 
 		String val = reader.getString().substring(cursorBeforeComponent);
 		CustomTagParser parser = CustomTagParser.forDataComponentValue(val, component.getType(), findParsedItemId());
-		return NbtTagManager.finishSuggestions(parser.parse(), builder);
+		return SuggestionManager.finishSuggestions(parser.parse(), builder);
 	}
 }

@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.mt1006.nbtac.NBTac;
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.autocomplete.type.Type;
@@ -76,11 +76,11 @@ public abstract class CustomSuggestion
 
 		if (!ModConfig.showTagHints.val) { return; }
 
-		NbtTagManager.clearIfNeeded(builder);
+		SuggestionManager.clearIfNeeded(builder);
 
 		Suggestion lastAdded = getLastAddedSuggestion(builder);
-		if (lastAdded != null) { NbtTagManager.dataMap.put(lastAdded, new Data(subtext, priority, isEmptySuggestion)); }
-		NbtTagManager.hasCustomSuggestions = true;
+		if (lastAdded != null) { SuggestionManager.dataMap.put(lastAdded, new Data(subtext, priority, isEmptySuggestion)); }
+		SuggestionManager.hasCustomSuggestions = true;
 	}
 
 	private static boolean addEmptySuggestion(SuggestionsBuilder builder, @Nullable Message tooltip)

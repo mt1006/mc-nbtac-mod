@@ -9,7 +9,7 @@ import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.nbt.CompoundTag;
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,13 +20,13 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(NbtPathArgument.class)
 public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 {
-	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder builder)
+	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> ctx, SuggestionsBuilder builder)
 	{
 		try
 		{
 			String str = builder.getRemaining();
-			String name = getResourceName(commandContext, builder.getStart());
-			return NbtTagManager.loadFromName(str, name, builder, true);
+			String name = getResourceName(ctx, builder.getStart());
+			return SuggestionManager.loadFromName(str, name, builder, true);
 		}
 		catch (Exception e)
 		{

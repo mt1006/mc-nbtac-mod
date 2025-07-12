@@ -7,7 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.commands.arguments.selector.options.EntitySelectorOptions;
 import net.minecraft.world.entity.EntityType;
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
+import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -68,6 +68,6 @@ public class EntitySelectorParserMixin
 	{
 		String str = builder.getRemaining();
 		String name = Utils.entityFromSelectorData(type, entityUUID, playerName);
-		return NbtTagManager.loadFromName(str, name, builder, false);
+		return SuggestionManager.loadFromName(str, name, builder, false);
 	}
 }
