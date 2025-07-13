@@ -24,19 +24,18 @@
   "nbtac.options.field.string_quotation_marks.true": "Always",
   "nbtac.options.field.string_quotation_marks.desc": "Puts values of string type in quotation marks.\ntrue - Always\nfalse - When necessary",
 
-  "nbtac.options.field.default_quotation_mark_type": "Default Quotation Mark Type",
-  "nbtac.options.field.default_quotation_mark_type.1": "Single (')",
-  "nbtac.options.field.default_quotation_mark_type.2": "Double (\")",
-  "nbtac.options.field.default_quotation_mark_type.desc": "Defines what kind of quotation mark will be used by default.\n1 - Single (')\n2 - Double (\")\nOther values will be treated as 2.\nIf you're using version 1.19.4 or older, note that setting it to single (especially with \"Put Tags In Quotation Marks\" set to \"Always\") may cause some issues with NBT paths due to MC-175504 bug. It also doesn't apply to JSON text components.",
+  "nbtac.options.field.default_quotation_mark": "Default Quotation Mark",
+  "nbtac.options.field.default_quotation_mark.single": "Single (')",
+  "nbtac.options.field.default_quotation_mark.double": "Double (\")",
+  "nbtac.options.field.default_quotation_mark.desc": "Defines what kind of quotation mark will be used by default.\nsingle - [']\ndouble - [\"]\nIf you're on 1.21.4 or older note that doesn't apply to JSON text components.",
 
   "nbtac.options.field.json_string_suggestion": "JSON String Suggestion",
-  "nbtac.options.field.json_string_suggestion.0": "None",
-  "nbtac.options.field.json_string_suggestion.1": "Recommended",
-  "nbtac.options.field.json_string_suggestion.2": "Default For Strings",
-  "nbtac.options.field.json_string_suggestion.3": "Legacy, Separated (' \")",
-  "nbtac.options.field.json_string_suggestion.4": "Legacy, Merged ('\")",
-  "nbtac.options.field.json_string_suggestion.5": "Legacy, Backslash (\"\\\")",
-  "nbtac.options.field.json_string_suggestion.desc": "Defines simple string opening suggestion for JSON text components.\n0 - None\n1 - Recommended - same as 2 on 1.20.4 and newer, same as 3 on older.\n2 - Default For Strings - uses quote type from \"Default Quotation Mark Type\" setting.\n3 - Legacy, Separated (' \")\n4 - Legacy, Merged ('\") - similar to 3, but without space.\n5 - Legacy, Backslash (\"\\\")\nOther values will be treated as 1.",
+  "nbtac.options.field.json_string_suggestion.none": "None",
+  "nbtac.options.field.json_string_suggestion.default_for_strings": "Default For Strings",
+  "nbtac.options.field.json_string_suggestion.legacy_separated": "Legacy, Separated (' \")",
+  "nbtac.options.field.json_string_suggestion.legacy_merged": "Legacy, Merged ('\")",
+  "nbtac.options.field.json_string_suggestion.legacy_backslash": "Legacy, Backslash (\"\\\")",
+  "nbtac.options.field.json_string_suggestion.desc": "Defines simple string opening suggestion for JSON text components.\nnone - None\ndefault_for_strings - uses quote type from \"Default Quotation Mark Type\" setting.\nlegacy_separated - [' \"]\nlegacy_merged - ['\"] - similar to legacy_separated, but without space.\nlegacy_backslash - [\"\\\"].",
 
   "nbtac.options.field.hide_mc_namespace_in_tags": "Hide Minecraft Namespace In Tags",
   "nbtac.options.field.hide_mc_namespace_in_tags.desc": "Hides \"minecraft:\" namespace from tag suggestions.",
@@ -71,10 +70,10 @@
   "nbtac.options.field.gray_out_irrelevant.desc": "Grays out irrelevant suggestions.",
 
   "nbtac.options.field.placing_of_irrelevant": "Placing Of Irrelevant",
-  "nbtac.options.field.placing_of_irrelevant.0": "Normal",
-  "nbtac.options.field.placing_of_irrelevant.1": "At The Bottom",
-  "nbtac.options.field.placing_of_irrelevant.2": "Hidden",
-  "nbtac.options.field.placing_of_irrelevant.desc": "Specifies the placing of irrelevant suggestions.\n0 - Normal\n1 - At The Bottom\n2 - Hidden\nOther values will be treated as 1.\nValues other than \"Normal\" require custom sorting.",
+  "nbtac.options.field.placing_of_irrelevant.normal": "Normal",
+  "nbtac.options.field.placing_of_irrelevant.at_the_bottom": "At The Bottom",
+  "nbtac.options.field.placing_of_irrelevant.hidden": "Hidden",
+  "nbtac.options.field.placing_of_irrelevant.desc": "Specifies the placing of irrelevant suggestions.\nPossible values: normal, at_the_bottom, hidden\nValues other than \"normal\" require custom sorting to be enabled.",
 
 
   "nbtac.options.field.hide_mc_namespace_in_components": "Hide Minecraft Namespace In Components",
@@ -122,6 +121,5 @@
 
   "nbtac.options.common.tooltip": "%s\n§8Default value: %s",
   "nbtac.options.common.reset_settings": "Reset Settings",
-  "nbtac.options.common.undefined": "[undefined]",
   "nbtac.options.common.gui_debug_warning": "Config screen debug mode is enabled!"
 }

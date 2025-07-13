@@ -29,7 +29,7 @@ public class EntitySelectorType extends ComplexStringType
 		StringReader reader = new StringReader(str != null ? str : "");
 		EntitySelectorParser parser = new EntitySelectorParser(reader, true);
 
-		char quote = ModConfig.getDefaultQuotationMark(false);
+		char quote = ModConfig.defaultQuotationMark.val.getChar(false);
 		boolean parserSuccess = true;
 		try
 		{

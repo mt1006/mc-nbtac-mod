@@ -71,7 +71,7 @@ public class StringSuggestion extends CustomSuggestion
 	{
 		if (withHiddenNamespace) { text = text.substring(10); }
 
-		char quoteChar = ModConfig.getDefaultQuotationMark(isRawJson);
+		char quoteChar = ModConfig.defaultQuotationMark.val.getChar(isRawJson);
 		if (!strRequiresParsing(text, quoteChar)) { return text; }
 
 		StringBuilder builder = new StringBuilder();
@@ -101,7 +101,7 @@ public class StringSuggestion extends CustomSuggestion
 		}
 		else
 		{
-			char quoteChar = ModConfig.getDefaultQuotationMark(isRawJson);
+			char quoteChar = ModConfig.defaultQuotationMark.val.getChar(isRawJson);
 			return quoteChar + text + quoteChar;
 		}
 	}

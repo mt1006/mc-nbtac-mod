@@ -37,7 +37,7 @@ public class TextComponentType extends ComplexType
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		list.addRaw(ModConfig.getDefaultQuotationMarkStr(false), "(simple string) [#text_component]", 3);
+		list.addRaw(ModConfig.defaultQuotationMark.val.getStr(false), "(simple string) [#text_component]", 3);
 		list.addRaw("{", "(text component) [#text_component]", 2);
 		list.addRaw("[", "(test component list) [#text_component]", 1);
 	}

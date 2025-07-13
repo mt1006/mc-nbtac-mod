@@ -22,9 +22,7 @@ public class ConfigFields
 {
 	private static @Nullable Map<String, String> defaultLanguageKeys = null;
 	private final File file;
-	private final List<Field<?>> fields = new ArrayList<>();
 	private final Map<String, Field<?>> fieldMap = new HashMap<>();
-	private final Set<Field<?>> fieldSet = new HashSet<>();
 
 	public ConfigFields(String filename)
 	{
@@ -33,23 +31,23 @@ public class ConfigFields
 
 	public IntegerField add(String name, int val)
 	{
-		IntegerField field = new IntegerField(name, val);
-		addField(field, name);
-		return field;
+		return addField(name, new IntegerField(name, val));
 	}
 
 	public BooleanField add(String name, boolean val)
 	{
-		BooleanField field = new BooleanField(name, val);
-		addField(field, name);
-		return field;
+		return addField(name, new BooleanField(name, val));
 	}
 
-	private void addField(Field<?> field, String name)
+	public <T extends Enum<T>> EnumField<T> add(String name, T val)
 	{
-		fields.add(field);
-		if (fieldMap.put(name, field) != null) { throw new RuntimeException("Duplicate field names!"); };
-		if (!fieldSet.add(field)) { throw new RuntimeException("Duplicate fields!"); }
+		return addField(name, new EnumField<>(name, val));
+	}
+
+	private <T extends Field<?>> T addField(String name, T field)
+	{
+		if (fieldMap.put(name, field) != null) { throw new RuntimeException("Duplicate field names!"); }
+		return field;
 	}
 
 	public void save()
@@ -57,7 +55,7 @@ public class ConfigFields
 		file.getParentFile().mkdirs();
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file))))
 		{
-			fields.forEach((field) -> field.save(writer));
+			fieldMap.values().forEach((f) -> f.save(writer));
 		}
 		catch (IOException ignore) {}
 	}
@@ -95,12 +93,12 @@ public class ConfigFields
 		}
 		catch (IOException e) { save(); }
 
-		if (loadedCount != fields.size() || rewrite) { save(); }
+		if (loadedCount != fieldMap.size() || rewrite) { save(); }
 	}
 
 	public void reset()
 	{
-		fields.forEach(Field::reset);
+		fieldMap.values().forEach(Field::reset);
 	}
 
 	private static void loadDefaultLanguageKeys()
@@ -209,11 +207,6 @@ public class ConfigFields
 			val = Integer.valueOf(str);
 		}
 
-		public AbstractWidget createSwitch(List<Integer> options)
-		{
-			return new ModOptionList.IntegerSwitch(this, options);
-		}
-
 		public AbstractWidget createSlider(int min, int max, int multiplier, @Nullable List<Integer> specialValues)
 		{
 			return new ModOptionList.IntegerSlider(this, min, max, multiplier, specialValues);
@@ -240,6 +233,30 @@ public class ConfigFields
 		public AbstractWidget createDescribedSwitch()
 		{
 			return new ModOptionList.BooleanSwitch(this, true);
+		}
+	}
+
+	public static class EnumField<T extends Enum<T>> extends Field<T>
+	{
+		private final Class<T> enumClass;
+		private final T[] constants;
+
+		public EnumField(String name, T val)
+		{
+			super(name, val);
+			enumClass = (Class<T>)val.getClass();
+			constants = enumClass.getEnumConstants();
+		}
+
+		@Override public void fromString(String str)
+		{
+			try { val = Enum.valueOf(enumClass, str.toUpperCase()); }
+			catch (Exception e) { reset(); }
+		}
+
+		public AbstractWidget createSwitch()
+		{
+			return new ModOptionList.EnumSwitch<>(this, constants);
 		}
 	}
 }

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.suggestions.CustomSuggestion;
 import net.mt1006.nbtac.config.ModConfig;
+import net.mt1006.nbtac.config.enums.PlacingOfIrrelevant;
 import net.mt1006.nbtac.mixin.fields.CommandSuggestionsFields;
 import net.mt1006.nbtac.utils.Fields;
 import org.apache.commons.lang3.tuple.Pair;
@@ -121,8 +122,8 @@ public abstract class SuggestionsListMixin
 	@Unique private void provideCustomSorting(List<Suggestion> suggestions)
 	{
 		boolean sortRecommended = ModConfig.recommendedAtTheTop.val;
-		boolean sortIrrelevant = (ModConfig.placingOfIrrelevant.val != 0);
-		boolean removeIrrelevant = (ModConfig.placingOfIrrelevant.val == 2);
+		boolean sortIrrelevant = (ModConfig.placingOfIrrelevant.val != PlacingOfIrrelevant.NORMAL);
+		boolean removeIrrelevant = (ModConfig.placingOfIrrelevant.val == PlacingOfIrrelevant.HIDDEN);
 
 		int highestNotRecommended = 0;
 		if (!sortRecommended)

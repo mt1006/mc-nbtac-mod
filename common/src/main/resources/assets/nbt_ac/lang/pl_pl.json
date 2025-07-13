@@ -24,19 +24,18 @@
   "nbtac.options.field.string_quotation_marks.true": "Zawsze",
   "nbtac.options.field.string_quotation_marks.desc": "Umieszcza wartości typu string w cudzysłowie.\ntrue - Zawsze\nfalse - Gdy konieczne",
 
-  "nbtac.options.field.default_quotation_mark_type": "Domyślny typ cudzysłowów",
-  "nbtac.options.field.default_quotation_mark_type.1": "Pojedyńcze (')",
-  "nbtac.options.field.default_quotation_mark_type.2": "Podwójne (\")",
-  "nbtac.options.field.default_quotation_mark_type.desc": "Określa jaki typ cudzysłowów będzie domyślnie używany.\n1 - Pojedyńczy (')\n2 - Podwójny (\")\nInne wartości będą traktowane jako 2.\nJeśli używasz wersji 1.19.4 lub starszej, miej na uwadze to, że ustawienie pojedyńczych cudzysłowów (w szczególności z \"Umieść tagi w cudzysłowie\" ustawionym na \"Zawsze\") może powodować problemy ze ścieżkami NBT z powodu błędu MC-175504. Ustawienie te także nie jest stosowane do komponentów tekstu w JSON'ie.",
+  "nbtac.options.field.default_quotation_mark": "Domyślny znak cudzysłowów",
+  "nbtac.options.field.default_quotation_mark.single": "Pojedyńcze (')",
+  "nbtac.options.field.default_quotation_mark.double": "Podwójne (\")",
+  "nbtac.options.field.default_quotation_mark.desc": "Określa jaki znak cudzysłowów będzie domyślnie używany.\nsingle - [']\ndouble - [\"]\nJeśli jesteś na wersji 1.21.4 lub starszej, miej na uwadze, że ustawienie te nie jest stosowane do komponentów tekstu w JSON'ie.",
 
   "nbtac.options.field.json_string_suggestion": "Sugestia ciągu JSON",
-  "nbtac.options.field.json_string_suggestion.0": "Żadna",
-  "nbtac.options.field.json_string_suggestion.1": "Zalecana",
-  "nbtac.options.field.json_string_suggestion.2": "Domyślna dla ciągów",
-  "nbtac.options.field.json_string_suggestion.3": "Przestarzała, oddzielone (' \")",
-  "nbtac.options.field.json_string_suggestion.4": "Przestarzała, złączone ('\")",
-  "nbtac.options.field.json_string_suggestion.5": "Przestarzała, lewy ukośnik (\"\\\")",
-  "nbtac.options.field.json_string_suggestion.desc": "Określa sugestię otwarcia prostego ciągu dla komponentów tekstu w JSON'ie.\n0 - Żadna\n1 - Zalecana - to samo co 2 na 1.20.4 i nowszych, to samo co 3 na starszych.\n2 - Domyślna dla ciągów - użyj rodzaju cudzysłowu z ustawienia \"Domyślny typ cudzysłowów\".\n3 - Przestarzała, oddzielone (' \")\n4 - Przestarzała, złączone ('\") - similar to 3, but without space.\n5 - Przestarzała, lewy ukośnik (\"\\\")\nInne wartości będą traktowane jako 1.",
+  "nbtac.options.field.json_string_suggestion.none": "Żadna",
+  "nbtac.options.field.json_string_suggestion.default_for_strings": "Domyślna dla ciągów",
+  "nbtac.options.field.json_string_suggestion.legacy_separated": "Przestarzała, oddzielone (' \")",
+  "nbtac.options.field.json_string_suggestion.legacy_merged": "Przestarzała, złączone ('\")",
+  "nbtac.options.field.json_string_suggestion.legacy_backslash": "Przestarzała, lewy ukośnik (\"\\\")",
+  "nbtac.options.field.json_string_suggestion.desc": "Określa sugestię otwarcia prostego ciągu dla komponentów tekstu w JSON'ie.\nnone - Żadna\ndefault_for_strings - używa rodzaju cudzysłowu z ustawienia \"Domyślny typ cudzysłowów\".\nlegacy_separated - [' \"]\nlegacy_merged - ['\"] - podobne do legacy_separated, ale bez spacji.\nlegacy_backslash - [\"\\\"]",
 
   "nbtac.options.field.hide_mc_namespace_in_tags": "Ukryj przestrzeń nazw Minecraft'a w tagach",
   "nbtac.options.field.hide_mc_namespace_in_tags.desc": "Ukrywa przestrzeń nazw \"minecraft:\" w sugestiach tagów.",
@@ -71,10 +70,10 @@
   "nbtac.options.field.gray_out_irrelevant.desc": "Wyszarza nieistotne sugestie.",
 
   "nbtac.options.field.placing_of_irrelevant": "Umieszczanie nieistotnych",
-  "nbtac.options.field.placing_of_irrelevant.0": "Normalne",
-  "nbtac.options.field.placing_of_irrelevant.1": "Na dole",
-  "nbtac.options.field.placing_of_irrelevant.2": "Ukryte",
-  "nbtac.options.field.placing_of_irrelevant.desc": "Określa pozycję nieistotnych sugestii.\n0 - Normalna\n1 - Na dole\n2 - Ukryte\nInne wartości będą traktowane jako 1.\nWartości inne od \"Normalna\" wymagają niestandardowego sortowania.",
+  "nbtac.options.field.placing_of_irrelevant.normal": "Normalne",
+  "nbtac.options.field.placing_of_irrelevant.at_the_bottom": "Na dole",
+  "nbtac.options.field.placing_of_irrelevant.hidden": "Ukryte",
+  "nbtac.options.field.placing_of_irrelevant.desc": "Określa pozycję nieistotnych sugestii.\nMożliwe wartości: normal, at_the_bottom, hidden\nWartości inne od \"normal\" wymagają aby niestandardowe sortowanie było włączone.",
 
 
   "nbtac.options.field.hide_mc_namespace_in_components": "Ukryj przestrzeń nazw Minecraft'a w komponentach",
@@ -122,7 +121,6 @@
 
   "nbtac.options.common.tooltip": "%s\n§8Domyślna wartość: %s",
   "nbtac.options.common.reset_settings": "Zresetuj ustawienia",
-  "nbtac.options.common.undefined": "[niezdefiniowane]",
   "nbtac.options.common.gui_debug_warning": "Tryb debugowania ekranu konfiguracji jest włączony!",
 
 

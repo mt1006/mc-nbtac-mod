@@ -1,7 +1,9 @@
 package net.mt1006.nbtac.config;
 
+import net.mt1006.nbtac.config.enums.DefaultQuotationMark;
+import net.mt1006.nbtac.config.enums.JsonStringSuggestion;
+import net.mt1006.nbtac.config.enums.PlacingOfIrrelevant;
 import net.mt1006.nbtac.config.gui.ModOptionList;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -13,21 +15,21 @@ public class ModConfig
 	public static final ConfigFields.BooleanField shortBoolean = fields.add("short_boolean", false);
 	public static final ConfigFields.BooleanField tagQuotationMarks = fields.add("tag_quotation_marks", false);
 	public static final ConfigFields.BooleanField stringQuotationMarks = fields.add("string_quotation_marks", false);
-	private static final ConfigFields.IntegerField defaultQuotationMarkType = fields.add("default_quotation_mark_type", 2);
-	private static final ConfigFields.IntegerField jsonStringSuggestion = fields.add("json_string_suggestion", 1);
+	public static final ConfigFields.EnumField<DefaultQuotationMark> defaultQuotationMark = fields.add("default_quotation_mark", DefaultQuotationMark.DOUBLE);
+	public static final ConfigFields.EnumField<JsonStringSuggestion> jsonStringSuggestion = fields.add("json_string_suggestion", JsonStringSuggestion.DEFAULT_FOR_STRINGS);
 	public static final ConfigFields.BooleanField hideMcNamespaceInTags = fields.add("hide_mc_namespace_in_tags", true);
 	public static final ConfigFields.BooleanField hideMcNamespaceInStrings = fields.add("hide_mc_namespace_in_strings", false);
 
 	public static final ConfigFields.BooleanField ignoreLetterCase = fields.add("ignore_letter_case", true);
 	public static final ConfigFields.BooleanField showTagHints = fields.add("show_tag_hints", true);
-	public static final ConfigFields.BooleanField hideForgeTags = fields.add("hide_forge_tags", true);
+	public static final ConfigFields.BooleanField hideForgeTags = fields.add("hide_forge_tags", true); //TODO: fix?
 
 	public static final ConfigFields.BooleanField customSorting = fields.add("custom_sorting", true);
 	public static final ConfigFields.BooleanField markRecommended = fields.add("mark_recommended", true);
 	public static final ConfigFields.BooleanField recommendedAtTheTop = fields.add("recommended_at_the_top", true);
 	public static final ConfigFields.BooleanField markIrrelevant = fields.add("mark_irrelevant", true);
 	public static final ConfigFields.BooleanField grayOutIrrelevant = fields.add("gray_out_irrelevant", true);
-	public static final ConfigFields.IntegerField placingOfIrrelevant = fields.add("placing_of_irrelevant", 1);
+	public static final ConfigFields.EnumField<PlacingOfIrrelevant> placingOfIrrelevant = fields.add("placing_of_irrelevant", PlacingOfIrrelevant.AT_THE_BOTTOM);
 
 	public static final ConfigFields.BooleanField hideMcNamespaceInComponents = fields.add("hide_mc_namespace_in_components", true);
 	public static final ConfigFields.BooleanField showCustomDataAsRelevant = fields.add("show_custom_data_as_relevant", false);
@@ -53,8 +55,8 @@ public class ModConfig
 		list.add(shortBoolean.createSwitch());
 		list.add(tagQuotationMarks.createDescribedSwitch());
 		list.add(stringQuotationMarks.createDescribedSwitch());
-		list.add(defaultQuotationMarkType.createSwitch(List.of(1, 2)));
-		//list.add(jsonStringSuggestion.createSwitch(List.of(0, 1, 2, 3, 4, 5)));
+		list.add(defaultQuotationMark.createSwitch());
+		//list.add(jsonStringSuggestion.createSwitch());
 		list.add(hideMcNamespaceInTags.createSwitch());
 		list.add(hideMcNamespaceInStrings.createSwitch());
 
@@ -69,7 +71,7 @@ public class ModConfig
 		list.add(recommendedAtTheTop.createSwitch());
 		list.add(markIrrelevant.createSwitch());
 		list.add(grayOutIrrelevant.createSwitch());
-		list.add(placingOfIrrelevant.createSwitch(List.of(0, 1, 2)));
+		list.add(placingOfIrrelevant.createSwitch());
 
 		list.addLabel("item_components");
 		list.add(hideMcNamespaceInComponents.createSwitch());
@@ -105,27 +107,5 @@ public class ModConfig
 		boolean debugVal = debugConfigScreen.val;
 		fields.reset();
 		debugConfigScreen.val = debugVal;
-	}
-
-	public static char getDefaultQuotationMark(boolean isRawJson)
-	{
-		return (defaultQuotationMarkType.val == 1 && !isRawJson) ? '\'' : '"';
-	}
-
-	public static String getDefaultQuotationMarkStr(boolean isRawJson)
-	{
-		return (defaultQuotationMarkType.val == 1 && !isRawJson) ? "'" : "\"";
-	}
-
-	public static @Nullable String getJsonStringSuggestion()
-	{
-		return switch (jsonStringSuggestion.val)
-		{
-			case 0 -> null;
-			default -> String.valueOf(getDefaultQuotationMark(false));
-			case 3 -> "' \"";
-			case 4 -> "'\"";
-			case 5 -> "\"\\\"";
-		};
 	}
 }

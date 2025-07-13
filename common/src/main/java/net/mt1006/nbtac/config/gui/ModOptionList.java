@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -148,20 +149,19 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 		}
 	}
 
-	public static class IntegerSwitch extends AbstractButton implements MutableWidget
+	public static class EnumSwitch<T extends Enum<T>> extends AbstractButton implements MutableWidget
 	{
-		private static final Component UNDEFINED_OPTION = Component.translatable("nbtac.options.common.undefined");
-		private final ConfigFields.IntegerField field;
+		private final ConfigFields.EnumField<T> field;
 		private final String key;
-		private final List<Integer> options;
+		private final List<T> options;
 		private final Component component;
 
-		public IntegerSwitch(ConfigFields.IntegerField field, List<Integer> options)
+		public EnumSwitch(ConfigFields.EnumField<T> field, T[] options)
 		{
 			super(0, 0, ELEMENT_WIDTH, ELEMENT_HEIGHT, CommonComponents.EMPTY);
 			this.field = field;
 			this.key = field.getWidgetNameKey();
-			this.options = options;
+			this.options = Arrays.asList(options);
 			this.component = Component.translatable(key);
 
 			updateText();
@@ -170,17 +170,14 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 
 		public void updateText()
 		{
-			Component optionComponent = options.contains(field.val)
-					? Component.translatable(String.format("%s.%d", key, field.val))
-					: UNDEFINED_OPTION;
-
+			Component optionComponent = Component.translatable(key + "." + field.val.name().toLowerCase());
 			setMessage(component.copy().append(": ").append(optionComponent));
 		}
 
 		@Override public void onPress()
 		{
-			int pos = options.indexOf(field.val);
-			int newIndex = (pos != options.size() - 1) ? (pos + 1) : 0;
+			int index = field.val.ordinal();
+			int newIndex = (index != options.size() - 1) ? (index + 1) : 0;
 			field.val = options.get(newIndex);
 			updateText();
 		}

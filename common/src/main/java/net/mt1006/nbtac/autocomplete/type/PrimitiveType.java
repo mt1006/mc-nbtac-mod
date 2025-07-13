@@ -64,7 +64,7 @@ public enum PrimitiveType implements Type
 		}
 		else if (this == STRING && val.isEmpty())
 		{
-			list.addRaw(ModConfig.getDefaultQuotationMarkStr(false), symbol);
+			list.addRaw(ModConfig.defaultQuotationMark.val.getStr(false), symbol);
 		}
 		else
 		{
