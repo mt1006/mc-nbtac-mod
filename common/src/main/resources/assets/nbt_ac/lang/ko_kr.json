@@ -33,8 +33,6 @@
   "nbtac.options.field.ignore_letter_case.desc": "태그 이름 제안을 제공할 때 대소문자 구분을 무시합니다.",
   "nbtac.options.field.show_tag_hints": "태그 힌트 표시",
   "nbtac.options.field.show_tag_hints.desc": "제안 목록에서 이름 옆에 태그 힌트(유형이나 출처 등)를 표시합니다.",
-  "nbtac.options.field.hide_forge_tags": "포지 태그 숨기기",
-  "nbtac.options.field.hide_forge_tags.desc": "포지의 특정 태그를 숨깁니다. \"./minecraft/cache/nbtac\"를 제거하고 게임을 다시 시작해야 적용됩니다.",
   "nbtac.options.field.custom_sorting": "사용자 지정 정렬",
   "nbtac.options.field.custom_sorting.desc": "모드가 알파벳이 아닌 제안 정렬을 사용할 수 있도록 합니다.",
   "nbtac.options.field.mark_recommended": "추천 표시",

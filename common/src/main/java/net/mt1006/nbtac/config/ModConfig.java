@@ -22,7 +22,6 @@ public class ModConfig
 
 	public static final ConfigFields.BooleanField ignoreLetterCase = fields.add("ignore_letter_case", true);
 	public static final ConfigFields.BooleanField showTagHints = fields.add("show_tag_hints", true);
-	public static final ConfigFields.BooleanField hideForgeTags = fields.add("hide_forge_tags", true); //TODO: fix?
 
 	public static final ConfigFields.BooleanField customSorting = fields.add("custom_sorting", true);
 	public static final ConfigFields.BooleanField markRecommended = fields.add("mark_recommended", true);
@@ -63,7 +62,6 @@ public class ModConfig
 		list.addLabel("suggestions");
 		list.add(ignoreLetterCase.createSwitch());
 		list.add(showTagHints.createSwitch());
-		list.add(hideForgeTags.createSwitch());
 
 		list.addLabel("suggestion_priority");
 		list.add(customSorting.createSwitch());

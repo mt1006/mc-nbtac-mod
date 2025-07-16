@@ -50,9 +50,6 @@
   "nbtac.options.field.show_tag_hints": "Pokazuj podpowiedzi do tagów",
   "nbtac.options.field.show_tag_hints.desc": "Pokazuje podpowiedzi do tagów (takie jak ich typ lub źródło) obok ich nazw na liście sugestii.",
 
-  "nbtac.options.field.hide_forge_tags": "Ukryj tagi Forge'a",
-  "nbtac.options.field.hide_forge_tags.desc": "Ukrywa tagi występujące tylko na Forge'u. Wymaga usunięcia \"./minecraft/cache/nbtac\" i restartu gry, aby zadziałało.",
-
 
   "nbtac.options.field.custom_sorting": "Niestandardowe sortowanie",
   "nbtac.options.field.custom_sorting.desc": "Zezwala modowi na użycie niealfabetycznego sortowania sugestii.",

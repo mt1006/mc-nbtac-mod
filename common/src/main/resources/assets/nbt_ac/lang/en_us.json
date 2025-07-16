@@ -50,9 +50,6 @@
   "nbtac.options.field.show_tag_hints": "Show Tag Hints",
   "nbtac.options.field.show_tag_hints.desc": "Shows tag hints (like its type or source) next to its name in a suggestion list.",
 
-  "nbtac.options.field.hide_forge_tags": "Hide Forge Tags",
-  "nbtac.options.field.hide_forge_tags.desc": "Hides Forge specific tags. Requires removing \"./minecraft/cache/nbtac\" and game restart to take effect.",
-
 
   "nbtac.options.field.custom_sorting": "Custom Sorting",
   "nbtac.options.field.custom_sorting.desc": "Allows the mod to use non-alphabetical suggestion sorting.",

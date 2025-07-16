@@ -47,9 +47,6 @@
   "nbtac.options.field.show_tag_hints": "顯示標籤提示",
   "nbtac.options.field.show_tag_hints.desc": "在建議清單中，標籤名稱旁邊顯示標籤提示（例如其類型或來源）。",
 
-  "nbtac.options.field.hide_forge_tags": "隱藏 Forge 標籤",
-  "nbtac.options.field.hide_forge_tags.desc": "隱藏 Forge 特定標籤。需要移除 \"./minecraft/cache/nbtac\" 並重新啟動遊戲才能生效。",
-
 
   "nbtac.options.field.custom_sorting": "自訂排序",
   "nbtac.options.field.custom_sorting.desc": "允許模組使用非字母順序的建議排序。",
