@@ -11,13 +11,11 @@ import java.util.Map;
 
 public class DefinedNbtTag extends NbtTag
 {
-	public static int instanceCounter = 0; //TODO: remove?
 	private @Nullable Map<Annotation, List<String>> annotations = null;
 
 	public DefinedNbtTag(String name, Type type)
 	{
 		super(name, type);
-		instanceCounter++;
 	}
 
 	@Override public int getPriority(@Nullable ParsedCompound compound)

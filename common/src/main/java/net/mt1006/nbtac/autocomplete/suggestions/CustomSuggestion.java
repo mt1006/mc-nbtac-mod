@@ -21,7 +21,7 @@ public abstract class CustomSuggestion
 	private final @Nullable String subtext;
 	private final int priority;
 
-	protected CustomSuggestion(@Nullable String subtext, int priority)
+	public CustomSuggestion(@Nullable String subtext, int priority)
 	{
 		this.subtext = getMarkedSubtext(subtext, priority);
 		this.priority = priority;

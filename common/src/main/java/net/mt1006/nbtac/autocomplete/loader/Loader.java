@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.mt1006.nbtac.NBTac;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
-import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.config.ModConfig;
 import org.jetbrains.annotations.Nullable;
@@ -50,12 +49,10 @@ public class Loader
 			return;
 		}
 
-		NBTac.LOGGER.info("Finished in: {} ms", System.currentTimeMillis() - start);
 		finished = true;
-
 		if (ModConfig.debugMode.val)
 		{
-			NBTac.LOGGER.info("Created NbtSuggestion instances: {}", DefinedNbtTag.instanceCounter);
+			NBTac.LOGGER.info("Finished in: {} ms", System.currentTimeMillis() - start);
 		}
 
 		if (ModConfig.saveSuggestions.val) { saveTags(); }
