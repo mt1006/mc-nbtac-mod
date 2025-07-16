@@ -9,6 +9,8 @@ import java.util.List;
 
 public class EnumType extends ComplexType
 {
+	public static final EnumType DYE_COLOR = new EnumType(List.of(), List.of("white", "orange", "magenta", "light_blue",
+			"yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"), false);
 	private final List<String> elements;
 	private final boolean ordered;
 

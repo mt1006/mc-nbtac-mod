@@ -14,10 +14,9 @@ import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.PlayerHeadBlock;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.suggestions.DataComponentSuggestion;
-import net.mt1006.nbtac.autocomplete.suggestions.IdTagSuggestion;
 import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
+import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.utils.BlockEntityCatcher;
@@ -32,8 +31,15 @@ public class DataComponentManager
 	private static final DefinedNbtTag UNKNOWN_COMPONENT = new DefinedNbtTag("nbtac:empty", PrimitiveType.UNKNOWN);
 	public static final Map<String, DefinedNbtTag> componentMap = new HashMap<>();
 
-	public static void loadSuggestions(SuggestionList suggestionList, String str, Set<DataComponentType<?>> usedComponents,
-									   @Nullable Item item, @Nullable ParserType parserType, boolean addSuffix)
+	public static void loadSuggestions(SuggestionList list, String str, Set<DataComponentType<?>> usedComponents,
+									   @Nullable Item item, boolean addEqualSign)
+	{
+		NbtTagMap tagMap = new NbtTagMap();
+		loadTagMap(tagMap, str, usedComponents, item);
+		tagMap.forEach((tag) -> list.add(new DataComponentSuggestion(tag, addEqualSign)));
+	}
+
+	public static void loadTagMap(NbtTagMap tagMap, String str, Set<DataComponentType<?>> usedComponents, @Nullable Item item)
 	{
 		List<Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>>> entryList = new ArrayList<>();
 		SharedSuggestionProvider.filterResources(RegistryUtils.DATA_COMPONENT_TYPE.entrySet(), str,
@@ -44,25 +50,16 @@ public class DataComponentManager
 
 		for (Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>> entry : entryList)
 		{
-			// https://minecraft.wiki/w/Data_component_format#Non-encoded_components
 			ResourceLocation id = entry.getKey().location();
 			DataComponentType<?> componentType = entry.getValue();
 			if (componentType.codec() == null || usedComponents.contains(componentType)) { continue; }
 
 			DefinedNbtTag component = DataComponentManager.componentMap.get("item/" + id);
 			if (component == null) { component = UNKNOWN_COMPONENT; }
+
 			boolean relevant = predefinedComponents.contains(componentType)
 					|| hardcodedRelevancy.contains(componentType) || component.isRelevant(false, null);
-
-			if (parserType != null)
-			{
-				suggestionList.add(new IdTagSuggestion(component, id, parserType, relevant ? 0 : -1));
-			}
-			else
-			{
-				String subtext = component.getSubtext();
-				suggestionList.add(new DataComponentSuggestion(id, subtext, relevant, addSuffix));
-			}
+			tagMap.add(new GeneratedNbtTag(component, relevant ? 0 : -1, id));
 		}
 	}
 

@@ -9,6 +9,7 @@ public class ArrayType implements Type
 	public static final ArrayType BYTE = new ArrayType(PrimitiveType.BYTE_ARRAY, PrimitiveType.BYTE, 'B');
 	public static final ArrayType INT = new ArrayType(PrimitiveType.INT_ARRAY, PrimitiveType.INT, 'I');
 	public static final ArrayType LONG = new ArrayType(PrimitiveType.LONG_ARRAY, PrimitiveType.LONG, 'L');
+	public static final ArrayType BLOCK_POS = INT;
 	private final PrimitiveType primitive;
 	private final PrimitiveType elementType;
 	private final String opening;

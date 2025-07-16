@@ -4,17 +4,30 @@ import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.suggestions.TagSuggestion;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 
-public class NbtTagMap
+public class NbtTagMap implements Iterable<NbtTag>
 {
+	private final @Nullable NbtTagMap parent;
 	private @Nullable Map<String, NbtTag> map = null;
 	private boolean containsIdTag = false;
+
+	public NbtTagMap()
+	{
+		this(null);
+	}
+
+	public NbtTagMap(@Nullable NbtTagMap parent)
+	{
+		this.parent = parent;
+	}
 
 	public boolean add(NbtTag tag)
 	{
@@ -25,15 +38,23 @@ public class NbtTagMap
 
 	public void addAll(@Nullable NbtTagMap tagMap)
 	{
-		if (tagMap != null) { tagMap.getAll().forEach(this::add); }
+		if (tagMap != null) { tagMap.forEach(this::add); }
 	}
 
 	public @Nullable NbtTag get(String key)
 	{
 		if (map == null) { return null; }
 
+		if (parent != null)
+		{
+			NbtTag tag = parent.get(key);
+			if (tag != null) { return tag; }
+		}
+
 		if (containsIdTag)
 		{
+			// we shouldn't worry about this being repeated in calls to parent.get()
+			// as parents are used by maps of defined tags, whereas id tags by generated tags
 			NbtTag idTag = map.get("minecraft:" + key);
 			if (idTag != null) { return idTag; }
 		}
@@ -45,18 +66,26 @@ public class NbtTagMap
 		return get(key) != null;
 	}
 
-	public Collection<NbtTag> getAll()
-	{
-		return map != null ? map.values() : List.of();
-	}
-
 	public SuggestionList suggestionsForKeyPrefix(ParserType parserType, ParsedCompound compound, String prefix, int cursorPos)
 	{
 		SuggestionList list = new SuggestionList(cursorPos);
-		getAll().forEach((tag) -> list.add(TagSuggestion.create(tag, parserType, compound)));
+		forEach((tag) -> list.add(TagSuggestion.create(tag, parserType, compound)));
 
 		list.filterByPrefix(prefix);
 		compound.getAll().forEach((t) -> list.removeByName(t.key));
 		return list;
+	}
+
+	private Stream<NbtTag> getStream()
+	{
+		Stream<NbtTag> stream = map != null ? map.values().stream() : Stream.empty();
+		return parent != null ? Stream.concat(parent.getStream(), stream) : stream;
+	}
+
+	@Override public @NotNull Iterator<NbtTag> iterator()
+	{
+		return map == null
+				? (parent != null ? parent.iterator() : Collections.emptyIterator())
+				: getStream().iterator();
 	}
 }

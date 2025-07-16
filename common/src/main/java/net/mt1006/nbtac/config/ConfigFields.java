@@ -15,7 +15,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ConfigFields
@@ -131,7 +133,7 @@ public class ConfigFields
 		private static final String DESC_ERROR = "[failed to load description]";
 		public final String name;
 		private final T defVal;
-		public volatile T val;
+		public T val;
 
 		protected Field(String name, T val)
 		{

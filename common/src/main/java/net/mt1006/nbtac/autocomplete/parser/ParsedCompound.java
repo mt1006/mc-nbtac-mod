@@ -22,4 +22,10 @@ public class ParsedCompound extends ParsedCollection<ParsedTag>
 	{
 		return get(key) != null;
 	}
+
+	public @Nullable String getStrVal(String key)
+	{
+		ParsedTag tag = get(key);
+		return (tag != null && tag.val instanceof ParsedPrimitive primitive) ? primitive.val : null;
+	}
 }

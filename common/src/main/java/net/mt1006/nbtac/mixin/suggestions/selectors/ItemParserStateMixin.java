@@ -75,7 +75,7 @@ public abstract class ItemParserStateMixin
 		String str = builder.getRemaining().toLowerCase();
 
 		SuggestionList suggestionList = new SuggestionList();
-		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, null, true);
+		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, true);
 		if (str.isEmpty() || str.equals("!")) { suggestionList.addRaw("!", "(remove component)", 80); }
 		suggestionList.forEach((s) -> s.suggest(builder));
 
@@ -90,7 +90,7 @@ public abstract class ItemParserStateMixin
 		String str = builder.getRemaining().toLowerCase();
 
 		SuggestionList suggestionList = new SuggestionList();
-		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, null, false);
+		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, false);
 		suggestionList.forEach((s) -> s.suggest(builder));
 
 		cir.setReturnValue(builder.buildFuture());

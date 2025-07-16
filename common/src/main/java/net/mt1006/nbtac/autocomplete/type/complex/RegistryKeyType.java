@@ -2,6 +2,7 @@ package net.mt1006.nbtac.autocomplete.type.complex;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
@@ -12,31 +13,25 @@ import org.jetbrains.annotations.Nullable;
 public class RegistryKeyType extends ComplexType
 {
 	private final @Nullable ResourceLocation registryId;
-	private final @Nullable Registry<?> registry;
 
 	public RegistryKeyType(@Nullable String arg)
 	{
 		super(PrimitiveType.STRING);
-		if (arg != null)
-		{
-			registryId = ResourceLocation.parse(arg);
-			Holder.Reference<? extends Registry<?>> ref = RegistryUtils.REGISTRY.get(registryId).orElse(null);
-			registry = ref != null ? ref.value() : null;
-		}
-		else
-		{
-			registryId = null;
-			registry = null;
-		}
+		registryId = arg != null ? ResourceLocation.parse(arg) : null;
 	}
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		if (registryId == null || registry == null) { return; }
+		if (registryId == null) { return; }
+
+		Holder.Reference<? extends Registry<?>> ref = RegistryUtils.REGISTRY.get(registryId).orElse(null);
+		Registry<?> registry = ref != null ? ref.value() : null;
+		if (registry == null) { return; }
+
 		String subtext = "[#" + registryId.getPath() + "]";
-		for (Object obj : registry)
+		for (ResourceKey<?> id : registry.listElementIds().toList())
 		{
-			list.add(new IdSuggestion(((Registry<Object>)registry).getKey(obj), subtext, ctx.parserType()));
+			list.add(new IdSuggestion(id.location(), subtext, ctx.parserType()));
 		}
 	}
 }

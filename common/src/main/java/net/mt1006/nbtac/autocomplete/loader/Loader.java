@@ -38,11 +38,11 @@ public class Loader
 
 		try
 		{
+			SuggestionFileParser.parseNbtSuggestions("compound", "nbtac");
 			SuggestionFileParser.parseDataComponents("item", "minecraft");
 			SuggestionFileParser.parseNbtSuggestions("block", "minecraft");
 			SuggestionFileParser.parseNbtSuggestions("entity", "minecraft");
 			SuggestionFileParser.parseNbtSuggestions("text", "nbtac");
-			SuggestionFileParser.parseNbtSuggestions("compound", "nbtac");
 		}
 		catch (Exception e)
 		{
@@ -86,7 +86,7 @@ public class Loader
 	{
 		if (tagMap == null || depth > MAX_PRINTER_DEPTH) { return; }
 
-		for (NbtTag tag : tagMap.getAll())
+		for (NbtTag tag : tagMap)
 		{
 			for (int i = 0; i < depth; i++) { writer.print("-"); }
 			writer.printf("%s (%s)\n", tag.getName(), tag.getType().getPrimitive().getName());

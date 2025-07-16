@@ -1,5 +1,6 @@
 package net.mt1006.nbtac.autocomplete.loader;
 
+import net.mt1006.nbtac.NBTac;
 import net.mt1006.nbtac.autocomplete.DataComponentManager;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
@@ -7,6 +8,8 @@ import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.autocomplete.type.DynamicArgumentType;
 import net.mt1006.nbtac.autocomplete.type.Type;
+import net.mt1006.nbtac.autocomplete.type.compound.TagsType;
+import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.utils.SimpleStringReader;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,19 +39,34 @@ public class SuggestionFileParser
 			if (reader.peek() != ' ')
 			{
 				reader.expectEnd();
-				NbtTagManager.add(entryKey, parseSuggestions(entry.suggestions));
+				NbtTagManager.add(entryKey, parseRequiredSuggestions(entry.suggestions, null, entryKey));
+				continue;
 			}
-			else
+			reader.skipChar(); // skip space
+
+			char sign = reader.peek();
+			reader.skipChar();
+
+			String referencedKey = parseNbtEntryName(reader.readFileString(), keyDefaultPrefix, keyModPrefix);
+			NbtTagMap parentTagMap = NbtTagManager.get(referencedKey);
+			if (parentTagMap == null) { throw reader.new ReaderException(); }
+
+			switch (sign)
 			{
-				reader.skipChar();
-				reader.expect('=');
+				case '=':
+					NbtTagManager.add(entryKey, parentTagMap);
+					reader.expectEnd();
+					if (!entry.suggestions.isEmpty()) { throw reader.new ReaderException(); }
+					break;
 
-				String referencedKey = parseNbtEntryName(reader.readFileString(), keyDefaultPrefix, keyModPrefix);
-				NbtTagMap tagMap = NbtTagManager.get(referencedKey);
-				if (tagMap == null) { throw reader.new ReaderException(); }
+				case '&':
+					reader.expectEnd();
+					NbtTagMap childTagMap = parseRequiredSuggestions(entry.suggestions, parentTagMap, entryKey);
+					NbtTagManager.add(entryKey, childTagMap);
+					break;
 
-				NbtTagManager.add(entryKey, tagMap);
-				reader.expectEnd();
+				default:
+					throw reader.new ReaderException();
 			}
 		}
 	}
@@ -68,7 +86,7 @@ public class SuggestionFileParser
 			parseAnnotations(reader, tag);
 			reader.expectEnd();
 
-			tag.getType().setSubcompound(parseSuggestions(entry.suggestions));
+			tag.getType().setSubcompound(parseSuggestions(entry.suggestions, null));
 			DataComponentManager.componentMap.put(keyPrefix + entryName, tag);
 		}
 	}
@@ -105,11 +123,18 @@ public class SuggestionFileParser
 		catch (IOException e) { throw new RuntimeException(e); }
 	}
 
-	private static @Nullable NbtTagMap parseSuggestions(List<String> lines)
+	private static NbtTagMap parseRequiredSuggestions(List<String> lines, @Nullable NbtTagMap parent, String entryKey)
+	{
+		NbtTagMap tagMap = parseSuggestions(lines, parent);
+		if (tagMap == null) { throw new RuntimeException("Failed to parse required suggestions for " + entryKey); }
+		return tagMap;
+	}
+
+	private static @Nullable NbtTagMap parseSuggestions(List<String> lines, @Nullable NbtTagMap parent)
 	{
 		if (lines.isEmpty()) { return null; }
 		Stack<NbtTag> suggestionStack = new Stack<>();
-		NbtTagMap outputMap = new NbtTagMap();
+		NbtTagMap outputMap = new NbtTagMap(parent);
 
 		for (String line : lines)
 		{
@@ -155,6 +180,15 @@ public class SuggestionFileParser
 
 	private static Type parseType(SimpleStringReader reader)
 	{
+		if (reader.peek() == '#')
+		{
+			reader.skipChar(); // skip '#'
+
+			String id = "compound/nbtac:" + reader.readFileString();
+			if (ModConfig.debugMode.val && NbtTagManager.get(id) == null) { NBTac.LOGGER.warn("{} not found", id); }
+			return new TagsType(id, null, false);
+		}
+
 		String name = reader.readFileString();
 		List<Type> subtypes = reader.parseList(SuggestionFileParser::parseType, '<', '>');
 		List<String> args = reader.parseList(SimpleStringReader::readFileString, '(', ')');

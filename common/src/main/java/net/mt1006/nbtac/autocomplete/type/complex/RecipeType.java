@@ -18,10 +18,10 @@ public class RecipeType extends ComplexType
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		MinecraftServer recipeServer = Minecraft.getInstance().getSingleplayerServer();
-		if (recipeServer == null) { return; }
+		MinecraftServer server = Minecraft.getInstance().getSingleplayerServer();
+		if (server == null) { return; }
 
-		for (RecipeHolder<?> recipeHolder : recipeServer.getRecipeManager().getRecipes())
+		for (RecipeHolder<?> recipeHolder : server.getRecipeManager().getRecipes())
 		{
 			list.add(new IdSuggestion(recipeHolder.id().location(), null, ctx.parserType()));
 		}

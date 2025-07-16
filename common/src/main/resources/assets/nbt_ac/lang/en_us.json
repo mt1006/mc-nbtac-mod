@@ -27,7 +27,7 @@
   "nbtac.options.field.default_quotation_mark": "Default Quotation Mark",
   "nbtac.options.field.default_quotation_mark.single": "Single (')",
   "nbtac.options.field.default_quotation_mark.double": "Double (\")",
-  "nbtac.options.field.default_quotation_mark.desc": "Defines what kind of quotation mark will be used by default.\nsingle - [']\ndouble - [\"]\nIf you're on 1.21.4 or older note that doesn't apply to JSON text components.",
+  "nbtac.options.field.default_quotation_mark.desc": "Defines what kind of quotation mark will be used by default.\nsingle - [']\ndouble - [\"]\nIf you're on 1.21.4 or older note that it doesn't apply to JSON text components.",
 
   "nbtac.options.field.json_string_suggestion": "JSON String Suggestion",
   "nbtac.options.field.json_string_suggestion.none": "None",

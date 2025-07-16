@@ -16,9 +16,9 @@ public class GeneratedNbtTag extends NbtTag
 		this(name, type, 0, null);
 	}
 
-	public GeneratedNbtTag(NbtTag toCopy, int priority)
+	public GeneratedNbtTag(NbtTag toCopy, int priority, @Nullable ResourceLocation nameAsId)
 	{
-		this(toCopy.getName(), toCopy.getType(), priority, null);
+		this(toCopy.getName(), toCopy.getType(), priority, nameAsId);
 	}
 
 	public GeneratedNbtTag(String name, Type type, int priority, @Nullable ResourceLocation nameAsId)

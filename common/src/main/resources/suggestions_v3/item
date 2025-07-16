@@ -19,9 +19,9 @@ bees :list<compound>
 +min_ticks_in_hive :int
 +ticks_in_hive :int
 
-block_entity_data :TagsWithId(block/$..$)
+block_entity_data :TagsWithId(block/$../../id$)
 
-block_state :BlockStateTags($..$)
+block_state :BlockStateTags($../../id$)
 
 block_attacks :compound @AlwaysRelevant
 +block_delay_seconds :int
@@ -53,23 +53,23 @@ bucket_entity_data :compound
 +HuntingCooldown :long
 +BucketVariantTag :int
 
-bundle_contents :list<Tags(compound/nbtac:item)>
+bundle_contents :list<#item_stack>
 
-can_break :list<Tags(compound/nbtac:block_predicate_new)> @AlwaysRelevant
+can_break :list<#block_predicate> @AlwaysRelevant
 
-can_place_on :list<Tags(compound/nbtac:block_predicate_new)>
+can_place_on :list<#block_predicate>
 
-charged_projectiles :list<Tags(compound/nbtac:item)>
+charged_projectiles :list<#item_stack>
 
 consumable :compound @AlwaysRelevant
 +consume_seconds :float
 +animation :Enum(none, block, bow, brush, crossbow, drink, eat, spear, spyglass, toot_horn)
 +sound :RegistryKey(minecraft:sound_event)
 +has_consume_particles :boolean
-+on_consume_effects :list<Tags(compound/nbtac:item_effect)>
++on_consume_effects :list<#item_effect>
 
 container :list<compound>
-+item :Tags(compound/nbtac:item)
++item :#item_stack
 +slot :int
 
 container_loot :compound
@@ -92,7 +92,7 @@ damage_resistant :compound @AlwaysRelevant
 +types :DamageType
 
 death_protection :compound @AlwaysRelevant
-+death_effects :list<Tags(compound/nbtac:item_effect)>
++death_effects :list<#item_effect>
 
 debug_stick_state :compound
 
@@ -179,11 +179,7 @@ ominous_bottle_amplifier :int
 
 pot_decorations :list<PotDecoration>
 
-potion_contents :compound
-+potion :RegistryKey(minecraft:potion)
-+custom_color :int
-+custom_effects :list<Tags(compound/nbtac:effect)>
-+custom_name :string
+potion_contents :#potion_contents
 
 potion_duration_scale :float
 
@@ -210,9 +206,7 @@ repairable :compound @AlwaysRelevant
 
 stored_enchantments :Enchantments
 
-suspicious_stew_effects :list<compound>
-+id :RegistryKey(minecraft:mob_effect)
-+duration :int
+suspicious_stew_effects :list<#suspicious_stew_effect>
 
 tool :compound @AlwaysRelevant
 +default_mining_speed :float
@@ -239,7 +233,7 @@ use_cooldown :compound @AlwaysRelevant
 +seconds :float @Recommended
 +cooldown_group :string
 
-use_remainder :Tags(compound/nbtac:item) @AlwaysRelevant
+use_remainder :#item_stack @AlwaysRelevant
 
 weapon :compound @AlwaysRelevant
 +item_damage_per_attack :int

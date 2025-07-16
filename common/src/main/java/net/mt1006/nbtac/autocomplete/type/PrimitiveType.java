@@ -1,7 +1,7 @@
 package net.mt1006.nbtac.autocomplete.type;
 
 import net.mt1006.nbtac.autocomplete.SuggestionList;
-import net.mt1006.nbtac.autocomplete.parser.ParsedPrimitive;
+import net.mt1006.nbtac.autocomplete.parser.*;
 import net.mt1006.nbtac.config.ModConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,6 +82,17 @@ public enum PrimitiveType implements Type
 	@Override public PrimitiveType getPrimitive()
 	{
 		return this;
+	}
+
+	public Class<? extends ParsedValue> getClassOfParsed()
+	{
+		return switch (this)
+		{
+			case COMPOUND -> ParsedCompound.class;
+			case LIST -> ParsedList.class;
+			case BYTE_ARRAY, INT_ARRAY, LONG_ARRAY -> ParsedArray.class;
+			default -> ParsedPrimitive.class;
+		};
 	}
 
 	public boolean isListOrArray()

@@ -1,5 +1,6 @@
 package net.mt1006.nbtac.autocomplete;
 
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -10,18 +11,33 @@ public class NbtTagManager
 {
 	private static final Map<String, NbtTagMap> tagMaps = new HashMap<>();
 
-	public static void add(String key, NbtTagMap tagMap)
+	public static void add(String key, @Nullable NbtTagMap tagMap)
 	{
 		tagMaps.put(key, tagMap);
 	}
 
 	public static @Nullable NbtTagMap get(String key)
 	{
+		if (key != null && key.startsWith("entity/"))
+		{
+			ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
+			if (id != null && !id.getNamespace().equals("minecraft"))
+			{
+				return getForModdedEntity(id);
+			}
+		}
+
 		return key != null ? tagMaps.get(key) : null;
 	}
 
 	public static Set<Map.Entry<String, NbtTagMap>> tagMapSet()
 	{
 		return tagMaps.entrySet();
+	}
+
+	private static @Nullable NbtTagMap getForModdedEntity(ResourceLocation id)
+	{
+		//TODO: finish
+		return null;
 	}
 }

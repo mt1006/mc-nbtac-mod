@@ -2,8 +2,6 @@ package net.mt1006.nbtac.autocomplete.tag;
 
 import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
-import net.mt1006.nbtac.autocomplete.parser.ParsedPrimitive;
-import net.mt1006.nbtac.autocomplete.parser.ParsedTag;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +22,16 @@ public class DefinedNbtTag extends NbtTag
 
 	@Override public int getPriority(@Nullable ParsedCompound compound)
 	{
-		if (isRecommended()) { return 100; }
+		if (annotations != null)
+		{
+			List<String> recommendedVal = annotations.get(Annotation.RECOMMENDED);
+			if (recommendedVal == null) { recommendedVal = annotations.get(Annotation.OPT_RECOMMENDED); }
+			if (recommendedVal != null)
+			{
+				return 100 + (!recommendedVal.isEmpty() ? Integer.parseInt(recommendedVal.getFirst()) : 0);
+			}
+		}
+
 		return isRelevant(true, compound) ? 0 : -1;
 	}
 
@@ -48,13 +55,13 @@ public class DefinedNbtTag extends NbtTag
 			List<String> ifEq = annotations.get(Annotation.RELEVANT_IF_EQ);
 			if (ifEq != null && !ifEq.isEmpty())
 			{
-				ParsedTag tag = compound.get(ifEq.getFirst());
-				if (tag != null && tag.val instanceof ParsedPrimitive tagVal && tagVal.val != null)
+				String val = compound.getStrVal(ifEq.getFirst());
+				if (val != null)
 				{
 					isRelevant = false;
 					for (int i = 1; i < ifEq.size(); i++)
 					{
-						if (tagVal.val.equals(ifEq.get(i))) { return true; }
+						if (val.equals(ifEq.get(i))) { return true; }
 					}
 				}
 			}
@@ -76,15 +83,10 @@ public class DefinedNbtTag extends NbtTag
 		}
 	}
 
-	public boolean isRecommended()
-	{
-		return annotations != null && annotations.containsKey(Annotation.RECOMMENDED);
-	}
-
 	public boolean addAnnotation(String name, List<String> args)
 	{
 		Annotation annotation = Annotation.fromName(name);
-		if (annotation == null || (args.isEmpty()) == annotation.argumentsExpected) { return false; }
+		if (annotation == null) { return false; }
 
 		if (annotations == null) { annotations = new IdentityHashMap<>(); }
 		return (annotations.put(annotation, args) == null);
@@ -92,19 +94,18 @@ public class DefinedNbtTag extends NbtTag
 
 	public enum Annotation
 	{
-		ALWAYS_RELEVANT("AlwaysRelevant", false),
-		RELEVANT_IF_EQ("RelevantIfEq", true),
-		RELEVANT_IF_NOT_DEF("RelevantIfNotDef", true),
-		RECOMMENDED("Recommended", false);
+		ALWAYS_RELEVANT("AlwaysRelevant"),
+		RELEVANT_IF_EQ("RelevantIfEq"),
+		RELEVANT_IF_NOT_DEF("RelevantIfNotDef"),
+		RECOMMENDED("Recommended"),
+		OPT_RECOMMENDED("OptRecommended");
 
 		private static final Annotation[] VALUES = values();
 		private final String name;
-		private final boolean argumentsExpected;
 
-		Annotation(String name, boolean argumentExpected)
+		Annotation(String name)
 		{
 			this.name = name;
-			this.argumentsExpected = argumentExpected;
 		}
 
 		public static @Nullable Annotation fromName(String name)

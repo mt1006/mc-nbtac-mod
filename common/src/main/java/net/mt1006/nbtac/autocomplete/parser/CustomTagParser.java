@@ -67,19 +67,12 @@ public class CustomTagParser
 			}
 			else
 			{
-				ParsedTag itemIdTag = new ParsedTag(null);
-				itemIdTag.key = dataComponentItemId;
-				itemIdTag.val = new ParsedCompound(itemIdTag, 0);
-
-				val = getNextValue(new ParsedTag((ParsedCompound)itemIdTag.val), 0);
+				val = getNextValue(ParsedTag.createVirtualItemParents(dataComponentItemId), 0);
 				parseValue(val);
 
 				// if val is primitive then throw exception because we don't know if it's finished
 				// so we should provide suggestions for it anyway (e.g. for boolean)
-				if (val instanceof ParsedPrimitive)
-				{
-					throw reader.new ReaderException();
-				}
+				if (val instanceof ParsedPrimitive) { throw reader.new ReaderException(); }
 			}
 			return SuggestionList.empty();
 		}

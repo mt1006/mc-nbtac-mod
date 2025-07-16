@@ -3,8 +3,6 @@ package net.mt1006.nbtac.autocomplete.type.compound;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
-import net.mt1006.nbtac.autocomplete.parser.ParsedPrimitive;
-import net.mt1006.nbtac.autocomplete.parser.ParsedTag;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.autocomplete.type.ListType;
@@ -22,14 +20,14 @@ public class TextCompoundType extends ComplexCompoundType
 		if (initialContent == null) { return; }
 
 		String type = null;
-		ParsedTag typeTag = parsed.get("type");
-		if (typeTag != null && typeTag.val instanceof ParsedPrimitive typeVal && typeVal.val != null)
+		String val = parsed.getStrVal("type");
+		if (val != null)
 		{
-			type = typeVal.val.equals("translatable") ? "translate" : typeVal.val;
+			type = val.equals("translatable") ? "translate" : val;
 		}
 		else
 		{
-			for (NbtTag tag : initialContent.getAll())
+			for (NbtTag tag : initialContent)
 			{
 				if (parsed.containsKey(tag.getName()) && !tag.getName().equals("type"))
 				{
@@ -41,12 +39,12 @@ public class TextCompoundType extends ComplexCompoundType
 
 		if (type == null)
 		{
-			initialContent.getAll().forEach((t) -> map.add(new GeneratedNbtTag(t, 100)));
+			initialContent.forEach((t) -> map.add(new GeneratedNbtTag(t, 100, null)));
 		}
 		else
 		{
 			String finalType = type;
-			initialContent.getAll().forEach((t) -> map.add(new GeneratedNbtTag(t, t.getName().equals(finalType) ? 100 : -1)));
+			initialContent.forEach((t) -> map.add(new GeneratedNbtTag(t, t.getName().equals(finalType) ? 100 : -1, null)));
 		}
 	}
 }

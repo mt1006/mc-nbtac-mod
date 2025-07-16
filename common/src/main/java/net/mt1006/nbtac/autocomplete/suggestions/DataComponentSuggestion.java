@@ -1,6 +1,7 @@
 package net.mt1006.nbtac.autocomplete.suggestions;
 
 import net.minecraft.resources.ResourceLocation;
+import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.config.ModConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,11 +10,15 @@ public class DataComponentSuggestion extends CustomSuggestion
 	private final String withNamespace;
 	private final @Nullable String withoutNamespace;
 
-	public DataComponentSuggestion(ResourceLocation id, @Nullable String subtext, boolean relevant, boolean addSuffix)
+	public DataComponentSuggestion(NbtTag tag, boolean addEqualSign)
 	{
-		super(subtext, relevant ? 0 : -1);
-		this.withNamespace = id.toString() + (addSuffix ? "=" : "");
-		this.withoutNamespace = id.getNamespace().equals("minecraft") ? (id.getPath() + (addSuffix ? "=" : "")) : null;
+		super(tag.getSubtext(), tag.getPriority(null));
+
+		ResourceLocation id = tag.getNameAsId();
+		if (id == null) { id = ResourceLocation.parse("error:error");  }
+
+		this.withNamespace = id + (addEqualSign ? "=" : "");
+		this.withoutNamespace = id.getNamespace().equals("minecraft") ? (id.getPath() + (addEqualSign ? "=" : "")) : null;
 	}
 
 	@Override public String getText()

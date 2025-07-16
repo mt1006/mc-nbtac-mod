@@ -3,9 +3,9 @@ package net.mt1006.nbtac.autocomplete.type.complex;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.type.Type;
 
-public class InventorySlotType extends ComplexType
+public class PlayerInventorySlotType extends ComplexType
 {
-	public InventorySlotType(Type type)
+	public PlayerInventorySlotType(Type type)
 	{
 		super(type.getPrimitive());
 	}
