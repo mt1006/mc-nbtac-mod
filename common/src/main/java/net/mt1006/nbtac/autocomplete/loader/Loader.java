@@ -37,11 +37,14 @@ public class Loader
 
 		try
 		{
-			SuggestionFileParser.parseNbtSuggestions("compound", "nbtac");
-			SuggestionFileParser.parseDataComponents("item", "minecraft");
-			SuggestionFileParser.parseNbtSuggestions("block", "minecraft");
-			SuggestionFileParser.parseNbtSuggestions("entity", "minecraft");
-			SuggestionFileParser.parseNbtSuggestions("text", "nbtac");
+			new SuggestionFileParser("compound", "nbtac").parseNbtSuggestions();
+			new SuggestionFileParser("block", "minecraft").parseNbtSuggestions();
+			new SuggestionFileParser("entity", "minecraft").parseNbtSuggestions();
+			new SuggestionFileParser("text", "nbtac").parseNbtSuggestions();
+			new SuggestionFileParser("item", "minecraft").parseDataComponents();
+
+			new DataFileParser("block2be").parseBlockToBlockEntityMap();
+			new DataFileParser("serverreg").parseServerRegistries();
 		}
 		catch (Exception e)
 		{

@@ -10,6 +10,7 @@ import java.util.Set;
 public class NbtTagManager
 {
 	private static final Map<String, NbtTagMap> tagMaps = new HashMap<>();
+	public static final Map<ResourceLocation, String> blockToBlockEntityMap = new HashMap<>();
 
 	public static void add(String key, @Nullable NbtTagMap tagMap)
 	{
@@ -18,12 +19,17 @@ public class NbtTagManager
 
 	public static @Nullable NbtTagMap get(String key)
 	{
-		if (key != null && key.startsWith("entity/"))
+		if (key != null)
 		{
-			ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
-			if (id != null && !id.getNamespace().equals("minecraft"))
+			if (key.startsWith("entity/"))
 			{
-				return getForModdedEntity(id);
+				ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
+				if (id != null && !id.getNamespace().equals("minecraft")) { return getForModdedEntity(id); }
+			}
+			else if (key.startsWith("block/"))
+			{
+				ResourceLocation id = ResourceLocation.tryParse(key.substring(6));
+				if (id != null) { key = blockToBlockEntityMap.get(id); }
 			}
 		}
 

@@ -1,5 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type.compound;
 
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
@@ -32,9 +33,22 @@ public class TagsType extends ComplexCompoundType
 		if (withId)
 		{
 			Type type = null;
-			if (keyId != null) { type = new RegistryKeyType(keyId); }
-			else if (id != null) { type = new IdType(id.substring(id.indexOf('/') + 1)); }
-			map.add(new GeneratedNbtTag("id", type, 100, null));
+			if (keyId != null)
+			{
+				type = new RegistryKeyType(keyId);
+			}
+			else if (id != null)
+			{
+				String finalId = id;
+				if (id.startsWith("block/"))
+				{
+					ResourceLocation requiredId = ResourceLocation.tryParse(id.substring(id.indexOf('/') + 1));
+					if (requiredId != null) { finalId = NbtTagManager.blockToBlockEntityMap.getOrDefault(requiredId, id); }
+				}
+				type = new IdType(finalId.substring(id.indexOf('/') + 1));
+			}
+
+			map.add(new GeneratedNbtTag("id", type, 200, null));
 		}
 
 		if (id == null) { return; }

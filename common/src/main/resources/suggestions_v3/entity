@@ -312,7 +312,8 @@ area_effect_cloud &!entity
 +RadiusOnUse :float
 +RadiusPerTick :float
 +Radius :float @OptRecommended
-+custom_particle :ServerRegistryKey(minecraft:particle_options) @OptRecommended
++custom_particle :compound @OptRecommended
+	+type :ServerRegistryKey(minecraft:particle_type)
 +potion_contents :#potion_contents @OptRecommended
 +potion_duration_scale :float
 

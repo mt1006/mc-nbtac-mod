@@ -13,33 +13,32 @@ import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.utils.SimpleStringReader;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class SuggestionFileParser
+public class SuggestionFileParser extends FileParser
 {
 	private static final String MOD_NAMESPACE = "nbtac";
-	private static final String ROOT_DIR = "/suggestions_v3/";
+	private final String keyDefaultPrefix, keyModPrefix;
 
-	public static void parseNbtSuggestions(String filename, String namespace)
+	public SuggestionFileParser(String filename, String namespace)
 	{
-		String keyDefaultPrefix = filename + "/" + namespace + ":";
-		String keyModPrefix = MOD_NAMESPACE + "/" + namespace + ":";
+		super(filename);
+		this.keyDefaultPrefix = filename + "/" + namespace + ":";
+		this.keyModPrefix = MOD_NAMESPACE + "/" + namespace + ":";
+	}
 
-		for (Entry entry : parseFile(filename))
+	public void parseNbtSuggestions()
+	{
+		for (Entry entry : parseFile())
 		{
 			SimpleStringReader reader = new SimpleStringReader(entry.header);
-			String entryKey = parseNbtEntryName(reader.readFileString(), keyDefaultPrefix, keyModPrefix);
+			String entryKey = parseNbtEntryName(reader.readFileString());
 
 			if (reader.peek() != ' ')
 			{
 				reader.expectEnd();
-				NbtTagManager.add(entryKey, parseRequiredSuggestions(entry.suggestions, null, entryKey));
+				NbtTagManager.add(entryKey, parseRequiredSuggestions(entry.lines, null, entryKey));
 				continue;
 			}
 			reader.skipChar(); // skip space
@@ -47,7 +46,7 @@ public class SuggestionFileParser
 			char sign = reader.peek();
 			reader.skipChar();
 
-			String referencedKey = parseNbtEntryName(reader.readFileString(), keyDefaultPrefix, keyModPrefix);
+			String referencedKey = parseNbtEntryName(reader.readFileString());
 			NbtTagMap parentTagMap = NbtTagManager.get(referencedKey);
 			if (parentTagMap == null) { throw reader.new ReaderException(); }
 
@@ -56,12 +55,12 @@ public class SuggestionFileParser
 				case '=':
 					NbtTagManager.add(entryKey, parentTagMap);
 					reader.expectEnd();
-					if (!entry.suggestions.isEmpty()) { throw reader.new ReaderException(); }
+					if (!entry.lines.isEmpty()) { throw reader.new ReaderException(); }
 					break;
 
 				case '&':
 					reader.expectEnd();
-					NbtTagMap childTagMap = parseRequiredSuggestions(entry.suggestions, parentTagMap, entryKey);
+					NbtTagMap childTagMap = parseRequiredSuggestions(entry.lines, parentTagMap, entryKey);
 					NbtTagManager.add(entryKey, childTagMap);
 					break;
 
@@ -71,10 +70,9 @@ public class SuggestionFileParser
 		}
 	}
 
-	public static void parseDataComponents(String filename, String namespace)
+	public void parseDataComponents()
 	{
-		String keyPrefix = filename + "/" + namespace + ":";
-		for (Entry entry : parseFile(filename))
+		for (Entry entry : parseFile())
 		{
 			SimpleStringReader reader = new SimpleStringReader(entry.header);
 			String entryName = reader.readFileString();
@@ -86,41 +84,9 @@ public class SuggestionFileParser
 			parseAnnotations(reader, tag);
 			reader.expectEnd();
 
-			tag.getType().setSubcompound(parseSuggestions(entry.suggestions, null));
-			DataComponentManager.componentMap.put(keyPrefix + entryName, tag);
+			tag.getType().setSubcompound(parseSuggestions(entry.lines, null));
+			DataComponentManager.componentMap.put(keyDefaultPrefix + entryName, tag);
 		}
-	}
-
-	private static List<Entry> parseFile(String filename)
-	{
-		String path = ROOT_DIR + filename;
-		InputStream stream = SuggestionFileParser.class.getResourceAsStream(path);
-		if (stream == null) { throw new RuntimeException("Failed to open \"" + path + "\n"); }
-
-		List<Entry> entryList = new ArrayList<>();
-		try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(stream)))
-		{
-			String line;
-			Entry lastEntry = null;
-
-			while ((line = fileReader.readLine()) != null)
-			{
-				if (line.isEmpty() || line.startsWith("#")) { continue; }
-
-				if (line.startsWith("+") || line.startsWith("\t"))
-				{
-					if (lastEntry == null) { throw new RuntimeException("Failed to parse file \"" + path + "\""); }
-					lastEntry.suggestions.add(line);
-				}
-				else
-				{
-					lastEntry = new Entry(line);
-					entryList.add(lastEntry);
-				}
-			}
-			return entryList;
-		}
-		catch (IOException e) { throw new RuntimeException(e); }
 	}
 
 	private static NbtTagMap parseRequiredSuggestions(List<String> lines, @Nullable NbtTagMap parent, String entryKey)
@@ -224,19 +190,8 @@ public class SuggestionFileParser
 		}
 	}
 
-	private static String parseNbtEntryName(String str, String keyDefaultPrefix, String keyModPrefix)
+	private String parseNbtEntryName(String str)
 	{
 		return str.startsWith("!") ? keyModPrefix + str.substring(1) : keyDefaultPrefix + str;
-	}
-
-	private static class Entry
-	{
-		private final String header;
-		private final List<String> suggestions = new ArrayList<>();
-
-		private Entry(String header)
-		{
-			this.header = header;
-		}
 	}
 }

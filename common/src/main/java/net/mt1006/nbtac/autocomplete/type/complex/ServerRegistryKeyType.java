@@ -11,10 +11,14 @@ import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ServerRegistryKeyType<T> extends ComplexType
 {
+	public static final Map<ResourceLocation, List<ResourceLocation>> registryKeyMap = new HashMap<>();
 	private final @Nullable ResourceKey<Registry<T>> registryKey;
 
 	public ServerRegistryKeyType(@Nullable String arg)
@@ -26,17 +30,25 @@ public class ServerRegistryKeyType<T> extends ComplexType
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		MinecraftServer server = Minecraft.getInstance().getSingleplayerServer();
-		if (server == null || registryKey == null) { return; }
-
-		Optional<? extends HolderLookup.RegistryLookup<T>> registry =
-				server.reloadableRegistries().lookup().lookup(registryKey);
-		if (registry.isEmpty()) { return; }
-
+		if (registryKey == null) { return; }
 		String subtext = "[#" + registryKey.location().getPath() + "]";
-		for (ResourceKey<T> id : registry.get().listElementIds().toList())
+
+		MinecraftServer server = Minecraft.getInstance().getSingleplayerServer();
+		if (server == null)
 		{
-			list.add(new IdSuggestion(id.location(), subtext, ctx.parserType()));
+			List<ResourceLocation> idList = registryKeyMap.get(registryKey.location());
+			if (idList != null) { idList.forEach((id) -> list.add(new IdSuggestion(id, subtext, ctx.parserType()))); }
+		}
+		else
+		{
+			Optional<? extends HolderLookup.RegistryLookup<T>> registry =
+					server.reloadableRegistries().lookup().lookup(registryKey);
+			if (registry.isEmpty()) { return; }
+
+			for (ResourceKey<T> id : registry.get().listElementIds().toList())
+			{
+				list.add(new IdSuggestion(id.location(), subtext, ctx.parserType()));
+			}
 		}
 	}
 }

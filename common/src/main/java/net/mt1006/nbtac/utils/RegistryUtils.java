@@ -51,11 +51,6 @@ public class RegistryUtils
 			return get(ResourceLocation.parse(resLoc));
 		}
 
-		public Set<ResourceLocation> keySet()
-		{
-			return registry.keySet();
-		}
-
 		public Set<Map.Entry<ResourceKey<T>, T>> entrySet()
 		{
 			return registry.entrySet();
