@@ -107,7 +107,7 @@ public class Utils
 
 		for (Player player : clientLevel.players())
 		{
-			if (player.getGameProfile().getName().equals(playerName))
+			if (player.getGameProfile().name().equals(playerName))
 			{
 				return "entity/" + EntityType.getKey(EntityType.PLAYER);
 			}

@@ -61,6 +61,6 @@ public class ConfigScreen extends Screen
 		list.render(guiGraphics, mouseX, mouseY, partialTick);
 		doneButton.render(guiGraphics, mouseX, mouseY, partialTick);
 		resetButton.render(guiGraphics, mouseX, mouseY, partialTick);
-		guiGraphics.drawCenteredString(font, title, width / 2, 20, 16777215);
+		guiGraphics.drawCenteredString(font, title, width / 2, 20, -1);
 	}
 }

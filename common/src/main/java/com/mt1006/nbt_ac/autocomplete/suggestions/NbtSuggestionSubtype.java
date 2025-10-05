@@ -457,7 +457,7 @@ public enum NbtSuggestionSubtype
 					Item item = RegistryUtils.ITEM.get(ResourceLocation.parse(data));
 					if (item instanceof SpawnEggItem)
 					{
-						String key = RegistryUtils.ENTITY_TYPE.getKey(((SpawnEggItem)item).getType(null, new ItemStack(item))).toString();
+						String key = RegistryUtils.ENTITY_TYPE.getKey(((SpawnEggItem)item).getType(new ItemStack(item))).toString();
 						NbtSuggestions spawnEggSuggestions = NbtSuggestionManager.get("entity/" + key);
 						suggestionList.addAll(spawnEggSuggestions, data, parserType);
 					}
