@@ -22,7 +22,7 @@ import java.util.Set;
 @Mod(NBTac.MOD_ID)
 public class NBTacNeoForge implements NBTacLoaderInterface
 {
-	public static final boolean isDedicatedServer = FMLEnvironment.dist.isDedicatedServer();
+	public static final boolean isDedicatedServer = FMLEnvironment.getDist().isDedicatedServer();
 
 	public NBTacNeoForge(IEventBus modEventBus)
 	{
