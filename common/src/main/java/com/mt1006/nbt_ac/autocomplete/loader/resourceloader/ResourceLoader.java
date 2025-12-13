@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mt1006.nbt_ac.NBTac;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
@@ -24,7 +24,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class ResourceLoader
 {
-	public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(NBTac.MOD_ID, "resource_loader");
+	public static final Identifier ID = Identifier.fromNamespaceAndPath(NBTac.MOD_ID, "resource_loader");
 	private static final String RESOURCE_DIRECTORY = "nbt_ac_suggestions_v2";
 	public static final List<TagStructure> tags = new ArrayList<>();
 	public static final List<ComponentStructure> components = new ArrayList<>();
@@ -32,32 +32,32 @@ public class ResourceLoader
 	private static boolean firstCall = true;
 	public static CountDownLatch countDownLatch = new CountDownLatch(1);
 
-	public Map<ResourceLocation, JsonElement> prepare(@NotNull ResourceManager resourceManager)
+	public Map<Identifier, JsonElement> prepare(@NotNull ResourceManager resourceManager)
 	{
 		Gson gson = new Gson();
-		Map<ResourceLocation, JsonElement> map = Maps.newHashMap();
+		Map<Identifier, JsonElement> map = Maps.newHashMap();
 		FileToIdConverter fileToIdConverter = FileToIdConverter.json(RESOURCE_DIRECTORY);
 
-		for (Map.Entry<ResourceLocation, Resource> entry : fileToIdConverter.listMatchingResources(resourceManager).entrySet())
+		for (Map.Entry<Identifier, Resource> entry : fileToIdConverter.listMatchingResources(resourceManager).entrySet())
 		{
-			ResourceLocation resourceLocation = fileToIdConverter.fileToId(entry.getKey());
+			Identifier id = fileToIdConverter.fileToId(entry.getKey());
 
 			try (Reader reader = entry.getValue().openAsReader())
 			{
 				JsonElement jsonElement = GsonHelper.fromJson(gson, reader, JsonElement.class);
-				map.put(resourceLocation, jsonElement);
+				map.put(id, jsonElement);
 			}
 			catch (Exception ignore) {}
 		}
 		return map;
 	}
 
-	public boolean apply(Map<ResourceLocation, JsonElement> resources)
+	public boolean apply(Map<Identifier, JsonElement> resources)
 	{
 		if (!firstCall) { return false; }
 		firstCall = false;
 
-		for (Map.Entry<ResourceLocation, JsonElement> resourceEntry : resources.entrySet())
+		for (Map.Entry<Identifier, JsonElement> resourceEntry : resources.entrySet())
 		{
 			try
 			{

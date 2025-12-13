@@ -1,0 +1,38 @@
+{
+	"id": "item/minecraft:attack_range",
+	"type": "compound",
+	"always_relevant": true,
+
+	"tags":
+	[
+		{
+			"tag": "min_reach",
+			"type": "float"
+		},
+
+		{
+			"tag": "max_reach",
+			"type": "float"
+		},
+
+		{
+			"tag": "min_creative_reach",
+			"type": "float"
+		},
+
+		{
+			"tag": "max_creative_reach",
+			"type": "float"
+		},
+
+		{
+			"tag": "hitbox_margin",
+			"type": "float"
+		},
+
+		{
+			"tag": "mob_factor",
+			"type": "float"
+		}
+	]
+}

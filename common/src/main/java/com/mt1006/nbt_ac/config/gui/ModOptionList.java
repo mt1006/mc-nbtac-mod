@@ -137,6 +137,12 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 			updateText();
 		}
 
+		@Override protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f)
+		{
+			renderDefaultSprite(guiGraphics);
+			renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+		}
+
 		@Override protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationOutput)
 		{
 			defaultButtonNarrationText(narrationOutput);
@@ -183,6 +189,12 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 			int newIndex = (pos != options.size() - 1) ? (pos + 1) : 0;
 			field.val = options.get(newIndex);
 			updateText();
+		}
+
+		@Override protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f)
+		{
+			renderDefaultSprite(guiGraphics);
+			renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
 		}
 
 		@Override protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationOutput)

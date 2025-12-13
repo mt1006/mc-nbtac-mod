@@ -12,7 +12,7 @@ import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -100,40 +100,40 @@ public abstract class ItemParserStateMixin
 		cir.cancel();
 	}
 
-	@Unique private @Nullable ResourceLocation findParsedItemId()
+	@Unique private @Nullable Identifier findParsedItemId()
 	{
 		if (cursorBeforeItem == -1) { return null; }
-		ResourceLocation resLoc = null;
+		Identifier id = null;
 
 		int currentCursor = reader.getCursor();
 		reader.setCursor(cursorBeforeItem);
 		try
 		{
-			resLoc = ResourceLocation.read(reader);
+			id = Identifier.read(reader);
 		}
 		catch (CommandSyntaxException ignored) {}
 		reader.setCursor(currentCursor);
 
-		return resLoc;
+		return id;
 	}
 
 	@Unique private @Nullable Item findParsedItem()
 	{
-		ResourceLocation resLoc = findParsedItemId();
+		Identifier id = findParsedItemId();
 
 		//TODO: remove null check (set RegistryUtils arguments as nullable if safe on older versions)
-		if (resLoc == null) { return null; }
-		return RegistryUtils.ITEM.get(resLoc);
+		if (id == null) { return null; }
+		return RegistryUtils.ITEM.get(id);
 	}
 
 	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder suggestionsBuilder)
 	{
-		ResourceLocation resLoc = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
-		NbtSuggestion component = resLoc != null ? DataComponentManager.componentMap.get("item/" + resLoc) : null;
+		Identifier dataId = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
+		NbtSuggestion component = dataId != null ? DataComponentManager.componentMap.get("item/" + dataId) : null;
 		if (component == null || cursorBeforeComponent == -1) { return suggestionsBuilder.buildFuture(); }
 
 		String tag = reader.getString().substring(cursorBeforeComponent);
-		ResourceLocation itemId = findParsedItemId();
+		Identifier itemId = findParsedItemId();
 		SuggestionList suggestionList = new SuggestionList();
 		CustomTagParser tagParser = new CustomTagParser(tag, CustomTagParser.Type.COMPONENT);
 		CustomTagParser.Suggestion suggestion =

@@ -10,8 +10,8 @@ import com.mt1006.nbt_ac.utils.RegistryUtils;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.RandomizableContainer;
@@ -36,7 +36,7 @@ public class DataComponentManager
 	{
 		List<Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>>> entryList = new ArrayList<>();
 		SharedSuggestionProvider.filterResources(RegistryUtils.DATA_COMPONENT_TYPE.entrySet(), str,
-				(entry) -> entry.getKey().location(), entryList::add);
+				(entry) -> entry.getKey().identifier(), entryList::add);
 
 		Set<DataComponentType<?>> predefinedComponents = getPredefinedComponents(item);
 		Set<DataComponentType<?>> hardcodedRelevancy = getHardcodedRelevant(item);
@@ -44,23 +44,23 @@ public class DataComponentManager
 		for (Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>> entry : entryList)
 		{
 			// https://minecraft.wiki/w/Data_component_format#Non-encoded_components
-			ResourceLocation resLoc = entry.getKey().location();
+			Identifier id = entry.getKey().identifier();
 			DataComponentType<?> componentType = entry.getValue();
 			if (componentType.codec() == null || usedComponents.contains(componentType)) { continue; }
 
-			NbtSuggestion component = DataComponentManager.componentMap.get("item/" + resLoc);
+			NbtSuggestion component = DataComponentManager.componentMap.get("item/" + id);
 			if (component == null) { component = UNKNOWN_COMPONENT; }
 			boolean relevant = predefinedComponents.contains(componentType)
 					|| hardcodedRelevancy.contains(componentType) || component.isAlwaysRelevant();
 
 			if (parserType != null)
 			{
-				suggestionList.add(new TagIdSuggestion(component, resLoc, parserType, relevant));
+				suggestionList.add(new TagIdSuggestion(component, id, parserType, relevant));
 			}
 			else
 			{
 				String subtext = component.getSubtext();
-				suggestionList.add(new ComponentSuggestion(resLoc, subtext, relevant, addSuffix));
+				suggestionList.add(new ComponentSuggestion(id, subtext, relevant, addSuffix));
 			}
 		}
 	}

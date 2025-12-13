@@ -13,7 +13,7 @@
 		{
 			"tag": "animation",
 			"type": "string",
-			"subtype": "enum/none;block;bow;brush;crossbow;drink;eat;spear;spyglass;toot_horn"
+			"subtype": "enum/none;block;bow;brush;crossbow;drink;eat;spear;spyglass;toot_horn;trident"
 		},
 
 		{

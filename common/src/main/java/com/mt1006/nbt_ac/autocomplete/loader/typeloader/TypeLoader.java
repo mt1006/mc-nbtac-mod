@@ -8,7 +8,7 @@ import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
 import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -31,9 +31,9 @@ public class TypeLoader
 		{
 			lastObject = null;
 			Class<?> clazz;
-			ResourceLocation resourceName = EntityType.getKey(entityType);
+			Identifier id = EntityType.getKey(entityType);
 
-			if (resourceName.toString().equals("minecraft:player"))
+			if (id.toString().equals("minecraft:player"))
 			{
 				clazz = ServerPlayer.class;
 			}
@@ -47,7 +47,7 @@ public class TypeLoader
 				{
 					if (throwable instanceof Error)
 					{
-						NBTac.LOGGER.error("Entity \"{}\" constructor thrown error: {}", resourceName, throwable);
+						NBTac.LOGGER.error("Entity \"{}\" constructor thrown error: {}", id, throwable);
 					}
 				}
 				clazz = lastObject != null ? lastObject.getClass() : null;
@@ -59,17 +59,17 @@ public class TypeLoader
 				{
 					NbtSuggestions suggestions = new NbtSuggestions(true);
 					Disassembly.disassemblyEntity(clazz, suggestions);
-					NbtSuggestionManager.add("entity/" + resourceName, suggestions);
+					NbtSuggestionManager.add("entity/" + id, suggestions);
 				}
 				catch (Exception e)
 				{
-					NBTac.LOGGER.error("Failed to load entity \"{}\": {}", resourceName, e);
+					NBTac.LOGGER.error("Failed to load entity \"{}\": {}", id, e);
 					Loader.printStackTrace(e);
 				}
 			}
 			else
 			{
-				NBTac.LOGGER.error("Unable to get entity class for \"{}\"", resourceName);
+				NBTac.LOGGER.error("Unable to get entity class for \"{}\"", id);
 			}
 		}
 
@@ -89,7 +89,7 @@ public class TypeLoader
 			//TODO: clean up code
 			lastObject = null;
 			Class<?> clazz;
-			ResourceLocation resourceName = BlockEntityType.getKey(blockEntityType);
+			Identifier id = BlockEntityType.getKey(blockEntityType);
 
 			if (pistonCrashFix && blockEntityType == BlockEntityType.PISTON)
 			{
@@ -105,7 +105,7 @@ public class TypeLoader
 				{
 					if (throwable instanceof Error)
 					{
-						NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", resourceName, throwable);
+						NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", id, throwable);
 					}
 					//TODO: improve error logging (add stacktrace), add logs for non-error throwable when lastObject==null
 				}
@@ -118,17 +118,17 @@ public class TypeLoader
 				{
 					NbtSuggestions suggestions = new NbtSuggestions(true);
 					Disassembly.disassemblyBlockEntity(clazz, suggestions);
-					NbtSuggestionManager.add("block/" + resourceName, suggestions);
+					NbtSuggestionManager.add("block/" + id, suggestions);
 				}
 				catch (Exception e)
 				{
-					NBTac.LOGGER.error("Failed to load block entity \"{}\": {}", resourceName, e);
+					NBTac.LOGGER.error("Failed to load block entity \"{}\": {}", id, e);
 					Loader.printStackTrace(e);
 				}
 			}
 			else
 			{
-				NBTac.LOGGER.error("Unable to get block entity class for \"{}\"", resourceName);
+				NBTac.LOGGER.error("Unable to get block entity class for \"{}\"", id);
 			}
 		}
 
@@ -138,10 +138,10 @@ public class TypeLoader
 	public static @Nullable BlockEntity blockEntityFromBlock(Block block)
 	{
 		if (!ModConfig.allowBlockEntityExtraction.val) { return null; }
-		ResourceLocation resLoc = RegistryUtils.BLOCK.getKey(block);
-		if (resLoc == null) { return null; }
+		Identifier id = RegistryUtils.BLOCK.getKey(block);
+		if (id == null) { return null; }
 
-		BlockEntityType<?> blockEntityType = RegistryUtils.BLOCK_ENTITY_TYPE.get(resLoc);
+		BlockEntityType<?> blockEntityType = RegistryUtils.BLOCK_ENTITY_TYPE.get(id);
 		if (blockEntityType == null) { return null; }
 
 		if (objectCatcher == Loader.getLoaderThread()) { return null; }
@@ -156,7 +156,7 @@ public class TypeLoader
 		{
 			if (throwable instanceof Error)
 			{
-				NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", resLoc, throwable);
+				NBTac.LOGGER.error("Block entity \"{}\" constructor thrown error: {}", id, throwable);
 			}
 		}
 

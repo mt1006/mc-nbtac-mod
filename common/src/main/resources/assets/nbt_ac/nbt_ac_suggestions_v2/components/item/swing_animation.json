@@ -1,0 +1,19 @@
+{
+	"id": "item/minecraft:swing_animation",
+	"type": "compound",
+	"always_relevant": true,
+
+	"tags":
+	[
+		{
+			"tag": "type",
+			"type": "string",
+			"subtype": "enum/none;whack;stab"
+		},
+
+		{
+			"tag": "duration",
+			"type": "int"
+		}
+	]
+}

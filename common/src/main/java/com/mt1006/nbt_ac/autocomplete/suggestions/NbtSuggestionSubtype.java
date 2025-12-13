@@ -14,8 +14,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
@@ -154,7 +154,7 @@ public enum NbtSuggestionSubtype
 			case REQUIRED_ID:
 				if (data == null) { break; }
 				suggestionList.clear();
-				suggestionList.add(new IdSuggestion(ResourceLocation.parse(data), "#[required_id]", parserType));
+				suggestionList.add(new IdSuggestion(Identifier.parse(data), "#[required_id]", parserType));
 				return true;
 
 			case REGISTRY_KEY:
@@ -163,7 +163,7 @@ public enum NbtSuggestionSubtype
 
 				try
 				{
-					ResourceLocation registryLocation = ResourceLocation.parse(data);
+					Identifier registryLocation = Identifier.parse(data);
 					Holder.Reference<?> ref = RegistryUtils.REGISTRY.get(registryLocation).orElse(null);
 					Registry<T> registry = ref != null ? (Registry<T>)ref.value() : null;
 					if (registry == null) { break; }
@@ -197,7 +197,7 @@ public enum NbtSuggestionSubtype
 				suggestionList.clear();
 				for (RecipeHolder<?> recipeHolder : recipeServer.getRecipeManager().getRecipes().toArray(RecipeHolder[]::new))
 				{
-					suggestionList.add(new IdSuggestion(recipeHolder.id().location(), null, parserType));
+					suggestionList.add(new IdSuggestion(recipeHolder.id().identifier(), null, parserType));
 				}
 				return true;
 
@@ -212,14 +212,14 @@ public enum NbtSuggestionSubtype
 				suggestionList.clear();
 				for (ResourceKey<LootTable> id : lootTableReg.get().listElementIds().toList())
 				{
-					suggestionList.add(new IdSuggestion(id.location(), null, parserType));
+					suggestionList.add(new IdSuggestion(id.identifier(), null, parserType));
 				}
 				return true;
 
 			case BANNER_PATTERN:
 				suggestionList.clear();
 				List<ResourceKey> bannerPatterns = Fields.getStaticFields(BannerPatterns.class, ResourceKey.class);
-				bannerPatterns.forEach((key) -> suggestionList.add(new IdSuggestion(key.location(), "[#banner_pattern]", parserType)));
+				bannerPatterns.forEach((key) -> suggestionList.add(new IdSuggestion(key.identifier(), "[#banner_pattern]", parserType)));
 				return true;
 
 			case MAP_DECORATION_TYPE:
@@ -229,7 +229,7 @@ public enum NbtSuggestionSubtype
 				{
 					ResourceKey<?> key = holder.unwrapKey().orElse(null);
 					CustomSuggestion customSuggestion = key != null
-							? new IdSuggestion(key.location(), "[#banner_pattern]", parserType)
+							? new IdSuggestion(key.identifier(), "[#banner_pattern]", parserType)
 							: new StringSuggestion("_error", null, parserType, 9999);
 					suggestionList.add(customSuggestion);
 				}
@@ -238,7 +238,7 @@ public enum NbtSuggestionSubtype
 			case FONT:
 				suggestionList.clear();
 				FontManager fontManager = ((MinecraftFields)Minecraft.getInstance()).getFontManager();
-				for (ResourceLocation id : ((FontManagerFields)fontManager).getFontSets().keySet())
+				for (Identifier id : ((FontManagerFields)fontManager).getFontSets().keySet())
 				{
 					suggestionList.add(new IdSuggestion(id, "[#font]", parserType));
 				}
@@ -367,19 +367,19 @@ public enum NbtSuggestionSubtype
 			case TRIM_PATTERN:
 				suggestionList.clear();
 				List<ResourceKey> trimPatterns = Fields.getStaticFields(TrimPatterns.class, ResourceKey.class);
-				trimPatterns.forEach((key) -> suggestionList.add(new IdSuggestion(key.location(), "[#trim_pattern]", parserType)));
+				trimPatterns.forEach((key) -> suggestionList.add(new IdSuggestion(key.identifier(), "[#trim_pattern]", parserType)));
 				return true;
 
 			case TRIM_MATERIAL:
 				suggestionList.clear();
 				List<ResourceKey> trimMaterial = Fields.getStaticFields(TrimMaterials.class, ResourceKey.class);
-				trimMaterial.forEach((key) -> suggestionList.add(new IdSuggestion(key.location(), "[#trim_material]", parserType)));
+				trimMaterial.forEach((key) -> suggestionList.add(new IdSuggestion(key.identifier(), "[#trim_material]", parserType)));
 				return true;
 
 			case JUKEBOX_SONG:
 				suggestionList.clear();
 				List<ResourceKey> jukeboxSong = Fields.getStaticFields(JukeboxSongs.class, ResourceKey.class);
-				jukeboxSong.forEach((key) -> suggestionList.add(new IdSuggestion(key.location(), "[#jukebox_song]", parserType)));
+				jukeboxSong.forEach((key) -> suggestionList.add(new IdSuggestion(key.identifier(), "[#jukebox_song]", parserType)));
 				return true;
 
 			case DAMAGE_TYPE_TAG:
@@ -427,7 +427,7 @@ public enum NbtSuggestionSubtype
 					if (data.startsWith("block/")) { data = data.substring(6); }
 					else if (data.startsWith("item/")) { data = data.substring(5); }
 
-					Item blockItem = RegistryUtils.ITEM.get(ResourceLocation.parse(data));
+					Item blockItem = RegistryUtils.ITEM.get(Identifier.parse(data));
 					if (!(blockItem instanceof BlockItem)) { break; }
 
 					for (Property<?> property : ((BlockItem)blockItem).getBlock().defaultBlockState().getProperties())
@@ -454,7 +454,7 @@ public enum NbtSuggestionSubtype
 					if (data == null) { break; }
 					if (data.startsWith("item/")) { data = data.substring(5); }
 
-					Item item = RegistryUtils.ITEM.get(ResourceLocation.parse(data));
+					Item item = RegistryUtils.ITEM.get(Identifier.parse(data));
 					if (item instanceof SpawnEggItem)
 					{
 						String key = RegistryUtils.ENTITY_TYPE.getKey(((SpawnEggItem)item).getType(new ItemStack(item))).toString();
@@ -491,7 +491,7 @@ public enum NbtSuggestionSubtype
 				List<ResourceKey> enchantments = Fields.getStaticFields(Enchantments.class, ResourceKey.class);
 				for (ResourceKey<?> resourceKey : enchantments)
 				{
-					ResourceLocation id = resourceKey.location();
+					Identifier id = resourceKey.identifier();
 					NbtSuggestion tempSuggestion = new NbtSuggestion(id.toString(), NbtSuggestion.Type.INT);
 					suggestionList.add(new TagIdSuggestion(tempSuggestion, id, parserType, true));
 				}

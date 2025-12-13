@@ -1,0 +1,57 @@
+{
+	"id": "item/minecraft:kinetic_weapon",
+	"type": "compound",
+
+	"tags":
+	[
+		{
+			"tag": "contact_cooldown_ticks",
+			"type": "int"
+		},
+
+		{
+			"tag": "delay_ticks",
+			"type": "int"
+		},
+
+		{
+			"tag": "dismount_conditions",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:kinetic_weapon_conditions"
+		},
+
+		{
+			"tag": "knockback_conditions",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:kinetic_weapon_conditions"
+		},
+
+		{
+			"tag": "damage_conditions",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:kinetic_weapon_conditions"
+		},
+
+		{
+			"tag": "forward_movement",
+			"type": "float"
+		},
+
+		{
+			"tag": "damage_multiplier",
+			"type": "float"
+		},
+
+		{
+			"tag": "sound",
+			"type": "string",
+			"subtype": "registry_key/minecraft:sound_event"
+		},
+
+		{
+			"tag": "hit_sound",
+			"type": "string",
+			"subtype": "registry_key/minecraft:sound_event"
+		}
+	]
+}

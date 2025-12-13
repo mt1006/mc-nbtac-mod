@@ -1,19 +1,19 @@
 package com.mt1006.nbt_ac.autocomplete.suggestions;
 
 import com.mt1006.nbt_ac.config.ModConfig;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class ComponentSuggestion extends CustomSuggestion
 {
 	private final @Nullable String textWithoutNamespace;
 
-	public ComponentSuggestion(@Nullable ResourceLocation resLoc, @Nullable String subtext, boolean relevant, boolean addSuffix)
+	public ComponentSuggestion(@Nullable Identifier id, @Nullable String subtext, boolean relevant, boolean addSuffix)
 	{
-		super(resLoc != null ? (resLoc + "=") : "_error", subtext, relevant ? 0 : -1);
+		super(id != null ? (id + "=") : "_error", subtext, relevant ? 0 : -1);
 
-		this.textWithoutNamespace = (resLoc != null && resLoc.getNamespace().equals("minecraft"))
-				? (resLoc.getPath() + (addSuffix ? "=" : ""))
+		this.textWithoutNamespace = (id != null && id.getNamespace().equals("minecraft"))
+				? (id.getPath() + (addSuffix ? "=" : ""))
 				: null;
 	}
 
