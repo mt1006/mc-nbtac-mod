@@ -1,0 +1,17 @@
+{
+	"tags":
+	[
+		{
+			"tag": "atlas",
+			"type": "string",
+			"subtype": "atlas"
+		},
+
+		{
+			"tag": "sprite",
+			"type": "string",
+			"subtype": "sprite/*",
+			"with": "atlas"
+		}
+	]
+}

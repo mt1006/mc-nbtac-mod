@@ -1,0 +1,32 @@
+{
+	"tags":
+	[
+		{
+			"tag": "player",
+			"type": "compound",
+
+			"tags":
+			[
+				{
+					"tag": "name",
+					"type": "string"
+				},
+
+				{
+					"tag": "id",
+					"type": "uuid"
+				},
+
+				{
+					"tag": "properties",
+					"type": "compound"
+				}
+			]
+		},
+
+		{
+			"tag": "hat",
+			"type": "boolean"
+		}
+	]
+}
