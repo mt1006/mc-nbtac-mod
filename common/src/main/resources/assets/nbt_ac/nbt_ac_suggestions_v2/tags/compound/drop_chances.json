@@ -1,0 +1,46 @@
+{
+	"id": "compound/nbt_ac:drop_chances",
+	
+	"tags":
+	[
+		{
+			"tag": "head",
+			"type": "float"
+		},
+
+		{
+			"tag": "chest",
+			"type": "float"
+		},
+
+		{
+			"tag": "legs",
+			"type": "float"
+		},
+
+		{
+			"tag": "feet",
+			"type": "float"
+		},
+
+		{
+			"tag": "mainhand",
+			"type": "float"
+		},
+
+		{
+			"tag": "offhand",
+			"type": "float"
+		},
+
+		{
+			"tag": "body",
+			"type": "float"
+		},
+
+		{
+			"tag": "saddle",
+			"type": "float"
+		}
+	]
+}

@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "path": "Tags" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "set_type",
+			"val": "list/string"
+		}
+	]
+}

@@ -1,14 +1,6 @@
 {
 	"id": "item/minecraft:jukebox_playable",
-	"type": "compound",
-	"always_relevant": true,
-
-	"tags":
-	[
-		{
-			"tag": "song",
-			"type": "string",
-			"subtype": "jukebox_song"
-		}
-	]
+	"type": "string",
+	"subtype": "jukebox_song",
+	"always_relevant": true
 }

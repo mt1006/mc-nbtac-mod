@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "path": "sleeping_pos" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "set_type",
+			"val": "int_array"
+		}
+	]
+}
