@@ -1,4 +1,6 @@
--Fixed missing equipment and drop_chances entity tags on version 1.21.5 and later (thanks to Lord-Voidy for reporting).
+-Fixed missing "equipment" and "drop_chances" entity tags on version 1.21.5 and later (thanks to Lord-Voidy for reporting).
+-Fixed invalid suggestion for "jukebox_playable" item component on version 1.21.5 and later (thanks to SoulxluoS for reporting).
+-Fixed invalid suggestion for "attributes" tag on version 1.21.6 and later (thanks to Natsumatsu28 for reporting).
 -Fixed missing suggestions for object text components on version 1.21.9 and later (thanks to wifi-left for reporting).
 -Fixed various missing tag types on version 1.21.5 and later.
 
