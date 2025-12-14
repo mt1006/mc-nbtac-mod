@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "path": "UUID" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "set_type",
+			"val": "uuid"
+		}
+	]
+}

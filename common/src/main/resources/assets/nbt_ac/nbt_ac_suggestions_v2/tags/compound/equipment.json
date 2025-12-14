@@ -1,0 +1,54 @@
+{
+	"id": "compound/nbt_ac:equipment",
+	
+	"tags":
+	[
+		{
+			"tag": "head",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "chest",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "legs",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "feet",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "mainhand",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "offhand",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "body",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		},
+
+		{
+			"tag": "saddle",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item"
+		}
+	]
+}

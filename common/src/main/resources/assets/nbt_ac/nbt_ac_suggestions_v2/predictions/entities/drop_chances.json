@@ -1,0 +1,19 @@
+{
+	"conditions":
+	[
+		{ "path": "drop_chances" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "set_type",
+			"val": "compound"
+		},
+
+		{
+			"type": "copy_tags",
+			"val": "compound/nbt_ac:drop_chances"
+		}
+	]
+}
