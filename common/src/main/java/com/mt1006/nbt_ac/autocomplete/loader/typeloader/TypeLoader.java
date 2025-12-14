@@ -12,6 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,9 +34,14 @@ public class TypeLoader
 			Class<?> clazz;
 			Identifier id = EntityType.getKey(entityType);
 
-			if (id.toString().equals("minecraft:player"))
+			String idStr = id.toString();
+			if (idStr.equals("minecraft:player"))
 			{
 				clazz = ServerPlayer.class;
+			}
+			else if (idStr.equals("minecraft:villager"))
+			{
+				clazz = Villager.class;
 			}
 			else
 			{
