@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,11 +32,16 @@ public class TypeLoader
 		{
 			lastObject = null;
 			Class<?> clazz;
-			ResourceLocation resourceName = EntityType.getKey(entityType);
+			ResourceLocation id = EntityType.getKey(entityType);
 
-			if (resourceName.toString().equals("minecraft:player"))
+			String idStr = id.toString();
+			if (idStr.equals("minecraft:player"))
 			{
 				clazz = ServerPlayer.class;
+			}
+			else if (idStr.equals("minecraft:villager"))
+			{
+				clazz = Villager.class;
 			}
 			else
 			{
@@ -47,7 +53,7 @@ public class TypeLoader
 				{
 					if (throwable instanceof Error)
 					{
-						NBTac.LOGGER.error("Entity \"{}\" constructor thrown error: {}", resourceName, throwable);
+						NBTac.LOGGER.error("Entity \"{}\" constructor thrown error: {}", id, throwable);
 					}
 				}
 				clazz = lastObject != null ? lastObject.getClass() : null;
@@ -59,17 +65,17 @@ public class TypeLoader
 				{
 					NbtSuggestions suggestions = new NbtSuggestions(true);
 					Disassembly.disassemblyEntity(clazz, suggestions);
-					NbtSuggestionManager.add("entity/" + resourceName, suggestions);
+					NbtSuggestionManager.add("entity/" + id, suggestions);
 				}
 				catch (Exception e)
 				{
-					NBTac.LOGGER.error("Failed to load entity \"{}\": {}", resourceName, e);
+					NBTac.LOGGER.error("Failed to load entity \"{}\": {}", id, e);
 					Loader.printStackTrace(e);
 				}
 			}
 			else
 			{
-				NBTac.LOGGER.error("Unable to get entity class for \"{}\"", resourceName);
+				NBTac.LOGGER.error("Unable to get entity class for \"{}\"", id);
 			}
 		}
 
