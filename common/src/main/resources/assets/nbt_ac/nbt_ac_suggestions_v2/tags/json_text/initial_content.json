@@ -51,6 +51,12 @@
 		{
 			"tag": "nbt",
 			"type": "string"
+		},
+
+		{
+			"tag": "object",
+			"type": "string",
+			"subtype": "enum/atlas;player"
 		}
 	]
 }

@@ -74,10 +74,12 @@ public enum NbtSuggestionSubtype
 	TRIM_PATTERN,         // subtypeData = null
 	TRIM_MATERIAL,        // subtypeData = null
 	JUKEBOX_SONG,         // subtypeData = null
-	DAMAGE_TYPE_TAG;      // subtypeData = null
+	DAMAGE_TYPE_TAG,      // subtypeData = null
+	ATLAS,                // subtypeData = null
+	SPRITE;               // subtypeData = "minecraft:blocks"
 
-	private static final List<String> JSON_TEXT_TYPE_SPECIFIC = List.of("nbt", "translatable");
 	private static final List<String> JSON_TEXT_TYPE_HAS_SEPARATOR = List.of("nbt", "selector");
+	private static final List<String> JSON_TEXT_OBJECT_TAGS = List.of("atlas", "sprite", "player");
 	private static final Random rng = new Random();
 
 	public String getName()
@@ -388,6 +390,25 @@ public enum NbtSuggestionSubtype
 				//TODO: fix, use IdSuggestion
 				damageTypes.forEach((key) -> suggestionList.add(new StringSuggestion("#" + key.location(), "[#damage_type]", parserType)));
 				return true;
+
+			case ATLAS:
+				suggestionList.clear();
+				Collection<ResourceLocation> atlases = ((AtlasManagerFields)Minecraft.getInstance().getAtlasManager()).getAtlasById().keySet();
+				atlases.forEach((id) -> suggestionList.add(new IdSuggestion(id, "[#atlas]", parserType)));
+				return true;
+
+			case SPRITE:
+				ResourceLocation atlasId = data != null ? ResourceLocation.tryParse(data) : null;
+				if (atlasId == null) { break; }
+
+				Map<ResourceLocation, AtlasEntryFields> atlasById = ((AtlasManagerFields)Minecraft.getInstance().getAtlasManager()).getAtlasById();
+				AtlasEntryFields atlasEntry = atlasById.get(atlasId);
+				if (atlasEntry == null) { break; }
+
+				suggestionList.clear();
+				Collection<ResourceLocation> sprites = ((TextureAtlasFields)atlasEntry.getAtlas()).getTexturesByName().keySet();
+				sprites.forEach((id) -> suggestionList.add(new IdSuggestion(id, "[#sprite]", parserType)));
+				return true;
 		}
 
 		return false;
@@ -532,14 +553,24 @@ public enum NbtSuggestionSubtype
 		suggestionList.addAll(NbtSuggestionManager.get("json_text/style"), parserType);
 		String contentType = jsonTextInit(suggestionList, parentInfo, parserType);
 
-		for (String str : JSON_TEXT_TYPE_SPECIFIC)
-		{
-			int priority = (contentType != null && !str.equals(contentType)) ? -1 : 0;
-			suggestionList.addAll(NbtSuggestionManager.get("json_text/type_specific/" + str), parserType, priority);
-		}
+		addTypeSpecific(suggestionList, parserType, "nbt", contentType == null || contentType.equals("nbt"));
+		addTypeSpecific(suggestionList, parserType, "translatable", contentType == null || contentType.equals("translatable"));
+
+		boolean isObject = contentType != null && contentType.equals("object");
+		String objectType = parentInfo.tagMap != null ? parentInfo.tagMap.get("object") : null;
+		addTypeSpecific(suggestionList, parserType, "object_atlas",
+				contentType == null || (isObject && objectType == null) || (isObject && objectType.equals("atlas")));
+		addTypeSpecific(suggestionList, parserType, "object_player",
+				contentType == null || (isObject && objectType == null) || (isObject && objectType.equals("player")));
 
 		int priority = (contentType != null && !JSON_TEXT_TYPE_HAS_SEPARATOR.contains(contentType)) ? -1 : 0;
 		suggestionList.addAll(NbtSuggestionManager.get("json_text/compound/separator"), parserType, priority);
+	}
+
+	private static void addTypeSpecific(SuggestionList suggestionList, CustomTagParser.Type parserType,
+										String name, boolean isRelevant)
+	{
+		suggestionList.addAll(NbtSuggestionManager.get("json_text/type_specific/" + name), parserType, isRelevant ? 0 : -1);
 	}
 
 	private static @Nullable String jsonTextInit(SuggestionList suggestionList, NbtSuggestion.ParentInfo parentInfo,
@@ -567,12 +598,16 @@ public enum NbtSuggestionSubtype
 			return valueType;
 		}
 
-		for (NbtSuggestion suggestion : initialContent.getAll())
+		List<String> initialTags = new ArrayList<>();
+		initialContent.getAll().forEach((s) -> initialTags.add(s.tag));
+		initialTags.addAll(JSON_TEXT_OBJECT_TAGS);
+
+		for (String tag : initialTags)
 		{
-			if (tagMap.containsKey(suggestion.tag))
+			if (tagMap.containsKey(tag))
 			{
 				suggestionList.addAll(initialContent, parserType, -1);
-				return jsonTextTypeFromTag(suggestion.tag);
+				return jsonTextTypeFromTag(tag);
 			}
 		}
 
@@ -582,6 +617,7 @@ public enum NbtSuggestionSubtype
 
 	private static String jsonTextTypeFromTag(String tag)
 	{
+		if (JSON_TEXT_OBJECT_TAGS.contains(tag)) { return "object"; }
 		return tag.equals("translate") ? "translatable" : tag;
 	}
 

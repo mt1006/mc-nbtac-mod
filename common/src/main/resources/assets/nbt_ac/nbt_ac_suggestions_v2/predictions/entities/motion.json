@@ -1,0 +1,14 @@
+{
+	"conditions":
+	[
+		{ "path": "Motion" }
+	],
+	
+	"operations":
+	[
+		{
+			"type": "set_type",
+			"val": "list/double"
+		}
+	]
+}

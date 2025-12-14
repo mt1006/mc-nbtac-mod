@@ -7,6 +7,11 @@
 	"operations":
 	[
 		{
+			"type": "set_type",
+			"val": "string"
+		},
+
+		{
 			"type": "set_subtype",
 			"val": "json_text_compound"
 		}
