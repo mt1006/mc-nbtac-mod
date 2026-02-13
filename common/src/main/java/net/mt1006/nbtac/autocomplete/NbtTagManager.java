@@ -17,23 +17,23 @@ public class NbtTagManager
 		tagMaps.put(key, tagMap);
 	}
 
-	public static @Nullable NbtTagMap get(String key)
+	public static @Nullable NbtTagMap get(@Nullable String key)
 	{
-		if (key != null)
+		if (key == null) { return null; }
+
+		if (key.startsWith("entity/"))
 		{
-			if (key.startsWith("entity/"))
-			{
-				ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
-				if (id != null && !id.getNamespace().equals("minecraft")) { return getForModdedEntity(id); }
-			}
-			else if (key.startsWith("block/"))
-			{
-				ResourceLocation id = ResourceLocation.tryParse(key.substring(6));
-				if (id != null) { key = blockToBlockEntityMap.get(id); }
-			}
+			ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
+			if (id != null && !id.getNamespace().equals("minecraft")) { return getForModdedEntity(id); }
+		}
+		else if (key.startsWith("block/"))
+		{
+			ResourceLocation id = ResourceLocation.tryParse(key.substring(6));
+			String blockEntityKey = blockToBlockEntityMap.get(id);
+			if (blockEntityKey != null) { key = blockEntityKey; }
 		}
 
-		return key != null ? tagMaps.get(key) : null;
+		return tagMaps.get(key);
 	}
 
 	public static Set<Map.Entry<String, NbtTagMap>> tagMapSet()
