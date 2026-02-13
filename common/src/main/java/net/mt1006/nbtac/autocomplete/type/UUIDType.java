@@ -3,6 +3,7 @@ package net.mt1006.nbtac.autocomplete.type;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
 import java.util.UUID;
 
 public class UUIDType implements Type
@@ -30,7 +31,8 @@ public class UUIDType implements Type
 			int uuidInt2 = (int)randomUUID.getMostSignificantBits();
 			int uuidInt3 = (int)(randomUUID.getMostSignificantBits() >>> 32);
 
-			String uuidString = String.format("[I;%d, %d, %d, %d]", uuidInt3, uuidInt2, uuidInt1, uuidInt0);
+			String uuidString = String.format(Locale.ROOT,
+					"[I;%d, %d, %d, %d]", uuidInt3, uuidInt2, uuidInt1, uuidInt0);
 
 			SuggestionList list = new SuggestionList(ctx.parsed().pos);
 			list.addRaw(uuidString, "[#random_uuid]");

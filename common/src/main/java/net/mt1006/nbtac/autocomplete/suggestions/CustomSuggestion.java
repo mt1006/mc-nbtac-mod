@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class CustomSuggestion
 {
@@ -49,7 +50,7 @@ public abstract class CustomSuggestion
 	protected static boolean matchPrefix(String str, String prefix)
 	{
 		return ModConfig.ignoreLetterCase.val
-				? str.toLowerCase().startsWith(prefix.toLowerCase())
+				? str.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT))
 				: str.startsWith(prefix);
 	}
 

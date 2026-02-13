@@ -17,6 +17,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -107,7 +108,7 @@ public class ConfigFields
 	{
 		defaultLanguageKeys = new HashMap<>();
 
-		try (InputStream stream = NBTac.class.getResourceAsStream(String.format("/assets/%s/lang/en_us.json", NBTac.MOD_ID)))
+		try (InputStream stream = NBTac.class.getResourceAsStream(String.format(Locale.ROOT, "/assets/%s/lang/en_us.json", NBTac.MOD_ID)))
 		{
 			if (stream == null) { return; }
 
@@ -144,7 +145,7 @@ public class ConfigFields
 
 		protected void save(PrintWriter writer)
 		{
-			String description = String.format("%s\nDefault value: %s", getDefaultDescription(), this);
+			String description = String.format(Locale.ROOT, "%s\nDefault value: %s", getDefaultDescription(), this);
 			BufferedReader reader = new BufferedReader(new StringReader(description));
 			reader.lines().forEach((line) -> writer.println("# " + line));
 
@@ -252,7 +253,7 @@ public class ConfigFields
 
 		@Override public void fromString(String str)
 		{
-			try { val = Enum.valueOf(enumClass, str.toUpperCase()); }
+			try { val = Enum.valueOf(enumClass, str.toUpperCase(Locale.ROOT)); }
 			catch (Exception e) { reset(); }
 		}
 

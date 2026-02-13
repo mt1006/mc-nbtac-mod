@@ -6,6 +6,7 @@ import net.mt1006.nbtac.autocomplete.suggestions.StringSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.mixin.fields.TextColorFields;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class TextColorType extends ComplexType
@@ -24,7 +25,7 @@ public class TextColorType extends ComplexType
 
 		for (Map.Entry<String, TextColor> entry : colorMap.entrySet())
 		{
-			String subtext = String.format("(#%06X) [#text_color]", entry.getValue().getValue());
+			String subtext = String.format(Locale.ROOT, "(#%06X) [#text_color]", entry.getValue().getValue());
 			list.add(new StringSuggestion(entry.getKey(), subtext, ctx.parserType()));
 		}
 	}

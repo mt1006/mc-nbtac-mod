@@ -7,6 +7,8 @@ import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.utils.ComparableLiteralMessage;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+
 public abstract class NbtTag
 {
 	private final String name;
@@ -35,7 +37,7 @@ public abstract class NbtTag
 
 	public Message getTooltip()
 	{
-		return new ComparableLiteralMessage(String.format("%s§r §8%s", name, getSubtext()));
+		return new ComparableLiteralMessage(String.format(Locale.ROOT, "%s§r §8%s", name, getSubtext()));
 	}
 
 	public abstract int getPriority(@Nullable ParsedCompound compound);

@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.ListWidget>
@@ -170,7 +171,7 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 
 		public void updateText()
 		{
-			Component optionComponent = Component.translatable(key + "." + field.val.name().toLowerCase());
+			Component optionComponent = Component.translatable(key + "." + field.val.name().toLowerCase(Locale.ROOT));
 			setMessage(component.copy().append(": ").append(optionComponent));
 		}
 
@@ -253,7 +254,7 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 		{
 			int valPos = field.val / multiplier;
 			Component subcomponent = (specialValues != null && specialValues.contains(valPos))
-					? Component.translatable(String.format("%s.%d", widgetNameKey.get(), valPos))
+					? Component.translatable(String.format(Locale.ROOT, "%s.%d", widgetNameKey.get(), valPos))
 					: Component.literal(Integer.toString(field.val));
 
 			setMessage(component.copy().append(": ").append(subcomponent));

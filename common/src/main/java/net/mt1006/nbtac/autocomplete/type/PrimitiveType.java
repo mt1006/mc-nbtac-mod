@@ -5,6 +5,8 @@ import net.mt1006.nbtac.autocomplete.parser.*;
 import net.mt1006.nbtac.config.ModConfig;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+
 public enum PrimitiveType implements Type
 {
 	UNKNOWN,
@@ -34,7 +36,7 @@ public enum PrimitiveType implements Type
 	PrimitiveType(String suffix)
 	{
 		this.suffix = suffix;
-		this.lowerCaseName = name().toLowerCase();
+		this.lowerCaseName = name().toLowerCase(Locale.ROOT);
 		this.symbol = "[" + lowerCaseName + "]";
 	}
 

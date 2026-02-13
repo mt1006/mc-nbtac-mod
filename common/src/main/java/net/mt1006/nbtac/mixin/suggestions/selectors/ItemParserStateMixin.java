@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -72,7 +73,7 @@ public abstract class ItemParserStateMixin
 	private void atSuggestComponentAssignment(SuggestionsBuilder builder, CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
 	{
 		Item item = findParsedItem();
-		String str = builder.getRemaining().toLowerCase();
+		String str = builder.getRemaining().toLowerCase(Locale.ROOT);
 
 		SuggestionList suggestionList = new SuggestionList();
 		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, true);
@@ -87,7 +88,7 @@ public abstract class ItemParserStateMixin
 	private void atSuggestComponentRemoval(SuggestionsBuilder builder, CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
 	{
 		Item item = findParsedItem();
-		String str = builder.getRemaining().toLowerCase();
+		String str = builder.getRemaining().toLowerCase(Locale.ROOT);
 
 		SuggestionList suggestionList = new SuggestionList();
 		DataComponentManager.loadSuggestions(suggestionList, str, parsedComponents, item, false);
