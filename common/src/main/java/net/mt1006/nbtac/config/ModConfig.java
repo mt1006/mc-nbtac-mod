@@ -38,7 +38,6 @@ public class ModConfig
 	public static final ConfigFields.BooleanField supportCommandNamespace = fields.add("support_command_namespace", true);
 
 	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
-	public static final ConfigFields.BooleanField allowBlockEntityExtraction = fields.add("allow_block_entity_extraction", true);
 
 	public static final ConfigFields.BooleanField debugMode = fields.add("debug_mode", false);
 	public static final ConfigFields.IntegerField debugSleep = fields.add("debug_sleep", 0);
@@ -82,7 +81,6 @@ public class ModConfig
 
 		list.addLabel("advanced_settings");
 		list.add(useNewThread.createSwitch());
-		list.add(allowBlockEntityExtraction.createSwitch());
 
 		list.addLabel("debugging_options");
 		list.add(debugMode.createSwitch());

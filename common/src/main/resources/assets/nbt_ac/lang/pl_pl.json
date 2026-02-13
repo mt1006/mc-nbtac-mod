@@ -97,9 +97,6 @@
   "nbtac.options.field.use_new_thread": "Użyj nowego wątku",
   "nbtac.options.field.use_new_thread.desc": "Używa nowego wątku do załadowania sugestii po załadowaniu Minecraft'a.",
 
-  "nbtac.options.field.allow_block_entity_extraction": "Zezwalaj na ekstrakcję bytów bloków",
-  "nbtac.options.field.allow_block_entity_extraction.desc": "Zezwala na użycie metody ekstrakcji bytów bloków po załadowaniu sugestii.",
-
 
   "nbtac.options.field.debug_mode": "Tryb debugowania",
   "nbtac.options.field.debug_mode.desc": "Włącza dodatkowe wiadomości i sprawdzenia przydatne przy debugowaniu.",

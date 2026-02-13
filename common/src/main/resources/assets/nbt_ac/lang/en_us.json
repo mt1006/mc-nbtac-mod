@@ -97,9 +97,6 @@
   "nbtac.options.field.use_new_thread": "Use New Thread",
   "nbtac.options.field.use_new_thread.desc": "Uses new thread to load suggestions during Minecraft loading.",
 
-  "nbtac.options.field.allow_block_entity_extraction": "Allow Block Entity Extraction",
-  "nbtac.options.field.allow_block_entity_extraction.desc": "Allows for usage of block entity extraction method after suggestions are loaded.",
-
 
   "nbtac.options.field.debug_mode": "Debug Mode",
   "nbtac.options.field.debug_mode.desc": "Enables additional messages and checks useful for debugging.",

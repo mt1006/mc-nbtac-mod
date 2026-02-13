@@ -63,8 +63,6 @@
   "nbtac.options.field.support_command_namespace.desc": "명령 접두사로 \"minecraft:\"를 무시합니다. 이 네임스페이스 아래에 명령어을 추가하는 플러그인과 함께 사용할 때 유용합니다.",
   "nbtac.options.field.use_new_thread": "새 스레드 사용",
   "nbtac.options.field.use_new_thread.desc": "마인크래프트 로딩 중에 새 스레드를 사용하여 제안을 로드합니다.",
-  "nbtac.options.field.allow_block_entity_extraction": "블록 엔티티 추출 허용",
-  "nbtac.options.field.allow_block_entity_extraction.desc": "제안이 로드된 후 블록 엔티티 추출 방법 을 사용할 수 있도록 합니다.",
   "nbtac.options.field.debug_mode": "디버그 모드",
   "nbtac.options.field.debug_mode.desc": "디버깅에 유용한 추가 메시지와 검사를 활성화합니다.",
   "nbtac.options.field.debug_sleep": "디버그 로딩 절전",

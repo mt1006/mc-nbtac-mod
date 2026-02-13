@@ -43,13 +43,13 @@ public class NbtTagMap implements Iterable<NbtTag>
 
 	public @Nullable NbtTag get(String key)
 	{
-		if (map == null) { return null; }
-
 		if (parent != null)
 		{
 			NbtTag tag = parent.get(key);
 			if (tag != null) { return tag; }
 		}
+
+		if (map == null) { return null; }
 
 		if (containsIdTag)
 		{

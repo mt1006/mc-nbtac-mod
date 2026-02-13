@@ -93,9 +93,6 @@
   "nbtac.options.field.use_new_thread": "使用新執行緒",
   "nbtac.options.field.use_new_thread.desc": "使用新執行緒在 Minecraft 載入期間載入建議。",
 
-  "nbtac.options.field.allow_block_entity_extraction": "允許方塊實體提取",
-  "nbtac.options.field.allow_block_entity_extraction.desc": "允許在載入建議後使用方塊實體提取方法。",
-
 
   "nbtac.options.field.debug_mode": "除錯模式",
   "nbtac.options.field.debug_mode.desc": "啟用對除錯有用的額外訊息和檢查。",

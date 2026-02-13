@@ -6,20 +6,16 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.Container;
-import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.PlayerHeadBlock;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.mt1006.nbtac.autocomplete.suggestions.DataComponentSuggestion;
 import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.config.ModConfig;
-import net.mt1006.nbtac.utils.BlockEntityCatcher;
 import net.mt1006.nbtac.utils.Fields;
 import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
@@ -145,14 +141,17 @@ public class DataComponentManager
 	{
 		relevant.add(DataComponents.BLOCK_ENTITY_DATA);
 
-		Class<?> clazz = BlockEntityCatcher.catchFromBlock(block);
-		if (clazz == null) { return; }
+		ResourceLocation blockId = RegistryUtils.BLOCK.getKey(block);
+		if (blockId == null) { return; }
 
-		if (Container.class.isAssignableFrom(clazz))
+		NbtTagMap blockTags = NbtTagManager.get("block/" + blockId);
+		if (blockTags == null) { return; }
+
+		if (blockTags.containsKey("Items") && blockTags.containsKey("lock"))
 		{
 			relevant.add(DataComponents.CONTAINER);
-			if (RandomizableContainer.class.isAssignableFrom(clazz)) { relevant.add(DataComponents.CONTAINER_LOOT); }
-			if (BaseContainerBlockEntity.class.isAssignableFrom(clazz)) { relevant.add(DataComponents.LOCK); }
+			relevant.add(DataComponents.LOCK);
+			if (blockTags.containsKey("LootTable")) { relevant.add(DataComponents.CONTAINER_LOOT); }
 		}
 	}
 }
