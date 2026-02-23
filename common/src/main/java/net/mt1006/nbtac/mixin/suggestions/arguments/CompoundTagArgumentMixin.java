@@ -53,9 +53,8 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 				return getResourceNameForDataCommand(ctx);
 
 			default:
-				if (ctx.getChild() != null) { return getResourceName(ctx.getChild()); }
+				return ctx.getChild() != null ? getResourceName(ctx.getChild()) : null;
 		}
-		return null;
 	}
 
 	@Unique private @Nullable String getResourceNameForDataCommand(CommandContext<?> ctx)
@@ -73,7 +72,9 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 			case "entity":
 				EntitySelector entitySelector = ctx.getArgument("target", EntitySelector.class);
 				return Utils.entityFromEntitySelector(entitySelector);
+
+			default:
+				return null;
 		}
-		return null;
 	}
 }

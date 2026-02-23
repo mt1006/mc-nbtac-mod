@@ -17,7 +17,7 @@ public class ParsedTag
 	{
 		// creates virtual structure of parents for item data components
 		// it's necessary for providing item id for types with dynamic arguments
-		// it matches structure of compound/nbtac:item component tag,
+		// it's similar to the structure of compound/nbtac:item_stack component tag,
 		// that is: {id:"minecraft:some_item", components:{...}}
 
 		ParsedCompound rootCompound = new ParsedCompound(null, 0);

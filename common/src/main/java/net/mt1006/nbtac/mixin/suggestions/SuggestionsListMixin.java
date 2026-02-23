@@ -130,8 +130,10 @@ public abstract class SuggestionsListMixin
 		{
 			for (CustomSuggestion.Data data : SuggestionManager.dataMap.values())
 			{
-				if (data.priority >= 100) { continue; }
-				if (data.priority > highestNotRecommended) { highestNotRecommended = data.priority; }
+				if (data.priority > highestNotRecommended && data.priority < 100)
+				{
+					highestNotRecommended = data.priority;
+				}
 			}
 		}
 

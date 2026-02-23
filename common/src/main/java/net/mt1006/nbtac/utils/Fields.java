@@ -103,8 +103,7 @@ public class Fields
 		{
 			return data != null && obj.getClass().getMethod(data.getLeft(), data.getRight()).getDeclaringClass() != superClass;
 		}
-		catch (Exception ignore) {}
-		return false;
+		catch (Exception ignore) { return false; }
 	}
 
 	public static <T> List<T> getStaticFields(Class<?> fromClass, Class<T> ofClass)
