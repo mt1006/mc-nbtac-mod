@@ -8,6 +8,7 @@ import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.utils.RegistryUtils;
 import com.mt1006.nbt_ac.utils.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -95,7 +96,7 @@ public class TypeLoader
 			//TODO: clean up code
 			lastObject = null;
 			Class<?> clazz;
-			Identifier id = BlockEntityType.getKey(blockEntityType);
+			Identifier id = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(blockEntityType);
 
 			if (pistonCrashFix && blockEntityType == BlockEntityType.PISTON)
 			{

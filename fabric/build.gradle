@@ -1,26 +1,21 @@
 plugins
 {
-	id "fabric-loom" version "${fabric_loom_version}"
+	id "net.fabricmc.fabric-loom" version "${fabric_loom_version}"
 }
 
 repositories
 {
-	maven { url = "https://maven.parchmentmc.org/" }
 	maven { url = "https://maven.terraformersmc.com/releases/" }
 }
 
 dependencies
 {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings loom.layered {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
-	}
 
-	modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+	implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
-	modApi("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
+	api("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
 }
 
 loom

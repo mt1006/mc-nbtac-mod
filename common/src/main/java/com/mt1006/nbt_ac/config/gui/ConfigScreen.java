@@ -2,7 +2,7 @@ package com.mt1006.nbt_ac.config.gui;
 
 import com.mt1006.nbt_ac.config.ModConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -55,12 +55,12 @@ public class ConfigScreen extends Screen
 		Minecraft.getInstance().setScreen(lastScreen);
 	}
 
-	@Override public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
+	@Override public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick)
 	{
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
-		list.render(guiGraphics, mouseX, mouseY, partialTick);
-		doneButton.render(guiGraphics, mouseX, mouseY, partialTick);
-		resetButton.render(guiGraphics, mouseX, mouseY, partialTick);
-		guiGraphics.drawCenteredString(font, title, width / 2, 20, -1);
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+		list.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+		doneButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+		resetButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+		guiGraphics.centeredText(font, title, width / 2, 20, -1);
 	}
 }

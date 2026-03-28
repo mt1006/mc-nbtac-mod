@@ -78,7 +78,7 @@ public class DataComponentManager
 
 		if (ModConfig.showCustomDataAsRelevant.val) { relevant.add(DataComponents.CUSTOM_DATA); }
 		if (ModConfig.showCustomModelDataAsRelevant.val) { relevant.add(DataComponents.CUSTOM_MODEL_DATA); }
-		if (item.builtInRegistryHolder().is(ItemTags.DYEABLE)) { relevant.add(DataComponents.DYED_COLOR); }
+		if (item.builtInRegistryHolder().is(ItemTags.DYES)) { relevant.add(DataComponents.DYED_COLOR); }
 
 		if (item instanceof SpawnEggItem || item instanceof HangingEntityItem || item instanceof ArmorStandItem
 				|| item instanceof MinecartItem || item instanceof BoatItem)

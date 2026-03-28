@@ -3,7 +3,7 @@ package com.mt1006.nbt_ac.config.gui;
 import com.mt1006.nbt_ac.config.ConfigFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -62,7 +62,7 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 		return 400;
 	}
 
-	@Override protected int scrollBarY()
+	@Override public int scrollBarY()
 	{
 		return super.scrollBarY();
 	}
@@ -86,10 +86,10 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 			return List.of(widget);
 		}
 
-		@Override public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float i)
+		@Override public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean isHovered, float i)
 		{
 			widget.setY(getContentY());
-			widget.render(guiGraphics, mouseX, mouseY, i);
+			widget.extractRenderState(guiGraphics, mouseX, mouseY, i);
 		}
 	}
 
@@ -137,10 +137,10 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 			updateText();
 		}
 
-		@Override protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f)
+		@Override protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f)
 		{
-			renderDefaultSprite(guiGraphics);
-			renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+			extractDefaultSprite(guiGraphics);
+			extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
 		}
 
 		@Override protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationOutput)
@@ -191,10 +191,10 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 			updateText();
 		}
 
-		@Override protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f)
+		@Override protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f)
 		{
-			renderDefaultSprite(guiGraphics);
-			renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+			extractDefaultSprite(guiGraphics);
+			extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
 		}
 
 		@Override protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationOutput)

@@ -7,7 +7,7 @@ import com.mt1006.nbt_ac.config.ModConfig;
 import com.mt1006.nbt_ac.mixin.fields.CommandSuggestionsFields;
 import com.mt1006.nbt_ac.utils.Fields;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.CommandSuggestions;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
@@ -46,13 +46,13 @@ public abstract class SuggestionsListMixin
 		if (ModConfig.customSorting.val) { provideCustomSorting(suggestions); }
 	}
 
-	@Inject(method = "render", at = @At(value = "HEAD"))
-	private void atRenderStart(GuiGraphics guiGraphics, int mouseX, int mouseY, CallbackInfo ci)
+	@Inject(method = "extractRenderState", at = @At(value = "HEAD"))
+	private void atRenderStart(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, CallbackInfo ci)
 	{
 		renderLoopI = 0;
 	}
 
-	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"), index = 4)
+	@ModifyArg(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"), index = 4)
 	private int modifyTextColor(int color)
 	{
 		if (!NbtSuggestionManager.hasCustomSuggestions || !ModConfig.grayOutIrrelevant.val || suggestionList.isEmpty())
@@ -73,8 +73,8 @@ public abstract class SuggestionsListMixin
 		};
 	}
 
-	@Inject(method = "render", at = @At(value = "RETURN"))
-	private void drawSubtexts(GuiGraphics guiGraphics, int mouseX, int mouseY, CallbackInfo ci)
+	@Inject(method = "extractRenderState", at = @At(value = "RETURN"))
+	private void drawSubtexts(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, CallbackInfo ci)
 	{
 		if (!addTypeNames) { return; }
 		int height = rect.getHeight() / 12;
@@ -84,7 +84,7 @@ public abstract class SuggestionsListMixin
 			String subtext = NbtSuggestionManager.getSubtext(suggestionList.get(i + offset));
 			if (subtext == null) { continue; }
 
-			guiGraphics.drawString(fontToUse, subtext, rect.getX() + rect.getWidth() - fontToUse.width(subtext) - 1,
+			guiGraphics.text(fontToUse, subtext, rect.getX() + rect.getWidth() - fontToUse.width(subtext) - 1,
 					rect.getY() + 2 + 12 * i, 0xFF555555);
 		}
 	}
