@@ -1,0 +1,19 @@
+{
+	"id": "compound/nbt_ac:particle_position_source",
+
+	"tags":
+	[
+		{
+			"tag": "type",
+			"type": "string",
+			"subtype": "enum/block",
+			"recommended": true
+		},
+
+		{
+			"tag": "pos",
+			"type": "list/int",
+			"recommended": true
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+	"apply_to":
+	[
+		"particle/minecraft:effect",
+		"particle/minecraft:instant_effect"
+	],
+	"tags":
+	[
+		{
+			"tag": "color",
+			"type": "int"
+		},
+
+		{
+			"tag": "power",
+			"type": "float",
+			"recommended": true
+		}
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"id": "particle/minecraft:sculk_charge",
+	"tags":
+	[
+		{
+			"tag": "roll",
+			"type": "float",
+			"recommended": true
+		}
+	]
+}

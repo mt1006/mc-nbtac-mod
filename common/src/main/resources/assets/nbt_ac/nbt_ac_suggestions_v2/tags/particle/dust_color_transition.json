@@ -1,0 +1,23 @@
+{
+	"id": "particle/minecraft:dust_color_transition",
+	"tags":
+	[
+		{
+			"tag": "from_color",
+			"type": "int",
+			"recommended": true
+		},
+
+		{
+			"tag": "to_color",
+			"type": "int",
+			"recommended": true
+		},
+
+		{
+			"tag": "scale",
+			"type": "float",
+			"recommended": true
+		}
+	]
+}

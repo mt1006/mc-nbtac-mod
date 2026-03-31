@@ -1,0 +1,14 @@
+{
+	"apply_to":
+	[
+		"particle/minecraft:dragon_breath"
+	],
+	"tags":
+	[
+		{
+			"tag": "power",
+			"type": "float",
+			"recommended": true
+		}
+	]
+}

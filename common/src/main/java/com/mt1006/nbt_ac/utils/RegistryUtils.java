@@ -3,6 +3,7 @@ package com.mt1006.nbt_ac.utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +26,7 @@ public class RegistryUtils
 	public static final LocalRegistry<EntityType<?>> ENTITY_TYPE = new LocalRegistry<>(BuiltInRegistries.ENTITY_TYPE);
 	public static final LocalRegistry<BlockEntityType<?>> BLOCK_ENTITY_TYPE = new LocalRegistry<>(BuiltInRegistries.BLOCK_ENTITY_TYPE);
 	public static final LocalRegistry<DataComponentType<?>> DATA_COMPONENT_TYPE = new LocalRegistry<>(BuiltInRegistries.DATA_COMPONENT_TYPE);
+	public static final LocalRegistry<ParticleType<?>> PARTICLE_TYPE = new LocalRegistry<>(BuiltInRegistries.PARTICLE_TYPE);
 
 	public static class LocalRegistry<T> implements Iterable<T>
 	{

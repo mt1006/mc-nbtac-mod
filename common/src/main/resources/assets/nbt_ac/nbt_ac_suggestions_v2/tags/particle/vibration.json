@@ -1,0 +1,18 @@
+{
+	"id": "particle/minecraft:vibration",
+	"tags":
+	[
+		{
+			"tag": "destination",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:particle_position_source",
+			"recommended": true
+		},
+
+		{
+			"tag": "arrival_in_ticks",
+			"type": "int",
+			"recommended": true
+		}
+	]
+}

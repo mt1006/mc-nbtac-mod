@@ -1,0 +1,12 @@
+{
+	"id": "particle/minecraft:item",
+	"tags":
+	[
+		{
+			"tag": "item",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:item",
+			"recommended": true
+		}
+	]
+}

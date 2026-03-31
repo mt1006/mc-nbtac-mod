@@ -1,0 +1,17 @@
+{
+	"id": "particle/minecraft:dust",
+	"tags":
+	[
+		{
+			"tag": "color",
+			"type": "int",
+			"recommended": true
+		},
+
+		{
+			"tag": "scale",
+			"type": "float",
+			"recommended": true
+		}
+	]
+}

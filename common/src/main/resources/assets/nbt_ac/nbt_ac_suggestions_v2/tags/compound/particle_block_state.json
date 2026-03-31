@@ -1,0 +1,20 @@
+{
+	"id": "compound/nbt_ac:particle_block_state",
+
+	"tags":
+	[
+		{
+			"tag": "Name",
+			"type": "string",
+			"subtype": "registry_key/minecraft:block",
+			"recommended": true
+		},
+
+		{
+			"tag": "Properties",
+			"type": "compound",
+			"subtype": "block_state_tag/*",
+			"with": "#parent/Name"
+		}
+	]
+}

@@ -1,0 +1,19 @@
+{
+	"apply_to":
+	[
+		"particle/minecraft:block",
+		"particle/minecraft:block_marker",
+		"particle/minecraft:falling_dust",
+		"particle/minecraft:dust_pillar",
+		"particle/minecraft:block_crumble"
+	],
+	"tags":
+	[
+		{
+			"tag": "block_state",
+			"type": "compound",
+			"subtype": "tag/compound/nbt_ac:particle_block_state",
+			"recommended": true
+		}
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"id": "particle/minecraft:shriek",
+	"tags":
+	[
+		{
+			"tag": "delay",
+			"type": "int",
+			"recommended": true
+		}
+	]
+}

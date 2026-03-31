@@ -1,0 +1,16 @@
+{
+	"apply_to":
+	[
+		"particle/minecraft:entity_effect",
+		"particle/minecraft:flash",
+		"particle/minecraft:tinted_leaves"
+	],
+	"tags":
+	[
+		{
+			"tag": "color",
+			"type": "int",
+			"recommended": true
+		}
+	]
+}
