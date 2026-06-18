@@ -1,0 +1,5 @@
+{
+	"id": "item/minecraft:sulfur_cube_content",
+	"type": "compound",
+	"subtype": "tag/compound/nbt_ac:item"
+}

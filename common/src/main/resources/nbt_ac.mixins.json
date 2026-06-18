@@ -12,7 +12,7 @@
 	"fields.AtlasManagerFields",
     "fields.ClientLevelFields",
     "fields.CommandSuggestionsFields",
-    "fields.DecoratedPotPatternsFields",
+    "fields.DecoratedPotRendererFields",
     "fields.EntitySelectorFields",
     "fields.FontManagerFields",
     "fields.KeyMappingFields",

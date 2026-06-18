@@ -40,7 +40,7 @@ public class ConfigScreen extends Screen
 	private static void onDonePress(Screen lastScreen)
 	{
 		ModConfig.save();
-		Minecraft.getInstance().setScreen(lastScreen);
+		Minecraft.getInstance().setScreenAndShow(lastScreen);
 	}
 
 	private static void onResetPress(ModOptionList list)
@@ -52,7 +52,7 @@ public class ConfigScreen extends Screen
 	@Override public void onClose()
 	{
 		ModConfig.save();
-		Minecraft.getInstance().setScreen(lastScreen);
+		Minecraft.getInstance().setScreenAndShow(lastScreen);
 	}
 
 	@Override public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick)

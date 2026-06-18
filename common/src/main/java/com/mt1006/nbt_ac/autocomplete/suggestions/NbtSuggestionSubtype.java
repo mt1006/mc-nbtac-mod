@@ -8,6 +8,7 @@ import com.mt1006.nbt_ac.utils.RegistryUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.font.FontManager;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -357,12 +358,12 @@ public enum NbtSuggestionSubtype
 				suggestionList.clear();
 				suggestionList.add(new IdSuggestion(RegistryUtils.ITEM.getKey(Items.BRICK), "[#pot_decoration]", parserType, 1));
 
-				Map<Item, ResourceKey<String>> itemToPotTexture = DecoratedPotPatternsFields.getITEM_TO_POT_TEXTURE();
+				Map<ResourceKey<Item>, SpriteId> itemToPotTexture = DecoratedPotRendererFields.getDECORATED_POT_SPRITES();
 				if (itemToPotTexture == null) { return true; }
 
-				for (Item item : itemToPotTexture.keySet())
+				for (ResourceKey<Item> item : itemToPotTexture.keySet())
 				{
-					suggestionList.add(new IdSuggestion(RegistryUtils.ITEM.getKey(item), "[#pot_decoration]", parserType));
+					suggestionList.add(new IdSuggestion(item.identifier(), "[#pot_decoration]", parserType));
 				}
 				return true;
 

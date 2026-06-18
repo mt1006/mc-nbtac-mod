@@ -17,6 +17,7 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.piston.PistonMovingBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -98,7 +99,7 @@ public class TypeLoader
 			Class<?> clazz;
 			Identifier id = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(blockEntityType);
 
-			if (pistonCrashFix && blockEntityType == BlockEntityType.PISTON)
+			if (pistonCrashFix && blockEntityType == BlockEntityTypes.PISTON)
 			{
 				clazz = PistonMovingBlockEntity.class;
 			}

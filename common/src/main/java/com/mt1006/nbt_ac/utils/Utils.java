@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -110,7 +111,7 @@ public class Utils
 		{
 			if (player.getGameProfile().name().equals(playerName))
 			{
-				return "entity/" + EntityType.getKey(EntityType.PLAYER);
+				return "entity/" + EntityType.getKey(EntityTypes.PLAYER);
 			}
 		}
 		return null;
