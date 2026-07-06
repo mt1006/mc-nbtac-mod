@@ -1,11 +1,11 @@
 plugins
 {
-	id "fabric-loom" version "${fabric_loom_version}"
+	id 'fabric-loom' version "${fabric_loom_version}"
 }
 
 repositories
 {
-	maven { url = "https://maven.terraformersmc.com/releases/" }
+	maven { url = 'https://maven.terraformersmc.com/releases/' }
 }
 
 dependencies
