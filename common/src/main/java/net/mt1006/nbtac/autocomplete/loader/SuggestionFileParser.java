@@ -192,6 +192,6 @@ public class SuggestionFileParser extends FileParser
 
 	private String parseNbtEntryName(String str)
 	{
-		return str.startsWith("!") ? keyModPrefix + str.substring(1) : keyDefaultPrefix + str;
+		return str.startsWith("_") ? keyModPrefix + str.substring(1) : keyDefaultPrefix + str;
 	}
 }

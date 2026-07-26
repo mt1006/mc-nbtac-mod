@@ -1,18 +1,18 @@
-!container
+_container
 +lock :#lock
 +CustomName :TextComponent
 
-!with_single_item
+_with_single_item
 +LootTable :LootTable
 +LootTableSeed :LongSeed
 +item :#item_stack
 
-!with_items &!container
+_with_items &_container
 +LootTable :LootTable
 +LootTableSeed :LongSeed
 +Items :list<#item_stack_with_slot> @RelevantIfNotDef(LootTable)
 
-!furnace &!container
+_furnace &_container
 +Items :list<#item_stack_with_slot>
 +cooking_time_spent :short
 +cooking_total_time :short
@@ -20,11 +20,11 @@
 +lit_total_time :short
 +RecipesUsed :FurnaceRecipesUsed
 
-!sculk_sensor
+_sculk_sensor
 +last_vibration_frequency :int
 +listener :#vibration_listener
 
-!sign
+_sign
 +front_text :#sign_text
 +back_text :#sign_text
 +is_waxed :boolean
@@ -37,7 +37,7 @@ banner
 		+translation_key :TranslationKey
 	+color :DyeColor
 
-barrel =!with_items
+barrel =_with_items
 
 beacon
 +primary_effect :RegistryKey(minecraft:mob_effect)
@@ -52,22 +52,22 @@ beehive
 	+ticks_in_hive :int
 +flower_pos :BlockPos
 
-blast_furnace =!furnace
+blast_furnace =_furnace
 
-brewing_stand &!container
+brewing_stand &_container
 +Items :list<#item_stack_with_slot>
 +BrewTime :short
 
-brushable_block =!with_single_item
+brushable_block =_with_single_item
 
-calibrated_sculk_sensor =!sculk_sensor
+calibrated_sculk_sensor =_sculk_sensor
 
 campfire
 +Items :list<#item_stack_with_slot>
 +CookingTimes :int_array
 +CookingTotalTimes :int_array
 
-chest =!with_items
+chest =_with_items
 
 chiseled_bookshelf
 +Items :list<#item_stack_with_slot>
@@ -91,18 +91,18 @@ comparator
 conduit
 +Target :UUID
 
-crafter &!with_items
+crafter &_with_items
 +crafting_ticks_remaining :int
 
 creaking_heart
 +creaking :UUID
 
-decorated_pot &!with_single_item
+decorated_pot &_with_single_item
 +sherds :list<RegistryKey(minecraft:item)>(4)
 
-dispenser =!with_items
+dispenser =_with_items
 
-dropper =!with_items
+dropper =_with_items
 
 enchanting_table
 +CustomName :TextComponent
@@ -112,11 +112,11 @@ end_gateway
 +exit_portal :BlockPos
 +ExactTeleport :boolean
 
-furnace =!furnace
+furnace =_furnace
 
-hanging_sign =!sign
+hanging_sign =_sign
 
-hopper &!with_items
+hopper &_with_items
 +TransferCooldown :int
 
 jigsaw
@@ -164,15 +164,15 @@ sculk_catalyst
 	+update_delay :int
 	+facings :list<Enum(down, up, north, south, west, east)>
 
-sculk_sensor =!sculk_sensor
+sculk_sensor =_sculk_sensor
 
 sculk_shrieker
 +warning_level :int
 +listener :#vibration_listener
 
-shulker_box =!with_items
+shulker_box =_with_items
 
-sign =!sign
+sign =_sign
 
 skull
 +profile :either<string, compound>
@@ -185,7 +185,7 @@ skull
 +note_block_sound :string
 +custom_name :TextComponent
 
-smoker =!furnace
+smoker =_furnace
 
 structure_block
 +name :string
@@ -222,7 +222,7 @@ test_instance_block
 	+status :Enum(cleared, running, finished)
 	+error_message :TextComponent
 
-trapped_chest =!with_items
+trapped_chest =_with_items
 
 trial_spawner
 +registered_players :list<UUID>
@@ -238,18 +238,6 @@ trial_spawner
 +required_player_range :int
 
 vault
-+server_data :compound
-	+rewarded_players :list<UUID>
-	+state_updating_resumes_at :long
-	+items_to_eject :list<#item_stack>
-	+total_ejections_needed :int
-+config :compound
-	+loot_table :LootTable
-	+activation_range :double
-	+deactivation_range :double
-	+key_item :#item_stack
-	+override_loot_table_to_display :LootTable
-+shared_data :compound
-	+display_item :#item_stack
-	+connected_players :list<UUID>
-	+connected_particles_range :double
++config :#vault_config
++server_data :#vault_server_data
++shared_data :#vault_shared_data

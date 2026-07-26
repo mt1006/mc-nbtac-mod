@@ -91,6 +91,10 @@ spawn_data
 		+loot_table :LootTable
 		+slot_drop_chances :either<float, #drop_chances>
 
+spawn_potential
++weight :int
++data :#spawn_data
+
 item_cost
 +id :RegistryKey(minecraft:item) @Recommended
 +count :int
@@ -152,3 +156,64 @@ block_predicate
 +blocks :SingleOrList<list<RegistryKey(minecraft:block)>> @Recommended
 +nbt :TagsWithId(block/$../blocks$)
 +state :BlockStateTags($../blocks$)
+
+quaternion_compound
++angle :float
++axis :list<float>(3)
+
+transformation
++translation :list<float>(3)
++left_rotation :either<list<float>(4), #quaternion_compound>
++scale :list<float>(3)
++right_rotation :either<list<float>(4), #quaternion_compound>
+
+brightness
++block :int
++sky :int
+
+interaction_info
++player :UUID
++timestamp :long
+
+armor_stand_pose
++Head :list<float>(3)
++Body :list<float>(3)
++LeftArm :list<float>(3)
++RightArm :list<float>(3)
++LeftLeg :list<float>(3)
++RightLeg :list<float>(3)
+
+warden_anger
++suspects :list<compound>
+	+uuid :UUID
+	+anger :int
+
+attribute
++id :RegistryKey(minecraft:attribute)
++base :double @Recommended
++modifiers :list<compound>
+	+id :string
+	+amount :double
+	+operation :Enum(add_value, add_multiplied_base, add_multiplied_total)
+
+waypoint_icon
++style :Enum(default, color)
++color :int
+
+vault_server_data
++rewarded_players :list<UUID>
++state_updating_resumes_at :long
++items_to_eject :list<#item_stack>
++total_ejections_needed :int
+
+vault_config
++loot_table :LootTable
++activation_range :double
++deactivation_range :double
++key_item :#item_stack
++override_loot_table_to_display :LootTable
+
+vault_shared_data
++display_item :#item_stack
++connected_players :list<UUID>
++connected_particles_range :double
