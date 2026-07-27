@@ -22,19 +22,21 @@ _entity
 
 _living_entity &_entity
 +AbsorptionAmount :float
-+attributes :list<#attribute>
-+active_effects :list<#effect_with_hidden>
-+Health :float
-+HurtTime :short
-+DeathTime :short
-+HurtByTimestamp :int
-+Team :ScoreboardTeam
-+FallFlying :boolean
-+sleeping_pos :BlockPos
 +Brain :Brain($../id$)
++DeathTime :short
++FallFlying :boolean
++Health :float
++HurtByTimestamp :int
++HurtTime :short
++Team :ScoreboardTeam
++active_effects :list<#effect_with_hidden>
++attributes :list<#attribute>
++equipment :#equipment
 +last_hurt_by_player :UUID
 +last_hurt_by_player_memory_time :int
 +last_hurt_by_mob :UUID
++locator_bar_icon :#waypoint_icon
++sleeping_pos :BlockPos
 +ticks_since_last_hurt_by_mob :int
 
 _mob &_living_entity
@@ -357,6 +359,7 @@ camel &_horse
 
 cat &_tamable_animal
 +CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended
++variant :ServerRegistryKey(minecraft:cat_variant)
 
 cave_spider =_mob
 

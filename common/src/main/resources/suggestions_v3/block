@@ -1,18 +1,18 @@
-_container
-+lock :#lock
+_base_container
 +CustomName :TextComponent
++lock :#lock
 
 _with_single_item
 +LootTable :LootTable
 +LootTableSeed :LongSeed
 +item :#item_stack
 
-_with_items &_container
+_with_items &_base_container
 +LootTable :LootTable
 +LootTableSeed :LongSeed
 +Items :list<#item_stack_with_slot> @RelevantIfNotDef(LootTable)
 
-_furnace &_container
+_furnace &_base_container
 +Items :list<#item_stack_with_slot>
 +cooking_time_spent :short
 +cooking_total_time :short
@@ -54,7 +54,7 @@ beehive
 
 blast_furnace =_furnace
 
-brewing_stand &_container
+brewing_stand &_base_container
 +Items :list<#item_stack_with_slot>
 +BrewTime :short
 

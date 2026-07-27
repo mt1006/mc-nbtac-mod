@@ -41,6 +41,16 @@ item_stack_with_slot &item_stack
 item_stack_with_player_slot &item_stack
 +slot :byte
 
+equipment
++mainhand :#item_stack
++offhand :#item_stack
++feet :#item_stack
++legs :#item_stack
++chest :#item_stack
++head :#item_stack
++body :#item_stack
++saddle :#item_stack
+
 vibration_info
 +game_event :string
 +distance :float
@@ -197,23 +207,23 @@ attribute
 	+operation :Enum(add_value, add_multiplied_base, add_multiplied_total)
 
 waypoint_icon
-+style :Enum(default, color)
 +color :int
++style :Enum(default, color)
 
 vault_server_data
++items_to_eject :list<#item_stack>
 +rewarded_players :list<UUID>
 +state_updating_resumes_at :long
-+items_to_eject :list<#item_stack>
 +total_ejections_needed :int
 
 vault_config
-+loot_table :LootTable
 +activation_range :double
 +deactivation_range :double
 +key_item :#item_stack
++loot_table :LootTable
 +override_loot_table_to_display :LootTable
 
 vault_shared_data
 +display_item :#item_stack
-+connected_players :list<UUID>
 +connected_particles_range :double
++connected_players :list<UUID>
