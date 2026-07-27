@@ -18,14 +18,13 @@ import java.util.Stack;
 
 public class SuggestionFileParser extends FileParser
 {
-	private static final String MOD_NAMESPACE = "nbtac";
 	private final String keyDefaultPrefix, keyModPrefix;
 
 	public SuggestionFileParser(String filename, String namespace)
 	{
 		super(filename);
 		this.keyDefaultPrefix = filename + "/" + namespace + ":";
-		this.keyModPrefix = MOD_NAMESPACE + "/" + namespace + ":";
+		this.keyModPrefix = "_" + this.keyDefaultPrefix;
 	}
 
 	public void parseNbtSuggestions()
@@ -192,6 +191,6 @@ public class SuggestionFileParser extends FileParser
 
 	private String parseNbtEntryName(String str)
 	{
-		return str.startsWith("_") ? keyModPrefix + str.substring(1) : keyDefaultPrefix + str;
+		return (str.startsWith("_") ? keyModPrefix : keyDefaultPrefix) + str;
 	}
 }

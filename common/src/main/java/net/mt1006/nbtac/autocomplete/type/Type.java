@@ -50,7 +50,7 @@ public interface Type
 			Map.entry("RegistryKey", (s, a) -> new RegistryKeyType(firstOrNull(a))),
 			Map.entry("ServerRegistryKey", (s, a) -> new ServerRegistryKeyType<>(firstOrNull(a))),
 			Map.entry("Id", (s, a) -> new IdType(firstOrNull(a))),
-			Map.entry("SpawnEgg", (s, a) -> new SpawnEggType(firstOrNull(a))),
+			Map.entry("SpawnEgg", (s, a) -> new SpawnEggType(firstOrNull(a))), //TODO: use
 			Map.entry("BannerPattern", (s, a) -> StaticIdsType.BANNER_PATTERN),
 			Map.entry("TrimPattern", (s, a) -> StaticIdsType.TRIM_PATTERN),
 			Map.entry("TrimMaterial", (s, a) -> StaticIdsType.TRIM_MATERIAL),
@@ -68,7 +68,7 @@ public interface Type
 			Map.entry("BlockPos", (s, a) -> ArrayType.BLOCK_POS),
 			Map.entry("ItemComponents", (s, a) -> new ItemComponentsType(firstOrNull(a))),
 			Map.entry("either", (s, a) -> new EitherType(s)),
-			Map.entry("Brain", (s, a) -> new BrainType()),
+			Map.entry("Brain", (s, a) -> new BrainType(firstOrNull(a))),
 			Map.entry("Depends", DependsType::new),
 			Map.entry("SingleOrList", (s, a) -> new EitherType(List.of(s.getFirst(), new ListType(s.getFirst())))),
 			Map.entry("ArmorStandSlots", (s, a) -> ArmorStandSlotsType.INSTANCE),
@@ -117,8 +117,10 @@ public interface Type
 		}
 	}
 
+	@FunctionalInterface
 	interface TypeConstructor
 	{
+		// Type<subtypes...>(args...)
 		Type create(List<Type> subtypes, List<String> args);
 	}
 }

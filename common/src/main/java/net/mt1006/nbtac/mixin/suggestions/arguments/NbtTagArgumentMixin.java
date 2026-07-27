@@ -8,11 +8,10 @@ import com.mojang.datafixers.types.templates.Tag;
 import net.minecraft.commands.arguments.NbtTagArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
-import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.type.Type;
+import net.mt1006.nbtac.autocomplete.type.compound.CompoundType;
 import net.mt1006.nbtac.utils.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -71,10 +70,10 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		}
 		if (root == null) { return null; }
 
-		NbtTagMap rootTagMap = NbtTagManager.get(root);
-		if (rootTagMap == null) { return null; }
+		CompoundType compoundType = CompoundType.fromName(root);
+		if (!compoundType.hasTagMap()) { return null; }
 
-		CustomTagParser parser = CustomTagParser.forNbtPath(path, rootTagMap);
+		CustomTagParser parser = CustomTagParser.forNbtPath(path, compoundType);
 		parser.parse();
 		return parser.parsedPathType;
 	}

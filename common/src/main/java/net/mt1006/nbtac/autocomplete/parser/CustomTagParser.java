@@ -8,6 +8,7 @@ import net.mt1006.nbtac.autocomplete.type.ListType;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.autocomplete.type.compound.CompoundType;
+import net.mt1006.nbtac.autocomplete.type.compound.EntityCompoundType;
 import net.mt1006.nbtac.utils.SimpleStringReader;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,14 +36,14 @@ public class CustomTagParser
 		return new CustomTagParser(str, ParserType.VALUE, valueType, null);
 	}
 
-	public static CustomTagParser forNbtCompound(String str, @Nullable NbtTagMap tagMap)
+	public static CustomTagParser forNbtCompound(String str, CompoundType compoundType)
 	{
-		return new CustomTagParser(str, ParserType.VALUE, new CompoundType(tagMap), null);
+		return new CustomTagParser(str, ParserType.VALUE, compoundType, null);
 	}
 
-	public static CustomTagParser forNbtPath(String str, @Nullable NbtTagMap tagMap)
+	public static CustomTagParser forNbtPath(String str, CompoundType compoundType)
 	{
-		return new CustomTagParser(str, ParserType.PATH, new CompoundType(tagMap), null);
+		return new CustomTagParser(str, ParserType.PATH, compoundType, null);
 	}
 
 	public static CustomTagParser forDataComponentValue(String str, Type type, @Nullable ResourceLocation itemId)
@@ -58,11 +59,13 @@ public class CustomTagParser
 			if (parserType == ParserType.PATH)
 			{
 				val = new ParsedCompound(null, 0);
+				optAddVirtualEntityId(val);
 				return parsePath((ParsedCompound)val, rootType);
 			}
 			else if (dataComponentItemId == null)
 			{
 				val = getNextValue(null, 0);
+				optAddVirtualEntityId(val);
 				parseValue(val);
 			}
 			else
@@ -80,6 +83,16 @@ public class CustomTagParser
 		{
 			SuggestionList list = rootType.getSuggestions(new Type.SuggestionListContext(val, parserType, reader, e.asSuggestionList()));
 			return list != null ? list : SuggestionList.empty();
+		}
+	}
+
+	private void optAddVirtualEntityId(ParsedValue val)
+	{
+		if (rootType instanceof EntityCompoundType rootCompoundType
+				&& rootCompoundType.entityId != null
+				&& val instanceof ParsedCompound rootCompound)
+		{
+			rootCompound.add(ParsedTag.createVirtualId(rootCompound, rootCompoundType.entityId.toString()), -1);
 		}
 	}
 

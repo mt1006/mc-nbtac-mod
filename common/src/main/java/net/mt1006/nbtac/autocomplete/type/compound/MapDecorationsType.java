@@ -1,6 +1,5 @@
 package net.mt1006.nbtac.autocomplete.type.compound;
 
-import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.parser.ParsedTag;
@@ -18,7 +17,7 @@ public class MapDecorationsType extends ComplexCompoundType
 	{
 		// 36^6 > 2^31
 		String newDecorationId = Long.toString(Math.abs(RNG.nextInt()), Math.min(Character.MAX_RADIX, 36));
-		Type tagType = new CompoundType(NbtTagManager.get("compound/nbtac:map_decoration"));
+		Type tagType = CompoundType.fromName("compound/nbtac:map_decoration");
 
 		// There's issue with potential tag duplications but considering there are 2^31 variants
 		// I don't think it's worth preventing.

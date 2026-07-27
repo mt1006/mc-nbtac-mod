@@ -9,6 +9,7 @@ import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.suggestions.CustomSuggestion;
 import net.mt1006.nbtac.autocomplete.suggestions.RawSuggestion;
 import net.mt1006.nbtac.autocomplete.type.Type;
+import net.mt1006.nbtac.autocomplete.type.compound.CompoundType;
 import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.utils.Fields;
 import org.jetbrains.annotations.Nullable;
@@ -36,13 +37,11 @@ public class SuggestionManager
 			new RawSuggestion("", "[suggestions not loaded]").suggest(builder);
 			return builder.buildFuture();
 		}
-
 		if (name == null) { return Suggestions.empty(); }
-		NbtTagMap tagMap = NbtTagManager.get(name);
 
 		CustomTagParser parser = suggestPath
-				? CustomTagParser.forNbtPath(str, tagMap)
-				: CustomTagParser.forNbtCompound(str, tagMap);
+				? CustomTagParser.forNbtPath(str, CompoundType.fromName(name))
+				: CustomTagParser.forNbtCompound(str, CompoundType.fromName(name));
 		return finishSuggestions(parser::parse, builder);
 	}
 

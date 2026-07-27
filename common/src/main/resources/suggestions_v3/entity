@@ -31,7 +31,7 @@ _living_entity &_entity
 +Team :ScoreboardTeam
 +FallFlying :boolean
 +sleeping_pos :BlockPos
-+Brain :Brain
++Brain :Brain($../id$)
 +last_hurt_by_player :UUID
 +last_hurt_by_player_memory_time :int
 +last_hurt_by_mob :UUID

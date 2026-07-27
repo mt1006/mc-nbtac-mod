@@ -22,12 +22,7 @@ public class ParsedTag
 
 		ParsedCompound rootCompound = new ParsedCompound(null, 0);
 
-		ParsedTag idTag = new ParsedTag(rootCompound);
-		ParsedPrimitive idVal = new ParsedPrimitive(idTag, 0);
-		idVal.val = itemId;
-		idVal.closed = true;
-		idTag.key = "id";
-		idTag.val = idVal;
+		ParsedTag idTag = createVirtualId(rootCompound, itemId);
 		rootCompound.add(idTag, 0);
 
 		ParsedTag componentsTag = new ParsedTag(rootCompound);
@@ -36,5 +31,16 @@ public class ParsedTag
 		rootCompound.add(componentsTag, 0);
 
 		return new ParsedTag((ParsedCompound)componentsTag.val);
+	}
+
+	public static ParsedTag createVirtualId(ParsedCompound rootCompound, @Nullable String id)
+	{
+		ParsedTag idTag = new ParsedTag(rootCompound);
+		ParsedPrimitive idVal = new ParsedPrimitive(idTag, 0);
+		idVal.val = id;
+		idVal.closed = true;
+		idTag.key = "id";
+		idTag.val = idVal;
+		return idTag;
 	}
 }
