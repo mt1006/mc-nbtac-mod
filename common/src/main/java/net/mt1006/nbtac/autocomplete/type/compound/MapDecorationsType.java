@@ -23,11 +23,11 @@ public class MapDecorationsType extends ComplexCompoundType
 		// I don't think it's worth preventing.
 		// It should be done this way (with random names) instead of for example tag1, tag2, tag3...
 		// as changing decoration data without changing tag name won't change it.
-		map.add(new GeneratedNbtTag(newDecorationId, tagType).withSubtext("[#random_tag]"));
+		map.add(new GeneratedNbtTag(newDecorationId, tagType).withSubtext((s) -> "[#random_tag]"));
 
 		for (ParsedTag tag : parsed.getAll())
 		{
-			if (tag.key != null) { map.add(new GeneratedNbtTag(tag.key, tagType).withSubtext("[#random_tag]")); }
+			if (tag.key != null) { map.add(new GeneratedNbtTag(tag.key, tagType).withSubtext((s) -> "[#random_tag]")); }
 		}
 	}
 }

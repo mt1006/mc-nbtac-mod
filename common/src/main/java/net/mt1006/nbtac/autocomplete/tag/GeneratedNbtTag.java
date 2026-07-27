@@ -5,11 +5,13 @@ import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 public class GeneratedNbtTag extends NbtTag
 {
 	private final int priority;
 	private final @Nullable ResourceLocation nameAsId;
-	private @Nullable String subtext;
+	private Function<String, String> subtext = Function.identity();
 
 	public GeneratedNbtTag(String name, Type type)
 	{
@@ -28,7 +30,7 @@ public class GeneratedNbtTag extends NbtTag
 		this.nameAsId = nameAsId;
 	}
 
-	public GeneratedNbtTag withSubtext(String subtext)
+	public GeneratedNbtTag withSubtext(Function<String, String> subtext)
 	{
 		this.subtext = subtext;
 		return this;
@@ -36,7 +38,7 @@ public class GeneratedNbtTag extends NbtTag
 
 	@Override public String getSubtext()
 	{
-		return subtext != null ? subtext : super.getSubtext();
+		return subtext.apply(super.getSubtext());
 	}
 
 	@Override public int getPriority(@Nullable ParsedCompound compound)

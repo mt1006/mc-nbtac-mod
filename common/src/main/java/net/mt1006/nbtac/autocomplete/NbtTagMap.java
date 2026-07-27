@@ -76,6 +76,11 @@ public class NbtTagMap implements Iterable<NbtTag>
 		return list;
 	}
 
+	public @Nullable Map<String, NbtTag> getRawMap()
+	{
+		return map;
+	}
+
 	private Stream<NbtTag> getStream()
 	{
 		Stream<NbtTag> stream = map != null ? map.values().stream() : Stream.empty();

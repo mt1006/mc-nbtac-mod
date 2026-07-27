@@ -1,6 +1,8 @@
 package net.mt1006.nbtac.autocomplete;
 
 import net.minecraft.resources.ResourceLocation;
+import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
+import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -11,6 +13,7 @@ public class NbtTagManager
 {
 	private static final Map<String, NbtTagMap> tagMaps = new HashMap<>();
 	public static final Map<ResourceLocation, String> blockToBlockEntityMap = new HashMap<>();
+	private static @Nullable NbtTagMap moddedEntityTagMap = null;
 
 	public static void add(String key, @Nullable NbtTagMap tagMap)
 	{
@@ -24,7 +27,7 @@ public class NbtTagManager
 		if (key.startsWith("entity/"))
 		{
 			ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
-			if (id != null && !id.getNamespace().equals("minecraft")) { return getForModdedEntity(id); }
+			if (id != null && !id.getNamespace().equals("minecraft")) { return getForModdedEntity(); }
 		}
 		else if (key.startsWith("block/"))
 		{
@@ -41,9 +44,26 @@ public class NbtTagManager
 		return tagMaps.entrySet();
 	}
 
-	private static @Nullable NbtTagMap getForModdedEntity(ResourceLocation id)
+	private static @Nullable NbtTagMap getForModdedEntity()
 	{
-		//TODO: finish
-		return null;
+		if (moddedEntityTagMap != null) { return moddedEntityTagMap; }
+
+		moddedEntityTagMap = new NbtTagMap();
+		getRawMap("_entity/minecraft:_entity").values().forEach(moddedEntityTagMap::add);
+		getRawMap("_entity/minecraft:_living_entity").forEach((k, v) ->
+				moddedEntityTagMap.add(new GeneratedNbtTag(v, 0, null).withSubtext((s) -> "[?] " + s)));
+		getRawMap("_entity/minecraft:_mob").forEach((k, v) ->
+				moddedEntityTagMap.add(new GeneratedNbtTag(v, 0, null).withSubtext((s) -> "[??] " + s)));
+
+		return moddedEntityTagMap;
+	}
+
+	private static Map<String, NbtTag> getRawMap(String tagMapId)
+	{
+		NbtTagMap nbtTagMap = NbtTagManager.get(tagMapId);
+		if (nbtTagMap == null) { return Map.of(); }
+
+		Map<String, NbtTag> rawMap = nbtTagMap.getRawMap();
+		return rawMap != null ? rawMap : Map.of();
 	}
 }
