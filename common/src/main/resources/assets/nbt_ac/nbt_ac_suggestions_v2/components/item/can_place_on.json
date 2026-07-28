@@ -1,5 +1,0 @@
-{
-	"id": "item/minecraft:can_place_on",
-	"type": "list/compound",
-	"subtype": "tag/compound/nbt_ac:block_predicate_new"
-}
