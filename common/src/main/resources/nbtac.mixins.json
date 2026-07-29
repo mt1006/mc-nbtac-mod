@@ -1,0 +1,34 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.mt1006.nbtac.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client":
+  [
+    "fields.AtlasEntryFields",
+    "fields.AtlasManagerFields",
+    "fields.ClientLanguageFields",
+    "fields.ClientLevelFields",
+    "fields.CommandSuggestionsFields",
+    "fields.DecoratedPotPatternsFields",
+    "fields.EntitySelectorFields",
+    "fields.FontManagerFields",
+    "fields.I18nFields",
+    "fields.KeyMappingFields",
+    "fields.MinecraftFields",
+    "fields.TextColorFields",
+    "fields.TextureAtlasFields",
+    "misc.ArgumentCommandNodeMixin",
+    "misc.RealmsMainScreenMixin",
+    "suggestions.SuggestionsListMixin",
+    "suggestions.arguments.ComponentArgumentMixin",
+    "suggestions.arguments.CompoundTagArgumentMixin",
+    "suggestions.arguments.NbtPathArgumentMixin",
+    "suggestions.arguments.NbtTagArgumentMixin",
+    "suggestions.arguments.StyleArgumentMixin",
+    "suggestions.selectors.BlockStateParserMixin",
+    "suggestions.selectors.EntitySelectorParserMixin",
+    "suggestions.selectors.ItemParserStateMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

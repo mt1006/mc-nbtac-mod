@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:can_break",
-	"type": "list/compound",
-	"subtype": "tag/compound/nbt_ac:block_predicate_new",
-	"always_relevant": true,
-}
