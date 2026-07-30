@@ -1,3 +1,14 @@
+-Tag parser has been rewritten.
+-Removed disassembler and cache - all tags are now predefined rather than being generated on launch.
+-General improvements to suggestions.
+-Changed suggestion file format - they're now loaded by mod itself and no longer treated as part of resource pack.
+-Changed "json_string_suggestion" and "placing_of_irrelevant" setting type from integer to enum.
+-Renamed "default_quotation_mark_type" to "default_quotation_mark" and changed its type from integer to enum.
+-Removed settings: "use_disassembler", "load_from_resources", "use_cache", "max_cached_instances" and "max_stack_traces" - they were related to removed disassembler and cache.
+-Removed "hide_forge_tags" setting as Forge/NeoForge tags are no longer present.
+-"Finished in" message now shows only when "debug_mode" is enabled.
+-Fixed item component id suggestion including equal sign when removing component with "hide_mc_namespace_in_components" disabled or with modded components.
+
 ===Version 1.3.14===
 -Fixed suggestions for villager not being loaded on version 1.21.5 and later (thanks to RuiGeZai-Official for reporting).
 -Fixed missing "equipment" and "drop_chances" entity tags on version 1.21.5 and later (thanks to Lord-Voidy for reporting).

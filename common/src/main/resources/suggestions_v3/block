@@ -1,0 +1,243 @@
+_base_container
++CustomName :TextComponent
++lock :#lock
+
+_with_single_item
++LootTable :LootTable
++LootTableSeed :LongSeed
++item :#item_stack
+
+_with_items &_base_container
++LootTable :LootTable
++LootTableSeed :LongSeed
++Items :list<#item_stack_with_slot> @RelevantIfNotDef(LootTable)
+
+_furnace &_base_container
++Items :list<#item_stack_with_slot>
++cooking_time_spent :short
++cooking_total_time :short
++lit_time_remaining :short
++lit_total_time :short
++RecipesUsed :FurnaceRecipesUsed
+
+_sculk_sensor
++last_vibration_frequency :int
++listener :#vibration_listener
+
+_sign
++front_text :#sign_text
++back_text :#sign_text
++is_waxed :boolean
+
+banner
++CustomName :TextComponent
++patterns :list<compound>
+	+pattern :either<RegistryKey(minecraft:banner_pattern), compound>
+		+asset_id :string
+		+translation_key :TranslationKey
+	+color :DyeColor
+
+barrel =_with_items
+
+beacon
++primary_effect :RegistryKey(minecraft:mob_effect)
++secondary_effect :RegistryKey(minecraft:mob_effect)
++CustomName :TextComponent
++lock :#lock
+
+beehive
++bees :list<compound>
+	+entity_data :TagsWithId(entity/minecraft:bee)
+	+min_ticks_in_hive :int
+	+ticks_in_hive :int
++flower_pos :BlockPos
+
+blast_furnace =_furnace
+
+brewing_stand &_base_container
++Items :list<#item_stack_with_slot>
++BrewTime :short
+
+brushable_block =_with_single_item
+
+calibrated_sculk_sensor =_sculk_sensor
+
+campfire
++Items :list<#item_stack_with_slot>
++CookingTimes :int_array
++CookingTotalTimes :int_array
+
+chest =_with_items
+
+chiseled_bookshelf
++Items :list<#item_stack_with_slot>
++last_interacted_slot :int
+
+command_block
++Command :string @OptRecommended
++SuccessCount :int
++CustomName :TextComponent
++TrackOutput :boolean
++LastOutput :TextComponent @RelevantIfEq(TrackOutput, true)
++UpdateLastExecution :boolean
++LastExecution :long @RelevantIfEq(UpdateLastExecution, true)
++powered :boolean
++conditionMet :boolean
++auto :boolean
+
+comparator
++OutputSignal :int
+
+conduit
++Target :UUID
+
+crafter &_with_items
++crafting_ticks_remaining :int
+
+creaking_heart
++creaking :UUID
+
+decorated_pot &_with_single_item
++sherds :list<RegistryKey(minecraft:item)>(4)
+
+dispenser =_with_items
+
+dropper =_with_items
+
+enchanting_table
++CustomName :TextComponent
+
+end_gateway
++Age :long
++exit_portal :BlockPos
++ExactTeleport :boolean
+
+furnace =_furnace
+
+hanging_sign =_sign
+
+hopper &_with_items
++TransferCooldown :int
+
+jigsaw
++name :string
++target :string
++pool :ServerRegistryKey(minecraft:worldgen/template_pool)
++final_state :string
++joint :Enum(rollable, aligned)
++placement_priority :int
++selection_priority :int
+
+jukebox
++RecordItem :#item_stack
++ticks_since_song_started :long
+
+lectern
++Book :#item_stack
++Page :int
+
+mob_spawner
++Delay :short
++SpawnData :#spawn_data
++SpawnPotentials :list<compound> @OptRecommended
+	+weight :int
+	+data :#spawn_data
++MinSpawnDelay :int
++MaxSpawnDelay :int
++SpawnCount :int
++MaxNearbyEntities :int
++RequiredPlayerRange :int
++SpawnRange :int
+
+piston
++blockState :#block_state
++facing :DescribedEnum<byte>(0, down, 1, up, 2, north, 3, south, 4, west, 5, east)
++progress :float
++extending :boolean
++source :boolean
+
+sculk_catalyst
++cursors :list<compound>
+	+pos :BlockPos @Recommended
+	+charge :int
+	+decay_delay :Enum<int>(0, 1)
+	+update_delay :int
+	+facings :list<Enum(down, up, north, south, west, east)>
+
+sculk_sensor =_sculk_sensor
+
+sculk_shrieker
++warning_level :int
++listener :#vibration_listener
+
+shulker_box =_with_items
+
+sign =_sign
+
+skull
++profile :either<string, compound>
+	+name :string
+	+id :UUID
+	+properties :list<compound>
+		+name :string
+		+value :string
+		+signature :string
++note_block_sound :string
++custom_name :TextComponent
+
+smoker =_furnace
+
+structure_block
++name :string
++author :string
++metadata :string
++posX :int
++posY :int
++posZ :int
++sizeX :int
++sizeY :int
++sizeZ :int
++rotation :Enum(NONE, CLOCKWISE_90, CLOCKWISE_180, COUNTERCLOCKWISE_90)
++mirror :Enum(NONE, LEFT_RIGHT, FRONT_BACK)
++mode :Enum(SAVE, LOAD, CORNER, DATA)
++ignoreEntities :boolean
++strict :boolean
++powered :boolean
++showair :boolean
++showboundingbox :boolean
++integrity :float
++seed :LongSeed
+
+test_block
++mode :Enum(start, log, fail, accept)
++message :string
++powered :boolean
+
+test_instance_block
++data :compound
+	+test :ServerRegistryKey(minecraft:test_instance)
+	+size :int_array(3)
+	+rotation :Enum(none, clockwise_90, 180, counterclockwise_90)
+	+ignore_entities :boolean
+	+status :Enum(cleared, running, finished)
+	+error_message :TextComponent
+
+trapped_chest =_with_items
+
+trial_spawner
++registered_players :list<UUID>
++current_mobs :list<UUID>
++cooldown_ends_at :long
++next_mob_spawns_at :long
++total_mobs_spawned :int
++spawn_data :#spawn_data
++ejecting_loot_table :LootTable
++normal_config :#trial_spawner_config
++ominous_config :#trial_spawner_config
++target_cooldown_length :int
++required_player_range :int
+
+vault
++config :#vault_config
++server_data :#vault_server_data
++shared_data :#vault_shared_data

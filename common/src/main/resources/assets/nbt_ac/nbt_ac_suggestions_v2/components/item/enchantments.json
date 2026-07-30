@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:enchantments",
-	"type": "compound",
-	"subtype": "enchantments",
-	"always_relevant": true
-}
