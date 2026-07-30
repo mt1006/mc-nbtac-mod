@@ -1,5 +1,0 @@
-{
-	"id": "item/minecraft:break_sound",
-	"type": "string",
-	"subtype": "registry_key/minecraft:sound_event"
-}

@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:item_name",
-	"type": "compound",
-	"subtype": "json_text_compound",
-	"always_relevant": true
-}

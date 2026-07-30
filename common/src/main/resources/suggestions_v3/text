@@ -1,0 +1,46 @@
+initial_content
++type :Enum(text, translatable, score, selector, keybind, nbt)
++text :string
++translate :TranslationKey
++selector :EntitySelector
++keybind :Keybind
++nbt :string
++score :compound
+	+name :string
+	+objective :string
+
+common
++extra :TextComponent
++separator :TextComponent @RelevantIfEq(type, selector, nbt) @RelevantIfNotDef(text, translate, keybind, score)
++source :Enum(block, entity, storage) @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++interpret :boolean @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++block :string @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++entity :EntitySelector @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++storage :string @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
++fallback :TranslationKey @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score)
++with :list<TextComponent> @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score)
+
+style
++color :TextColor
++font :Font
++bold :boolean
++italic :boolean
++underlined :boolean
++strikethrough :boolean
++obfuscated :boolean
++insertion :string
++hover_event :compound
+	+action :Enum(show_text, show_item, show_entity)
+	+value :string @RelevantIfEq(action, show_text)
+	+id :RegistryKey("$@action@show_item;minecraft:item;show_entity;minecraft:entity_type$") @RelevantIfEq(action, show_item, show_entity)
+	+count :int @RelevantIfEq(action, show_item)
+	+components :compound @RelevantIfEq(action, show_item)
+	+name :TextComponent @RelevantIfEq(action, show_entity)
+	+uuid :UUID @RelevantIfEq(action, show_entity)
++click_event :compound
+	+action :Enum(open_url, open_file, run_command, suggest_command, change_page, copy_to_clipboard)
+	+url :string @RelevantIfEq(action, open_url)
+	+path :string @RelevantIfEq(action, open_file)
+	+command :string @RelevantIfEq(action, run_command, suggest_command)
+	+page :int @RelevantIfEq(action, change_page)
+	+value :string @RelevantIfEq(action, copy_to_clipboard)
