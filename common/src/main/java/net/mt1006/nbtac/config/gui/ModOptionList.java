@@ -1,0 +1,286 @@
+package net.mt1006.nbtac.config.gui;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.mt1006.nbtac.config.ConfigFields;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Supplier;
+
+public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.ListWidget>
+{
+	protected static final int ELEMENT_WIDTH = 310;
+	protected static final int HALF_OF_ELEMENT_WIDTH = ELEMENT_WIDTH / 2;
+	protected static final int ELEMENT_HEIGHT = 20;
+	private final Font font;
+	private final List<MutableWidget> mutableWidgets = new ArrayList<>();
+
+	public ModOptionList(Minecraft minecraft, int w, int h, int yTop, int itemHeight, Font font)
+	{
+		super(minecraft, w, h, yTop, itemHeight);
+		this.font = font;
+	}
+
+	public void addLabel(String key)
+	{
+		Label label = new Label(Component.translatable("nbt_ac.options." + key), font);
+		label.setX(width / 2 - (label.getWidth() / 2));
+		addWidget(label);
+	}
+
+	public void add(AbstractWidget widget)
+	{
+		widget.setX(width / 2 - HALF_OF_ELEMENT_WIDTH);
+		addWidget(widget);
+	}
+
+	private void addWidget(AbstractWidget widget)
+	{
+		addEntry(new ListWidget(widget));
+		if (widget instanceof MutableWidget) { mutableWidgets.add((MutableWidget)widget); }
+	}
+
+	public void updateValues()
+	{
+		mutableWidgets.forEach(MutableWidget::update);
+	}
+
+	@Override public int getRowWidth()
+	{
+		return 400;
+	}
+
+	@Override public int scrollBarY()
+	{
+		return super.scrollBarY();
+	}
+
+	protected static class ListWidget extends Entry<ListWidget>
+	{
+		private final AbstractWidget widget;
+
+		private ListWidget(AbstractWidget widget)
+		{
+			this.widget = widget;
+		}
+
+		@Override public @NotNull List<? extends GuiEventListener> children()
+		{
+			return List.of(widget);
+		}
+
+		@Override public @NotNull List<? extends NarratableEntry> narratables()
+		{
+			return List.of(widget);
+		}
+
+		@Override public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean isHovered, float i)
+		{
+			widget.setY(getContentY());
+			widget.extractRenderState(guiGraphics, mouseX, mouseY, i);
+		}
+	}
+
+	private static class Label extends StringWidget
+	{
+		public Label(Component component, Font font)
+		{
+			super(font.width(component.getVisualOrderText()), 9, component, font);
+		}
+
+		@Override public int getY()
+		{
+			return super.getY() + 9;
+		}
+	}
+
+	public static class BooleanSwitch extends AbstractButton implements MutableWidget
+	{
+		private final ConfigFields.BooleanField field;
+		private final Component component;
+		private final Component valOn, valOff;
+
+		public BooleanSwitch(ConfigFields.BooleanField field, boolean useCustomValues)
+		{
+			super(0, 0, ELEMENT_WIDTH, ELEMENT_HEIGHT, CommonComponents.EMPTY);
+			this.field = field;
+			this.component = field.getWidgetName();
+
+			valOn = useCustomValues ? Component.translatable(field.getWidgetNameKey() + ".true") : CommonComponents.OPTION_ON;
+			valOff = useCustomValues ? Component.translatable(field.getWidgetNameKey() + ".false") : CommonComponents.OPTION_OFF;
+
+			updateText();
+			setTooltip(Tooltip.create(field.getWidgetTooltip()));
+		}
+
+		public void updateText()
+		{
+			Component val = field.val ? valOn : valOff;
+			setMessage(component.copy().append(": ").append(val));
+		}
+
+		@Override public void onPress(InputWithModifiers input)
+		{
+			field.val = !field.val;
+			updateText();
+		}
+
+		@Override protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f)
+		{
+			extractDefaultSprite(guiGraphics);
+			extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
+		}
+
+		@Override protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationOutput)
+		{
+			defaultButtonNarrationText(narrationOutput);
+		}
+
+		@Override public void update()
+		{
+			updateText();
+		}
+	}
+
+	public static class EnumSwitch<T extends Enum<T>> extends AbstractButton implements MutableWidget
+	{
+		private final ConfigFields.EnumField<T> field;
+		private final String key;
+		private final List<T> options;
+		private final Component component;
+
+		public EnumSwitch(ConfigFields.EnumField<T> field, T[] options)
+		{
+			super(0, 0, ELEMENT_WIDTH, ELEMENT_HEIGHT, CommonComponents.EMPTY);
+			this.field = field;
+			this.key = field.getWidgetNameKey();
+			this.options = Arrays.asList(options);
+			this.component = Component.translatable(key);
+
+			updateText();
+			setTooltip(Tooltip.create(field.getWidgetTooltip()));
+		}
+
+		public void updateText()
+		{
+			Component optionComponent = Component.translatable(key + "." + field.val.name().toLowerCase(Locale.ROOT));
+			setMessage(component.copy().append(": ").append(optionComponent));
+		}
+
+		@Override public void onPress(InputWithModifiers input)
+		{
+			int index = field.val.ordinal();
+			int newIndex = (index != options.size() - 1) ? (index + 1) : 0;
+			field.val = options.get(newIndex);
+			updateText();
+		}
+
+		@Override protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f)
+		{
+			extractDefaultSprite(guiGraphics);
+			extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
+		}
+
+		@Override protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationOutput)
+		{
+			defaultButtonNarrationText(narrationOutput);
+		}
+
+		@Override public void update()
+		{
+			updateText();
+		}
+	}
+
+	private static abstract class AbstractSlider<T, V extends Comparable<V>> extends AbstractSliderButton implements MutableWidget
+	{
+		protected final ConfigFields.Field<T> field;
+		protected final Component component;
+		protected final V min, max;
+		protected final Supplier<String> widgetNameKey;
+
+		public AbstractSlider(ConfigFields.Field<T> field, V min, V max)
+		{
+			super(0, 0, ELEMENT_WIDTH, ELEMENT_HEIGHT, CommonComponents.EMPTY, 0.0);
+			this.field = field;
+			this.component = field.getWidgetName();
+			this.min = min;
+			this.max = max;
+			this.widgetNameKey = field::getWidgetNameKey;
+
+			if (min.compareTo(max) > 0) { throw new RuntimeException("Slider - min bigger than max!"); }
+			setTooltip(Tooltip.create(field.getWidgetTooltip()));
+		}
+
+		@Override public void update()
+		{
+			updateSliderValue();
+			updateMessage();
+		}
+
+		abstract protected void updateSliderValue();
+	}
+
+	public static class IntegerSlider extends AbstractSlider<Integer, Integer>
+	{
+		private final int multiplier;
+		private final @Nullable List<Integer> specialValues;
+
+		public IntegerSlider(ConfigFields.IntegerField field, int min, int max, int multiplier, @Nullable List<Integer> specialValues)
+		{
+			super(field, min, max);
+			this.multiplier = multiplier;
+			this.specialValues = specialValues;
+			update();
+		}
+
+		@Override protected void updateSliderValue()
+		{
+			float diff = max - min;
+			int valPos = field.val / multiplier;
+			value = (valPos < max) ? Mth.clamp(((float)valPos - (float)min) / diff, 0.0f, 1.0f) : 1.0;
+		}
+
+		@Override protected void applyValue()
+		{
+			int steps = max - min + 1;
+			int pos = Math.min((int)(value * (double)steps), steps - 1);
+			field.val = (min + pos) * multiplier;
+		}
+
+		@Override protected void updateMessage()
+		{
+			int valPos = field.val / multiplier;
+			Component subcomponent = (specialValues != null && specialValues.contains(valPos))
+					? Component.translatable(String.format(Locale.ROOT, "%s.%d", widgetNameKey.get(), valPos))
+					: Component.literal(Integer.toString(field.val));
+
+			setMessage(component.copy().append(": ").append(subcomponent));
+		}
+
+		@Override public void update()
+		{
+			updateSliderValue();
+			updateMessage();
+		}
+	}
+
+	public interface MutableWidget
+	{
+		void update();
+	}
+}

@@ -1,5 +1,0 @@
-{
-	"id": "item/minecraft:item_model",
-	"type": "string",
-	"subtype": "registry_key/minecraft:item"
-}

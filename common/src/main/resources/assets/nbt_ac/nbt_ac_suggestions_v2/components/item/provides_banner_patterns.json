@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:provides_banner_patterns",
-	"type": "string",
-	"subtype": "banner_pattern",
-	"always_relevant": true
-}
