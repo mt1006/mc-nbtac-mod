@@ -24,7 +24,6 @@ import java.util.*;
 
 public class DataComponentManager
 {
-	private static final DefinedNbtTag UNKNOWN_COMPONENT = new DefinedNbtTag("nbtac:empty", PrimitiveType.UNKNOWN);
 	public static final Map<String, DefinedNbtTag> componentMap = new HashMap<>();
 
 	public static void loadSuggestions(SuggestionList list, String str, Set<DataComponentType<?>> usedComponents,
@@ -52,11 +51,17 @@ public class DataComponentManager
 			if (componentType.codec() == null || usedComponents.contains(componentType)) { continue; }
 
 			DefinedNbtTag component = DataComponentManager.componentMap.get("item/" + id);
-			if (component == null) { component = UNKNOWN_COMPONENT; }
 
-			boolean relevant = predefinedComponents.contains(componentType)
-					|| hardcodedRelevancy.contains(componentType) || component.isRelevant(false, null);
-			tagMap.add(new GeneratedNbtTag(component, relevant ? 0 : -1, id));
+			if (component == null)
+			{
+				tagMap.add(new GeneratedNbtTag(id.toShortString(), PrimitiveType.UNKNOWN, 0, id).withSubtext((s) -> "[?] " + s));
+			}
+			else
+			{
+				boolean relevant = predefinedComponents.contains(componentType)
+						|| hardcodedRelevancy.contains(componentType) || component.isRelevant(false, null);
+				tagMap.add(new GeneratedNbtTag(component, relevant ? 0 : -1, id));
+			}
 		}
 	}
 
