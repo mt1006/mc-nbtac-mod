@@ -37,7 +37,7 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 
 	public void addLabel(String key)
 	{
-		Label label = new Label(Component.translatable("nbt_ac.options." + key), font);
+		Label label = new Label(Component.translatable("nbtac.options." + key), font);
 		label.setX(width / 2 - (label.getWidth() / 2));
 		addWidget(label);
 	}
