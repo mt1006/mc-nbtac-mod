@@ -31,7 +31,7 @@ public abstract class FileParser
 
 			while ((line = fileReader.readLine()) != null)
 			{
-				if (line.isEmpty()) { continue; }
+				if (line.isEmpty() || line.startsWith("#")) { continue; }
 
 				if (line.startsWith("+") || line.startsWith("\t"))
 				{

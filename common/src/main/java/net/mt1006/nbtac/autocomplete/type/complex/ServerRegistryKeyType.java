@@ -1,11 +1,9 @@
 package net.mt1006.nbtac.autocomplete.type.complex;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
@@ -14,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ServerRegistryKeyType<T> extends ComplexType
 {
@@ -30,25 +27,15 @@ public class ServerRegistryKeyType<T> extends ComplexType
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
+		//TODO: remove serverreg
+		//TODO: merge with RegistryKey, using this code?
 		if (registryKey == null) { return; }
 		String subtext = "[#" + registryKey.identifier().getPath() + "]";
 
-		MinecraftServer server = Minecraft.getInstance().getSingleplayerServer();
-		if (server == null)
-		{
-			List<Identifier> idList = registryKeyMap.get(registryKey.identifier());
-			if (idList != null) { idList.forEach((id) -> list.add(new IdSuggestion(id, subtext, ctx.parserType()))); }
-		}
-		else
-		{
-			Optional<? extends HolderLookup.RegistryLookup<T>> registry =
-					server.reloadableRegistries().lookup().lookup(registryKey);
-			if (registry.isEmpty()) { return; }
+		if (Minecraft.getInstance().level == null) { return; }
+		Registry<?> registry = Minecraft.getInstance().level.registryAccess().lookup(registryKey).orElse(null);
+		if (registry == null) { return; }
 
-			for (ResourceKey<T> id : registry.get().listElementIds().toList())
-			{
-				list.add(new IdSuggestion(id.identifier(), subtext, ctx.parserType()));
-			}
-		}
+		registry.keySet().forEach((id) -> list.add(new IdSuggestion(id, subtext, ctx.parserType())));
 	}
 }

@@ -26,11 +26,13 @@ _living_entity &_entity
 +DeathTime :short
 +FallFlying :boolean
 +Health :float
-+HurtByTimestamp :int
++HurtByTimestamp :int @Until(26.2)
 +HurtTime :short
 +Team :ScoreboardTeam
 +active_effects :list<#effect_with_hidden>
 +attributes :list<#attribute>
++current_explosion_impact_pos :list<double>(3) @Since(26.1)
++current_impulse_context_reset_grace_time :int @Since(26.1)
 +equipment :#equipment
 +last_hurt_by_player :UUID
 +last_hurt_by_player_memory_time :int
@@ -53,6 +55,7 @@ _mob &_living_entity
 
 _ageable_mob &_mob
 +Age :int
++AgeLocked :boolean @Since(26.1)
 +ForcedAge :int
 
 _animal &_ageable_mob
@@ -172,7 +175,7 @@ _display &_entity
 +interpolation_duration :int
 +start_interpolation :int
 +teleport_duration :int
-+billboard :Enum(fixed, vertical, horizontal, center)
++billboard :DynamicEnum(DisplayBillboardConstraints)
 +view_range :float
 +shadow_radius :float
 +shadow_strength :float
@@ -304,7 +307,7 @@ area_effect_cloud &_entity
 +potion_duration_scale :float
 
 armadillo &_animal
-+state :Enum(idle, rolling, scared, unrolling) @OptRecommended
++state :DynamicEnum(ArmadilloState) @OptRecommended
 +scute_time :int
 
 armor_stand &_living_entity
@@ -358,8 +361,9 @@ camel &_horse
 +LastPoseTick :long
 
 cat &_tamable_animal
-+CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended
-+variant :ServerRegistryKey(minecraft:cat_variant)
++CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
++sound_variant :ServerRegistryKey(minecraft:cat_sound_variant) @OptRecommended(2) @Since(26.1)
++variant :ServerRegistryKey(minecraft:cat_variant) @OptRecommended(3)
 
 cave_spider =_mob
 
@@ -372,7 +376,8 @@ chest_minecart =_minecart_container
 chicken &_animal
 +IsChickenJockey :boolean
 +EggLayTime :int
-+variant :ServerRegistryKey(minecraft:chicken_variant) @OptRecommended
++sound_variant :ServerRegistryKey(minecraft:chicken_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :ServerRegistryKey(minecraft:chicken_variant) @OptRecommended(2)
 
 cod =_fish
 
@@ -385,8 +390,14 @@ command_block_minecart &_minecart
 +UpdateLastExecution :boolean
 +LastExecution :long @RelevantIfEq(UpdateLastExecution, true)
 
+# since 1.21.9
+copper_golem &_mob
++next_weather_age :long
++weather_state :DynamicEnum(WeatheringCopperWeatherState) @OptRecommended
+
 cow &_animal
-+variant :ServerRegistryKey(minecraft:cow_variant) @OptRecommended
++sound_variant :ServerRegistryKey(minecraft:cow_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :ServerRegistryKey(minecraft:cow_variant) @OptRecommended(2)
 
 creaking =_mob
 
@@ -421,6 +432,7 @@ end_crystal &_entity
 ender_dragon &_entity
 +DragonPhase :DescribedEnum<int>(0, holding_pattern, 1, strafe_player, 2, landing_approach, 3, landing, 4, takeoff, 5, sitting_flaming, 6, sitting_scanning, 7, sitting_attacking, 8, charging_player, 9, dying, 10, hovering)
 +DragonDeathTime :int
++sitting_damage_received :float @Since(26.2)
 
 ender_pearl =_item_projectile
 
@@ -474,7 +486,7 @@ fishing_bobber =_projectile
 fox &_animal
 +Trusted :list<UUID>
 +Sleeping :boolean
-+Type :Enum(red, snow) @OptRecommended
++Type :DynamicEnum(FoxVariant) @OptRecommended
 +Sitting :boolean @OptRecommended
 +Crouching :boolean
 
@@ -515,7 +527,7 @@ hopper_minecart &_minecart_container
 +Enabled :boolean
 
 horse &_horse
-+Variant :HorseVariant @OptRecommended
++Variant :HorseExtendedVariant @OptRecommended
 
 husk =_zombie
 
@@ -544,7 +556,7 @@ item &_entity
 
 item_display &_display
 +item :#item_stack @OptRecommended
-+item_display :Enum(none, thirdperson_lefthand, thirdperson_righthand, firstperson_lefthand, firstperson_righthand, head, gui, ground, fixed) @OptRecommended
++item_display :DynamicEnum(ItemDisplayContext) @OptRecommended
 
 item_frame =_item_frame
 
@@ -568,12 +580,22 @@ mangrove_boat =_boat
 
 mangrove_chest_boat =_chest_boat
 
+# since 1.21.9
+mannequin &_living_entity
++description :TextComponent
++hidden_layers :list<DynamicEnum(PlayerModelPart)>
++hide_description :boolean
++immovable :boolean
++main_hand :DynamicEnum(HumanoidArm)
++pose :DynamicEnum(Pose)
++profile :#profile
+
 marker =_entity
 
 minecart =_minecart
 
 mooshroom &_animal
-+Type :Enum(red, brown) @OptRecommended(2)
++Type :DynamicEnum(MushroomCowVariant) @OptRecommended(2)
 +stew_effects :list<#suspicious_stew_effect> @OptRecommended(1)
 
 mule =_chested_horse
@@ -598,8 +620,8 @@ pale_oak_boat =_boat
 pale_oak_chest_boat =_chest_boat
 
 panda &_animal
-+MainGene :Enum(normal, lazy, worried, playful, brown, weak, aggressive)
-+HiddenGene :Enum(normal, lazy, worried, playful, brown, weak, aggressive)
++MainGene :DynamicEnum(PandaGene)
++HiddenGene :DynamicEnum(PandaGene)
 
 parrot &_tamable_animal
 +Variant :DescribedEnum(0, red_blue, 1, blue, 2, green, 3, yellow_blue, 4, gray) @OptRecommended
@@ -609,7 +631,8 @@ phantom &_mob
 +size :int
 
 pig &_animal
-+variant :ServerRegistryKey(minecraft:pig_variant) @OptRecommended
++sound_variant :ServerRegistryKey(minecraft:pig_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :ServerRegistryKey(minecraft:pig_variant) @OptRecommended(2)
 
 piglin &_piglin
 +IsBaby :boolean
@@ -666,7 +689,7 @@ ravager &_raider
 +RoarTick :int
 
 salmon &_fish
-+type :Enum(small, medium, large) @OptRecommended
++type :DynamicEnum(SalmonVariant) @OptRecommended
 
 sheep &_animal
 +Sheared :boolean @OptRecommended
@@ -733,8 +756,15 @@ stray =_mob
 
 strider =_animal
 
+# since 26.2
+sulfur_cube &_slime
++from_bucket :boolean
++fuse :int
++pickup_timer :int
+
 tadpole &_fish
 +Age :int
++AgeLocked :boolean @Since(26.1)
 
 text_display &_display
 +line_width :int
@@ -743,7 +773,7 @@ text_display &_display
 +shadow :boolean
 +see_through :boolean
 +default_background :boolean
-+alignment :Enum(center, left, right)
++alignment :DynamicEnum(DisplayTextDisplayAlign)
 +text :TextComponent @OptRecommended
 
 tnt &_entity
@@ -764,7 +794,7 @@ trident &_arrow
 +DealtDamage :boolean
 
 tropical_fish &_fish
-+Variant :TropicalFishVariant @OptRecommended
++Variant :TropicalFishExtendedVariant @OptRecommended
 
 turtle &_animal
 +home_pos :BlockPos
@@ -779,11 +809,12 @@ villager &_villager
 +VillagerData :#villager/data @OptRecommended
 +FoodLevel :byte
 +Gossips :list<#villager/gossip>
-+Xp :int
 +LastRestock :long
 +LastGossipDecay :long
 +RestocksToday :int
 +AssignProfessionWhenSpawned :boolean
++VillagerDataFinalized :boolean @Since(26.1)
++Xp :int
 
 vindicator &_raider
 +Johnny :boolean
@@ -809,11 +840,11 @@ wither_skull &_hurting_projectile
 +dangerous :boolean
 
 wolf &_tamable_animal
-+variant :ServerRegistryKey(minecraft:wolf_variant) @OptRecommended
-+CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black)
++CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
 +AngerTime :int
 +AngryAt :UUID
-+sound_variant :RegistryKey(minecraft:wolf_sound_variant)
++sound_variant :ServerRegistryKey(minecraft:wolf_sound_variant) @OptRecommended(2)
++variant :ServerRegistryKey(minecraft:wolf_variant) @OptRecommended(3)
 
 zoglin &_mob
 +IsBaby :boolean
@@ -828,6 +859,7 @@ zombie_villager &_zombie
 +Gossip :list<#villager/gossip>
 +ConversionTime :int
 +ConversionPlayer :UUID
++VillagerDataFinalized :boolean @Since(26.1)
 +Xp :int
 
 zombified_piglin &_zombie

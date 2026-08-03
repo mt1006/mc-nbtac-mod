@@ -32,12 +32,13 @@ public interface Type
 			Map.entry("list", (s, a) -> new ListType(s.getFirst())),
 			Map.entry("BlockStateTags", (s, a) -> new BlockStateTagsType(firstOrNull(a))),
 			Map.entry("DescribedEnum", DescribedEnumType::new),
-			Map.entry("DyeColor", (s, a) -> EnumType.DYE_COLOR),
 			Map.entry("EmptyCompound", (s, a) -> EmptyCompound.INSTANCE),
 			Map.entry("Enchantments", (s, a) -> EnchantmentsType.INSTANCE),
 			Map.entry("EntitySelector", (s, a) -> EntitySelectorType.INSTANCE),
 			Map.entry("Enum", (s, a) -> new EnumType(s, a, false)),
 			Map.entry("OrderedEnum", (s, a) -> new EnumType(s, a, true)),
+			Map.entry("DynamicEnum", (s, a) -> EnumType.dynamicEnum(s, firstOrNull(a), true)),
+			Map.entry("DynamicOrderedEnum", (s, a) -> EnumType.dynamicEnum(s, firstOrNull(a), true)),
 			Map.entry("Font", (s, a) -> FontType.INSTANCE),
 			Map.entry("PlayerInventorySlot", (s, a) -> new PlayerInventorySlotType(s.getFirst())),
 			Map.entry("Keybind", (s, a) -> KeybindType.INSTANCE),
@@ -72,8 +73,8 @@ public interface Type
 			Map.entry("Depends", DependsType::new),
 			Map.entry("SingleOrList", (s, a) -> new EitherType(List.of(s.getFirst(), new ListType(s.getFirst())))),
 			Map.entry("ArmorStandSlots", (s, a) -> ArmorStandSlotsType.INSTANCE),
-			Map.entry("TropicalFishVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
-			Map.entry("HorseVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
+			Map.entry("TropicalFishExtendedVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
+			Map.entry("HorseExtendedVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
 			Map.entry("FurnaceRecipesUsed", (s, a) -> PrimitiveType.COMPOUND) //TODO: finish
 	);
 

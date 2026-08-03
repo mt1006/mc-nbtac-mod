@@ -1,8 +1,10 @@
 package net.mt1006.nbtac.autocomplete.tag;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.type.Type;
+import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
@@ -20,6 +22,11 @@ public class DefinedNbtTag extends NbtTag
 
 	@Override public int getPriority(@Nullable ParsedCompound compound)
 	{
+		return getPriority(isTagRelevant(compound));
+	}
+
+	public int getPriority(boolean relevant)
+	{
 		if (annotations != null)
 		{
 			List<String> recommendedVal = annotations.get(Annotation.RECOMMENDED);
@@ -30,7 +37,8 @@ public class DefinedNbtTag extends NbtTag
 			}
 		}
 
-		return isRelevant(true, compound) ? 0 : -1;
+		if (!relevant) { return -1; }
+		return (annotations != null && annotations.containsKey(Annotation.RECOMMENDED_IF_RELEVANT)) ? 100 : 0;
 	}
 
 	@Override public @Nullable Identifier getNameAsId()
@@ -39,46 +47,60 @@ public class DefinedNbtTag extends NbtTag
 		return null;
 	}
 
-	public boolean isRelevant(boolean relevantByDefault, @Nullable ParsedCompound compound)
+	private boolean isTagRelevant(@Nullable ParsedCompound compound)
 	{
-		if (!relevantByDefault)
-		{
-			return annotations != null && annotations.containsKey(Annotation.ALWAYS_RELEVANT);
-		}
-		else
-		{
-			if (annotations == null || compound == null) { return true; }
-			boolean isRelevant = true;
+		if (annotations == null || compound == null) { return true; }
+		boolean relevant = true;
 
-			List<String> ifEq = annotations.get(Annotation.RELEVANT_IF_EQ);
-			if (ifEq != null && !ifEq.isEmpty())
+		List<String> ifEq = annotations.get(Annotation.RELEVANT_IF_EQ);
+		if (ifEq != null && !ifEq.isEmpty())
+		{
+			String val = compound.getStrVal(ifEq.getFirst());
+			if (val != null)
 			{
-				String val = compound.getStrVal(ifEq.getFirst());
-				if (val != null)
+				relevant = false;
+				for (int i = 1; i < ifEq.size(); i++)
 				{
-					isRelevant = false;
-					for (int i = 1; i < ifEq.size(); i++)
-					{
-						if (val.equals(ifEq.get(i))) { return true; }
-					}
+					if (val.equals(ifEq.get(i))) { return true; }
 				}
 			}
+		}
 
-			List<String> ifNotDef = annotations.get(Annotation.RELEVANT_IF_NOT_DEF);
-			if (ifNotDef != null)
+		List<String> ifNotDef = annotations.get(Annotation.RELEVANT_IF_NOT_DEF);
+		if (ifNotDef != null)
+		{
+			for (String tagName : ifNotDef)
 			{
-				for (String tagName : ifNotDef)
+				if (compound.containsKey(tagName))
 				{
-					if (compound.containsKey(tagName))
-					{
-						isRelevant = false;
-						break;
-					}
+					relevant = false;
+					break;
 				}
 			}
-
-			return isRelevant;
 		}
+
+		return relevant;
+	}
+
+	public boolean isDataComponentRelevant(@Nullable Item item)
+	{
+		if (annotations == null) { return false; }
+		if (annotations.containsKey(Annotation.ALWAYS_RELEVANT)) { return true; }
+
+		List<String> forItem = annotations.get(Annotation.RELEVANT_COMPONENT_FOR_ITEM);
+		if (forItem != null)
+		{
+			Identifier parentItemId = RegistryUtils.ITEM.getKey(item);
+			if (parentItemId != null)
+			{
+				for (String id : forItem)
+				{
+					if (parentItemId.equals(Identifier.tryParse(id))) { return true; }
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public boolean addAnnotation(String name, List<String> args)
@@ -92,11 +114,20 @@ public class DefinedNbtTag extends NbtTag
 
 	public enum Annotation
 	{
-		ALWAYS_RELEVANT("AlwaysRelevant"),
+		// only for NBT tags (including in item data component compounds)
 		RELEVANT_IF_EQ("RelevantIfEq"),
 		RELEVANT_IF_NOT_DEF("RelevantIfNotDef"),
+
+		// only for item data components
+		ALWAYS_RELEVANT("AlwaysRelevant"),
+		RELEVANT_COMPONENT_FOR_ITEM("RelevantComponentForItem"),
+
+		// universal
 		RECOMMENDED("Recommended"),
-		OPT_RECOMMENDED("OptRecommended");
+		OPT_RECOMMENDED("OptRecommended"),
+		RECOMMENDED_IF_RELEVANT("RecommendedIfRelevant"),
+		SINCE("Since"), //TODO: implement
+		UNTIL("Until"); //TODO: implement
 
 		private static final Annotation[] VALUES = values();
 		private final String name;

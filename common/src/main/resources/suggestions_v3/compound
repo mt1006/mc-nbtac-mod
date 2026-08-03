@@ -20,7 +20,7 @@ sound_event
 +range :float
 
 item_effect
-+type :Enum(apply_effects, remove_effects, clear_all_effects, teleport_randomly, play_sound) @Recommended
++type :RegistryKey(minecraft:consume_effect_type) @Recommended
 +effects :Depends<list<#effect>, SingleOrList<RegistryKey(minecraft:mob_effect)>>(type, apply_effects, remove_effects) @RelevantIfEq(type, apply_effects, remove_effects)
 +probability :float @RelevantIfEq(type, apply_effects)
 +diameter :float @RelevantIfEq(type, teleport_randomly)
@@ -130,7 +130,7 @@ villager/data
 
 villager/gossip
 +Target :UUID
-+Type :Enum(major_negative, minor_negative, minor_positive, major_positive, trading)
++Type :DynamicEnum(GossipType)
 +Value :int
 
 lock
@@ -144,7 +144,7 @@ lock
 sign_text
 +messages :list<TextComponent>(4)
 +filtered_messages :list<TextComponent>(4)
-+color :DyeColor
++color :DynamicEnum(DyeColor)
 +has_glowing_text :boolean
 
 trial_spawner_config
@@ -204,11 +204,11 @@ attribute
 +modifiers :list<compound>
 	+id :string
 	+amount :double
-	+operation :Enum(add_value, add_multiplied_base, add_multiplied_total)
+	+operation :DynamicEnum(AttributeModifierOperation)
 
 waypoint_icon
 +color :int
-+style :Enum(default, color)
++style :Enum(default, bowtie)
 
 vault_server_data
 +items_to_eject :list<#item_stack>
@@ -227,3 +227,23 @@ vault_shared_data
 +display_item :#item_stack
 +connected_particles_range :double
 +connected_players :list<UUID>
+
+profile
++name :string
++id :UUID
++properties :list<compound>
+	+name :string
+	+value :string
+	+signature :string
+
+kinetic_weapon_conditions
++max_duration_ticks :int
++min_speed :float
++min_relative_speed :float
+
+firework_explosion
++shape :DynamicEnum(FireworkExplosionShape)
++color :int
++fade_colors :int
++has_trail :boolean
++has_twinkle :boolean

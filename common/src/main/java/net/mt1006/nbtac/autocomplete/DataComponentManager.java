@@ -54,13 +54,14 @@ public class DataComponentManager
 
 			if (component == null)
 			{
+				//TODO: add setting to determine if unknown should be relevant (compatibility setting group)
 				tagMap.add(new GeneratedNbtTag(id.toShortString(), PrimitiveType.UNKNOWN, 0, id).withSubtext((s) -> "[?] " + s));
 			}
 			else
 			{
 				boolean relevant = predefinedComponents.contains(componentType)
-						|| hardcodedRelevancy.contains(componentType) || component.isRelevant(false, null);
-				tagMap.add(new GeneratedNbtTag(component, relevant ? 0 : -1, id));
+						|| hardcodedRelevancy.contains(componentType) || component.isDataComponentRelevant(item);
+				tagMap.add(new GeneratedNbtTag(component, component.getPriority(relevant), id));
 			}
 		}
 	}

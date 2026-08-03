@@ -35,7 +35,7 @@ banner
 	+pattern :either<RegistryKey(minecraft:banner_pattern), compound>
 		+asset_id :string
 		+translation_key :TranslationKey
-	+color :DyeColor
+	+color :DynamicEnum(DyeColor)
 
 barrel =_with_items
 
@@ -124,7 +124,7 @@ jigsaw
 +target :string
 +pool :ServerRegistryKey(minecraft:worldgen/template_pool)
 +final_state :string
-+joint :Enum(rollable, aligned)
++joint :DynamicEnum(JigsawJointType)
 +placement_priority :int
 +selection_priority :int
 
@@ -156,13 +156,17 @@ piston
 +extending :boolean
 +source :boolean
 
+# since 26.2
+potent_sulfur
++countdown :int
+
 sculk_catalyst
 +cursors :list<compound>
 	+pos :BlockPos @Recommended
 	+charge :int
 	+decay_delay :Enum<int>(0, 1)
 	+update_delay :int
-	+facings :list<Enum(down, up, north, south, west, east)>
+	+facings :list<DynamicEnum(Direction)>
 
 sculk_sensor =_sculk_sensor
 
@@ -173,6 +177,11 @@ sculk_shrieker
 shulker_box =_with_items
 
 sign =_sign
+
+# since 1.21.9
+shelf
++Items :list<#item_stack_with_slot>
++align_items_to_bottom :boolean
 
 skull
 +profile :either<string, compound>
@@ -209,7 +218,7 @@ structure_block
 +seed :LongSeed
 
 test_block
-+mode :Enum(start, log, fail, accept)
++mode :DynamicEnum(TestBlockMode)
 +message :string
 +powered :boolean
 
@@ -217,10 +226,13 @@ test_instance_block
 +data :compound
 	+test :ServerRegistryKey(minecraft:test_instance)
 	+size :int_array(3)
-	+rotation :Enum(none, clockwise_90, 180, counterclockwise_90)
+	+rotation :DescribedEnum(Rotation)
 	+ignore_entities :boolean
-	+status :Enum(cleared, running, finished)
+	+status :DescribedEnum(TestInstanceStatus)
 	+error_message :TextComponent
++errors :list<compound> @Since(1.21.9)
+	+pos :BlockPos
+	+text :TextComponent
 
 trapped_chest =_with_items
 
