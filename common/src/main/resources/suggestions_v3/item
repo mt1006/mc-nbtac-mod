@@ -17,11 +17,11 @@ attribute_modifiers :list<compound> @AlwaysRelevant
 +operation :DynamicEnum(AttributeModifierOperation)
 +display :compound
 	+type :DynamicEnum(ItemAttributeModifiersDisplayType)
-	+subtype :BannerPattern
+	+subtype :ServerRegistryKey(minecraft:banner_pattern)
 
 banner_patterns :list<compound>
 +color :DynamicEnum(DyeColor)
-+pattern :BannerPattern
++pattern :ServerRegistryKey(minecraft:banner_pattern)
 
 base_color :DynamicEnum(DyeColor)
 
@@ -100,7 +100,7 @@ custom_name :TextComponent @AlwaysRelevant
 damage :int
 
 damage_resistant :compound @AlwaysRelevant
-+types :DamageType
++types :ServerRegistryKey(minecraft:damage_type)
 
 damage_type :string @AlwaysRelevant @Since(1.21.11)
 
@@ -159,7 +159,7 @@ item_model :RegistryKey(minecraft:item)
 item_name :TextComponent @AlwaysRelevant
 
 jukebox_playable :compound @AlwaysRelevant
-+song :JukeboxSong
++song :ServerRegistryKey(minecraft:jukebox_song)
 
 kinetic_weapon :compound @Since(1.21.11)
 +contact_cooldown_ticks :int
@@ -218,9 +218,9 @@ potion_duration_scale :float
 
 profile :#profile
 
-provides_banner_patterns :BannerPattern @AlwaysRelevant
+provides_banner_patterns :ServerRegistryKey(minecraft:banner_pattern) @AlwaysRelevant
 
-provides_trim_material :TrimMaterial @AlwaysRelevant
+provides_trim_material :ServerRegistryKey(minecraft:trim_material) @AlwaysRelevant
 
 rarity :DynamicOrderedEnum(Rarity) @AlwaysRelevant
 
@@ -257,8 +257,8 @@ tooltip_display :compound @AlwaysRelevant
 tooltip_style :string @AlwaysRelevant
 
 trim :compound
-+pattern :TrimPattern
-+material :TrimMaterial
++pattern :ServerRegistryKey(minecraft:trim_pattern)
++material :ServerRegistryKey(minecraft:trim_material)
 
 unbreakable :EmptyCompound
 

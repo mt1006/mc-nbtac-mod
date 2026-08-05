@@ -52,11 +52,6 @@ public interface Type
 			Map.entry("ServerRegistryKey", (s, a) -> new ServerRegistryKeyType<>(firstOrNull(a))),
 			Map.entry("Id", (s, a) -> new IdType(firstOrNull(a))),
 			Map.entry("SpawnEgg", (s, a) -> new SpawnEggType(firstOrNull(a))), //TODO: use
-			Map.entry("BannerPattern", (s, a) -> StaticIdsType.BANNER_PATTERN),
-			Map.entry("TrimPattern", (s, a) -> StaticIdsType.TRIM_PATTERN),
-			Map.entry("TrimMaterial", (s, a) -> StaticIdsType.TRIM_MATERIAL),
-			Map.entry("JukeboxSong", (s, a) -> StaticIdsType.JUKEBOX_SONG),
-			Map.entry("DamageType", (s, a) -> StaticIdsType.DAMAGE_TYPE),
 			Map.entry("Tags", (s, a) -> new TagsType(firstOrNull(a), null, false)),
 			Map.entry("TagsWithId", (s, a) -> new TagsType(firstOrNull(a), null, true)),
 			Map.entry("TagsFromId", (s, a) -> new TagsType(a.size() > 1 ? a.get(1) : null, a.getFirst(), true)),
