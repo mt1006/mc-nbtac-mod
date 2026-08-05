@@ -114,9 +114,6 @@
   "nbtac.options.field.debug_config_screen": "Debug Config Screen",
   "nbtac.options.field.debug_config_screen.desc": "Shows settings GUI after exiting realms screen. It isn't reset to default value by GUI reset button!",
 
-  "nbtac.options.field.save_suggestions": "Save Suggestions",
-  "nbtac.options.field.save_suggestions.desc": "Saves suggestions to file - \".minecraft/nbtac_output.txt\".",
-
 
 
   "nbtac.options.common.tooltip": "%s\n§8Default value: %s",

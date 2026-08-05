@@ -127,12 +127,6 @@
   "nbt_ac.options.field.debug_config_screen": "调试设定画面",
   "nbt_ac.options.field.debug_config_screen.desc": "在退出 Reamls 画面后显示设定图形介面。它不会被图形介面重设按钮重设为预设值！",
 
-  "nbt_ac.options.field.save_suggestions": "储存建议",
-  "nbt_ac.options.field.save_suggestions.0": "已停用",
-  "nbt_ac.options.field.save_suggestions.1": "已启用",
-  "nbt_ac.options.field.save_suggestions.2": "已启用并排序",
-  "nbt_ac.options.field.save_suggestions.desc": "将建议储存到档案 - \".minecraft/nbt_ac_output.txt\".\n0 - 已停用\n1 - 已启用\n2 - 已启用并排序（更容易比较）\n其他值将被视为 0。",
-
   "nbt_ac.options.common.tooltip": "%s\n§8预设值：%s",
   "nbt_ac.options.common.reset_settings": "设为默认值",
   "nbt_ac.options.common.undefined": "[未定义]",

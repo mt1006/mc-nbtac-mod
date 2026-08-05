@@ -114,9 +114,6 @@
   "nbtac.options.field.debug_config_screen": "Testowanie ekranu konfiguracji",
   "nbtac.options.field.debug_config_screen.desc": "Pokazuje ekran ustawień po wyjściu z ekranu realms. Nie jest resetowane do domyślnej wartości po użyciu przycisku resetowania ustawień!",
 
-  "nbtac.options.field.save_suggestions": "Zapisz sugestie",
-  "nbtac.options.field.save_suggestions.desc": "Zapisuje sugestie do pliku - \".minecraft/nbtac_output.txt\".",
-
 
 
   "nbtac.options.common.tooltip": "%s\n§8Domyślna wartość: %s",

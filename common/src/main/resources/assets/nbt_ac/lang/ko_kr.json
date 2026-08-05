@@ -70,8 +70,6 @@
   "nbtac.options.field.debug_sleep.desc": "제안 로딩을 지연하여 걸리는 시간을 더 잘 측정합니다(값은 밀리초 단위이며 수천으로 설정하는 것이 좋습니다).",
   "nbtac.options.field.debug_config_screen": "디버그 구성 화면",
   "nbtac.options.field.debug_config_screen.desc": "Realms 화면을 종료한 후 설정 GUI를 표시합니다. GUI 리셋 버튼으로 기본값으로 리셋되지 않습니다!",
-  "nbtac.options.field.save_suggestions": "제안 저장",
-  "nbtac.options.field.save_suggestions.desc": "제안을 파일 - \".minecraft/nbtac_output.txt\"에 저장합니다.",
   "nbtac.options.common.tooltip": "%s\n§8기본값: %s",
   "nbtac.options.common.reset_settings": "설정 재설정",
   "nbtac.options.common.gui_debug_warning": "설정 화면 디버그 모드가 활성화되어 있습니다!"

@@ -43,7 +43,6 @@ public class ModConfig
 
 	public static final ConfigFields.BooleanField debugMode = fields.add("debug_mode", false);
 	public static final ConfigFields.IntegerField debugSleep = fields.add("debug_sleep", 0);
-	public static final ConfigFields.BooleanField saveSuggestions = fields.add("save_suggestions", false);
 	public static final ConfigFields.BooleanField debugConfigScreen = fields.add("debug_config_screen", false);
 
 
@@ -88,7 +87,6 @@ public class ModConfig
 		list.addLabel("debugging_options");
 		list.add(debugMode.createSwitch());
 		list.add(debugSleep.createSlider(0, 100, 200, List.of(0)));
-		list.add(saveSuggestions.createSwitch());
 	}
 
 	public static void load()

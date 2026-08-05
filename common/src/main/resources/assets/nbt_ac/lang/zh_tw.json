@@ -104,9 +104,6 @@
   "nbtac.options.field.debug_config_screen": "除錯設定畫面",
   "nbtac.options.field.debug_config_screen.desc": "在退出 Reamls 畫面後顯示設定圖形介面。它不會被圖形介面重設按鈕重設為預設值！",
 
-  "nbtac.options.field.save_suggestions": "儲存建議",
-  "nbtac.options.field.save_suggestions.desc": "將建議儲存到檔案 - \".minecraft/nbtac_output.txt\".",
-
 
 
   "nbtac.options.common.tooltip": "%s\n§8預設值：%s",
