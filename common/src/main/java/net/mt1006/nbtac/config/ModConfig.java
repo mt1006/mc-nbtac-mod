@@ -3,6 +3,7 @@ package net.mt1006.nbtac.config;
 import net.mt1006.nbtac.config.enums.DefaultQuotationMark;
 import net.mt1006.nbtac.config.enums.JsonStringSuggestion;
 import net.mt1006.nbtac.config.enums.PlacingOfIrrelevant;
+import net.mt1006.nbtac.config.enums.UnknownItemComponents;
 import net.mt1006.nbtac.config.gui.ModOptionList;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class ModConfig
 	public static final ConfigFields.BooleanField showCustomModelDataAsRelevant = fields.add("show_custom_model_data_as_relevant", false);
 
 	//public static final ConfigFields.IntegerField vanillaIdsSorting = fields.add("vanilla_ids_sorting", 1); //TODO: implement
+	public static final ConfigFields.EnumField<UnknownItemComponents> unknownItemComponents = fields.add("unknown_item_components", UnknownItemComponents.RELEVANT_BY_DEFAULT);
 	public static final ConfigFields.BooleanField supportCommandNamespace = fields.add("support_command_namespace", true);
 
 	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
@@ -77,6 +79,7 @@ public class ModConfig
 
 		list.addLabel("mods_and_plugins_support");
 		//list.add(vanillaIdsSorting.createSwitch(List.of(0, 1, 2, 3)));
+		list.add(unknownItemComponents.createSwitch());
 		list.add(supportCommandNamespace.createSwitch());
 
 		list.addLabel("advanced_settings");

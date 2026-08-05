@@ -90,6 +90,12 @@
   "nbtac.options.field.vanilla_ids_sorting.3": "Always In The Middle",
   "nbtac.options.field.vanilla_ids_sorting.desc": "Specifies the method vanilla IDs (in \"minecraft:\" namespace) are sorted in relation to non-vanilla IDs (from mods). It applies only to suggestions provided by NBT Autocomplete. This setting is also strongly related to \"Hide Minecraft Namespace In Strings\" setting.\n0 - Without Custom Sorting - with hidden vanilla namespace it will cause IDs to be scattered around IDs from mods, therefore it isn't recommended.\n1 - Depends - placed at the top only with namespace hidden, otherwise in the middle.\n2 - Always At The Top\n3 - Always In The Middle\nOther values will be treated as 1.",
 
+  "nbtac.options.field.unknown_item_components": "Unknown Item Components",
+  "nbtac.options.field.unknown_item_components.relevant_by_default": "Relevant By Default",
+  "nbtac.options.field.unknown_item_components.relevant_within_namespace": "Relevant Within Namespace",
+  "nbtac.options.field.unknown_item_components.irrelevant_by_default": "Irrelevant By Default",
+  "nbtac.options.field.unknown_item_components.desc": "Specifies default relevancy of unknown item data components.\nThis applies mainly to modded components. If you see unknown item components\nin vanilla (with only NBTac installed), report this as an issue.\nrelevant_by_default - unknown item components are marked as relevant by default.\nrelevant_within_namespace - unknown item components are marked as relevant only if their ID is in the same namespace as item ID.\nirrelevant_by_default - unknown item components are marked as irrelevant by default.",
+
   "nbtac.options.field.support_command_namespace": "Support For Command Namespace",
   "nbtac.options.field.support_command_namespace.desc": "Ignores the \"minecraft:\" as command prefix. Useful when using with plugins which put Minecraft commands under this namespace.",
 

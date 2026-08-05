@@ -54,8 +54,8 @@ public class DataComponentManager
 
 			if (component == null)
 			{
-				//TODO: add setting to determine if unknown should be relevant (compatibility setting group)
-				tagMap.add(new GeneratedNbtTag(id.toShortString(), PrimitiveType.UNKNOWN, 0, id).withSubtext((s) -> "[?] " + s));
+				int priority = ModConfig.unknownItemComponents.val.getPriority(id, item);
+				tagMap.add(new GeneratedNbtTag(id.toShortString(), PrimitiveType.UNKNOWN, priority, id).withSubtext((s) -> "[?] " + s));
 			}
 			else
 			{
