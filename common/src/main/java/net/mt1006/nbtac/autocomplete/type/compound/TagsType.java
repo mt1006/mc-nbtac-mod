@@ -52,7 +52,19 @@ public class TagsType extends ComplexCompoundType
 		}
 
 		if (id == null) { return; }
-		NbtTagMap tagMap = NbtTagManager.get(id);
+		NbtTagMap tagMap = NbtTagManager.get(idWithNamespace(id));
 		map.addAll(tagMap);
+	}
+
+	private static String idWithNamespace(String idStr)
+	{
+		int slashPos = idStr.indexOf('/');
+		if (slashPos == -1) { return idStr; } // shouldn't happen
+
+		String prefix = idStr.substring(0, slashPos + 1);
+		Identifier id = Identifier.tryParse(idStr.substring(slashPos + 1));
+		if (id == null) { return idStr; }
+
+		return prefix + id;
 	}
 }
