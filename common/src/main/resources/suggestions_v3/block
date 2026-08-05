@@ -32,7 +32,7 @@ _sign
 banner
 +CustomName :TextComponent
 +patterns :list<compound>
-	+pattern :either<RegistryKey(minecraft:banner_pattern), compound>
+	+pattern :either<ServerRegistryKey(minecraft:banner_pattern), compound>
 		+asset_id :string
 		+translation_key :TranslationKey
 	+color :DynamicEnum(DyeColor)

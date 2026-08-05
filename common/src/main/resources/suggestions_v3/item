@@ -102,7 +102,7 @@ damage :int
 damage_resistant :compound @AlwaysRelevant
 +types :ServerRegistryKey(minecraft:damage_type)
 
-damage_type :string @AlwaysRelevant @Since(1.21.11)
+damage_type :ServerRegistryKey(minecraft:damage_type) @AlwaysRelevant @Since(1.21.11)
 
 death_protection :compound @AlwaysRelevant
 +death_effects :list<#item_effect>
