@@ -84,7 +84,7 @@ public class SuggestionFileParser extends FileParser
 			reader.expectEnd();
 
 			tag.getType().setSubcompound(parseSuggestions(entry.lines, null));
-			DataComponentManager.componentMap.put(keyDefaultPrefix + entryName, tag);
+			if (tag.inVersionRange()) { DataComponentManager.componentMap.put(keyDefaultPrefix + entryName, tag); }
 		}
 	}
 
@@ -129,14 +129,17 @@ public class SuggestionFileParser extends FileParser
 				suggestionStack.set(tabCount, tag);
 			}
 
-			if (tabCount == 0)
+			if (tag.inVersionRange())
 			{
-				if (!outputMap.add(tag)) { throw reader.new ReaderException(); }
-			}
-			else
-			{
-				NbtTag nbtTag = suggestionStack.get(tabCount - 1);
-				if (!nbtTag.getType().getSubcompound().add(tag)) { throw reader.new ReaderException(); }
+				if (tabCount == 0)
+				{
+					if (!outputMap.add(tag)) { throw reader.new ReaderException(); }
+				}
+				else
+				{
+					NbtTag nbtTag = suggestionStack.get(tabCount - 1);
+					if (!nbtTag.getType().getSubcompound().add(tag)) { throw reader.new ReaderException(); }
+				}
 			}
 			reader.expectEnd();
 		}

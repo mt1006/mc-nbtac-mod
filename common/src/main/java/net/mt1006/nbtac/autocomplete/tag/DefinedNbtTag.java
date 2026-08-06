@@ -4,6 +4,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.type.Type;
+import net.mt1006.nbtac.utils.McVersion;
 import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,6 +113,26 @@ public class DefinedNbtTag extends NbtTag
 		return (annotations.put(annotation, args) == null);
 	}
 
+	public boolean inVersionRange()
+	{
+		if (annotations == null) { return true; }
+
+		List<String> since = annotations.get(Annotation.SINCE);
+		if (since != null)
+		{
+			if (since.size() != 1) { throw new RuntimeException("\"Since\" requires exactly one argument"); }
+			if (McVersion.compare(since.getFirst()) < 0) { return false; }
+		}
+
+		List<String> until = annotations.get(Annotation.UNTIL);
+		if (until != null)
+		{
+			if (until.size() != 1) { throw new RuntimeException("\"Until\" requires exactly one argument"); }
+			if (McVersion.compare(until.getFirst()) >= 0) { return false; }
+		}
+		return true;
+	}
+
 	public enum Annotation
 	{
 		// only for NBT tags (including in item data component compounds)
@@ -126,8 +147,8 @@ public class DefinedNbtTag extends NbtTag
 		RECOMMENDED("Recommended"),
 		OPT_RECOMMENDED("OptRecommended"),
 		RECOMMENDED_IF_RELEVANT("RecommendedIfRelevant"),
-		SINCE("Since"), //TODO: implement
-		UNTIL("Until"); //TODO: implement
+		SINCE("Since"),
+		UNTIL("Until");
 
 		private static final Annotation[] VALUES = values();
 		private final String name;
