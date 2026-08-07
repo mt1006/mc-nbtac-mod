@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ServerRegistryKeyType<T> extends ComplexType
+public class ServerRegistryKeyType extends ComplexType
 {
 	public static final Map<Identifier, List<Identifier>> registryKeyMap = new HashMap<>();
-	private final @Nullable ResourceKey<Registry<T>> registryKey;
+	private final @Nullable ResourceKey<Registry<Object>> registryKey;
 
 	public ServerRegistryKeyType(@Nullable String arg)
 	{

@@ -154,7 +154,7 @@ public class SuggestionFileParser extends FileParser
 
 			String id = "compound/nbtac:" + reader.readFileString();
 			if (ModConfig.debugMode.val && NbtTagManager.get(id) == null) { NBTac.LOGGER.warn("{} not found", id); }
-			return new TagsType(id, null, false);
+			return new TagsType(id, null, null);
 		}
 
 		String name = reader.readFileString();

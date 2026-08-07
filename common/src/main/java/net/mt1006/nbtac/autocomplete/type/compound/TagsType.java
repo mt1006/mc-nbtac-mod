@@ -7,16 +7,16 @@ import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.autocomplete.type.complex.IdType;
-import net.mt1006.nbtac.autocomplete.type.complex.RegistryKeyType;
+import net.mt1006.nbtac.autocomplete.type.complex.ServerRegistryKeyType;
 import org.jetbrains.annotations.Nullable;
 
 public class TagsType extends ComplexCompoundType
 {
 	private final @Nullable String id;
 	private final @Nullable String keyId;
-	private final boolean withId;
+	private final String idKey;
 
-	public TagsType(@Nullable String id, @Nullable String keyId, boolean withId)
+	public TagsType(@Nullable String id, @Nullable String keyId, @Nullable String idKey)
 	{
 		if (id != null)
 		{
@@ -25,17 +25,17 @@ public class TagsType extends ComplexCompoundType
 		}
 		this.id = id;
 		this.keyId = keyId;
-		this.withId = withId;
+		this.idKey = idKey;
 	}
 
 	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)
 	{
-		if (withId)
+		if (idKey != null)
 		{
 			Type type = null;
 			if (keyId != null)
 			{
-				type = new RegistryKeyType(keyId);
+				type = new ServerRegistryKeyType(keyId);
 			}
 			else if (id != null)
 			{
@@ -48,7 +48,7 @@ public class TagsType extends ComplexCompoundType
 				type = new IdType(finalId.substring(id.indexOf('/') + 1));
 			}
 
-			map.add(new GeneratedNbtTag("id", type, 200, null));
+			map.add(new GeneratedNbtTag(idKey, type, 200, null));
 		}
 
 		if (id == null) { return; }
