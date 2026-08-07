@@ -27,7 +27,6 @@ public class ServerRegistryKeyType extends ComplexType
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		//TODO: remove serverreg
 		//TODO: merge with RegistryKey, using this code?
 		if (registryKey == null) { return; }
 		String subtext = "[#" + registryKey.identifier().getPath() + "]";

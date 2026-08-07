@@ -32,7 +32,6 @@ public class Loader
 			new SuggestionFileParser("item", "minecraft").parseDataComponents();
 
 			new DataFileParser("block2be").parseBlockToBlockEntityMap();
-			new DataFileParser("serverreg").parseServerRegistries();
 		}
 		catch (Exception e)
 		{
