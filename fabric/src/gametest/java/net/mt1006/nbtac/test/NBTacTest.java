@@ -28,9 +28,8 @@ public class NBTacTest implements FabricClientGameTest
 	{
 		ModConfig.reset();
 
-		Gui gui = mc.gui;
-		gui.openChatScreen(ChatComponent.ChatMethod.MESSAGE);
-		if (!(gui.screen() instanceof ChatScreen chatScreen)) { throw new RuntimeException(); }
+		mc.openChatScreen(ChatComponent.ChatMethod.MESSAGE);
+		if (!(mc.screen instanceof ChatScreen chatScreen)) { throw new RuntimeException(); }
 		NBTacTestContext ctx = new NBTacTestContext(chatScreen);
 
 		// basic functionality tests

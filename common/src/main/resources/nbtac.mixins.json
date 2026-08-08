@@ -10,7 +10,7 @@
     "fields.ClientLanguageFields",
     "fields.ClientLevelFields",
     "fields.CommandSuggestionsFields",
-    "fields.DecoratedPotRendererFields",
+    "fields.DecoratedPotPatternsFields",
     "fields.EntitySelectorFields",
     "fields.FontManagerFields",
     "fields.KeyMappingFields",
