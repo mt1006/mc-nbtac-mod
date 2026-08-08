@@ -20,7 +20,8 @@
 	"entrypoints":
 	{
 		"main": ["net.mt1006.nbtac.NBTacFabric"],
-		"modmenu": ["net.mt1006.nbtac.fabric.ModMenuApiImpl"]
+		"modmenu": ["net.mt1006.nbtac.fabric.ModMenuApiImpl"],
+		"fabric-client-gametest": ["net.mt1006.nbtac.test.NBTacTest"]
 	},
 	"mixins": ["nbtac.mixins.json", "nbtac.fabric.mixins.json"],
 
