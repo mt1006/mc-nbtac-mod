@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type.compound;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.DataComponentManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
@@ -11,11 +11,11 @@ import java.util.Set;
 
 public class ItemComponentsType extends ComplexCompoundType
 {
-	private final @Nullable Identifier id;
+	private final @Nullable ResourceLocation id;
 
 	public ItemComponentsType(@Nullable String id)
 	{
-		this.id = id != null ? Identifier.tryParse(id) : null;
+		this.id = id != null ? ResourceLocation.tryParse(id) : null;
 	}
 
 	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)

@@ -9,7 +9,7 @@ import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.config.ModConfig;
@@ -46,7 +46,7 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		{
 			case "summon":
 				EntityType<?> entityType = (EntityType<?>)ctx.getArgument("entity", Holder.Reference.class).value();
-				Identifier id = EntityType.getKey(entityType);
+				ResourceLocation id = EntityType.getKey(entityType);
 				return "entity/" + id;
 
 			case "data":

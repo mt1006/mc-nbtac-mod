@@ -23,7 +23,7 @@ public class RecipeType extends ComplexType
 
 		for (RecipeHolder<?> recipeHolder : server.getRecipeManager().getRecipes())
 		{
-			list.add(new IdSuggestion(recipeHolder.id().identifier(), null, ctx.parserType()));
+			list.add(new IdSuggestion(recipeHolder.id().location(), null, ctx.parserType()));
 		}
 	}
 }

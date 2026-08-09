@@ -2,8 +2,8 @@ package net.mt1006.nbtac.autocomplete.type.complex;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
@@ -15,13 +15,13 @@ import java.util.Map;
 
 public class ServerRegistryKeyType extends ComplexType
 {
-	public static final Map<Identifier, List<Identifier>> registryKeyMap = new HashMap<>();
+	public static final Map<ResourceLocation, List<ResourceLocation>> registryKeyMap = new HashMap<>();
 	private final @Nullable ResourceKey<Registry<Object>> registryKey;
 
 	public ServerRegistryKeyType(@Nullable String arg)
 	{
 		super(PrimitiveType.STRING);
-		Identifier id = arg != null ? Identifier.parse(arg) : null;
+		ResourceLocation id = arg != null ? ResourceLocation.parse(arg) : null;
 		registryKey = id != null ? ResourceKey.createRegistryKey(id) : null;
 	}
 
@@ -29,7 +29,7 @@ public class ServerRegistryKeyType extends ComplexType
 	{
 		//TODO: merge with RegistryKey, using this code?
 		if (registryKey == null) { return; }
-		String subtext = "[#" + registryKey.identifier().getPath() + "]";
+		String subtext = "[#" + registryKey.location().getPath() + "]";
 
 		if (Minecraft.getInstance().level == null) { return; }
 		Registry<?> registry = Minecraft.getInstance().level.registryAccess().lookup(registryKey).orElse(null);

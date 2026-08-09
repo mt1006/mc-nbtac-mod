@@ -6,7 +6,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.utils.RegistryUtils;
@@ -51,7 +51,7 @@ public class BlockStateParserMixin
 	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder builder)
 	{
 		if (state == null) { return Suggestions.empty(); }
-		Identifier id = RegistryUtils.BLOCK.getKey(state.getBlock());
+		ResourceLocation id = RegistryUtils.BLOCK.getKey(state.getBlock());
 		if (id == null) { return Suggestions.empty(); }
 
 		String str = builder.getRemaining();

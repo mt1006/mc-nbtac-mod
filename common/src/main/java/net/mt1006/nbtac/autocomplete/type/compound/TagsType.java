@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type.compound;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
@@ -42,7 +42,7 @@ public class TagsType extends ComplexCompoundType
 				String finalId = id;
 				if (id.startsWith("block/"))
 				{
-					Identifier requiredId = Identifier.tryParse(id.substring(id.indexOf('/') + 1));
+					ResourceLocation requiredId = ResourceLocation.tryParse(id.substring(id.indexOf('/') + 1));
 					if (requiredId != null) { finalId = NbtTagManager.blockToBlockEntityMap.getOrDefault(requiredId, id); }
 				}
 				type = new IdType(finalId.substring(id.indexOf('/') + 1));
@@ -62,7 +62,7 @@ public class TagsType extends ComplexCompoundType
 		if (slashPos == -1) { return idStr; } // shouldn't happen
 
 		String prefix = idStr.substring(0, slashPos + 1);
-		Identifier id = Identifier.tryParse(idStr.substring(slashPos + 1));
+		ResourceLocation id = ResourceLocation.tryParse(idStr.substring(slashPos + 1));
 		if (id == null) { return idStr; }
 
 		return prefix + id;

@@ -2,8 +2,8 @@ package net.mt1006.nbtac.autocomplete.type.complex;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
@@ -12,12 +12,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class RegistryKeyType extends ComplexType
 {
-	private final @Nullable Identifier registryId;
+	private final @Nullable ResourceLocation registryId;
 
 	public RegistryKeyType(@Nullable String arg)
 	{
 		super(PrimitiveType.STRING);
-		registryId = arg != null ? Identifier.parse(arg) : null;
+		registryId = arg != null ? ResourceLocation.parse(arg) : null;
 	}
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
@@ -31,7 +31,7 @@ public class RegistryKeyType extends ComplexType
 		String subtext = "[#" + registryId.getPath() + "]";
 		for (ResourceKey<?> id : registry.listElementIds().toList())
 		{
-			list.add(new IdSuggestion(id.identifier(), subtext, ctx.parserType()));
+			list.add(new IdSuggestion(id.location(), subtext, ctx.parserType()));
 		}
 	}
 }

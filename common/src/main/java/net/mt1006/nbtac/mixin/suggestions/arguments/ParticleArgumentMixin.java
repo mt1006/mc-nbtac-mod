@@ -6,7 +6,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.arguments.ParticleArgument;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +30,7 @@ public abstract class ParticleArgumentMixin implements ArgumentType<ParticleOpti
 
 			if (optionsStart == -1)
 			{
-				Identifier particleId = Identifier.tryParse(str);
+				ResourceLocation particleId = ResourceLocation.tryParse(str);
 				if (particleId == null || NbtTagManager.get("particle/" + particleId) == null) { return; }
 
 				builder = builder.createOffset(builder.getStart() + str.length());
@@ -40,7 +40,7 @@ public abstract class ParticleArgumentMixin implements ArgumentType<ParticleOpti
 				return;
 			}
 
-			Identifier particleId = Identifier.tryParse(str.substring(0, optionsStart));
+			ResourceLocation particleId = ResourceLocation.tryParse(str.substring(0, optionsStart));
 			if (particleId == null) { return; }
 
 			builder = builder.createOffset(builder.getStart() + optionsStart);

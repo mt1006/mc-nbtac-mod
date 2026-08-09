@@ -1,7 +1,7 @@
 package net.mt1006.nbtac.autocomplete.tag;
 
 import com.mojang.brigadier.Message;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.utils.ComparableLiteralMessage;
@@ -42,5 +42,5 @@ public abstract class NbtTag
 
 	public abstract int getPriority(@Nullable ParsedCompound compound);
 
-	public abstract @Nullable Identifier getNameAsId();
+	public abstract @Nullable ResourceLocation getNameAsId();
 }

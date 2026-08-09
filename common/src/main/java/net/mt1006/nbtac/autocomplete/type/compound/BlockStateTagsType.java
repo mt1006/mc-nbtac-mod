@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type.compound;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class BlockStateTagsType extends ComplexCompoundType
 {
-	private final @Nullable Identifier id;
+	private final @Nullable ResourceLocation id;
 
 	public BlockStateTagsType(@Nullable String id)
 	{
@@ -26,7 +26,7 @@ public class BlockStateTagsType extends ComplexCompoundType
 			if (id.startsWith("block/")) { id = id.substring(6); }
 			else if (id.startsWith("item/")) { id = id.substring(5); }
 		}
-		this.id = id != null ? Identifier.tryParse(id) : null;
+		this.id = id != null ? ResourceLocation.tryParse(id) : null;
 	}
 
 	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsedCompound, NbtTagMap map)

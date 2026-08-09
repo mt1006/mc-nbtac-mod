@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type.compound;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -12,12 +12,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class SpawnEggType extends ComplexCompoundType
 {
-	private final @Nullable Identifier id;
+	private final @Nullable ResourceLocation id;
 
 	public SpawnEggType(@Nullable String id)
 	{
 		if (id != null && id.startsWith("item/")) { id = id.substring(5); }
-		this.id = id != null ? Identifier.tryParse(id) : null;
+		this.id = id != null ? ResourceLocation.tryParse(id) : null;
 	}
 
 	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)

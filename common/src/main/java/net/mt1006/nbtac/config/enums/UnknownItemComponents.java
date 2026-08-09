@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.config.enums;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +11,7 @@ public enum UnknownItemComponents
 	RELEVANT_WITHIN_NAMESPACE,
 	IRRELEVANT_BY_DEFAULT;
 
-	public int getPriority(Identifier componentId, @Nullable Item item)
+	public int getPriority(ResourceLocation componentId, @Nullable Item item)
 	{
 		switch (this)
 		{
@@ -22,7 +22,7 @@ public enum UnknownItemComponents
 				return -1;
 
 			case RELEVANT_WITHIN_NAMESPACE:
-				Identifier itemId = item != null ? RegistryUtils.ITEM.getKey(item) : null;
+				ResourceLocation itemId = item != null ? RegistryUtils.ITEM.getKey(item) : null;
 				return (itemId != null && componentId.getNamespace().equals(itemId.getNamespace())) ? 0 : -1;
 
 			default:

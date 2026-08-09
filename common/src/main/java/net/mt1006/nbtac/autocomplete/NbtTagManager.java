@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.autocomplete;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +12,7 @@ import java.util.Set;
 public class NbtTagManager
 {
 	private static final Map<String, NbtTagMap> tagMaps = new HashMap<>();
-	public static final Map<Identifier, String> blockToBlockEntityMap = new HashMap<>();
+	public static final Map<ResourceLocation, String> blockToBlockEntityMap = new HashMap<>();
 	private static @Nullable NbtTagMap moddedEntityTagMap = null;
 
 	public static void add(String key, @Nullable NbtTagMap tagMap)
@@ -26,12 +26,12 @@ public class NbtTagManager
 
 		if (key.startsWith("entity/"))
 		{
-			Identifier id = Identifier.tryParse(key.substring(7));
+			ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
 			if (id != null && !id.getNamespace().equals("minecraft")) { return getForModdedEntity(); }
 		}
 		else if (key.startsWith("block/"))
 		{
-			Identifier id = Identifier.tryParse(key.substring(6));
+			ResourceLocation id = ResourceLocation.tryParse(key.substring(6));
 			String blockEntityKey = blockToBlockEntityMap.get(id);
 			if (blockEntityKey != null) { key = blockEntityKey; }
 		}

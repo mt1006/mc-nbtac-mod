@@ -2,7 +2,7 @@ package net.mt1006.nbtac.autocomplete.type.complex;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.font.FontManager;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.suggestions.IdSuggestion;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
@@ -21,7 +21,7 @@ public class FontType extends ComplexType
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
 		FontManager fontManager = ((MinecraftFields)Minecraft.getInstance()).getFontManager();
-		for (Identifier id : ((FontManagerFields)fontManager).getFontSets().keySet())
+		for (ResourceLocation id : ((FontManagerFields)fontManager).getFontSets().keySet())
 		{
 			list.add(new IdSuggestion(id, "[#font]", ctx.parserType()));
 		}

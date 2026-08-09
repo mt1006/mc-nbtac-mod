@@ -3,8 +3,8 @@ package net.mt1006.nbtac.autocomplete;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -38,7 +38,7 @@ public class DataComponentManager
 	{
 		List<Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>>> entryList = new ArrayList<>();
 		SharedSuggestionProvider.filterResources(RegistryUtils.DATA_COMPONENT_TYPE.entrySet(), str,
-				(entry) -> entry.getKey().identifier(), entryList::add);
+				(entry) -> entry.getKey().location(), entryList::add);
 
 		Set<DataComponentType<?>> predefinedComponents = getPredefinedComponents(item);
 		Set<DataComponentType<?>> hardcodedRelevancy = getHardcodedRelevant(item);
@@ -46,7 +46,7 @@ public class DataComponentManager
 		for (Map.Entry<ResourceKey<DataComponentType<?>>, DataComponentType<?>> entry : entryList)
 		{
 			// https://minecraft.wiki/w/Data_component_format#Non-encoded_components
-			Identifier id = entry.getKey().identifier();
+			ResourceLocation id = entry.getKey().location();
 			DataComponentType<?> componentType = entry.getValue();
 			if (componentType.codec() == null || usedComponents.contains(componentType)) { continue; }
 
@@ -55,7 +55,8 @@ public class DataComponentManager
 			if (component == null)
 			{
 				int priority = ModConfig.unknownItemComponents.val.getPriority(id, item);
-				tagMap.add(new GeneratedNbtTag(id.toShortString(), PrimitiveType.UNKNOWN, priority, id).withSubtext((s) -> "[?] " + s));
+				tagMap.add(new GeneratedNbtTag(id.getNamespace().equals("minecraft") ? id.getPath() : id.toString(),
+						PrimitiveType.UNKNOWN, priority, id).withSubtext((s) -> "[?] " + s));
 			}
 			else
 			{
@@ -148,7 +149,7 @@ public class DataComponentManager
 	{
 		relevant.add(DataComponents.BLOCK_ENTITY_DATA);
 
-		Identifier blockId = RegistryUtils.BLOCK.getKey(block);
+		ResourceLocation blockId = RegistryUtils.BLOCK.getKey(block);
 		if (blockId == null) { return; }
 
 		NbtTagMap blockTags = NbtTagManager.get("block/" + blockId);

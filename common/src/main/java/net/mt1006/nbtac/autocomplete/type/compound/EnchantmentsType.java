@@ -1,7 +1,7 @@
 package net.mt1006.nbtac.autocomplete.type.compound;
 
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
@@ -20,7 +20,7 @@ public class EnchantmentsType extends ComplexCompoundType
 		List<ResourceKey> enchantments = Fields.getStaticFields(Enchantments.class, ResourceKey.class);
 		for (ResourceKey<?> resourceKey : enchantments)
 		{
-			Identifier id = resourceKey.identifier();
+			ResourceLocation id = resourceKey.location();
 			map.add(new GeneratedNbtTag(id.toString(), PrimitiveType.INT, 0, id));
 		}
 	}

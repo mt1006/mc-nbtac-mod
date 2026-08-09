@@ -9,7 +9,6 @@ import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.WorldCoordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +29,7 @@ import java.util.UUID;
 public class Utils
 {
 	private static final CommandSourceStack DUMMY_COMMAND_SOURCE_STACK =
-			new CommandSourceStack(null, Vec3.ZERO, Vec2.ZERO, null, PermissionSet.NO_PERMISSIONS, null, null, null, null);
+			new CommandSourceStack(null, Vec3.ZERO, Vec2.ZERO, null, 0, null, null, null, null);
 
 	public static String getNodeString(CommandContext<?> ctx, int pos)
 	{

@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.autocomplete.tag;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.type.Type;
@@ -42,7 +42,7 @@ public class DefinedNbtTag extends NbtTag
 		return (annotations != null && annotations.containsKey(Annotation.RECOMMENDED_IF_RELEVANT)) ? 100 : 0;
 	}
 
-	@Override public @Nullable Identifier getNameAsId()
+	@Override public @Nullable ResourceLocation getNameAsId()
 	{
 		// defined NBT tags don't support it, as it isn't necessary
 		return null;
@@ -91,12 +91,12 @@ public class DefinedNbtTag extends NbtTag
 		List<String> forItem = annotations.get(Annotation.RELEVANT_COMPONENT_FOR_ITEM);
 		if (forItem != null)
 		{
-			Identifier parentItemId = RegistryUtils.ITEM.getKey(item);
+			ResourceLocation parentItemId = RegistryUtils.ITEM.getKey(item);
 			if (parentItemId != null)
 			{
 				for (String id : forItem)
 				{
-					if (parentItemId.equals(Identifier.tryParse(id))) { return true; }
+					if (parentItemId.equals(ResourceLocation.tryParse(id))) { return true; }
 				}
 			}
 		}

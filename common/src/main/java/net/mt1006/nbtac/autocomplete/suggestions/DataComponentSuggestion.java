@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.autocomplete.suggestions;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.config.ModConfig;
 import org.jetbrains.annotations.Nullable;
@@ -14,8 +14,8 @@ public class DataComponentSuggestion extends CustomSuggestion
 	{
 		super(tag.getSubtext(), tag.getPriority(null));
 
-		Identifier id = tag.getNameAsId();
-		if (id == null) { id = Identifier.parse("error:error");  }
+		ResourceLocation id = tag.getNameAsId();
+		if (id == null) { id = ResourceLocation.parse("error:error");  }
 
 		this.withNamespace = id + (addEqualSign ? "=" : "");
 		this.withoutNamespace = id.getNamespace().equals("minecraft") ? (id.getPath() + (addEqualSign ? "=" : "")) : null;

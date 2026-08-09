@@ -5,8 +5,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -37,20 +37,20 @@ public class RegistryUtils
 			this.registry = registry;
 		}
 
-		public @Nullable Identifier getKey(T val)
+		public @Nullable ResourceLocation getKey(T val)
 		{
 			return registry.getKey(val);
 		}
 
-		public @Nullable T get(Identifier id)
+		public @Nullable T get(ResourceLocation id)
 		{
 			Holder.Reference<T> ref = registry.get(id).orElse(null);
 			return ref != null ? ref.value() : null;
 		}
 
-		public @Nullable T get(String id)
+		public @Nullable T get(String resLoc)
 		{
-			return get(Identifier.parse(id));
+			return get(ResourceLocation.parse(resLoc));
 		}
 
 		public Set<Map.Entry<ResourceKey<T>, T>> entrySet()

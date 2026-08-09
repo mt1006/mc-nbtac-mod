@@ -6,7 +6,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.mt1006.nbtac.autocomplete.DataComponentManager;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
@@ -98,16 +98,16 @@ public abstract class ItemParserStateMixin
 		cir.cancel();
 	}
 
-	@Unique private @Nullable Identifier findParsedItemId()
+	@Unique private @Nullable ResourceLocation findParsedItemId()
 	{
 		if (cursorBeforeItem == -1) { return null; }
-		Identifier id = null;
+		ResourceLocation id = null;
 
 		int currentCursor = reader.getCursor();
 		reader.setCursor(cursorBeforeItem);
 		try
 		{
-			id = Identifier.read(reader);
+			id = ResourceLocation.read(reader);
 		}
 		catch (CommandSyntaxException ignore) {}
 		reader.setCursor(currentCursor);
@@ -117,13 +117,13 @@ public abstract class ItemParserStateMixin
 
 	@Unique private @Nullable Item findParsedItem()
 	{
-		Identifier id = findParsedItemId();
+		ResourceLocation id = findParsedItemId();
 		return id != null ? RegistryUtils.ITEM.get(id) : null;
 	}
 
 	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder builder)
 	{
-		Identifier componentId = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
+		ResourceLocation componentId = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
 		NbtTag component = componentId != null ? DataComponentManager.componentMap.get("item/" + componentId) : null;
 		if (component == null || cursorBeforeComponent == -1) { return Suggestions.empty(); }
 

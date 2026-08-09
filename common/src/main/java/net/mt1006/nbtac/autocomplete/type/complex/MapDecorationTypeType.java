@@ -26,7 +26,7 @@ public class MapDecorationTypeType extends ComplexType
 		for (Holder<MapDecorationType> holder : decorationTypes)
 		{
 			ResourceKey<?> key = holder.unwrapKey().orElse(null);
-			if (key != null) { list.add(new IdSuggestion(key.identifier(), "[#map_decoration_type]", ctx.parserType())); }
+			if (key != null) { list.add(new IdSuggestion(key.location(), "[#map_decoration_type]", ctx.parserType())); }
 		}
 	}
 }

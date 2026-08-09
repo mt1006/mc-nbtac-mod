@@ -1,6 +1,6 @@
 package net.mt1006.nbtac.autocomplete.parser;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
@@ -46,7 +46,7 @@ public class CustomTagParser
 		return new CustomTagParser(str, ParserType.PATH, compoundType, null);
 	}
 
-	public static CustomTagParser forDataComponentValue(String str, Type type, @Nullable Identifier itemId)
+	public static CustomTagParser forDataComponentValue(String str, Type type, @Nullable ResourceLocation itemId)
 	{
 		return new CustomTagParser(str, ParserType.VALUE, type, itemId != null ? itemId.toString() : "air");
 	}
