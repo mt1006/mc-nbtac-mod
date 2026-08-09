@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -24,7 +23,6 @@ import java.util.function.Supplier;
 public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.ListWidget>
 {
 	protected static final int ELEMENT_WIDTH = 310;
-	protected static final int HALF_OF_ELEMENT_WIDTH = ELEMENT_WIDTH / 2;
 	protected static final int ELEMENT_HEIGHT = 20;
 	private final Font font;
 	private final List<MutableWidget> mutableWidgets = new ArrayList<>();
@@ -37,14 +35,12 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 
 	public void addLabel(String key)
 	{
-		Label label = new Label(Component.translatable("nbtac.options." + key), font);
-		label.setX(width / 2 - (label.getWidth() / 2));
-		addWidget(label);
+		addWidget(new Label(width, 9, Component.translatable("nbtac.options." + key), font));
 	}
 
 	public void add(AbstractWidget widget)
 	{
-		widget.setX(width / 2 - HALF_OF_ELEMENT_WIDTH);
+		widget.setX(width / 2 - 155);
 		addWidget(widget);
 	}
 
@@ -88,23 +84,27 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 			return List.of(widget);
 		}
 
-		@Override public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float i)
+		@Override public void render(@NotNull GuiGraphics guiGraphics, int a, int b, int c, int d, int e,
+									 int mouseX, int mouseY, boolean h, float i)
 		{
-			widget.setY(getContentY());
+			widget.setY(b);
 			widget.render(guiGraphics, mouseX, mouseY, i);
 		}
 	}
 
 	private static class Label extends StringWidget
 	{
-		public Label(Component component, Font font)
+		private final int yOffset;
+
+		public Label(int w, int yOffset, Component component, Font font)
 		{
-			super(font.width(component.getVisualOrderText()), 9, component, font);
+			super(w, 9, component, font);
+			this.yOffset = yOffset;
 		}
 
 		@Override public int getY()
 		{
-			return super.getY() + 9;
+			return super.getY() + yOffset;
 		}
 	}
 
@@ -133,7 +133,7 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 			setMessage(component.copy().append(": ").append(val));
 		}
 
-		@Override public void onPress(InputWithModifiers input)
+		@Override public void onPress()
 		{
 			field.val = !field.val;
 			updateText();
@@ -175,7 +175,7 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 			setMessage(component.copy().append(": ").append(optionComponent));
 		}
 
-		@Override public void onPress(InputWithModifiers input)
+		@Override public void onPress()
 		{
 			int index = field.val.ordinal();
 			int newIndex = (index != options.size() - 1) ? (index + 1) : 0;

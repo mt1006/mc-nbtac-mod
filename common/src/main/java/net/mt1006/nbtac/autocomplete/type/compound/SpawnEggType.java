@@ -29,7 +29,7 @@ public class SpawnEggType extends ComplexCompoundType
 		{
 			if (item instanceof SpawnEggItem)
 			{
-				String key = RegistryUtils.ENTITY_TYPE.getKey(((SpawnEggItem)item).getType(new ItemStack(item))).toString();
+				String key = RegistryUtils.ENTITY_TYPE.getKey(((SpawnEggItem)item).getType(null, new ItemStack(item))).toString();
 				NbtTagMap spawnEggTags = NbtTagManager.get("entity/" + key);
 				map.addAll(spawnEggTags);
 			}

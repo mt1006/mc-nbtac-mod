@@ -9,12 +9,14 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.mt1006.nbtac.config.ModConfig;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public class NBTacTest implements FabricClientGameTest
 {
-	private static final int MCVER = 12110;
+	private static final int MCVER = 12108;
 
 	@Override public void runTest(ClientGameTestContext context)
 	{
@@ -28,7 +30,14 @@ public class NBTacTest implements FabricClientGameTest
 	{
 		ModConfig.reset();
 
-		mc.openChatScreen(ChatComponent.ChatMethod.MESSAGE);
+		try
+		{
+			Method openChatScreenMethod = Minecraft.class.getDeclaredMethod("openChatScreen", String.class);
+			openChatScreenMethod.setAccessible(true);
+			openChatScreenMethod.invoke(mc, "/");
+		}
+		catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) { throw new RuntimeException(e); }
+
 		if (!(mc.screen instanceof ChatScreen chatScreen)) { throw new RuntimeException(); }
 		NBTacTestContext ctx = new NBTacTestContext(chatScreen);
 

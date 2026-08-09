@@ -40,7 +40,7 @@ public class ConfigScreen extends Screen
 	private static void onDonePress(Screen lastScreen)
 	{
 		ModConfig.save();
-		Minecraft.getInstance().setScreenAndShow(lastScreen);
+		Minecraft.getInstance().setScreen(lastScreen);
 	}
 
 	private static void onResetPress(ModOptionList list)
@@ -52,7 +52,7 @@ public class ConfigScreen extends Screen
 	@Override public void onClose()
 	{
 		ModConfig.save();
-		Minecraft.getInstance().setScreenAndShow(lastScreen);
+		Minecraft.getInstance().setScreen(lastScreen);
 	}
 
 	@Override public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
@@ -61,6 +61,6 @@ public class ConfigScreen extends Screen
 		list.render(guiGraphics, mouseX, mouseY, partialTick);
 		doneButton.render(guiGraphics, mouseX, mouseY, partialTick);
 		resetButton.render(guiGraphics, mouseX, mouseY, partialTick);
-		guiGraphics.drawCenteredString(font, title, width / 2, 20, -1);
+		guiGraphics.drawCenteredString(font, title, width / 2, 20, 16777215);
 	}
 }

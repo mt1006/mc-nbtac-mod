@@ -8,6 +8,8 @@ import net.mt1006.nbtac.NBTac;
 import net.mt1006.nbtac.config.ConfigFields;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +22,7 @@ public class NBTacTestContext
 	private final Field suggestionsField;
 	private final ChatScreen chatScreen;
 	private final CommandSuggestions commandSuggestions;
+	private final Method insertTextMethod;
 
 	public NBTacTestContext(ChatScreen chatScreen)
 	{
@@ -29,6 +32,13 @@ public class NBTacTestContext
 
 		Field commandSuggestionsField = getField(ChatScreen.class, "commandSuggestions", CommandSuggestions.class);
 		this.commandSuggestions = (CommandSuggestions)getFieldVal(commandSuggestionsField, chatScreen);
+
+		try
+		{
+			insertTextMethod = ChatScreen.class.getDeclaredMethod("insertText", String.class, boolean.class);
+			insertTextMethod.setAccessible(true);
+		}
+		catch (NoSuchMethodException e) { throw new RuntimeException(e); }
 	}
 
 	public void assertPresent(String command, String suggestion)
@@ -43,7 +53,7 @@ public class NBTacTestContext
 
 	public void assertContains(String command, String suggestion, boolean present)
 	{
-		chatScreen.insertText(command, true);
+		insertText(chatScreen, command, true);
 		Set<String> suggestionSet = getSuggestionSet();
 		if (suggestionSet.contains(suggestion) != present)
 		{
@@ -54,9 +64,9 @@ public class NBTacTestContext
 
 	public void assertOnlyContains(String command, String suggestion, boolean present)
 	{
-		chatScreen.insertText(command, true);
+		insertText(chatScreen, command, true);
 		Set<String> suggestionSet = getSuggestionSet();
-		if (suggestionSet.size() != 1 || suggestionSet.contains(suggestion) != present)
+		if (suggestionSet.size() != (present ? 1 : 0) || suggestionSet.contains(suggestion) != present)
 		{
 			NBTac.LOGGER.error("Expected: {}, Got: {}", suggestion, suggestionSet);
 			throw new RuntimeException(command + " -> " + suggestion);
@@ -65,7 +75,7 @@ public class NBTacTestContext
 
 	public void assertAllPresent(String command, List<String> suggestion)
 	{
-		chatScreen.insertText(command, true);
+		insertText(chatScreen, command, true);
 		Set<String> suggestionSet = getSuggestionSet();
 		if (suggestionSet.size() != suggestion.size() || !suggestionSet.containsAll(suggestion))
 		{
@@ -115,5 +125,14 @@ public class NBTacTestContext
 			return Objects.requireNonNull(field.get(obj));
 		}
 		catch (IllegalAccessException e) { throw new RuntimeException(e); }
+	}
+
+	private void insertText(ChatScreen chatScreen, String command, boolean replace)
+	{
+		try
+		{
+			insertTextMethod.invoke(chatScreen, command, replace);
+		}
+		catch (IllegalAccessException | InvocationTargetException e) { throw new RuntimeException(e); }
 	}
 }

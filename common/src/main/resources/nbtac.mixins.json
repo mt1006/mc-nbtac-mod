@@ -5,8 +5,6 @@
   "compatibilityLevel": "JAVA_21",
   "client":
   [
-    "fields.AtlasEntryFields",
-    "fields.AtlasManagerFields",
     "fields.ClientLanguageFields",
     "fields.ClientLevelFields",
     "fields.CommandSuggestionsFields",
@@ -16,8 +14,7 @@
     "fields.KeyMappingFields",
     "fields.MinecraftFields",
     "fields.TextColorFields",
-    "fields.TextureAtlasFields",
-    "misc.ArgumentCommandNodeMixin",
+	"misc.ArgumentCommandNodeMixin",
     "misc.RealmsMainScreenMixin",
     "suggestions.SuggestionsListMixin",
     "suggestions.arguments.ComponentArgumentMixin",
