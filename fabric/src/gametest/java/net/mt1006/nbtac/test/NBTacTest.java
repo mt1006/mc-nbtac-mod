@@ -14,7 +14,7 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public class NBTacTest implements FabricClientGameTest
 {
-	private static final int MCVER = 260200;
+	private static final int MCVER = 12111;
 
 	@Override public void runTest(ClientGameTestContext context)
 	{

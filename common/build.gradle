@@ -1,16 +1,21 @@
 plugins
 {
-	id 'net.fabricmc.fabric-loom' version "${fabric_loom_version}"
+	id 'fabric-loom' version "${fabric_loom_version}"
 }
 
 repositories
 {
+	maven { url = 'https://maven.parchmentmc.org/' }
 	maven { url = 'https://repo.spongepowered.org/repository/maven-public' }
 }
 
 dependencies
 {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
+	mappings loom.layered {
+		officialMojangMappings()
+		parchment "org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip"
+	}
 
 	compileOnly 'org.spongepowered:mixin:0.8.5:processor'
 }
