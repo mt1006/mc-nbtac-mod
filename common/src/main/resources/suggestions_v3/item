@@ -15,7 +15,7 @@ attribute_modifiers :list<compound> @AlwaysRelevant
 +id :string
 +amount :double
 +operation :DynamicEnum(AttributeModifierOperation)
-+display :compound
++display :compound @Since(1.21.6)
 	+type :DynamicEnum(ItemAttributeModifiersDisplayType)
 	+subtype :ServerRegistryKey(minecraft:banner_pattern)
 
@@ -132,8 +132,8 @@ equippable :compound @AlwaysRelevant
 +damage_on_hurt :boolean
 +camera_overlay :string
 +equip_on_interact :boolean
-+can_be_sheared :boolean
-+shearing_sound :RegistryKey(minecraft:sound_event)
++can_be_sheared :boolean @Since(1.21.6)
++shearing_sound :RegistryKey(minecraft:sound_event) @Since(1.21.6)
 
 fire_resistant :EmptyCompound @AlwaysRelevant
 
