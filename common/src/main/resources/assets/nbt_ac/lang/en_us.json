@@ -101,11 +101,17 @@
   "nbt_ac.options.field.use_new_thread": "Use New Thread",
   "nbt_ac.options.field.use_new_thread.desc": "Uses new thread to load suggestions during Minecraft loading.",
 
+  "nbt_ac.options.field.use_disassembler": "Use Disassembler",
+  "nbt_ac.options.field.use_disassembler.desc": "Loads suggestions by using disassembler on \"load\" methods of entities and block entities.",
+
   "nbt_ac.options.field.load_from_resources": "Load From Resources",
   "nbt_ac.options.field.load_from_resources.desc": "Loads suggestions from resource files (required to load item tags and tag predictions).",
 
   "nbt_ac.options.field.allow_block_entity_extraction": "Allow Block Entity Extraction",
   "nbt_ac.options.field.allow_block_entity_extraction.desc": "Allows for usage of block entity extraction method (similar to one used by disassembler) after suggestions are loaded.",
+
+  "nbt_ac.options.field.use_cache": "Use Cache",
+  "nbt_ac.options.field.use_cache.desc": "Enables suggestion caching.",
 
   "nbt_ac.options.field.max_cached_instances": "Max Cached Instances",
   "nbt_ac.options.field.max_cached_instances.-1": "[unlimited]",
@@ -132,14 +138,6 @@
   "nbt_ac.options.field.save_suggestions.1": "Enabled",
   "nbt_ac.options.field.save_suggestions.2": "Enabled and Sorted",
   "nbt_ac.options.field.save_suggestions.desc": "Saves suggestions to file - \".minecraft/nbt_ac_output.txt\".\n0 - Disabled\n1 - Enabled\n2 - Enabled and sorted (easier for comparing)\nOther values will be treated as 0.",
-
-
-
-  "nbt_ac.options.generate_suggestions.title": "Generate Suggestion List",
-  "nbt_ac.options.generate_suggestions.start_generating": "Start Generating",
-  "nbt_ac.options.generate_suggestions.generating": "Generating...",
-  "nbt_ac.options.generate_suggestions.remove_generated": "Remove Generated",
-  "nbt_ac.options.generate_suggestions.description": "NBT Autocomplete comes with suggestion list for vanilla. If you want to get suggestions for NBT of entities or block entities from other mods you need to generate own suggestion list.",
 
 
 

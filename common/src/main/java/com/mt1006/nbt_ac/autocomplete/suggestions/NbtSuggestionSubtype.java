@@ -88,7 +88,7 @@ public enum NbtSuggestionSubtype
 		{
 			return valueOf(name.toUpperCase());
 		}
-		catch (IllegalArgumentException e) { return NONE; }
+		catch (IllegalArgumentException exception) { return NONE; }
 	}
 
 	public <T> boolean getSubtypeSuggestions(NbtSuggestion suggestion, SuggestionList suggestionList,

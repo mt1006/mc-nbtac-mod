@@ -51,7 +51,7 @@ public class Utils
 		Map<String, ParsedArgument<?, ?>> arguments;
 
 		try { arguments = (Map<String, ParsedArgument<?, ?>>)Fields.commandContextArguments.get(ctx); }
-		catch (Exception e) { return null; }
+		catch (Exception exception) { return null; }
 
 		ParsedArgument<?, ?> argument = arguments.get(argumentName);
 

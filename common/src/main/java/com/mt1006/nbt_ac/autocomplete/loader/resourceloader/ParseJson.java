@@ -30,7 +30,7 @@ public class ParseJson
 			{
 				parseObject(tag.id, tag.applyTo, tag.tags, true);
 			}
-			catch (Exception e) { NBTac.LOGGER.warn("Failed to parse tag: {}", tag.id); }
+			catch (Exception exception) { NBTac.LOGGER.warn("Failed to parse tag: {}", tag.id); }
 		}
 	}
 
@@ -43,7 +43,7 @@ public class ParseJson
 				parseComponent(component.getId(), component.type, component.subtype,
 						component.with, component.alwaysRelevant, component.getTags());
 			}
-			catch (Exception e) { NBTac.LOGGER.warn("Failed to parse component: {}", component.getId()); }
+			catch (Exception exception) { NBTac.LOGGER.warn("Failed to parse component: {}", component.getId()); }
 		}
 	}
 
@@ -55,7 +55,7 @@ public class ParseJson
 			{
 				new Prediction(prediction).execute();
 			}
-			catch (Exception e) { NBTac.LOGGER.warn("Failed to parse prediction!"); }
+			catch (Exception exception) { NBTac.LOGGER.warn("Failed to parse prediction!"); }
 		}
 	}
 

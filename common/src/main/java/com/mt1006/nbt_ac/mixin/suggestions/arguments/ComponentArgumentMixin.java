@@ -34,7 +34,7 @@ public abstract class ComponentArgumentMixin implements ArgumentType<Component>
 			Pair<CustomTagParser.Suggestion, Integer> results = CustomTagParser.parseJsonComponent(suggestionList, tag, false);
 			return NbtSuggestionManager.finishSuggestions(suggestionList, suggestionsBuilder, results.getLeft(), results.getRight());
 		}
-		catch (Exception e)
+		catch (Exception exception)
 		{
 			return Suggestions.empty();
 		}

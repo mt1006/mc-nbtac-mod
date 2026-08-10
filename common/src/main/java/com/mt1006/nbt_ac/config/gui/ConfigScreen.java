@@ -13,6 +13,7 @@ public class ConfigScreen extends Screen
 {
 	private final Screen lastScreen;
 	private ModOptionList list;
+	private Button doneButton, resetButton;
 
 	public ConfigScreen(Screen lastScreen)
 	{
@@ -20,24 +21,20 @@ public class ConfigScreen extends Screen
 		this.lastScreen = lastScreen;
 	}
 
-	@Override protected void init()
+	@Override public void init()
 	{
 		list = new ModOptionList(Minecraft.getInstance(), width, height - 64, 32, 25, font);
 
-		Button doneButton = Button.builder(CommonComponents.GUI_DONE,
-				(b) -> onDonePress(lastScreen)).pos(width / 2 - 155, height - 27).size(150, 20).build();
-		Button resetButton = Button.builder(Component.translatable("nbt_ac.options.common.reset_settings"),
-				(b) -> onResetPress(list)).pos(width / 2 + 5, height - 27).size(150, 20).build();
-
-		Component generatorButtonText = Component.translatable("nbt_ac.options.generate_suggestions.title");
-		list.add(Button.builder(generatorButtonText, (b) -> onGeneratorPress(generatorButtonText)).
-				size(ModOptionList.ELEMENT_WIDTH, ModOptionList.ELEMENT_HEIGHT).build());
+		doneButton = Button.builder(CommonComponents.GUI_DONE, (b) -> onDonePress(lastScreen))
+				.pos(width / 2 - 155, height - 27).size(150, 20).build();
+		resetButton = Button.builder(Component.translatable("nbt_ac.options.common.reset_settings"), (b) -> onResetPress(list))
+				.pos(width / 2 + 5, height - 27).size(150, 20).build();
 
 		ModConfig.initWidgets(list);
 
-		addRenderableWidget(list);
-		addRenderableWidget(doneButton);
-		addRenderableWidget(resetButton);
+		addWidget(list);
+		addWidget(doneButton);
+		addWidget(resetButton);
 	}
 
 	private static void onDonePress(Screen lastScreen)
@@ -52,11 +49,6 @@ public class ConfigScreen extends Screen
 		list.updateValues();
 	}
 
-	private void onGeneratorPress(Component component)
-	{
-		Minecraft.getInstance().setScreen(new GeneratorScreen(this, component));
-	}
-
 	@Override public void onClose()
 	{
 		ModConfig.save();
@@ -66,6 +58,9 @@ public class ConfigScreen extends Screen
 	@Override public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
 	{
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		list.render(guiGraphics, mouseX, mouseY, partialTick);
+		doneButton.render(guiGraphics, mouseX, mouseY, partialTick);
+		resetButton.render(guiGraphics, mouseX, mouseY, partialTick);
 		guiGraphics.drawCenteredString(font, title, width / 2, 20, 16777215);
 	}
 }

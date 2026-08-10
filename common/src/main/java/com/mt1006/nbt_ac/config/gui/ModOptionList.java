@@ -20,8 +20,8 @@ import java.util.function.Supplier;
 
 public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.ListWidget>
 {
-	public static final int ELEMENT_WIDTH = 310;
-	public static final int ELEMENT_HEIGHT = 20;
+	protected static final int ELEMENT_WIDTH = 310;
+	protected static final int ELEMENT_HEIGHT = 20;
 	private final Font font;
 	private final List<MutableWidget> mutableWidgets = new ArrayList<>();
 
@@ -56,6 +56,11 @@ public class ModOptionList extends ContainerObjectSelectionList<ModOptionList.Li
 	@Override public int getRowWidth()
 	{
 		return 400;
+	}
+
+	@Override protected int scrollBarY()
+	{
+		return super.scrollBarY() + 32;
 	}
 
 	protected static class ListWidget extends Entry<ListWidget>

@@ -33,7 +33,7 @@ public abstract class StyleArgumentMixin implements ArgumentType<Style>
 			Pair<CustomTagParser.Suggestion, Integer> results = CustomTagParser.parseJsonStyle(suggestionList, tag);
 			return NbtSuggestionManager.finishSuggestions(suggestionList, suggestionsBuilder, results.getLeft(), results.getRight());
 		}
-		catch (Exception e)
+		catch (Exception exception)
 		{
 			return Suggestions.empty();
 		}

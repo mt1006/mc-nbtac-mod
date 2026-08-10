@@ -124,11 +124,6 @@ public class NbtSuggestionManager
 		suggestionListCounter = 0;
 	}
 
-	public static void clearSuggestionMap()
-	{
-		suggestionMap.clear();
-	}
-
 	public static class LegacyDataMapWrapper extends HashMap<Suggestion, String>
 	{
 		@Override public String put(Suggestion key, String value)

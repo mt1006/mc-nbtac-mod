@@ -101,11 +101,17 @@
   "nbt_ac.options.field.use_new_thread": "Użyj nowego wątku",
   "nbt_ac.options.field.use_new_thread.desc": "Używa nowego wątku do załadowania sugestii po załadowaniu Minecraft'a.",
 
+  "nbt_ac.options.field.use_disassembler": "Użyj disassemblera",
+  "nbt_ac.options.field.use_disassembler.desc": "Ładuje sugestie używając disassemblera na metodach \"load\" bytów i bytów bloków.",
+
   "nbt_ac.options.field.load_from_resources": "Ładuj z zasobów",
   "nbt_ac.options.field.load_from_resources.desc": "Ładuje sugestie z plików zasobów (wymagane aby załadować tagi przedmiotów i przewidywania tagów).",
 
   "nbt_ac.options.field.allow_block_entity_extraction": "Zezwalaj na ekstrakcję bytów bloków",
   "nbt_ac.options.field.allow_block_entity_extraction.desc": "Zezwala na użycie metody ekstrakcji bytów bloków (podobnej do tej używanej przez disassemblera) po załadowaniu sugestii.",
+
+  "nbt_ac.options.field.use_cache": "Użyj cache",
+  "nbt_ac.options.field.use_cache.desc": "Włącza cache sugestii.",
 
   "nbt_ac.options.field.max_cached_instances": "Limit zapisanych w cache instancji",
   "nbt_ac.options.field.max_cached_instances.-1": "[bez limitu]",
@@ -132,10 +138,6 @@
   "nbt_ac.options.field.save_suggestions.1": "Włączone",
   "nbt_ac.options.field.save_suggestions.2": "Włączone i posortowane",
   "nbt_ac.options.field.save_suggestions.desc": "Zapisuje sugestie do pliku - \".minecraft/nbt_ac_output.txt\"\n0 - Wyłączone\n1 - Włączone\n2 - Włączone i posortowane (łatwiejsze do porównywania)\nInne wartości będą traktowane jako 0.",
-
-
-
-  "nbt_ac.options.generate_suggestions.title": "Generuj listę sugestii",
 
 
 

@@ -10,7 +10,6 @@ import com.mt1006.nbt_ac.autocomplete.loader.typeloader.Disassembly;
 import com.mt1006.nbt_ac.autocomplete.loader.typeloader.TypeLoader;
 import com.mt1006.nbt_ac.autocomplete.suggestions.NbtSuggestion;
 import com.mt1006.nbt_ac.config.ModConfig;
-import com.mt1006.nbt_ac.config.gui.GeneratorScreen;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
@@ -27,7 +26,6 @@ public class Loader
 	private static final int MAX_PRINTER_DEPTH = 32;
 	private static volatile Thread thread;
 	private static final AtomicInteger printedStackTraces = new AtomicInteger();
-	private static TypeCache.Results cacheStatus = TypeCache.Results.NOT_LOADED;
 	public static volatile boolean finished = false;
 
 	public static void load()
@@ -39,33 +37,29 @@ public class Loader
 		{
 			NBTac.LOGGER.info("Debug sleep enabled! - Sleeping: {} ms", debugSleep);
 			try { Thread.sleep(debugSleep); }
-			catch (InterruptedException e) { NBTac.LOGGER.error("Unexpected debug sleep interruption!"); }
+			catch (InterruptedException exception) { NBTac.LOGGER.error("Unexpected debug sleep interruption!"); }
 		}
 
-		loadSuggestions(false);
-	}
-
-	public static void loadSuggestions(boolean useDisassembler)
-	{
-		finished = false;
 		if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Loader started!"); }
 		long start = System.currentTimeMillis();
 		thread = Thread.currentThread();
 
-		if (useDisassembler)
+		if (ModConfig.useDisassembler.val)
 		{
-			Disassembly.init();
-			TypeLoader.loadBlockEntityTypes();
-			TypeLoader.loadEntityTypes();
-			Disassembly.clear();
+			boolean cacheEnabled = TypeCache.isEnabled();
+			boolean cacheLoaded = cacheEnabled && TypeCache.load();
+			if (ModConfig.debugMode.val) { NBTac.LOGGER.info("Cache loaded: {}", cacheLoaded); }
 
-			TypeCache.add();
-			cacheStatus = TypeCache.Results.REPLACED;
-		}
-		else
-		{
-			cacheStatus = TypeCache.load();
-			if (cacheStatus == TypeCache.Results.FROM_FILE) { TypeCache.updateIndex(); }
+			if (!cacheLoaded)
+			{
+				Disassembly.init();
+				TypeLoader.loadBlockEntityTypes();
+				TypeLoader.loadEntityTypes();
+				Disassembly.clear();
+
+				if (cacheEnabled) { TypeCache.add(); }
+			}
+			if (cacheEnabled) { TypeCache.updateIndex(); }
 		}
 
 		long interruptionStart = System.currentTimeMillis();
@@ -73,7 +67,7 @@ public class Loader
 		{
 			ResourceLoader.countDownLatch.await();
 		}
-		catch (InterruptedException e) { NBTac.LOGGER.error("Unexpected \"ResourceLoader.countDownLatch.await()\" interruption!"); }
+		catch (InterruptedException exception) { NBTac.LOGGER.error("Unexpected \"ResourceLoader.countDownLatch.await()\" interruption!"); }
 		long interruptionDuration = System.currentTimeMillis() - interruptionStart;
 
 		if (ModConfig.loadFromResources.val)
@@ -92,13 +86,6 @@ public class Loader
 		}
 
 		saveSuggestions(SaveSuggestionsMode.get(ModConfig.saveSuggestions.val));
-	}
-
-	public static void generate(GeneratorScreen screen)
-	{
-		NbtSuggestionManager.clearSuggestionMap();
-		Loader.loadSuggestions(true);
-		screen.generated = true;
 	}
 
 	private static void saveSuggestions(SaveSuggestionsMode mode)
@@ -136,7 +123,7 @@ public class Loader
 				}
 
 			}
-			catch (Exception e) { NBTac.LOGGER.warn("Failed to save suggestions!"); }
+			catch (Exception exception) { NBTac.LOGGER.warn("Failed to save suggestions!"); }
 		}
 	}
 
