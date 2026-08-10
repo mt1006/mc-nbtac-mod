@@ -1,0 +1,866 @@
+_entity
++Pos :list<double>(3)
++Motion :list<double>(3)
++Rotation :list<float>(2)
++fall_distance :double
++Fire :short
++Air :int
++OnGround :boolean
++Invulnerable :boolean
++PortalCooldown :int
++UUID :UUID
++CustomName :TextComponent
++CustomNameVisible :boolean
++Silent :boolean
++NoGravity :boolean
++Glowing :boolean
++TicksFrozen :int
++HasVisualFire :boolean
++data :compound
++Tags :list<string>
++Passengers :list<TagsFromId(minecraft:entity_type, entity/$id$)>
+
+_living_entity &_entity
++AbsorptionAmount :float
++Brain :Brain($../id$)
++DeathTime :short
++FallFlying :boolean
++Health :float
++HurtByTimestamp :int @Until(26.2)
++HurtTime :short
++Team :ScoreboardTeam
++active_effects :list<#effect_with_hidden>
++attributes :list<#attribute>
++current_explosion_impact_pos :list<double>(3) @Since(26.1)
++current_impulse_context_reset_grace_time :int @Since(26.1)
++equipment :#equipment
++last_hurt_by_player :UUID
++last_hurt_by_player_memory_time :int
++last_hurt_by_mob :UUID
++locator_bar_icon :#waypoint_icon
++sleeping_pos :BlockPos
++ticks_since_last_hurt_by_mob :int
+
+_mob &_living_entity
++CanPickUpLoot :boolean
++PersistenceRequired :boolean
++drop_chances :#drop_chances
++leash :either<UUID, BlockPos>
++home_radius :int
++home_pos :BlockPos
++LeftHanded :boolean
++DeathLootTable :LootTable
++DeathLootTableSeed :LongSeed
++NoAI :boolean
+
+_ageable_mob &_mob
++Age :int
++AgeLocked :boolean @Since(26.1)
++ForcedAge :int
+
+_animal &_ageable_mob
++InLove :int
++LoveCause :UUID
+
+_fish &_mob
++FromBucket :boolean
+
+_boat &_entity
++leash :either<UUID, BlockPos>
+
+_chest_boat &_boat
++LootTable :LootTable
++LootTableSeed :LongSeed
++Items :list<#item_stack_with_slot>
+
+_minecart &_entity
++DisplayState :#block_state
++DisplayOffset :int
++FlippedRotation :boolean
++HasTicked :boolean
+
+_minecart_container &_minecart
++LootTable :LootTable
++LootTableSeed :LongSeed
++Items :list<#item_stack_with_slot>
+
+_projectile &_entity
++Owner :UUID
++LeftOwner :boolean
++HasBeenShot :boolean
+
+_arrow &_projectile
++life :short
++inBlockState :#block_state
++shake :byte
++inGround :boolean
++damage :double
++pickup :DescribedEnum<byte>(0, disallowed, 1, allowed, 2, creative_only) @OptRecommended
++crit :boolean
++PierceLevel :byte
++SoundEvent :RegistryKey(minecraft:sound_event)
++item :#item_stack
++weapon :#item_stack
+
+_hurting_projectile &_projectile
++acceleration_power :double
+
+_item_projectile &_projectile
++Item :#item_stack
+
+_fireball &_hurting_projectile
++Item :#item_stack
+
+_horse &_animal
++EatingHaystack :boolean
++Bred :boolean
++Temper :int
++Tame :boolean
++Owner :UUID
+
+_chested_horse &_horse
++ChestedHorse :boolean
++Items :list<#item_stack_with_slot>
+
+_llama &_chested_horse
++Strength :int
++Variant :DescribedEnum<int>(0, creamy, 1, white, 2, brown, 3, gray)
+
+_tamable_animal &_animal
++Owner :UUID
++Sitting :boolean
+
+_zombie &_mob
++IsBaby :boolean @OptRecommended
++CanBreakDoors :boolean
++InWaterTime :int
++DrownedConversionTime :int
+
+_piglin &_mob
++CanPickUpLoot :boolean
++IsImmuneToZombification :boolean @OptRecommended
++TimeInOverworld :int
+
+_patrolling_monster &_mob
++patrol_target :BlockPos
++PatrolLeader :boolean
++Patrolling :boolean
+
+_raider &_patrolling_monster
++Wave :int
++CanJoinRaid :boolean
++RaidId :int
+
+_slime &_mob
++Size :int @OptRecommended
++wasOnGround :boolean
+
+_villager &_ageable_mob
++Offers :#villager/offers @OptRecommended
++Inventory :list<#item_stack>
+
+_attached_entity &_entity
++block_pos :BlockPos @OptRecommended
+
+_item_frame &_attached_entity
++Item :#item_stack @OptRecommended
++ItemRotation :byte @OptRecommended
++ItemDropChance :float @OptRecommended
++Facing :DescribedEnum<byte>(0, down, 1, up, 2, north, 3, south, 4, west, 5, east) @OptRecommended
++Invisible :boolean @OptRecommended
++Fixed :boolean @OptRecommended
+
+_display &_entity
++transformation :either<list<float>(16), #transformation>
++interpolation_duration :int
++start_interpolation :int
++teleport_duration :int
++billboard :DynamicEnum(DisplayBillboardConstraints)
++view_range :float
++shadow_radius :float
++shadow_strength :float
++width :float
++height :float
++glow_color_override :int
++brightness :#brightness
+
+_brain/allay
++liked_player :UUID
++liked_noteblock :#global_pos
++liked_noteblock_cooldown_ticks :int
++item_pickup_cooldown_ticks :int
++is_panicking :boolean
+
+_brain/armadillo
++is_panicking :boolean
++temptation_cooldown_ticks :int
++gaze_cooldown_ticks :int
++is_tempted :boolean
++danger_detected_recently :boolean
+
+_brain/axolotl
++play_dead_ticks :int
++temptation_cooldown_ticks :int
++is_tempted :boolean
++has_hunting_cooldown :boolean
++is_panicking :boolean
+
+_brain/breeze
++breeze_jump_cooldown :EmptyCompound
++breeze_jump_inhaling :EmptyCompound
++breeze_shoot :EmptyCompound
++breeze_shoot_charging :EmptyCompound
++breeze_shoot_recover :EmptyCompound
++breeze_shoot_cooldown :EmptyCompound
++breeze_jump_target :BlockPos
++breeze_leaving_water :EmptyCompound
+
+_brain/camel
++is_panicking :boolean
++temptation_cooldown_ticks :int
++gaze_cooldown_ticks :int
++is_tempted :int
+
+_brain/frog
++long_jump_cooling_down :int
++temptation_cooldown_ticks :int
++is_tempted :boolean
++is_in_water :EmptyCompound
++is_pregnant :EmptyCompound
++is_panicking :boolean
+
+_brain/goat
++long_jump_cooling_down :int
++temptation_cooldown_ticks :int
++is_tempted :boolean
++ram_cooldown_ticks :int
++is_panicking :boolean
+
+_brain/hoglin
++is_panicking :boolean
+
+_brain/piglin
++item_pickup_cooldown_ticks :int
++angry_at :UUID
++universal_anger :boolean
++admiring_item :boolean
++admiring_disabled :boolean
++hunted_recently :boolean
+
+_brain/piglin_brute
++angry_at :UUID
++home :#global_pos
+
+_brain/sniffer
++is_panicking :boolean
++sniff_cooldown :EmptyCompound
++sniffer_explored_positions :list<#global_pos>
++temptation_cooldown_ticks :int
++is_tempted :boolean
+
+_brain/villager
++home :#global_pos
++job_site :#global_pos
++potential_job_site :#global_pos
++meeting_point :#global_pos
++item_pickup_cooldown_ticks :int
++last_slept :long
++last_woken :long
++last_worked_at_poi :long
++golem_detected_recently :boolean
+
+_brain/warden
++recent_projectile :EmptyCompound
++is_sniffing :EmptyCompound
++is_emerging :EmptyCompound
++roar_sound_delay :EmptyCompound
++dig_cooldown :EmptyCompound
++roar_sound_cooldown :EmptyCompound
++sniff_cooldown :EmptyCompound
++touch_cooldown :EmptyCompound
++vibration_cooldown :EmptyCompound
++sonic_boom_cooldown :EmptyCompound
++sonic_boom_sound_cooldown :EmptyCompound
++sonic_boom_sound_delay :EmptyCompound
+
+acacia_boat =_boat
+
+acacia_chest_boat =_chest_boat
+
+allay &_mob
++listener :#vibration_listener
++DuplicationCooldown :int
++Inventory :list<#item_stack> @OptRecommended
+
+area_effect_cloud &_entity
++Age :int
++Duration :int @OptRecommended
++WaitTime :int
++ReapplicationDelay :int
++DurationOnUse :int
++RadiusOnUse :float
++RadiusPerTick :float
++Radius :float @OptRecommended
++custom_particle :ParticleType(particle/$type$) @OptRecommended
++potion_contents :#potion_contents @OptRecommended
++potion_duration_scale :float
+
+armadillo &_animal
++state :DynamicEnum(ArmadilloState) @OptRecommended
++scute_time :int
+
+armor_stand &_living_entity
++Invisible :boolean @OptRecommended
++Small :boolean
++ShowArms :boolean @OptRecommended
++DisabledSlots :ArmorStandSlots
++NoBasePlate :boolean
++Marker :boolean
++Pose :#armor_stand_pose
+
+arror =_arrow
+
+axolotl &_animal
++Variant :DescribedEnum<int>(0, lucy, 1, wild, 2, gold, 3, cyan, 4, blue) @OptRecommended
++FromBucket :boolean
+
+bamboo_chest_raft =_chest_boat
+
+bamboo_raft =_boat
+
+bat &_mob
++BatFlags :DescribedEnum<byte>(0, "not resting", 1, "resting")
+
+bee &_animal
++HasNectar :boolean @OptRecommended
++HasStung :boolean @OptRecommended
++TicksSincePollination :int
++CannotEnterHiveTicks :int
++CropsGrownSincePollination :int
++hive_pos :BlockPos @OptRecommended
++flower_pos :BlockPos
+
+birch_boat =_boat
+
+birch_chest_boat =_chest_boat
+
+blaze =_mob
+
+block_display &_display
++block_state :#block_state
+
+bogged &_mob
++sheared :boolean
+
+breeze =_mob
+
+breeze_wind_charge =_hurting_projectile
+
+camel &_horse
++LastPoseTick :long
+
+cat &_tamable_animal
++CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
++sound_variant :ServerRegistryKey(minecraft:cat_sound_variant) @OptRecommended(2) @Since(26.1)
++variant :ServerRegistryKey(minecraft:cat_variant) @OptRecommended(3)
+
+cave_spider =_mob
+
+cherry_boat =_boat
+
+cherry_chest_boat =_chest_boat
+
+chest_minecart =_minecart_container
+
+chicken &_animal
++IsChickenJockey :boolean
++EggLayTime :int
++sound_variant :ServerRegistryKey(minecraft:chicken_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :ServerRegistryKey(minecraft:chicken_variant) @OptRecommended(2)
+
+cod =_fish
+
+command_block_minecart &_minecart
++Command :string @OptRecommended
++SuccessCount :int
++CustomName :TextComponent
++TrackOutput :boolean
++LastOutput :TextComponent @RelevantIfEq(TrackOutput, true)
++UpdateLastExecution :boolean
++LastExecution :long @RelevantIfEq(UpdateLastExecution, true)
+
+# since 1.21.9
+copper_golem &_mob
++next_weather_age :long
++weather_state :DynamicEnum(WeatheringCopperWeatherState) @OptRecommended
+
+cow &_animal
++sound_variant :ServerRegistryKey(minecraft:cow_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :ServerRegistryKey(minecraft:cow_variant) @OptRecommended(2)
+
+creaking =_mob
+
+creeper &_mob
++powered :boolean @OptRecommended
++Fuse :short @OptRecommended
++ExplosionRadius :byte @OptRecommended
++ignited :boolean @OptRecommended
+
+dark_oak_boat =_boat
+
+dark_oak_chest_boat =_chest_boat
+
+dolphin &_ageable_mob
++GotFish :boolean
++Moistness :int
+
+donkey =_chested_horse
+
+dragon_fireball =_hurting_projectile
+
+drowned =_zombie
+
+egg =_item_projectile
+
+elder_guardian =_mob
+
+end_crystal &_entity
++beam_target :BlockPos
++ShowBottom :boolean
+
+ender_dragon &_entity
++DragonPhase :DescribedEnum<int>(0, holding_pattern, 1, strafe_player, 2, landing_approach, 3, landing, 4, takeoff, 5, sitting_flaming, 6, sitting_scanning, 7, sitting_attacking, 8, charging_player, 9, dying, 10, hovering)
++DragonDeathTime :int
++sitting_damage_received :float @Since(26.2)
+
+ender_pearl =_item_projectile
+
+enderman &_mob
++carriedBlockState :#block_state @OptRecommended
++AngerTime :int
++AngryAt :UUID
+
+endermite &_mob
++Lifetime :int
+
+evoker &_raider
++SpellTicks :int
+
+evoker_fangs &_entity
++Warmup :int
++Owner :UUID
+
+experience_bottle =_item_projectile
+
+experience_orb &_entity
++Health :short
++Age :short
++Value :short
++Count :int
+
+eye_of_ender &_entity
++Item :#item_stack
+
+falling_block &_entity
++BlockState :#block_state @OptRecommended
++Time :int
++HurtEntities :boolean
++FallHurtAmount :float
++FallHurtMax :int
++DropItem :boolean
++TileEntityData :Tags($../BlockState/Name$)
++CancelDrop :boolean
+
+fireball &_fireball
++ExplosionPower :byte @OptRecommended
+
+firework_rocket &_projectile
++Life :int
++LifeTime :int
++FireworksItem :#item_stack @OptRecommended
++ShotAtAngle :boolean
+
+fishing_bobber =_projectile
+
+fox &_animal
++Trusted :list<UUID>
++Sleeping :boolean
++Type :DynamicEnum(FoxVariant) @OptRecommended
++Sitting :boolean @OptRecommended
++Crouching :boolean
+
+frog &_animal
++variant :ServerRegistryKey(minecraft:frog_variant) @OptRecommended
+
+furnace_minecart &_minecart
++PushX :double
++PushZ :double
++Fuel :short @OptRecommended
+
+ghast &_mob
++ExplosionPower :byte @OptRecommended
+
+giant =_mob
+
+glow_item_frame =_item_frame
+
+glow_squid &_ageable_mob
++DarkTicksRemaining :int
+
+goat &_animal
++IsScreamingGoat :boolean @OptRecommended
++HasLeftHorn :boolean @OptRecommended
++HasRightHorn :boolean @OptRecommended
+
+guardian =_mob
+
+happy_ghast &_animal
++still_timeout :int
+
+hoglin &_animal
++IsImmuneToZombification :boolean @OptRecommended
++TimeInOverworld :int
++CannotBeHunted :boolean
+
+hopper_minecart &_minecart_container
++Enabled :boolean
+
+horse &_horse
++Variant :HorseExtendedVariant @OptRecommended
+
+husk =_zombie
+
+illusioner &_raider
++SpellTicks :int
+
+interaction &_entity
++width :float @OptRecommended
++height :float @OptRecommended
++attack :#interaction_info @OptRecommended
++interaction :#interaction_info @OptRecommended
++response :boolean
+
+iron_golem &_mob
++PlayerCreated :boolean
++AngerTime :int
++AngryAt :UUID
+
+item &_entity
++Health :short
++Age :short
++PickupDelay :short
++Owner :UUID
++Thrower :UUID
++Item :#item_stack @OptRecommended
+
+item_display &_display
++item :#item_stack @OptRecommended
++item_display :DynamicEnum(ItemDisplayContext) @OptRecommended
+
+item_frame =_item_frame
+
+jungle_boat =_boat
+
+jungle_chest_boat =_chest_boat
+
+leash_knot =_attached_entity
+
+lightning_bolt =_entity
+
+lingering_potion =_item_projectile
+
+llama =_llama
+
+llama_spit =_projectile
+
+magma_cube =_slime
+
+mangrove_boat =_boat
+
+mangrove_chest_boat =_chest_boat
+
+# since 1.21.9
+mannequin &_living_entity
++description :TextComponent
++hidden_layers :list<DynamicEnum(PlayerModelPart)>
++hide_description :boolean
++immovable :boolean
++main_hand :DynamicEnum(HumanoidArm)
++pose :DynamicEnum(Pose)
++profile :#profile
+
+marker =_entity
+
+minecart =_minecart
+
+mooshroom &_animal
++Type :DynamicEnum(MushroomCowVariant) @OptRecommended(2)
++stew_effects :list<#suspicious_stew_effect> @OptRecommended(1)
+
+mule =_chested_horse
+
+oak_boat =_boat
+
+oak_chest_boat =_chest_boat
+
+ocelot &_animal
++Trusting :boolean
+
+ominous_item_spawner &_entity
++item :#item_stack @OptRecommended
++spawn_item_after_ticks :long
+
+painting &_attached_entity
++facing :DescribedEnum<byte>(0, south, 1, west, 2, north, 3, east) @OptRecommended(1)
++variant :ServerRegistryKey(minecraft:painting_variant) @OptRecommended(2)
+
+pale_oak_boat =_boat
+
+pale_oak_chest_boat =_chest_boat
+
+panda &_animal
++MainGene :DynamicEnum(PandaGene)
++HiddenGene :DynamicEnum(PandaGene)
+
+parrot &_tamable_animal
++Variant :DescribedEnum(0, red_blue, 1, blue, 2, green, 3, yellow_blue, 4, gray) @OptRecommended
+
+phantom &_mob
++anchor_pos :BlockPos
++size :int
+
+pig &_animal
++sound_variant :ServerRegistryKey(minecraft:pig_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :ServerRegistryKey(minecraft:pig_variant) @OptRecommended(2)
+
+piglin &_piglin
++IsBaby :boolean
++CannotHunt :boolean
+
+piglin_brute =_piglin
+
+pillager &_raider
++Inventory :list<#item_stack>
+
+player &_living_entity
++Inventory :list<#item_stack_with_player_slot> @OptRecommended
++SelectedItemSlot :int
++SleepTimer :short
++XpP :float
++XpLevel :int
++XpTotal :int
++XpSeed :int
++Score :int
++foodLevel :int
++foodTickTimer :int
++foodSaturationLevel :float
++foodExhaustionLevel :float
++abilities :compound
+	+invulnerable :boolean
+	+flying :boolean
+	+mayfly :boolean
+	+instabuild :boolean
+	+mayBuild :boolean
+	+flySpeed :float
+	+walkSpeed :float
++EnderItems :list<#item_stack_with_slot>
++ShoulderEntityLeft :TagsFromId(minecraft:entity_type, entity/$id$)
++ShoulderEntityRight :TagsFromId(minecraft:entity_type, entity/$id$)
++LastDeathLocation :#global_pos
++current_explosion_impact_pos :list<double>(3)
++ignore_fall_damage_from_current_explosion :boolean
++current_impulse_context_reset_grace_time :int
+
+polar_bear &_animal
++AngerTime :int
++AngryAt :UUID
+
+pufferfish &_fish
++PuffState :int
+
+rabbit &_animal
++RabbitType :DescribedEnum(0, brown, 1, white, 2, black, 3, white_splotched, 4, gold, 5, salt, 99, evil) @OptRecommended
++MoreCarrotTicks :int
+
+ravager &_raider
++AttackTick :int
++StunTick :int
++RoarTick :int
+
+salmon &_fish
++type :DynamicEnum(SalmonVariant) @OptRecommended
+
+sheep &_animal
++Sheared :boolean @OptRecommended
++Color :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended
+
+shulker &_mob
++AttachFace :DescribedEnum<byte>(0, down, 1, up, 2, north, 3, south, 4, west, 5, east) @OptRecommended
++Peek :byte
++Color :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black, 16, default) @OptRecommended
+
+shulker_bullet &_projectile
++Steps :int
++TXD :double
++TYD :double
++TZD :double
++Dir :DescribedEnum<byte>(0, down, 1, up, 2, north, 3, south, 4, west, 5, east)
++Target :UUID
+
+silverfish =_mob
+
+skeleton &_mob
++StrayConversionTime :int
+
+skeleton_horse &_horse
++SkeletonTrap :boolean @OptRecommended
++SkeletonTrapTime :int
+
+slime =_slime
+
+small_fireball =_fireball
+
+sniffer =_animal
+
+snow_golem &_mob
++Pumpkin :boolean @OptRecommended
+
+snowball =_item_projectile
+
+spawner_minecart &_minecart
++Delay :short
++SpawnData :#spawn_data
++SpawnPotentials :list<#spawn_potential> @OptRecommended
++MinSpawnDelay :int
++MaxSpawnDelay :int
++SpawnCount :int
++MaxNearbyEntities :int
++RequiredPlayerRange :int
++SpawnRange :int
+
+spectral_arrow &_arrow
++Duration :int @OptRecommended
+
+spider =_mob
+
+splash_potion =_item_projectile
+
+spruce_boat =_boat
+
+spruce_chest_boat =_chest_boat
+
+squid =_ageable_mob
+
+stray =_mob
+
+strider =_animal
+
+# since 26.2
+sulfur_cube &_slime
++from_bucket :boolean
++fuse :int
++pickup_timer :int
+
+tadpole &_fish
++Age :int
++AgeLocked :boolean @Since(26.1)
+
+text_display &_display
++line_width :int
++text_opacity :byte
++background :int
++shadow :boolean
++see_through :boolean
++default_background :boolean
++alignment :DynamicEnum(DisplayTextDisplayAlign)
++text :TextComponent @OptRecommended
+
+tnt &_entity
++fuse :short @OptRecommended
++block_state :#block_state @OptRecommended
++explosion_power :float @OptRecommended
++owner :UUID
+
+tnt_minecart &_minecart
++fuse :int @OptRecommended
++explosion_power :float @OptRecommended
++explosion_speed_factor :float @OptRecommended
+
+trader_llama &_llama
++DespawnDelay :int
+
+trident &_arrow
++DealtDamage :boolean
+
+tropical_fish &_fish
++Variant :TropicalFishExtendedVariant @OptRecommended
+
+turtle &_animal
++home_pos :BlockPos
++has_egg :boolean
+
+vex &_mob
++bound_pos :BlockPos
++life_ticks :int
++owner :UUID
+
+villager &_villager
++VillagerData :#villager/data @OptRecommended
++FoodLevel :byte
++Gossips :list<#villager/gossip>
++LastRestock :long
++LastGossipDecay :long
++RestocksToday :int
++AssignProfessionWhenSpawned :boolean
++VillagerDataFinalized :boolean @Since(26.1)
++Xp :int
+
+vindicator &_raider
++Johnny :boolean
+
+wandering_trader &_villager
++DespawnDelay :int
++wander_target :BlockPos
+
+warden &_mob
++anger :#warden_anger
++listener :#vibration_listener
+
+wind_charge =_hurting_projectile
+
+witch =_raider
+
+wither &_mob
++Invul :int
+
+wither_skeleton =_mob
+
+wither_skull &_hurting_projectile
++dangerous :boolean
+
+wolf &_tamable_animal
++CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
++AngerTime :int
++AngryAt :UUID
++sound_variant :ServerRegistryKey(minecraft:wolf_sound_variant) @OptRecommended(2)
++variant :ServerRegistryKey(minecraft:wolf_variant) @OptRecommended(3)
+
+zoglin &_mob
++IsBaby :boolean
+
+zombie =_zombie
+
+zombie_horse =_horse
+
+zombie_villager &_zombie
++VillagerData :#villager/data
++Offers :#villager/offers
++Gossip :list<#villager/gossip>
++ConversionTime :int
++ConversionPlayer :UUID
++VillagerDataFinalized :boolean @Since(26.1)
++Xp :int
+
+zombified_piglin &_zombie
++AngerTime :int
++AngryAt :UUID

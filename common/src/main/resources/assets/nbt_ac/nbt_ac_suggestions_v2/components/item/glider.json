@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:glider",
-	"type": "compound",
-	"subtype": "empty_compound",
-	"always_relevant": true
-}

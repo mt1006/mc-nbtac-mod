@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:jukebox_playable",
-	"type": "string",
-	"subtype": "jukebox_song",
-	"always_relevant": true
-}

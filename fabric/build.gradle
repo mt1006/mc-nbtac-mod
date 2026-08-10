@@ -23,6 +23,18 @@ dependencies
 	modApi("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
 }
 
+fabricApi
+{
+	configureTests
+	{
+		createSourceSet = true
+		modId = "${project.name}-test"
+		enableGameTests = false
+		enableClientGameTests = true
+		eula = true
+	}
+}
+
 loom
 {
 	mixin.useLegacyMixinAp = false
