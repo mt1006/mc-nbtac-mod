@@ -19,10 +19,11 @@
 	"environment": "client",
 	"entrypoints":
 	{
-		"main": ["com.mt1006.nbt_ac.NBTacFabric"],
-		"modmenu": ["com.mt1006.nbt_ac.fabric.ModMenuApiImpl"]
+		"main": ["net.mt1006.nbtac.NBTacFabric"],
+		"modmenu": ["net.mt1006.nbtac.fabric.ModMenuApiImpl"],
+		"fabric-client-gametest": ["net.mt1006.nbtac.test.NBTacTest"]
 	},
-	"mixins": ["nbt_ac.mixins.json", "nbt_ac.fabric.mixins.json"],
+	"mixins": ["nbtac.mixins.json", "nbtac.fabric.mixins.json"],
 
 	"depends":
 	{

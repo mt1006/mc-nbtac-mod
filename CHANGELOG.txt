@@ -1,3 +1,32 @@
+-Tag parser has been rewritten.
+-Removed disassembler and cache - all tags are now predefined rather than being generated on launch.
+-General improvements to suggestions.
+-Changed suggestion file format - they're now loaded by mod itself and no longer treated as part of resource pack.
+-Changed "json_string_suggestion" and "placing_of_irrelevant" setting type from integer to enum.
+-Renamed "default_quotation_mark_type" to "default_quotation_mark" and changed its type from integer to enum.
+-Removed settings: "use_disassembler", "load_from_resources", "use_cache", "max_cached_instances" and "max_stack_traces" - they were related to removed disassembler and cache.
+-Removed "hide_forge_tags" setting as Forge/NeoForge tags are no longer present.
+-"Finished in" message now shows only when "debug_mode" is enabled.
+-Fixed item component id suggestion including equal sign when removing component with "hide_mc_namespace_in_components" disabled or with modded components.
+
+===Version 1.3.15===
+-Added Chinese [simplified] translation (thanks to HelloWorld-1024cpu).
+
+===Version 1.3.14===
+-Fixed suggestions for villager not being loaded on version 1.21.5 and later (thanks to RuiGeZai-Official for reporting).
+-Fixed missing "equipment" and "drop_chances" entity tags on version 1.21.5 and later (thanks to Lord-Voidy for reporting).
+-Fixed invalid suggestion for "jukebox_playable" item component on version 1.21.5 and later (thanks to SoulxluoS for reporting).
+-Fixed invalid suggestion for "attributes" tag on version 1.21.6 and later (thanks to Natsumatsu28 for reporting).
+-Fixed missing suggestions for object text components on version 1.21.9 and later (thanks to wifi-left for reporting).
+-Fixed various missing tag types on version 1.21.5 and later.
+
+===Version 1.3.13===
+-Fixed scrollbar position on configuration screen.
+
+===Version 1.3.12===
+-Fixed hover_event and click_event field suggestions being outdated on version 1.21.5 (thanks to Nethernite for reporting).
+-Fixed item component potion_contents suggesting list of text components instead of string for custom_name field.
+
 ===Version 1.3.11===
 -Fixed item components being outdated on version 1.21.4.
 
