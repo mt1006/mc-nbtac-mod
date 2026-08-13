@@ -3,15 +3,15 @@ pluginManagement
 	repositories
 	{
 		gradlePluginPortal()
-		maven { url = "https://maven.fabricmc.net" }
-		maven { url = "https://maven.minecraftforge.net" }
-		maven { url = "https://maven.neoforged.net/releases/" }
+		maven { url = 'https://maven.fabricmc.net' }
+		maven { url = 'https://maven.minecraftforge.net' }
+		maven { url = 'https://maven.neoforged.net/releases/' }
 	}
 }
 
 plugins
 {
-	id "org.gradle.toolchains.foojay-resolver-convention" version "0.8.0"
+	id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
-include "common", "fabric", "forge", "neoforge"
+include 'common', 'fabric', 'forge', 'neoforge'

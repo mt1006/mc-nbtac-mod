@@ -1,0 +1,393 @@
+#TODO: fix, it should be relevant when applied to item in villager "gives"
+additional_trade_cost :int @Since(26.1)
+
+attack_range :compound @AlwaysRelevant @Since(1.21.11)
++min_reach :float
++max_reach :float
++min_creative_reach :float
++max_creative_reach :float
++hitbox_margin :float
++mob_factor :float
+
+attribute_modifiers :list<compound> @AlwaysRelevant @Since(1.21.5)
++type :RegistryKey(minecraft:attribute)
++slot :DynamicEnum(EquipmentSlotGroup)
++id :string
++amount :double
++operation :DynamicEnum(AttributeModifierOperation)
++display :compound @Since(1.21.6)
+	+type :DynamicEnum(ItemAttributeModifiersDisplayType)
+	+value :TextComponent @RelevantIfEq(type, override)
+#TODO: test display.value
+
+attribute_modifiers :compound @AlwaysRelevant @Until(1.21.5)
++modifiers :list<compound>
+	+type :RegistryKey(minecraft:attribute)
+	+slot :DynamicEnum(EquipmentSlotGroup)
+	+id :string
+	+amount :double
+	+operation :DynamicEnum(AttributeModifierOperation)
++show_in_tooltip :boolean
+
+banner_patterns :list<compound>
++color :DynamicEnum(DyeColor)
++pattern :ServerRegistryKey(minecraft:banner_pattern)
+
+base_color :DynamicEnum(DyeColor)
+
+bees :list<compound>
++entity_data :TagsWithId(entity/minecraft:bee)
++min_ticks_in_hive :int
++ticks_in_hive :int
+
+block_entity_data :TagsWithId(block/$../../id$)
+
+block_state :BlockStateTags($../../id$)
+
+#TODO: improve bypassed_by (and test on 1.21.11)
+blocks_attacks :compound @AlwaysRelevant @Since(1.21.5)
++block_delay_seconds :int
++disable_cooldown_scale :int
++bypassed_by :string
++block_sound :RegistryKey(minecraft:sound_event)
++disabled_sound :RegistryKey(minecraft:sound_event)
++damage_reductions :list<compound>
+	+type :string
+	+base :float
+	+factor :float
+	+horizontal_blocking_angle :float
++item_damage :compound
+	+threshold :float
+	+base :float
+	+factor :float
+
+break_sound :RegistryKey(minecraft:sound_event) @Since(1.21.5)
+
+bucket_entity_data :compound
++NoAI :boolean
++Silent :boolean
++NoGravity :boolean
++Glowing :boolean
++Invulnerable :boolean
++Health :float
++Age :int
++Variant :int
++HuntingCooldown :long
++BucketVariantTag :int
+
+bundle_contents :list<#item_stack>
+
+can_break :list<#block_predicate> @AlwaysRelevant @Since(1.21.5)
+can_break :compound @AlwaysRelevant @Until(1.21.5)
++predicates :list<#block_predicate>
++show_in_tooltip :boolean
+
+can_place_on :list<#block_predicate> @Since(1.21.5)
+can_place_on :compound @Until(1.21.5)
++predicates :list<#block_predicate>
++show_in_tooltip :boolean
+
+charged_projectiles :list<#item_stack>
+
+consumable :compound @AlwaysRelevant @Since(1.21.2)
++consume_seconds :float
++animation :DynamicEnum(ItemUseAnimation)
++sound :RegistryKey(minecraft:sound_event)
++has_consume_particles :boolean
++on_consume_effects :list<#item_effect>
+
+container :list<compound>
++item :#item_stack
++slot :int
+
+container_loot :compound
++loot_table :LootTable
++seed :LongSeed
+
+custom_data :compound
+
+custom_model_data :int @Until(1.21.4)
+custom_model_data :compound @Since(1.21.4)
++floats :list<float>
++flags :list<boolean>
++strings :list<string>
++colors :list<int>
+
+custom_name :TextComponent @AlwaysRelevant
+
+damage :int
+
+#TODO: fix types on 1.21.11?
+damage_resistant :compound @AlwaysRelevant @Since(1.21.2)
++types :ServerRegistryKey(minecraft:damage_type)
+
+damage_type :ServerRegistryKey(minecraft:damage_type) @AlwaysRelevant @Since(1.21.11)
+
+death_protection :compound @AlwaysRelevant @Since(1.21.2)
++death_effects :list<#item_effect>
+
+debug_stick_state :compound
+
+dye :DynamicEnum(DyeColor) @AlwaysRelevant @Since(26.1)
+
+dyed_color :int @Since(1.21.5)
+dyed_color :compound @Until(1.21.5)
++rgb :int
++show_in_tooltip :boolean
+
+enchantable :compound @AlwaysRelevant @Since(1.21.2)
++value :int
+
+enchantment_glint_override :boolean @AlwaysRelevant
+
+enchantments :Enchantments @AlwaysRelevant @Since(1.21.5)
+enchantments :compound @AlwaysRelevant @Until(1.21.5)
++levels :Enchantments
++show_in_tooltip :boolean
+
+entity_data :TagsFromId(minecraft:entity_type, entity/$id$)
+
+#TODO: camera_overlay suggestions?
+equippable :compound @AlwaysRelevant @Since(1.21.2)
++slot :DynamicEnum(EquipmentSlot) @Recommended
++equip_sound :RegistryKey(minecraft:sound_event)
++model :string @Until(1.21.4)
++asset_id :string @Since(1.21.4)
++allowed_entities :list<RegistryKey(minecraft:entity_type)>
++dispensable :boolean
++swappable :boolean
++damage_on_hurt :boolean
++camera_overlay :string
++equip_on_interact :boolean @Since(1.21.5)
++can_be_sheared :boolean @Since(1.21.6)
++shearing_sound :RegistryKey(minecraft:sound_event) @Since(1.21.6)
+
+fire_resistant :EmptyCompound @AlwaysRelevant @Until(1.21.2)
+
+firework_explosion :#firework_explosion
+
+fireworks :compound
++explosions :list<#firework_explosion>
++flight_duration :int
+
+food :compound @AlwaysRelevant
++nutrition :int @Recommended
++saturation :float @Recommended
++can_always_eat :boolean
++eat_seconds :float @Until(1.21.2)
++using_converts_to :#item_stack @Until(1.21.2)
++effects :list<compound> @Until(1.21.2)
+	+effect :#effect
+	+probability :float
+#TODO: test effects
+
+glider :EmptyCompound @AlwaysRelevant @Since(1.21.2)
+
+hide_additional_tooltip :EmptyCompound @Until(1.21.5)
+
+hide_tooltip :EmptyCompound @AlwaysRelevant @Until(1.21.5)
+
+instrument :RegistryKey(minecraft:instrument)
+
+intangible_projectile :EmptyCompound
+
+item_model :RegistryKey(minecraft:item) @Since(1.21.2)
+
+item_name :TextComponent @AlwaysRelevant
+
+jukebox_playable :compound @AlwaysRelevant
++song :ServerRegistryKey(minecraft:jukebox_song)
++show_in_tooltip :boolean @Until(1.21.5)
+
+kinetic_weapon :compound @Since(1.21.11)
++contact_cooldown_ticks :int
++delay_ticks :int
++dismount_conditions :#kinetic_weapon_conditions
++knockback_conditions :#kinetic_weapon_conditions
++damage_conditions :#kinetic_weapon_conditions
++forward_movement :float
++damage_multiplier :float
++sound :RegistryKey(minecraft:sound_event)
++hit_sound :RegistryKey(minecraft:sound_event)
+
+lock :compound
++items :list<RegistryKey(minecraft:item)>
++count :compound
+	+min :int
+	+max :int
++components :compound
++predicates :compound
+
+lodestone_tracker :compound
++target :compound
+	+pos :int_array
+	+dimension :ServerRegistryKey(minecraft:dimension)
++tracked :boolean
+
+lore :list<TextComponent>
+
+map_color :int @AlwaysRelevant
+
+map_decorations :MapDecorations
+
+map_id :int
+
+max_damage :int
+
+max_stack_size :int
+
+minimum_attack_charge :float @AlwaysRelevant @Since(1.21.11)
+
+note_block_sound :RegistryKey(minecraft:sound_event)
+
+ominous_bottle_amplifier :int
+
+piercing_weapon :compound @Since(1.21.11)
++deals_knockback :boolean
++dismounts :boolean
++sound :RegistryKey(minecraft:sound_event)
++hit_sound :RegistryKey(minecraft:sound_event)
+
+pot_decorations :list<PotDecoration>
+
+potion_contents :#potion_contents
+
+#TODO: relevant if potion_contents or custom_effects present
+potion_duration_scale :float @Since(1.21.5)
+
+#TODO: test/improve
+profile :#profile
+
+#TODO: fix
+provides_banner_patterns :ServerRegistryKey(minecraft:banner_pattern) @AlwaysRelevant @Since(1.21.5)
+
+provides_trim_material :ServerRegistryKey(minecraft:trim_material) @AlwaysRelevant @Since(1.21.5)
+
+rarity :DynamicOrderedEnum(Rarity) @AlwaysRelevant
+
+recipes :list<Recipe>
+
+repair_cost :int
+
+repairable :compound @AlwaysRelevant @Since(1.21.2)
++items :list<RegistryKey(minecraft:item)>
+
+stored_enchantments :Enchantments @Since(1.21.5)
+stored_enchantments :compound @Until(1.21.5)
++levels :Enchantments
++show_in_tooltip :boolean
+
+sulfur_cube_content :#item_stack @RelevantComponentForItem(minecraft:sulfur_cube_spawn_egg, minecraft:sulfur_cube_bucket) @Since(26.2)
+
+suspicious_stew_effects :list<#suspicious_stew_effect>
+
+swing_animation :compound @AlwaysRelevant @Since(1.21.11)
++type :DynamicEnum(SwingAnimationType)
++duration :int
+
+tool :compound @AlwaysRelevant
++default_mining_speed :float
++damage_per_block :int
++rules :list<compound>
+	+blocks :list<RegistryKey(minecraft:block)>
+	+speed :float
+	+correct_for_drops :boolean
++can_destroy_blocks_in_creative :boolean @Since(1.21.5)
+
+tooltip_display :compound @AlwaysRelevant @Since(1.21.5)
++hide_tooltip :boolean
++hidden_components :list<string>
+
+tooltip_style :string @AlwaysRelevant @Since(1.21.2)
+
+trim :compound
++pattern :ServerRegistryKey(minecraft:trim_pattern)
++material :ServerRegistryKey(minecraft:trim_material)
++show_in_tooltip :boolean @Until(1.21.5)
+
+unbreakable :EmptyCompound @Since(1.21.5)
+unbreakable :compound @Until(1.21.5)
++show_in_tooltip :boolean
+
+use_cooldown :compound @AlwaysRelevant @Since(1.21.2)
++seconds :float @Recommended
++cooldown_group :string
+
+use_effects :compound @AlwaysRelevant @Since(1.21.11)
++can_sprint :boolean
++interact_vibrations :boolean
++speed_multiplier :boolean
+
+use_remainder :#item_stack @AlwaysRelevant @Since(1.21.2)
+
+weapon :compound @AlwaysRelevant @Since(1.21.5)
++item_damage_per_attack :int
++disable_blocking_for_seconds :int
+
+writable_book_content :compound
++pages :list<string>
+
+written_book_content :compound
++pages :list<TextComponent>
++title :string
++author :string
++generation :DescribedEnum<int>(0, original, 1, "copy of original", 2, "copy of copy", 3, tattered)
++resolved :boolean
+
+axolotl/variant :DynamicEnum(AxolotlVariant) @RelevantComponentForItem(minecraft:axolotl_spawn_egg, minecraft:axolotl_bucket)
+
+cat/collar :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:cat_spawn_egg)
+
+cat/sound_variant :ServerRegistryKey(minecraft:cat_sound_variant) @RelevantComponentForItem(minecraft:cat_spawn_egg) @Since(26.1)
+
+cat/variant :ServerRegistryKey(minecraft:cat_variant) @RelevantComponentForItem(minecraft:cat_spawn_egg)
+
+chicken/sound_variant :ServerRegistryKey(minecraft:chicken_sound_variant) @RelevantComponentForItem(minecraft:chicken_spawn_egg) @Since(26.1)
+
+chicken/variant :ServerRegistryKey(minecraft:chicken_variant) @RelevantComponentForItem(minecraft:chicken_spawn_egg)
+
+cow/sound_variant :ServerRegistryKey(minecraft:cow_sound_variant) @RelevantComponentForItem(minecraft:cow_spawn_egg) @Since(26.1)
+
+cow/variant :ServerRegistryKey(minecraft:cow_variant) @RelevantComponentForItem(minecraft:cow_spawn_egg)
+
+fox/variant :DynamicEnum(FoxVariant) @RelevantComponentForItem(minecraft:fox_spawn_egg)
+
+frog/variant :ServerRegistryKey(minecraft:frog_variant) @RelevantComponentForItem(minecraft:frog_spawn_egg)
+
+horse/variant :DynamicEnum(EquineVariant) @RelevantComponentForItem(minecraft:horse_spawn_egg)
+
+llama/variant :DynamicEnum(LlamaVariant) @RelevantComponentForItem(minecraft:llama_spawn_egg, minecraft:trader_llama_spawn_egg)
+
+mooshroom/variant :DynamicEnum(MushroomCowVariant) @RelevantComponentForItem(minecraft:mooshroom_spawn_egg)
+
+painting/variant :ServerRegistryKey(minecraft:painting_variant) @RelevantComponentForItem(minecraft:painting)
+
+parrot/variant :DynamicEnum(ParrotVariant) @RelevantComponentForItem(minecraft:parrot_spawn_egg)
+
+pig/sound_variant :ServerRegistryKey(minecraft:pig_sound_variant) @RelevantComponentForItem(minecraft:pig_spawn_egg)
+
+pig/variant :ServerRegistryKey(minecraft:pig_variant) @RelevantComponentForItem(minecraft:pig_spawn_egg) @Since(26.1)
+
+rabbit/variant :DynamicEnum(RabbitVariant) @RelevantComponentForItem(minecraft:rabbit_spawn_egg)
+
+salmon/size :DynamicEnum(SalmonVariant) @RelevantComponentForItem(minecraft:salmon_spawn_egg, minecraft:salmon_bucket)
+
+sheep/color :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:sheep_spawn_egg)
+
+shulker/color :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:shulker_spawn_egg)
+
+tropical_fish/base_color :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:tropical_fish_spawn_egg, minecraft:tropical_fish_bucket)
+
+tropical_fish/pattern :DynamicEnum(TropicalFishPattern) @RelevantComponentForItem(minecraft:tropical_fish_spawn_egg, minecraft:tropical_fish_bucket)
+
+tropical_fish/pattern_color :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:tropical_fish_spawn_egg, minecraft:tropical_fish_bucket)
+
+villager/variant :RegistryKey(minecraft:villager_type) @RelevantComponentForItem(minecraft:villager_spawn_egg)
+
+wolf/collar :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:wolf_spawn_egg)
+
+wolf/sound_variant :ServerRegistryKey(minecraft:wolf_sound_variant) @RelevantComponentForItem(minecraft:wolf_spawn_egg)
+
+wolf/variant :ServerRegistryKey(minecraft:wolf_variant) @RelevantComponentForItem(minecraft:wolf_spawn_egg)
+
+zombie_nautilus/variant :ServerRegistryKey(minecraft:zombie_nautilus_variant) @RelevantComponentForItem(minecraft:zombie_nautilus_spawn_egg) @Since(1.21.11)

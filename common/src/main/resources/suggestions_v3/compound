@@ -1,0 +1,261 @@
+map_decoration
++type :MapDecorationType
++x :double
++z :double
++rotation :float
+
+effect
++id :RegistryKey(minecraft:mob_effect) @Recommended(3)
++amplifier :byte @Recommended(2)
++duration :int @Recommended(1)
++ambient :boolean
++show_particles :boolean
++show_icon :boolean
+
+effect_with_hidden &effect
++hidden_effect :#effect
+
+sound_event
++sound_id :RegistryKey(minecraft:sound_event) @Recommended
++range :float
+
+item_effect
++type :RegistryKey(minecraft:consume_effect_type) @Recommended
++effects :Depends<list<#effect>, SingleOrList<RegistryKey(minecraft:mob_effect)>>(type, apply_effects, remove_effects) @RelevantIfEq(type, apply_effects, remove_effects)
++probability :float @RelevantIfEq(type, apply_effects)
++diameter :float @RelevantIfEq(type, teleport_randomly)
++sound :either<RegistryKey(minecraft:sound_event), #sound_event> @RelevantIfEq(type, play_sound)
+
+global_pos
++pos :BlockPos
++dimension :ServerRegistryKey(minecraft:dimension)
+
+item_stack
++id :RegistryKey(minecraft:item) @Recommended
++count :int
++components :ItemComponents($../id$)
+
+item_stack_with_slot &item_stack
++Slot :byte
+
+item_stack_with_player_slot &item_stack
++slot :byte
+
+equipment
++mainhand :#item_stack
++offhand :#item_stack
++feet :#item_stack
++legs :#item_stack
++chest :#item_stack
++head :#item_stack
++body :#item_stack
++saddle :#item_stack
+
+vibration_info
++game_event :string
++distance :float
++pos :list<double>(3)
++source :UUID
++projectile_owner :UUID
+
+vibration_selector
++event :#vibration_info
++tick :long
+
+vibration_listener
++event :#vibration_info
++selector :#vibration_selector
++event_delay :int
+
+potion_contents
++potion :RegistryKey(minecraft:potion)
++custom_color :int
++custom_effects :list<#effect>
++custom_name :string @Since(1.21.2)
+
+block_state
++Name :RegistryKey(minecraft:block)
++Properties :BlockStateTags($../Name$)
+
+suspicious_stew_effect
++id :RegistryKey(minecraft:mob_effect)
++duration :int
+
+drop_chances
++mainhand :float
++offhand :float
++feet :float
++legs :float
++chest :float
++head :float
++body :float
++saddle :float
+
+spawn_data
++entity :compound
+	+entity :TagsFromId(minecraft:entity_type, entity/$id$)
+	+custom_spawn_rules :compound
+		+block_light_limit :int
+		+sky_light_limit :int
+	+equipment :compound
+		+loot_table :LootTable
+		+slot_drop_chances :either<float, #drop_chances>
+
+spawn_potential
++weight :int
++data :#spawn_data
+
+item_cost
++id :RegistryKey(minecraft:item) @Recommended
++count :int
++components :ItemComponents($../id$)
+
+villager/offers
++Recipes :list<compound>
+	+buy :#item_cost @Recommended
+	+sell :#item_cost @Recommended
+	+buyB :#item_cost
+	+uses :int
+	+maxUses :int
+	+rewardExp :boolean
+	+specialPrice :int
+	+demand :int
+	+priceMultiplier :float
+	+xp :int
+
+villager/data
++type :RegistryKey(minecraft:villager_type)
++profession :RegistryKey(minecraft:villager_profession)
++level :DescribedEnum(1, novice, 2, apprentice, 3, journeyman, 4, expert, 5, master)
+
+villager/gossip
++Target :UUID
++Type :DynamicEnum(GossipType)
++Value :int
+
+lock
++items :SingleOrList<RegistryKey(minecraft:item)>
++count :either<int, compound>
+	+min :int
+	+max :int
++components :ItemComponents
++predicates :compound
+
+sign_text
++messages :list<TextComponent>(4)
++filtered_messages :list<TextComponent>(4)
++color :DynamicEnum(DyeColor)
++has_glowing_text :boolean
+
+trial_spawner_config
++spawn_range :int
++total_mobs :float
++simultaneous_mobs :float
++total_mobs_added_per_player :float
++simultaneous_mobs_added_per_player :float
++ticks_between_spawn :int
++spawn_potentials :list<compound>
+	+weight :int
+	+data :#spawn_data
++loot_tables_to_eject :list<compound>
+	+weight :int
+	+data :LootTable
++items_to_drop_when_ominous :LootTable
+
+block_predicate
++blocks :SingleOrList<RegistryKey(minecraft:block)> @Recommended
++nbt :TagsWithId(block/$../blocks$)
++state :BlockStateTags($../blocks$)
+
+quaternion_compound
++angle :float
++axis :list<float>(3)
+
+transformation
++translation :list<float>(3)
++left_rotation :either<list<float>(4), #quaternion_compound>
++scale :list<float>(3)
++right_rotation :either<list<float>(4), #quaternion_compound>
+
+brightness
++block :int
++sky :int
+
+interaction_info
++player :UUID
++timestamp :long
+
+armor_stand_pose
++Head :list<float>(3)
++Body :list<float>(3)
++LeftArm :list<float>(3)
++RightArm :list<float>(3)
++LeftLeg :list<float>(3)
++RightLeg :list<float>(3)
+
+warden_anger
++suspects :list<compound>
+	+uuid :UUID
+	+anger :int
+
+attribute
++id :RegistryKey(minecraft:attribute)
++base :double @Recommended
++modifiers :list<compound>
+	+id :string
+	+amount :double
+	+operation :DynamicEnum(AttributeModifierOperation)
+
+waypoint_icon
++color :int
++style :Enum(default, bowtie)
+
+vault_server_data
++items_to_eject :list<#item_stack>
++rewarded_players :list<UUID>
++state_updating_resumes_at :long
++total_ejections_needed :int
+
+vault_config
++activation_range :double
++deactivation_range :double
++key_item :#item_stack
++loot_table :LootTable
++override_loot_table_to_display :LootTable
+
+vault_shared_data
++display_item :#item_stack
++connected_particles_range :double
++connected_players :list<UUID>
+
+profile
++name :string
++id :UUID
++properties :list<compound>
+	+name :string
+	+value :string
+	+signature :string
+
+kinetic_weapon_conditions
++max_duration_ticks :int
++min_speed :float
++min_relative_speed :float
+
+firework_explosion
++shape :DynamicEnum(FireworkExplosionShape)
++color :int
++fade_colors :int
++has_trail :boolean
++has_twinkle :boolean
+
+# until 1.21.5
+legacy_hover_event_show_entity
++name :InnerTextComponent
++type :RegistryKey(minecraft:entity_type)
++id :list<int>
+
+# until 1.21.5
+legacy_hover_event_show_item
++id :RegistryKey(minecraft:item)
++count :int
++components :ItemComponents($../id$)

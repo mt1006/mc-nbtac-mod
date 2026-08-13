@@ -1,6 +1,0 @@
-{
-	"id": "item/minecraft:lore",
-	"type": "list/string",
-	"subtype": "json_text",
-	"always_relevant": true
-}

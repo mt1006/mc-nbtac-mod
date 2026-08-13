@@ -5,6 +5,7 @@ plugins
 
 repositories
 {
+	maven { url = "https://maven.parchmentmc.org/" }
 	maven { url = "https://maven.terraformersmc.com/releases/" }
 }
 
@@ -20,6 +21,11 @@ dependencies
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
 	modApi("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
+}
+
+loom
+{
+	mixin.useLegacyMixinAp = false
 }
 
 loom
