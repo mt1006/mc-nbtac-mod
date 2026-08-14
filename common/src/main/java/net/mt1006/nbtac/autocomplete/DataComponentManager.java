@@ -82,6 +82,11 @@ public class DataComponentManager
 		if (ModConfig.showCustomModelDataAsRelevant.val) { relevant.add(DataComponents.CUSTOM_MODEL_DATA); }
 		if (item.builtInRegistryHolder().is(ItemTags.DYEABLE)) { relevant.add(DataComponents.DYED_COLOR); }
 
+		if (Fields.isMethodOverridden(Fields.itemAppendHoverTextMethodData, item, Item.class))
+		{
+			relevant.add(DataComponents.HIDE_ADDITIONAL_TOOLTIP);
+		}
+
 		if (item instanceof SpawnEggItem || item instanceof HangingEntityItem || item instanceof ArmorStandItem
 				|| item instanceof MinecartItem || item instanceof BoatItem)
 		{
