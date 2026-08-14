@@ -24,7 +24,6 @@ public enum PrimitiveType implements Type
 	COMPOUND,
 	LIST;
 
-	private final String lowerCaseName;
 	public final String symbol;
 	public final String suffix;
 
@@ -36,13 +35,7 @@ public enum PrimitiveType implements Type
 	PrimitiveType(String suffix)
 	{
 		this.suffix = suffix;
-		this.lowerCaseName = name().toLowerCase(Locale.ROOT);
-		this.symbol = "[" + lowerCaseName + "]";
-	}
-
-	public String getName()
-	{
-		return lowerCaseName;
+		this.symbol = "[" + name().toLowerCase(Locale.ROOT) + "]";
 	}
 
 	@Override public @Nullable SuggestionList getSuggestions(SuggestionListContext ctx)

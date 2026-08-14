@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class NbtTagManager
 {
@@ -37,11 +36,6 @@ public class NbtTagManager
 		}
 
 		return tagMaps.get(key);
-	}
-
-	public static Set<Map.Entry<String, NbtTagMap>> tagMapSet()
-	{
-		return tagMaps.entrySet();
 	}
 
 	private static @Nullable NbtTagMap getForModdedEntity()
