@@ -20,6 +20,17 @@ public class EitherType implements Type
 	@Override public @Nullable SuggestionList getSuggestions(SuggestionListContext ctx)
 	{
 		Type type = typeMap.get(ctx.parsed().getClass());
+		//TODO: show alternative types?
+		/*if (type == null)
+		{
+			SuggestionList list = new SuggestionList();
+			for (Type t : typeMap.values())
+			{
+				SuggestionList listToAppend = t.getSuggestions(ctx);
+				if (listToAppend != null) { listToAppend.forEach(list::add); }
+			}
+			return list;
+		}*/
 		return type.getSuggestions(ctx);
 	}
 

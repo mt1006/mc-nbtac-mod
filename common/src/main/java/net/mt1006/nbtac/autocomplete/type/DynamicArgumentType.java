@@ -105,6 +105,7 @@ public class DynamicArgumentType implements Type
 
 	private static @Nullable String parseArgumentSwitch(String arg, ParsedValue parsed)
 	{
+		// example: "$@arg@case1;val1;case2;val2$"
 		int atCharPos = arg.indexOf('@');
 		if (atCharPos == -1 || parsed.parentTag == null) { return null; }
 

@@ -56,7 +56,7 @@ public class NBTacTestContext
 	{
 		chatScreen.insertText(command, true);
 		Set<String> suggestionSet = getSuggestionSet();
-		if (suggestionSet.size() != 1 || suggestionSet.contains(suggestion) != present)
+		if (suggestionSet.size() != (present ? 1 : 0) || suggestionSet.contains(suggestion) != present)
 		{
 			NBTac.LOGGER.error("Expected: {}, Got: {}", suggestion, suggestionSet);
 			throw new RuntimeException(command + " -> " + suggestion);
