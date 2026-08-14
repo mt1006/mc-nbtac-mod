@@ -18,6 +18,7 @@
     "fields.TextColorFields",
     "fields.TextureAtlasFields",
     "misc.ArgumentCommandNodeMixin",
+    "misc.EditBoxMixin",
     "misc.RealmsMainScreenMixin",
     "suggestions.SuggestionsListMixin",
     "suggestions.arguments.ComponentArgumentMixin",

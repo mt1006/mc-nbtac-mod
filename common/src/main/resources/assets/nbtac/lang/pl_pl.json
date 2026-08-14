@@ -50,6 +50,9 @@
   "nbtac.options.field.show_tag_hints": "Pokazuj podpowiedzi do tagów",
   "nbtac.options.field.show_tag_hints.desc": "Pokazuje podpowiedzi do tagów (takie jak ich typ lub źródło) obok ich nazw na liście sugestii.",
 
+  "nbtac.options.field.update_on_cursor_movement": "Aktualizuj przy ruchu kursora",
+  "nbtac.options.field.update_on_cursor_movement.desc": "Aktualizuje sugestie przy ruchu kursora.\nDotyczy to wszystkich sugestii poleceń, nie tylko tych od NBT Autocomplete.\nUstawienie te przywraca zachowanie sprzed Minecraft 26.1, i ustawienie go na \"false\" nie zmienia niczego na starszych wersjach.",
+
 
   "nbtac.options.field.custom_sorting": "Niestandardowe sortowanie",
   "nbtac.options.field.custom_sorting.desc": "Zezwala modowi na użycie niealfabetycznego sortowania sugestii.",
