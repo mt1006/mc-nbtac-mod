@@ -1,6 +1,6 @@
 subprojects
 {
-	apply plugin: "java"
+	apply plugin: 'java'
 	java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 
 	base
@@ -12,43 +12,43 @@ subprojects
 	{
 		var replaceProperties =
 		[
-			"mod_name"                  : mod_name,
-			"mod_jar_name"              : mod_jar_name,
-			"mod_id"                    : mod_id,
-			"mod_group"                 : mod_group,
-			"mod_author"                : mod_author,
-			"version"                   : version,
-			"license"                   : license,
-			"homepage"                  : homepage,
-			"source_url"                : source_url,
-			"issue_tracker"             : issue_tracker,
-			"mod_description"           : mod_description,
-			"minecraft_version"         : minecraft_version,
-			"java_version"              : java_version,
-			"version_range_fabric"      : version_range_fabric,
-			"version_range_forge"       : version_range_forge,
-			"fabric_loader_version"     : fabric_loader_version,
-			"fabric_api_version"        : fabric_api_version,
-			"forge_version"             : forge_version,
+			'mod_name'                  : mod_name,
+			'mod_jar_name'              : mod_jar_name,
+			'mod_id'                    : mod_id,
+			'mod_group'                 : mod_group,
+			'mod_author'                : mod_author,
+			'version'                   : version,
+			'license'                   : license,
+			'homepage'                  : homepage,
+			'source_url'                : source_url,
+			'issue_tracker'             : issue_tracker,
+			'mod_description'           : mod_description,
+			'minecraft_version'         : minecraft_version,
+			'java_version'              : java_version,
+			'version_range_fabric'      : version_range_fabric,
+			'version_range_forge'       : version_range_forge,
+			'fabric_loader_version'     : fabric_loader_version,
+			'fabric_api_version'        : fabric_api_version,
+			'forge_version'             : forge_version,
 		]
 
-		filesMatching(["pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "*.mixins.json"])
+		filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', '*.mixins.json'])
 		{
 			expand replaceProperties
 		}
 		inputs.properties replaceProperties
 	}
 
-	tasks.withType(JavaCompile).configureEach { it.options.encoding = "UTF-8" }
+	tasks.withType(JavaCompile).configureEach { it.options.encoding = 'UTF-8' }
 
-	if (project.name != "common")
+	if (project.name != 'common')
 	{
 		dependencies
 		{
-			compileOnly project(":common")
+			compileOnly project(':common')
 		}
 
-		processResources { from project(":common").sourceSets.main.resources }
-		tasks.named("compileJava", JavaCompile) { source project(":common").sourceSets.main.allSource }
+		processResources { from project(':common').sourceSets.main.resources }
+		tasks.named('compileJava', JavaCompile) { source project(':common').sourceSets.main.allSource }
 	}
 }

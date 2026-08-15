@@ -1,0 +1,165 @@
+# NBT version for 1.20.1 version only
+
+_common
++Enchantments :list<compound>
+	+id :ServerRegistryKey(minecraft:enchantment)
+	+lvl :int
++display :compound
+	+Name :TextComponent
+	+Lore :list<TextComponent>
+	+color :int
++Unbreakable :boolean
++CanDestroy :list<RegistryKey(minecraft:block)>
++AttributeModifiers :list<compound>
+	+AttributeName :RegistryKey(minecraft:attribute)
+	+Name :string
+	+Amount :double
+	+Operation :DescribedEnum<int>(0, add_value, 1, add_multiplied_base, 2, add_multiplied_total)
+	+Slot :Enum(mainhand, offhand, head, chest, legs, feet)
+	+UUID :RandomUUID
++HideFlags :int
++CustomModelData :int
+
+_armor
++Trim :compound
+	+pattern :ServerRegistryKey(minecraft:trim_pattern)
+	+material :ServerRegistryKey(minecraft:trim_material)
+
+leather_helmet =_armor
+leather_chestplate =_armor
+leather_leggings =_armor
+leather_boots =_armor
+chainmail_helmet =_armor
+chainmail_chestplate =_armor
+chainmail_leggings =_armor
+chainmail_boots =_armor
+iron_helmet =_armor
+iron_chestplate =_armor
+iron_leggings =_armor
+iron_boots =_armor
+diamond_helmet =_armor
+diamond_chestplate =_armor
+diamond_leggings =_armor
+diamond_boots =_armor
+golden_helmet =_armor
+golden_chestplate =_armor
+golden_leggings =_armor
+golden_boots =_armor
+netherite_helmet =_armor
+netherite_chestplate =_armor
+netherite_leggings =_armor
+netherite_boots =_armor
+turtle_helmet =_armor
+
+bundle
++Items :list<#item_stack>
+
+compass
++LodestoneDimension :ServerRegistryKey(minecraft:dimension)
++LodestoneTracked :boolean
++LodestonePos :compound
+	+X :int
+	+Y :int
+	+Z :int
+
+lodestone_compass =compass
+
+crossbow
++Charged :boolean
++ChargedProjectiles :list<#item_stack>
+
+debug_stick
++DebugProperty :compound
+
+enchanted_book
++StoredEnchantments :list<compound>
+	+id :ServerRegistryKey(minecraft:enchantment)
+	+lvl :int
+
+firework_rocket
++Fireworks :compound
+	+Flight :byte
+	+Explosions :list<compound>
+		+Type :byte
+		+Colors :int_array
+		+FadeColors :int_array
+		+Trail :boolean
+		+Flicker :boolean
+
+firework_star
++Explosions :compound
+	+Type :byte
+	+Colors :int_array
+	+FadeColors :int_array
+	+Trail :boolean
+	+Flicker :boolean
+
+goat_horn
++instrument :ServerRegistryKey(minecraft:instrument)
+
+item_frame
++EntityTag :Tags(entity/minecraft:item_frame)
+
+glow_item_frame =item_frame
+
+knowledge_book
++Recipes :list<Recipe>
+
+map
++map :int
++map_scale_direction :int
++map_to_lock :boolean
++display :compound
+	+MapColor :int
+
+player_head
++SkullOwner :string
+
+potion
++Potion :ServerRegistryKey(minecraft:potion)
++CustomPotionColor :int
++CustomPotionEffects :list<#effect>
+
+splash_potion =potion
+lingering_potion =potion
+
+#TODO: fix effectid
+suspicious_stew
++Effects :list<compound>
+	+EffectId :byte
+	+EffectDuration :int
+
+tipped_arrow
++CustomPotionEffects :list<#effect>
++CustomPotionColor :int
+
+writable_book
++pages :list<string>
+
+written_book
++pages :list<TextComponent>
++title :string
++author :string
++generation :DescribedEnum<int>(0, original, 1, "copy of original", 2, "copy of copy", 3, tattered)
++resolved :boolean
++filtered_pages :compound
+
+axolotl_bucket
++EntityTag :Tags(entity/minecraft:axolotl)
++Variant :DescribedEnum<int>(0, lucy, 1, wild, 2, gold, 3, cyan, 4, blue)
+
+cod_bucket
++EntityTag :Tags(entity/minecraft:cod)
+
+pufferfish_bucket
++EntityTag :Tags(entity/minecraft:pufferfish)
+
+salmon_bucket
++EntityTag :Tags(entity/minecraft:salmon)
+
+tadpole_bucket
++EntityTag :Tags(entity/minecraft:tadpole)
+
+tropical_fish_bucket
++EntityTag :Tags(entity/minecraft:tropical_fish)
++BucketVariantTag :int

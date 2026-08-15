@@ -1,0 +1,30 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.mt1006.nbtac.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client":
+  [
+    "fields.ClientLanguageFields",
+    "fields.ClientLevelFields",
+    "fields.CommandSuggestionsFields",
+    "fields.DecoratedPotPatternsFields",
+    "fields.EntitySelectorFields",
+    "fields.FontManagerFields",
+    "fields.KeyMappingFields",
+    "fields.MinecraftFields",
+    "fields.TextColorFields",
+    "misc.ArgumentCommandNodeMixin",
+    "misc.RealmsMainScreenMixin",
+    "suggestions.SuggestionsListMixin",
+    "suggestions.arguments.ComponentArgumentMixin",
+    "suggestions.arguments.CompoundTagArgumentMixin",
+    "suggestions.arguments.NbtPathArgumentMixin",
+    "suggestions.arguments.NbtTagArgumentMixin",
+    "suggestions.arguments.ParticleArgumentMixin",
+    "suggestions.selectors.BlockStateParserMixin",
+    "suggestions.selectors.EntitySelectorParserMixin",
+    "suggestions.selectors.ItemParserMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

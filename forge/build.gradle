@@ -1,12 +1,12 @@
 plugins
 {
-	id "net.minecraftforge.gradle" version "${forge_gradle_version}"
-	id "org.spongepowered.mixin" version "0.7.+"
+	id 'net.minecraftforge.gradle' version "${forge_gradle_version}"
+	id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 minecraft
 {
-	mappings channel: "official", version: minecraft_version
+	mappings channel: 'official', version: minecraft_version
 
 	runs
 	{
@@ -18,7 +18,7 @@ minecraft
 dependencies
 {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-	annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 mixin
@@ -27,10 +27,10 @@ mixin
 	config "${mod_id}.mixins.json"
 }
 
-tasks.named("jar", Jar).configure
+tasks.named('jar', Jar).configure
 {
 	manifest
 	{
-		attributes(["MixinConfigs": "${mod_id}.mixins.json"])
+		attributes(['MixinConfigs': "${mod_id}.mixins.json"])
 	}
 }
