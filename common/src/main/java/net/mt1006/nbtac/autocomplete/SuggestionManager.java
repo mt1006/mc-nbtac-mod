@@ -18,6 +18,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class SuggestionManager
@@ -30,34 +31,28 @@ public class SuggestionManager
 	private static @Nullable List<Suggestion> oldSuggestionList = null;
 	private static int suggestionListCounter = 0;
 
-	public static CompletableFuture<Suggestions> loadFromName(String str, @Nullable String name, SuggestionsBuilder builder, boolean suggestPath)
+	public static CompletableFuture<Suggestions> get(String input, @Nullable String name, SuggestionsBuilder builder, boolean suggestPath)
+	{
+		return name != null ? get(input, CompoundType.fromName(name), builder, suggestPath, Function.identity()) : Suggestions.empty();
+	}
+
+	public static CompletableFuture<Suggestions> get(String input, Type type, SuggestionsBuilder builder, boolean suggestPath,
+													 Function<SuggestionList, SuggestionList> process)
 	{
 		if (!Loader.finished)
 		{
 			new RawSuggestion("", "[suggestions not loaded]").suggest(builder);
 			return builder.buildFuture();
 		}
-		if (name == null) { return Suggestions.empty(); }
 
 		CustomTagParser parser = suggestPath
-				? CustomTagParser.forNbtPath(str, CompoundType.fromName(name))
-				: CustomTagParser.forNbtCompound(str, CompoundType.fromName(name));
-		return finishSuggestions(parser::parse, builder);
+				? CustomTagParser.forNbtPath(input, type)
+				: CustomTagParser.forValueOfType(input, type);
+		return finishSuggestions(parser::parse, builder, process);
 	}
 
-	public static CompletableFuture<Suggestions> loadFromType(String str, Type type, SuggestionsBuilder builder)
-	{
-		if (!Loader.finished)
-		{
-			new RawSuggestion("", "[suggestions not loaded]").suggest(builder);
-			return builder.buildFuture();
-		}
-
-		CustomTagParser parser = CustomTagParser.forValueOfType(str, type);
-		return finishSuggestions(parser::parse, builder);
-	}
-
-	public static CompletableFuture<Suggestions> finishSuggestions(Supplier<SuggestionList> supplier, SuggestionsBuilder builder)
+	public static CompletableFuture<Suggestions> finishSuggestions(Supplier<SuggestionList> supplier, SuggestionsBuilder builder,
+	                                                               Function<SuggestionList, SuggestionList> process)
 	{
 		SuggestionList list;
 		try
@@ -80,7 +75,7 @@ public class SuggestionManager
 		}
 
 		SuggestionsBuilder newBuilder = builder.createOffset(newOffset);
-		list.forEach((s) -> s.suggest(newBuilder));
+		process.apply(list).forEach((s) -> s.suggest(newBuilder));
 		return newBuilder.buildFuture();
 	}
 

@@ -29,7 +29,7 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		{
 			String str = builder.getRemaining();
 			String name = getResourceName(ctx);
-			return SuggestionManager.loadFromName(str, name, builder, false);
+			return SuggestionManager.get(str, name, builder, false);
 		}
 		catch (Exception e)
 		{

@@ -36,14 +36,10 @@ public class CustomTagParser
 		return new CustomTagParser(str, ParserType.VALUE, valueType, null);
 	}
 
-	public static CustomTagParser forNbtCompound(String str, CompoundType compoundType)
+	public static CustomTagParser forNbtPath(String str, Type valueType)
 	{
-		return new CustomTagParser(str, ParserType.VALUE, compoundType, null);
-	}
-
-	public static CustomTagParser forNbtPath(String str, CompoundType compoundType)
-	{
-		return new CustomTagParser(str, ParserType.PATH, compoundType, null);
+		if (!(valueType instanceof CompoundType)) { throw new IllegalArgumentException(); }
+		return new CustomTagParser(str, ParserType.PATH, valueType, null);
 	}
 
 	public static CustomTagParser forDataComponentValue(String str, Type type, @Nullable Identifier itemId)

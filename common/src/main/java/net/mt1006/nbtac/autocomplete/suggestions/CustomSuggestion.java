@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.mt1006.nbtac.NBTac;
+import net.mt1006.nbtac.api.v1.NBTacSuggestion;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
@@ -17,7 +18,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
 
-public abstract class CustomSuggestion
+public abstract class CustomSuggestion implements NBTacSuggestion
 {
 	private final @Nullable String subtext;
 	private final int priority;
@@ -36,16 +37,15 @@ public abstract class CustomSuggestion
 				: new RawSuggestion(text, subtext, priority);
 	}
 
-	public abstract String getText();
+	@Override public @Nullable String getSubtext()
+	{
+		return subtext;
+	}
 
 	public @Nullable Message getTooltip()
 	{
 		return null;
 	}
-
-	public abstract boolean match(String str);
-
-	public abstract boolean matchPrefix(String prefix);
 
 	protected static boolean matchPrefix(String str, String prefix)
 	{
@@ -82,6 +82,11 @@ public abstract class CustomSuggestion
 		Suggestion lastAdded = getLastAddedSuggestion(builder);
 		if (lastAdded != null) { SuggestionManager.dataMap.put(lastAdded, new Data(subtext, priority, isEmptySuggestion)); }
 		SuggestionManager.hasCustomSuggestions = true;
+	}
+
+	@Override public CustomSuggestion get()
+	{
+		return this;
 	}
 
 	private static boolean addEmptySuggestion(SuggestionsBuilder builder, @Nullable Message tooltip)

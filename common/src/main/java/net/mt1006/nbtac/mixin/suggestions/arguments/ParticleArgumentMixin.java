@@ -44,7 +44,7 @@ public abstract class ParticleArgumentMixin implements ArgumentType<ParticleOpti
 			if (particleId == null) { return; }
 
 			builder = builder.createOffset(builder.getStart() + optionsStart);
-			cir.setReturnValue(SuggestionManager.loadFromName(builder.getRemaining(), "particle/" + particleId, builder, false));
+			cir.setReturnValue(SuggestionManager.get(builder.getRemaining(), "particle/" + particleId, builder, false));
 			cir.cancel();
 		}
 		catch (Exception ignore) {}

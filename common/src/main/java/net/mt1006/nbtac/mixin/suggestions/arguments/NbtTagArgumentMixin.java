@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @Mixin(NbtTagArgument.class)
 public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
@@ -28,7 +29,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		{
 			String str = builder.getRemaining();
 			Type tagType = getTagType(ctx);
-			return tagType != null ? SuggestionManager.loadFromType(str, tagType, builder) : Suggestions.empty();
+			return tagType != null ? SuggestionManager.get(str, tagType, builder, false, Function.identity()) : Suggestions.empty();
 		}
 		catch (Exception e)
 		{

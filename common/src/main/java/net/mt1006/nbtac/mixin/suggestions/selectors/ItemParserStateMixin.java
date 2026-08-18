@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @Mixin(targets = "net.minecraft.commands.arguments.item.ItemParser$State")
 public abstract class ItemParserStateMixin
@@ -129,6 +130,6 @@ public abstract class ItemParserStateMixin
 
 		String val = reader.getString().substring(cursorBeforeComponent);
 		CustomTagParser parser = CustomTagParser.forDataComponentValue(val, component.getType(), findParsedItemId());
-		return SuggestionManager.finishSuggestions(parser::parse, builder);
+		return SuggestionManager.finishSuggestions(parser::parse, builder, Function.identity());
 	}
 }
