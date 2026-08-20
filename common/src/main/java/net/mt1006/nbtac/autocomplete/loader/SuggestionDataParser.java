@@ -117,6 +117,9 @@ public class SuggestionDataParser extends FileParser
 			DefinedNbtTag tag = new DefinedNbtTag(name, type);
 			parseAnnotations(reader, tag);
 
+			tag = tag.renameIfNecessary();
+			name = tag.getName();
+
 			if (suggestionStack.size() == tabCount)
 			{
 				suggestionStack.push(tag);

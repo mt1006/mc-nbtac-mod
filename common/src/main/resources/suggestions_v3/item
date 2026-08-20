@@ -9,15 +9,25 @@ attack_range :compound @AlwaysRelevant @Since(1.21.11)
 +hitbox_margin :float
 +mob_factor :float
 
-attribute_modifiers :list<compound> @AlwaysRelevant
+attribute_modifiers :list<compound> @AlwaysRelevant @Since(1.21.5)
 +type :RegistryKey(minecraft:attribute)
 +slot :DynamicEnum(EquipmentSlotGroup)
 +id :string
 +amount :double
 +operation :DynamicEnum(AttributeModifierOperation)
-+display :compound
++display :compound @Since(1.21.6)
 	+type :DynamicEnum(ItemAttributeModifiersDisplayType)
-	+subtype :ServerRegistryKey(minecraft:banner_pattern)
+	+value :TextComponent @RelevantIfEq(type, override)
+#TODO: test display.value
+
+attribute_modifiers :compound @AlwaysRelevant @Until(1.21.5)
++modifiers :list<compound>
+	+type :RegistryKey(minecraft:attribute)
+	+slot :DynamicEnum(EquipmentSlotGroup)
+	+id :string
+	+amount :double
+	+operation :DynamicEnum(AttributeModifierOperation)
++show_in_tooltip :boolean
 
 banner_patterns :list<compound>
 +color :DynamicEnum(DyeColor)
@@ -34,7 +44,8 @@ block_entity_data :TagsWithId(block/$../../id$)
 
 block_state :BlockStateTags($../../id$)
 
-blocks_attacks :compound @AlwaysRelevant
+#TODO: improve bypassed_by (and test on 1.21.11)
+blocks_attacks :compound @AlwaysRelevant @Since(1.21.5)
 +block_delay_seconds :int
 +disable_cooldown_scale :int
 +bypassed_by :string
@@ -50,7 +61,7 @@ blocks_attacks :compound @AlwaysRelevant
 	+base :float
 	+factor :float
 
-break_sound :RegistryKey(minecraft:sound_event)
+break_sound :RegistryKey(minecraft:sound_event) @Since(1.21.5)
 
 bucket_entity_data :compound
 +NoAI :boolean
@@ -66,13 +77,19 @@ bucket_entity_data :compound
 
 bundle_contents :list<#item_stack>
 
-can_break :list<#block_predicate> @AlwaysRelevant
+can_break :list<#block_predicate> @AlwaysRelevant @Since(1.21.5)
+can_break :compound @AlwaysRelevant @Until(1.21.5)
++predicates :list<#block_predicate>
++show_in_tooltip :boolean
 
-can_place_on :list<#block_predicate>
+can_place_on :list<#block_predicate> @Since(1.21.5)
+can_place_on :compound @Until(1.21.5)
++predicates :list<#block_predicate>
++show_in_tooltip :boolean
 
 charged_projectiles :list<#item_stack>
 
-consumable :compound @AlwaysRelevant
+consumable :compound @AlwaysRelevant @Since(1.21.2)
 +consume_seconds :float
 +animation :DynamicEnum(ItemUseAnimation)
 +sound :RegistryKey(minecraft:sound_event)
@@ -89,7 +106,8 @@ container_loot :compound
 
 custom_data :compound
 
-custom_model_data :compound
+custom_model_data :int @Until(1.21.4)
+custom_model_data :compound @Since(1.21.4)
 +floats :list<float>
 +flags :list<boolean>
 +strings :list<string>
@@ -99,43 +117,52 @@ custom_name :TextComponent @AlwaysRelevant
 
 damage :int
 
-damage_resistant :compound @AlwaysRelevant
+#TODO: fix types on 1.21.11?
+damage_resistant :compound @AlwaysRelevant @Since(1.21.2)
 +types :ServerRegistryKey(minecraft:damage_type)
 
 damage_type :ServerRegistryKey(minecraft:damage_type) @AlwaysRelevant @Since(1.21.11)
 
-death_protection :compound @AlwaysRelevant
+death_protection :compound @AlwaysRelevant @Since(1.21.2)
 +death_effects :list<#item_effect>
 
 debug_stick_state :compound
 
 dye :DynamicEnum(DyeColor) @AlwaysRelevant @Since(26.1)
 
-dyed_color :int
+dyed_color :int @Since(1.21.5)
+dyed_color :compound @Until(1.21.5)
++rgb :int
++show_in_tooltip :boolean
 
-enchantable :compound @AlwaysRelevant
+enchantable :compound @AlwaysRelevant @Since(1.21.2)
 +value :int
 
 enchantment_glint_override :boolean @AlwaysRelevant
 
-enchantments :Enchantments @AlwaysRelevant
+enchantments :Enchantments @AlwaysRelevant @Since(1.21.5)
+enchantments :compound @AlwaysRelevant @Until(1.21.5)
++levels :Enchantments
++show_in_tooltip :boolean
 
 entity_data :TagsFromId(minecraft:entity_type, entity/$id$)
 
-equippable :compound @AlwaysRelevant
+#TODO: camera_overlay suggestions?
+equippable :compound @AlwaysRelevant @Since(1.21.2)
 +slot :DynamicEnum(EquipmentSlot) @Recommended
 +equip_sound :RegistryKey(minecraft:sound_event)
-+asset_id :string
++model :string @Until(1.21.4)
++asset_id :string @Since(1.21.4)
 +allowed_entities :list<RegistryKey(minecraft:entity_type)>
 +dispensable :boolean
 +swappable :boolean
 +damage_on_hurt :boolean
 +camera_overlay :string
-+equip_on_interact :boolean
-+can_be_sheared :boolean
-+shearing_sound :RegistryKey(minecraft:sound_event)
++equip_on_interact :boolean @Since(1.21.5)
++can_be_sheared :boolean @Since(1.21.6)
++shearing_sound :RegistryKey(minecraft:sound_event) @Since(1.21.6)
 
-fire_resistant :EmptyCompound @AlwaysRelevant
+fire_resistant :EmptyCompound @AlwaysRelevant @Until(1.21.2)
 
 firework_explosion :#firework_explosion
 
@@ -147,19 +174,30 @@ food :compound @AlwaysRelevant
 +nutrition :int @Recommended
 +saturation :float @Recommended
 +can_always_eat :boolean
++eat_seconds :float @Until(1.21.2)
++using_converts_to :#item_stack @Until(1.21.2)
++effects :list<compound> @Until(1.21.2)
+	+effect :#effect
+	+probability :float
+#TODO: test effects
 
-glider :EmptyCompound @AlwaysRelevant
+glider :EmptyCompound @AlwaysRelevant @Since(1.21.2)
+
+hide_additional_tooltip :EmptyCompound @Until(1.21.5)
+
+hide_tooltip :EmptyCompound @AlwaysRelevant @Until(1.21.5)
 
 instrument :RegistryKey(minecraft:instrument)
 
 intangible_projectile :EmptyCompound
 
-item_model :RegistryKey(minecraft:item)
+item_model :RegistryKey(minecraft:item) @Since(1.21.2)
 
 item_name :TextComponent @AlwaysRelevant
 
 jukebox_playable :compound @AlwaysRelevant
 +song :ServerRegistryKey(minecraft:jukebox_song)
++show_in_tooltip :boolean @Until(1.21.5)
 
 kinetic_weapon :compound @Since(1.21.11)
 +contact_cooldown_ticks :int
@@ -172,7 +210,9 @@ kinetic_weapon :compound @Since(1.21.11)
 +sound :RegistryKey(minecraft:sound_event)
 +hit_sound :RegistryKey(minecraft:sound_event)
 
-lock :compound
+lock :string @Until(1.21.2)
+
+lock :compound @Since(1.21.2)
 +items :list<RegistryKey(minecraft:item)>
 +count :compound
 	+min :int
@@ -183,7 +223,7 @@ lock :compound
 lodestone_tracker :compound
 +target :compound
 	+pos :int_array
-	+dimension :string
+	+dimension :ServerRegistryKey(minecraft:dimension)
 +tracked :boolean
 
 lore :list<TextComponent>
@@ -214,13 +254,16 @@ pot_decorations :list<PotDecoration>
 
 potion_contents :#potion_contents
 
-potion_duration_scale :float
+#TODO: relevant if potion_contents or custom_effects present
+potion_duration_scale :float @Since(1.21.5)
 
+#TODO: test/improve
 profile :#profile
 
-provides_banner_patterns :ServerRegistryKey(minecraft:banner_pattern) @AlwaysRelevant
+#TODO: fix
+provides_banner_patterns :ServerRegistryKey(minecraft:banner_pattern) @AlwaysRelevant @Since(1.21.5)
 
-provides_trim_material :ServerRegistryKey(minecraft:trim_material) @AlwaysRelevant
+provides_trim_material :ServerRegistryKey(minecraft:trim_material) @AlwaysRelevant @Since(1.21.5)
 
 rarity :DynamicOrderedEnum(Rarity) @AlwaysRelevant
 
@@ -228,10 +271,13 @@ recipes :list<Recipe>
 
 repair_cost :int
 
-repairable :compound @AlwaysRelevant
+repairable :compound @AlwaysRelevant @Since(1.21.2)
 +items :list<RegistryKey(minecraft:item)>
 
-stored_enchantments :Enchantments
+stored_enchantments :Enchantments @Since(1.21.5)
+stored_enchantments :compound @Until(1.21.5)
++levels :Enchantments
++show_in_tooltip :boolean
 
 sulfur_cube_content :#item_stack @RelevantComponentForItem(minecraft:sulfur_cube_spawn_egg, minecraft:sulfur_cube_bucket) @Since(26.2)
 
@@ -248,21 +294,24 @@ tool :compound @AlwaysRelevant
 	+blocks :list<RegistryKey(minecraft:block)>
 	+speed :float
 	+correct_for_drops :boolean
-+can_destroy_blocks_in_creative :boolean
++can_destroy_blocks_in_creative :boolean @Since(1.21.5)
 
-tooltip_display :compound @AlwaysRelevant
+tooltip_display :compound @AlwaysRelevant @Since(1.21.5)
 +hide_tooltip :boolean
 +hidden_components :list<string>
 
-tooltip_style :string @AlwaysRelevant
+tooltip_style :string @AlwaysRelevant @Since(1.21.2)
 
 trim :compound
 +pattern :ServerRegistryKey(minecraft:trim_pattern)
 +material :ServerRegistryKey(minecraft:trim_material)
++show_in_tooltip :boolean @Until(1.21.5)
 
-unbreakable :EmptyCompound
+unbreakable :EmptyCompound @Since(1.21.5)
+unbreakable :compound @Until(1.21.5)
++show_in_tooltip :boolean
 
-use_cooldown :compound @AlwaysRelevant
+use_cooldown :compound @AlwaysRelevant @Since(1.21.2)
 +seconds :float @Recommended
 +cooldown_group :string
 
@@ -271,9 +320,9 @@ use_effects :compound @AlwaysRelevant @Since(1.21.11)
 +interact_vibrations :boolean
 +speed_multiplier :boolean
 
-use_remainder :#item_stack @AlwaysRelevant
+use_remainder :#item_stack @AlwaysRelevant @Since(1.21.2)
 
-weapon :compound @AlwaysRelevant
+weapon :compound @AlwaysRelevant @Since(1.21.5)
 +item_damage_per_attack :int
 +disable_blocking_for_seconds :int
 

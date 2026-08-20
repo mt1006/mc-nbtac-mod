@@ -2,7 +2,8 @@ _entity
 +Pos :list<double>(3)
 +Motion :list<double>(3)
 +Rotation :list<float>(2)
-+fall_distance :double
++FallDistance :float @Until(1.21.5)
++fall_distance :double @Since(1.21.5)
 +Fire :short
 +Air :int
 +OnGround :boolean
@@ -16,7 +17,7 @@ _entity
 +Glowing :boolean
 +TicksFrozen :int
 +HasVisualFire :boolean
-+data :compound
++data :compound @Since(1.21.5)
 +Tags :list<string>
 +Passengers :list<TagsFromId(minecraft:entity_type, entity/$id$)>
 
@@ -28,26 +29,39 @@ _living_entity &_entity
 +Health :float
 +HurtByTimestamp :int @Until(26.2)
 +HurtTime :short
++SleepingX :int @Until(1.21.5)
++SleepingY :int @Until(1.21.5)
++SleepingZ :int @Until(1.21.5)
 +Team :ScoreboardTeam
-+active_effects :list<#effect_with_hidden>
-+attributes :list<#attribute>
++ActiveEffects :list<#effect_with_hidden> @Until(1.21)
++active_effects :list<#effect_with_hidden> @Since(1.21)
++Attributes :list<#attribute> @Until(1.21)
++attributes :list<#attribute> @Since(1.21)
 +current_explosion_impact_pos :list<double>(3) @Since(26.1)
 +current_impulse_context_reset_grace_time :int @Since(26.1)
-+equipment :#equipment
-+last_hurt_by_player :UUID
-+last_hurt_by_player_memory_time :int
-+last_hurt_by_mob :UUID
-+locator_bar_icon :#waypoint_icon
-+sleeping_pos :BlockPos
-+ticks_since_last_hurt_by_mob :int
++equipment :#equipment @Since(1.21.5)
++last_hurt_by_player :UUID @Since(1.21.5)
++last_hurt_by_player_memory_time :int @Since(1.21.5)
++last_hurt_by_mob :UUID @Since(1.21.5)
++locator_bar_icon :#waypoint_icon @Since(1.21.6)
++sleeping_pos :BlockPos @Since(1.21.5)
++ticks_since_last_hurt_by_mob :int @Since(1.21.5)
+
+#TODO: test sleeping_pos
 
 _mob &_living_entity
++ArmorDropChances :list<float> @Until(1.21.5)
++ArmorItems :list<#item_stack> @Until(1.21.5)
 +CanPickUpLoot :boolean
++HandDropChances :list<float> @Until(1.21.5)
++HandItems :list<#item_stack> @Until(1.21.5)
 +PersistenceRequired :boolean
-+drop_chances :#drop_chances
-+leash :either<UUID, BlockPos>
-+home_radius :int
-+home_pos :BlockPos
++body_armor_item :#item_stack @Since(1.21) @Until(1.21.5)
++body_armor_drop_chance :float @Since(1.21) @Until(1.21.5)
++drop_chances :#drop_chances @Since(1.21.5)
++leash :either<UUID, BlockPos> @OldName(1.21, Leash)
++home_radius :int @Since(1.21.6)
++home_pos :BlockPos @Since(1.21.6)
 +LeftHanded :boolean
 +DeathLootTable :LootTable
 +DeathLootTableSeed :LongSeed
@@ -66,16 +80,20 @@ _fish &_mob
 +FromBucket :boolean
 
 _boat &_entity
-+leash :either<UUID, BlockPos>
++leash :either<UUID, BlockPos> @OldName(1.21, Leash)
 
 _chest_boat &_boat
 +LootTable :LootTable
 +LootTableSeed :LongSeed
 +Items :list<#item_stack_with_slot>
 
+#TODO: test
 _minecart &_entity
-+DisplayState :#block_state
-+DisplayOffset :int
++CustomDisplayTile :boolean @Until(1.21.5)
++DisplayState :#block_state @RelevantIfEq(CustomDisplayTile, true, 1b) @Until(1.21.5)
++DisplayOffset :int @RelevantIfEq(CustomDisplayTile, true, 1b) @Until(1.21.5)
++DisplayState :#block_state @Since(1.21.5)
++DisplayOffset :int @Since(1.21.5)
 +FlippedRotation :boolean
 +HasTicked :boolean
 
@@ -100,10 +118,12 @@ _arrow &_projectile
 +PierceLevel :byte
 +SoundEvent :RegistryKey(minecraft:sound_event)
 +item :#item_stack
-+weapon :#item_stack
++ShotFromCrossbow :boolean @Until(1.21)
++weapon :#item_stack @Since(1.21)
 
 _hurting_projectile &_projectile
-+acceleration_power :double
++power :list<double>(3) @Until(1.21)
++acceleration_power :double @Since(1.21)
 
 _item_projectile &_projectile
 +Item :#item_stack
@@ -137,12 +157,13 @@ _zombie &_mob
 +DrownedConversionTime :int
 
 _piglin &_mob
-+CanPickUpLoot :boolean
++CanPickUpLoot :boolean @Since(1.21.6)
 +IsImmuneToZombification :boolean @OptRecommended
 +TimeInOverworld :int
 
 _patrolling_monster &_mob
-+patrol_target :BlockPos
++PatrolTarget :BlockPos @Since(1.21)
++patrol_target :BlockPos @Since(1.21)
 +PatrolLeader :boolean
 +Patrolling :boolean
 
@@ -160,7 +181,10 @@ _villager &_ageable_mob
 +Inventory :list<#item_stack>
 
 _attached_entity &_entity
-+block_pos :BlockPos @OptRecommended
++TileX :int @Until(1.21.5)
++TileY :int @Until(1.21.5)
++TileZ :int @Until(1.21.5)
++block_pos :BlockPos @OptRecommended @Since(1.21.5)
 
 _item_frame &_attached_entity
 +Item :#item_stack @OptRecommended
@@ -288,28 +312,32 @@ acacia_boat =_boat
 acacia_chest_boat =_chest_boat
 
 allay &_mob
-+listener :#vibration_listener
++CanDuplicate :boolean @Until(1.21.5)
 +DuplicationCooldown :int
 +Inventory :list<#item_stack> @OptRecommended
++listener :#vibration_listener
 
 area_effect_cloud &_entity
 +Age :int
 +Duration :int @OptRecommended
-+WaitTime :int
++Particle :ParticleType(particle/$type$) @OptRecommended @Until(1.21.6)
 +ReapplicationDelay :int
 +DurationOnUse :int
 +RadiusOnUse :float
 +RadiusPerTick :float
 +Radius :float @OptRecommended
-+custom_particle :ParticleType(particle/$type$) @OptRecommended
++WaitTime :int
++custom_particle :ParticleType(particle/$type$) @OptRecommended @Since(1.21.6)
 +potion_contents :#potion_contents @OptRecommended
-+potion_duration_scale :float
++potion_duration_scale :float @Since(1.21.5)
 
 armadillo &_animal
 +state :DynamicEnum(ArmadilloState) @OptRecommended
 +scute_time :int
 
 armor_stand &_living_entity
++ArmorItems :list<#item_stack> @Until(1.21.5)
++HandItems :list<#item_stack> @Until(1.21.5)
 +Invisible :boolean @OptRecommended
 +Small :boolean
 +ShowArms :boolean @OptRecommended
@@ -337,8 +365,10 @@ bee &_animal
 +TicksSincePollination :int
 +CannotEnterHiveTicks :int
 +CropsGrownSincePollination :int
-+hive_pos :BlockPos @OptRecommended
-+flower_pos :BlockPos
++HivePos :BlockPos @Until(1.21)
++FlowerPos :BlockPos @Until(1.21)
++hive_pos :BlockPos @OptRecommended @Since(1.21)
++flower_pos :BlockPos @Since(1.21)
 
 birch_boat =_boat
 
@@ -411,6 +441,9 @@ dark_oak_boat =_boat
 dark_oak_chest_boat =_chest_boat
 
 dolphin &_ageable_mob
++TreasurePosX :int @Until(1.21.5)
++TreasurePosY :int @Until(1.21.5)
++TreasurePosZ :int @Until(1.21.5)
 +GotFish :boolean
 +Moistness :int
 
@@ -425,7 +458,8 @@ egg =_item_projectile
 elder_guardian =_mob
 
 end_crystal &_entity
-+beam_target :BlockPos
++BeamTarget :BlockPos @Until(1.21)
++beam_target :BlockPos @Since(1.21)
 +ShowBottom :boolean
 
 ender_dragon &_entity
@@ -437,8 +471,8 @@ ender_pearl =_item_projectile
 
 enderman &_mob
 +carriedBlockState :#block_state @OptRecommended
-+AngerTime :int
-+AngryAt :UUID
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)
 
 endermite &_mob
 +Lifetime :int
@@ -514,6 +548,7 @@ goat &_animal
 
 guardian =_mob
 
+# since 1.21.6
 happy_ghast &_animal
 +still_timeout :int
 
@@ -542,8 +577,8 @@ interaction &_entity
 
 iron_golem &_mob
 +PlayerCreated :boolean
-+AngerTime :int
-+AngryAt :UUID
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)
 
 item &_entity
 +Health :short
@@ -567,6 +602,7 @@ leash_knot =_attached_entity
 
 lightning_bolt =_entity
 
+# since 1.21.5
 lingering_potion =_item_projectile
 
 llama =_llama
@@ -626,8 +662,11 @@ parrot &_tamable_animal
 +Variant :DescribedEnum(0, red_blue, 1, blue, 2, green, 3, yellow_blue, 4, gray) @OptRecommended
 
 phantom &_mob
-+anchor_pos :BlockPos
-+size :int
++AX :int @Until(1.21.5)
++AY :int @Until(1.21.5)
++AZ :int @Until(1.21.5)
++anchor_pos :BlockPos @Since(1.21.5)
++size :int @OldName(1.21.5, Size)
 
 pig &_animal
 +sound_variant :ServerRegistryKey(minecraft:pig_sound_variant) @OptRecommended(1) @Since(26.1)
@@ -667,13 +706,40 @@ player &_living_entity
 +ShoulderEntityLeft :TagsFromId(minecraft:entity_type, entity/$id$)
 +ShoulderEntityRight :TagsFromId(minecraft:entity_type, entity/$id$)
 +LastDeathLocation :#global_pos
-+current_explosion_impact_pos :list<double>(3)
-+ignore_fall_damage_from_current_explosion :boolean
-+current_impulse_context_reset_grace_time :int
++current_explosion_impact_pos :list<double>(3) @Until(26.1)
++ignore_fall_damage_from_current_explosion :boolean @Until(26.1)
+#TODO: \/ test if it work fine, as since 26.1 it's in living_entity
++current_impulse_context_reset_grace_time :int @Until(26.1)
++Dimension :ServerRegistryKey(minecraft:dimension)
++warden_spawn_tracker :compound
++enteredNetherPosition :compound @Until(1.21.5)
+	+x :double
+	+y :double
+	+z :double
++entered_nether_pos :list<double>(3) @Since(1.21.5)
++seenCredits :boolean
++recipeBook :compound
++SpawnAngle :float @Until(1.21.5)
++SpawnDimension :ServerRegistryKey(minecraft:dimension) @Until(1.21.5)
++SpawnForced :boolean @Until(1.21.5)
++SpawnX :int @Until(1.21.5)
++SpawnY :int @Until(1.21.5)
++SpawnZ :int @Until(1.21.5)
++respawn :compound @Since(1.21.5)
+	+angle :float
+	+dimension :ServerRegistryKey(minecraft:dimension)
+	+forced :boolean
+	+pos :#block_pos
++spawn_extra_particles_on_fall :boolean
++raid_omen_position :#block_pos
+#TODO: warden_spawn_tracker, recipeBook
 
 polar_bear &_animal
-+AngerTime :int
-+AngryAt :UUID
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)
+
+# until 1.21.5
+potion =_item_projectile
 
 pufferfish &_fish
 +PuffState :int
@@ -743,6 +809,7 @@ spectral_arrow &_arrow
 
 spider =_mob
 
+# since 1.21.5
 splash_potion =_item_projectile
 
 spruce_boat =_boat
@@ -778,13 +845,13 @@ text_display &_display
 tnt &_entity
 +fuse :short @OptRecommended
 +block_state :#block_state @OptRecommended
-+explosion_power :float @OptRecommended
-+owner :UUID
++explosion_power :float @OptRecommended @Since(1.21.2)
++owner :UUID @Since(1.21.6)
 
 tnt_minecart &_minecart
-+fuse :int @OptRecommended
-+explosion_power :float @OptRecommended
-+explosion_speed_factor :float @OptRecommended
++fuse :int @OptRecommended @OldName(1.21.4, TNTFuse)
++explosion_power :float @OptRecommended @Since(1.21.2)
++explosion_speed_factor :float @OptRecommended @Since(1.21.4)
 
 trader_llama &_llama
 +DespawnDelay :int
@@ -796,13 +863,22 @@ tropical_fish &_fish
 +Variant :TropicalFishExtendedVariant @OptRecommended
 
 turtle &_animal
-+home_pos :BlockPos
-+has_egg :boolean
++HomePosX :int @Until(1.21.5)
++HomePosY :int @Until(1.21.5)
++HomePosZ :int @Until(1.21.5)
++TravelPosX :int @Until(1.21.5)
++TravelPosY :int @Until(1.21.5)
++TravelPosZ :int @Until(1.21.5)
++has_egg :boolean @OldName(1.21.5, HasEgg)
++home_pos :BlockPos @Since(1.21.5) @Until(1.21.6)
 
 vex &_mob
-+bound_pos :BlockPos
-+life_ticks :int
-+owner :UUID
++BoundX :int @Until(1.21.5)
++BoundY :int @Until(1.21.5)
++BoundZ :int @Until(1.21.5)
++bound_pos :BlockPos @Since(1.21.5)
++life_ticks :int @OldName(1.21.5, LifeTicks)
++owner :UUID @Since(1.21.6)
 
 villager &_villager
 +VillagerData :#villager/data @OptRecommended
@@ -820,7 +896,8 @@ vindicator &_raider
 
 wandering_trader &_villager
 +DespawnDelay :int
-+wander_target :BlockPos
++WanderTarget :BlockPos @Since(1.21)
++wander_target :BlockPos @Since(1.21)
 
 warden &_mob
 +anger :#warden_anger
@@ -840,8 +917,8 @@ wither_skull &_hurting_projectile
 
 wolf &_tamable_animal
 +CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
-+AngerTime :int
-+AngryAt :UUID
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)
 +sound_variant :ServerRegistryKey(minecraft:wolf_sound_variant) @OptRecommended(2)
 +variant :ServerRegistryKey(minecraft:wolf_variant) @OptRecommended(3)
 
@@ -862,5 +939,5 @@ zombie_villager &_zombie
 +Xp :int
 
 zombified_piglin &_zombie
-+AngerTime :int
-+AngryAt :UUID
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)

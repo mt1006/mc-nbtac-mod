@@ -133,6 +133,21 @@ public class DefinedNbtTag extends NbtTag
 		return true;
 	}
 
+	public DefinedNbtTag renameIfNecessary()
+	{
+		if (annotations == null) { return this; }
+		List<String> oldName = annotations.get(Annotation.OLD_NAME);
+		if (oldName == null || oldName.size() != 2) { return this; }
+
+		if (McVersion.compare(oldName.get(0)) < 0)
+		{
+			DefinedNbtTag newTag = new DefinedNbtTag(oldName.get(1), getType());
+			newTag.annotations = annotations;
+			return newTag;
+		}
+		return this;
+	}
+
 	public enum Annotation
 	{
 		// only for NBT tags (including in item data component compounds)
@@ -148,7 +163,8 @@ public class DefinedNbtTag extends NbtTag
 		OPT_RECOMMENDED("OptRecommended"),
 		RECOMMENDED_IF_RELEVANT("RecommendedIfRelevant"),
 		SINCE("Since"),
-		UNTIL("Until");
+		UNTIL("Until"),
+		OLD_NAME("OldName");
 
 		private static final Annotation[] VALUES = values();
 		private final String name;

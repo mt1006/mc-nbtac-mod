@@ -1,6 +1,7 @@
 _base_container
 +CustomName :TextComponent
-+lock :#lock
++Lock :string @Until(1.21.2)
++lock :#lock @Since(1.21.2)
 
 _with_single_item
 +LootTable :LootTable
@@ -14,10 +15,10 @@ _with_items &_base_container
 
 _furnace &_base_container
 +Items :list<#item_stack_with_slot>
-+cooking_time_spent :short
-+cooking_total_time :short
-+lit_time_remaining :short
-+lit_total_time :short
++cooking_time_spent :short @OldName(1.21.4, CookTime)
++cooking_total_time :short @OldName(1.21.4, CookTimeTotal)
++lit_time_remaining :short @OldName(1.21.4, BurnTime)
++lit_total_time :short @Since(1.21.4)
 +RecipesUsed :FurnaceRecipesUsed
 
 _sculk_sensor
@@ -43,14 +44,15 @@ beacon
 +primary_effect :RegistryKey(minecraft:mob_effect)
 +secondary_effect :RegistryKey(minecraft:mob_effect)
 +CustomName :TextComponent
-+lock :#lock
++Lock :string @Until(1.21.2)
++lock :#lock @Since(1.21.2)
 
 beehive
 +bees :list<compound>
 	+entity_data :TagsWithId(entity/minecraft:bee)
 	+min_ticks_in_hive :int
 	+ticks_in_hive :int
-+flower_pos :BlockPos
++flower_pos :BlockPos @OldName(1.21, FlowerPos)
 
 blast_furnace =_furnace
 
@@ -109,7 +111,7 @@ enchanting_table
 
 end_gateway
 +Age :long
-+exit_portal :BlockPos
++exit_portal :BlockPos @OldName(1.21, ExitPortal)
 +ExactTeleport :boolean
 
 furnace =_furnace

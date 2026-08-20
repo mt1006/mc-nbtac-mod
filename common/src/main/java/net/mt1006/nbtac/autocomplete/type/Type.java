@@ -58,6 +58,7 @@ public interface Type
 			Map.entry("ParticleType", (s, a) -> new TagsType(firstOrNull(a), "particle_type", "type")),
 			Map.entry("TextColor", (s, a) -> TextColorType.INSTANCE),
 			Map.entry("TextComponent", (s, a) -> TextComponentType.INSTANCE),
+			Map.entry("InnerTextComponent", (s, a) -> TextComponentType.INSTANCE), //TODO: merge with TextComponent after removing pre-1.21.5 suggestions
 			Map.entry("TranslationKey", (s, a) -> TranslationKeyType.INSTANCE),
 			Map.entry("UUID", (s, a) -> UUIDType.UNKNOWN),
 			Map.entry("RandomUUID", (s, a) -> UUIDType.RANDOM),
@@ -71,7 +72,8 @@ public interface Type
 			Map.entry("ArmorStandSlots", (s, a) -> ArmorStandSlotsType.INSTANCE),
 			Map.entry("TropicalFishExtendedVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
 			Map.entry("HorseExtendedVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
-			Map.entry("FurnaceRecipesUsed", (s, a) -> PrimitiveType.COMPOUND) //TODO: finish
+			Map.entry("FurnaceRecipesUsed", (s, a) -> PrimitiveType.COMPOUND), //TODO: finish
+			Map.entry("RegistryId", (s, a) -> PrimitiveType.UNKNOWN) //TODO: remove after removing pre-1.21 suggestions
 	);
 
 	@Nullable SuggestionList getSuggestions(SuggestionListContext ctx);
