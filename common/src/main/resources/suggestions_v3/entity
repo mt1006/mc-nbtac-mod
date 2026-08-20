@@ -346,7 +346,7 @@ armor_stand &_living_entity
 +Marker :boolean
 +Pose :#armor_stand_pose
 
-arror =_arrow
+arrow =_arrow
 
 axolotl &_animal
 +Variant :DescribedEnum<int>(0, lucy, 1, wild, 2, gold, 3, cyan, 4, blue) @OptRecommended
