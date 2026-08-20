@@ -31,11 +31,12 @@
 
   "nbtac.options.field.json_string_suggestion": "JSON String Suggestion",
   "nbtac.options.field.json_string_suggestion.none": "None",
+  "nbtac.options.field.json_string_suggestion.recommended": "Recommended",
   "nbtac.options.field.json_string_suggestion.default_for_strings": "Default For Strings",
   "nbtac.options.field.json_string_suggestion.legacy_separated": "Legacy, Separated (' \")",
   "nbtac.options.field.json_string_suggestion.legacy_merged": "Legacy, Merged ('\")",
   "nbtac.options.field.json_string_suggestion.legacy_backslash": "Legacy, Backslash (\"\\\")",
-  "nbtac.options.field.json_string_suggestion.desc": "Defines simple string opening suggestion for JSON text components.\nnone - None\ndefault_for_strings - uses quote type from \"Default Quotation Mark Type\" setting.\nlegacy_separated - [' \"]\nlegacy_merged - ['\"] - similar to legacy_separated, but without space.\nlegacy_backslash - [\"\\\"].",
+  "nbtac.options.field.json_string_suggestion.desc": "Defines simple string opening suggestion for JSON text components.\nnone - None\nrecommended - Same as \"default_for_strings\" on 1.20.4 and newer, same as \"legacy_separated\" on older.\ndefault_for_strings - uses quote type from \"Default Quotation Mark Type\" setting.\nlegacy_separated - [' \"]\nlegacy_merged - ['\"] - similar to legacy_separated, but without space.\nlegacy_backslash - [\"\\\"].",
 
   "nbtac.options.field.hide_mc_namespace_in_tags": "Hide Minecraft Namespace In Tags",
   "nbtac.options.field.hide_mc_namespace_in_tags.desc": "Hides \"minecraft:\" namespace from tag suggestions.",

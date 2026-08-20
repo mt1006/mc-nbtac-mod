@@ -17,7 +17,7 @@ public class ModConfig
 	public static final ConfigFields.BooleanField tagQuotationMarks = fields.add("tag_quotation_marks", false);
 	public static final ConfigFields.BooleanField stringQuotationMarks = fields.add("string_quotation_marks", false);
 	public static final ConfigFields.EnumField<DefaultQuotationMark> defaultQuotationMark = fields.add("default_quotation_mark", DefaultQuotationMark.DOUBLE);
-	public static final ConfigFields.EnumField<JsonStringSuggestion> jsonStringSuggestion = fields.add("json_string_suggestion", JsonStringSuggestion.DEFAULT_FOR_STRINGS);
+	public static final ConfigFields.EnumField<JsonStringSuggestion> jsonStringSuggestion = fields.add("json_string_suggestion", JsonStringSuggestion.RECOMMENDED);
 	public static final ConfigFields.BooleanField hideMcNamespaceInTags = fields.add("hide_mc_namespace_in_tags", true);
 	public static final ConfigFields.BooleanField hideMcNamespaceInStrings = fields.add("hide_mc_namespace_in_strings", false);
 

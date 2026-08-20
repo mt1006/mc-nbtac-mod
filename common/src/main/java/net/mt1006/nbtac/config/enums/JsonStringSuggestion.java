@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 public enum JsonStringSuggestion
 {
 	NONE,
+	RECOMMENDED,
 	DEFAULT_FOR_STRINGS,
 	LEGACY_SEPARATED,
 	LEGACY_MERGED,
@@ -16,7 +17,7 @@ public enum JsonStringSuggestion
 		return switch (this)
 		{
 			case NONE -> null;
-			case DEFAULT_FOR_STRINGS -> ModConfig.defaultQuotationMark.val.getStr(false);
+			case RECOMMENDED, DEFAULT_FOR_STRINGS -> ModConfig.defaultQuotationMark.val.getStr(false);
 			case LEGACY_SEPARATED -> "' \"";
 			case LEGACY_MERGED -> "'\"";
 			case LEGACY_BACKSLASH -> "\"\\\"";
