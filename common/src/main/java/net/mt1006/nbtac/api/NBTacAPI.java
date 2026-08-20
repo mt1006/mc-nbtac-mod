@@ -1,4 +1,4 @@
-package net.mt1006.nbtac.api.v1;
+package net.mt1006.nbtac.api;
 
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;

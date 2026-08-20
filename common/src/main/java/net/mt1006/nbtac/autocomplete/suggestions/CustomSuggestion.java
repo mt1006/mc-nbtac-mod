@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.mt1006.nbtac.NBTac;
-import net.mt1006.nbtac.api.v1.NBTacSuggestion;
+import net.mt1006.nbtac.api.NBTacSuggestion;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
