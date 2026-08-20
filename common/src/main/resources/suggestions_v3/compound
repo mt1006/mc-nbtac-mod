@@ -30,7 +30,7 @@ item_effect
 
 global_pos
 +pos :BlockPos
-+dimension :ServerRegistryKey(minecraft:dimension)
++dimension :RegistryKey(minecraft:dimension)
 
 item_stack
 +id :RegistryKey(minecraft:item) @Recommended

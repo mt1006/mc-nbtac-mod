@@ -391,8 +391,8 @@ camel &_horse
 
 cat &_tamable_animal
 +CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
-+sound_variant :ServerRegistryKey(minecraft:cat_sound_variant) @OptRecommended(2) @Since(26.1)
-+variant :ServerRegistryKey(minecraft:cat_variant) @OptRecommended(3)
++sound_variant :RegistryKey(minecraft:cat_sound_variant) @OptRecommended(2) @Since(26.1)
++variant :RegistryKey(minecraft:cat_variant) @OptRecommended(3)
 
 cave_spider =_mob
 
@@ -405,8 +405,8 @@ chest_minecart =_minecart_container
 chicken &_animal
 +IsChickenJockey :boolean
 +EggLayTime :int
-+sound_variant :ServerRegistryKey(minecraft:chicken_sound_variant) @OptRecommended(1) @Since(26.1)
-+variant :ServerRegistryKey(minecraft:chicken_variant) @OptRecommended(2)
++sound_variant :RegistryKey(minecraft:chicken_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :RegistryKey(minecraft:chicken_variant) @OptRecommended(2)
 
 cod =_fish
 
@@ -425,8 +425,8 @@ copper_golem &_mob
 +weather_state :DynamicEnum(WeatheringCopperWeatherState) @OptRecommended
 
 cow &_animal
-+sound_variant :ServerRegistryKey(minecraft:cow_sound_variant) @OptRecommended(1) @Since(26.1)
-+variant :ServerRegistryKey(minecraft:cow_variant) @OptRecommended(2)
++sound_variant :RegistryKey(minecraft:cow_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :RegistryKey(minecraft:cow_variant) @OptRecommended(2)
 
 creaking =_mob
 
@@ -524,7 +524,7 @@ fox &_animal
 +Crouching :boolean
 
 frog &_animal
-+variant :ServerRegistryKey(minecraft:frog_variant) @OptRecommended
++variant :RegistryKey(minecraft:frog_variant) @OptRecommended
 
 furnace_minecart &_minecart
 +PushX :double
@@ -648,7 +648,7 @@ ominous_item_spawner &_entity
 
 painting &_attached_entity
 +facing :DescribedEnum<byte>(0, south, 1, west, 2, north, 3, east) @OptRecommended(1)
-+variant :ServerRegistryKey(minecraft:painting_variant) @OptRecommended(2)
++variant :RegistryKey(minecraft:painting_variant) @OptRecommended(2)
 
 pale_oak_boat =_boat
 
@@ -669,8 +669,8 @@ phantom &_mob
 +size :int @OldName(1.21.5, Size)
 
 pig &_animal
-+sound_variant :ServerRegistryKey(minecraft:pig_sound_variant) @OptRecommended(1) @Since(26.1)
-+variant :ServerRegistryKey(minecraft:pig_variant) @OptRecommended(2)
++sound_variant :RegistryKey(minecraft:pig_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :RegistryKey(minecraft:pig_variant) @OptRecommended(2)
 
 piglin &_piglin
 +IsBaby :boolean
@@ -710,7 +710,7 @@ player &_living_entity
 +ignore_fall_damage_from_current_explosion :boolean @Until(26.1)
 #TODO: \/ test if it work fine, as since 26.1 it's in living_entity
 +current_impulse_context_reset_grace_time :int @Until(26.1)
-+Dimension :ServerRegistryKey(minecraft:dimension)
++Dimension :RegistryKey(minecraft:dimension)
 +warden_spawn_tracker :compound
 +enteredNetherPosition :compound @Until(1.21.5)
 	+x :double
@@ -720,14 +720,14 @@ player &_living_entity
 +seenCredits :boolean
 +recipeBook :compound
 +SpawnAngle :float @Until(1.21.5)
-+SpawnDimension :ServerRegistryKey(minecraft:dimension) @Until(1.21.5)
++SpawnDimension :RegistryKey(minecraft:dimension) @Until(1.21.5)
 +SpawnForced :boolean @Until(1.21.5)
 +SpawnX :int @Until(1.21.5)
 +SpawnY :int @Until(1.21.5)
 +SpawnZ :int @Until(1.21.5)
 +respawn :compound @Since(1.21.5)
 	+angle :float
-	+dimension :ServerRegistryKey(minecraft:dimension)
+	+dimension :RegistryKey(minecraft:dimension)
 	+forced :boolean
 	+pos :#block_pos
 +spawn_extra_particles_on_fall :boolean
@@ -919,8 +919,8 @@ wolf &_tamable_animal
 +CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
 +anger_end_time :int @OldName(1.21.11, AngerTime)
 +angry_at :UUID @OldName(1.21.11, AngryAt)
-+sound_variant :ServerRegistryKey(minecraft:wolf_sound_variant) @OptRecommended(2)
-+variant :ServerRegistryKey(minecraft:wolf_variant) @OptRecommended(3)
++sound_variant :RegistryKey(minecraft:wolf_sound_variant) @OptRecommended(2)
++variant :RegistryKey(minecraft:wolf_variant) @OptRecommended(3)
 
 zoglin &_mob
 +IsBaby :boolean

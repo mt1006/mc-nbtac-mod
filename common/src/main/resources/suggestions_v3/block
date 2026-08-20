@@ -33,7 +33,7 @@ _sign
 banner
 +CustomName :TextComponent
 +patterns :list<compound>
-	+pattern :either<ServerRegistryKey(minecraft:banner_pattern), compound>
+	+pattern :either<RegistryKey(minecraft:banner_pattern), compound>
 		+asset_id :string
 		+translation_key :TranslationKey
 	+color :DynamicEnum(DyeColor)
@@ -124,7 +124,7 @@ hopper &_with_items
 jigsaw
 +name :string
 +target :string
-+pool :ServerRegistryKey(minecraft:worldgen/template_pool)
++pool :RegistryKey(minecraft:worldgen/template_pool)
 +final_state :string
 +joint :DynamicEnum(JigsawJointType)
 +placement_priority :int
@@ -226,7 +226,7 @@ test_block
 
 test_instance_block
 +data :compound
-	+test :ServerRegistryKey(minecraft:test_instance)
+	+test :RegistryKey(minecraft:test_instance)
 	+size :int_array(3)
 	+rotation :DescribedEnum(Rotation)
 	+ignore_entities :boolean
