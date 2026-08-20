@@ -18,13 +18,15 @@ import java.util.Stack;
 
 public class SuggestionDataParser extends FileParser
 {
-	private final String keyDefaultPrefix, keyModPrefix;
+	private final String group;
+	private final String keyPrefix, keyModPrefix;
 
 	public SuggestionDataParser(String group, String namespace, @Nullable String data)
 	{
 		super(data != null ? data : group, data == null);
-		this.keyDefaultPrefix = group + "/" + namespace + ":";
-		this.keyModPrefix = "_" + this.keyDefaultPrefix;
+		this.group = group;
+		this.keyPrefix = group + "/" + namespace + ":";
+		this.keyModPrefix = "_" + this.keyPrefix;
 	}
 
 	public void parseNbtSuggestions()
@@ -84,7 +86,7 @@ public class SuggestionDataParser extends FileParser
 			reader.expectEnd();
 
 			tag.getType().setSubcompound(parseSuggestions(entry.lines, null));
-			if (tag.inVersionRange()) { DataComponentManager.componentMap.put(keyDefaultPrefix + entryName, tag); }
+			if (tag.inVersionRange()) { DataComponentManager.componentMap.put(keyPrefix + entryName, tag); }
 		}
 	}
 
@@ -194,6 +196,20 @@ public class SuggestionDataParser extends FileParser
 
 	private String parseNbtEntryName(String str)
 	{
-		return (str.startsWith("_") ? keyModPrefix : keyDefaultPrefix) + str;
+		// intended to be used by suggestions from other mods
+		if (str.charAt(0) == ':')
+		{
+			str = str.substring(1);
+			if (str.contains(":"))
+			{
+				return (str.contains(":_") ? "_" : "") + group + "/" + str;
+			}
+			else
+			{
+				return (str.charAt(0) == '_' ? "_" : "") + group + "/minecraft:" + str;
+			}
+		}
+
+		return (str.charAt(0) == '_' ? keyModPrefix : keyPrefix) + str;
 	}
 }

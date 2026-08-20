@@ -42,6 +42,11 @@ public abstract class CustomSuggestion implements NBTacSuggestion
 		return subtext;
 	}
 
+	@Override public int getPriority()
+	{
+		return priority;
+	}
+
 	public @Nullable Message getTooltip()
 	{
 		return null;
