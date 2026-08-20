@@ -130,6 +130,7 @@ villager/gossip
 +Type :DynamicEnum(GossipType)
 +Value :int
 
+# since 1.21.2
 lock
 +items :SingleOrList<RegistryKey(minecraft:item)>
 +count :either<int, compound>

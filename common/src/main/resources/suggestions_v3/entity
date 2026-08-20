@@ -17,7 +17,7 @@ _entity
 +Glowing :boolean
 +TicksFrozen :int
 +HasVisualFire :boolean
-+data :compound
++data :compound @Since(1.21.5)
 +Tags :list<string>
 +Passengers :list<TagsFromId(minecraft:entity_type, entity/$id$)>
 
@@ -56,13 +56,12 @@ _mob &_living_entity
 +HandDropChances :list<float> @Until(1.21.5)
 +HandItems :list<#item_stack> @Until(1.21.5)
 +PersistenceRequired :boolean
-+body_armor_item :#item_stack @Until(1.21.5)
-+body_armor_drop_chance :float @Until(1.21.5)
++body_armor_item :#item_stack @Since(1.21) @Until(1.21.5)
++body_armor_drop_chance :float @Since(1.21) @Until(1.21.5)
 +drop_chances :#drop_chances @Since(1.21.5)
-+Leash :either<UUID, BlockPos> @Until(1.21)
-+leash :either<UUID, BlockPos> @Since(1.21)
++leash :either<UUID, BlockPos> @OldName(1.21, Leash)
 +home_radius :int @Since(1.21.6)
-+home_pos :BlockPos
++home_pos :BlockPos @Since(1.21.6)
 +LeftHanded :boolean
 +DeathLootTable :LootTable
 +DeathLootTableSeed :LongSeed
@@ -81,8 +80,7 @@ _fish &_mob
 +FromBucket :boolean
 
 _boat &_entity
-+Leash :either<UUID, BlockPos> @Until(1.21)
-+leash :either<UUID, BlockPos> @Since(1.21)
++leash :either<UUID, BlockPos> @OldName(1.21, Leash)
 
 _chest_boat &_boat
 +LootTable :LootTable
@@ -338,6 +336,8 @@ armadillo &_animal
 +scute_time :int
 
 armor_stand &_living_entity
++ArmorItems :list<#item_stack> @Until(1.21.5)
++HandItems :list<#item_stack> @Until(1.21.5)
 +Invisible :boolean @OptRecommended
 +Small :boolean
 +ShowArms :boolean @OptRecommended
@@ -870,7 +870,7 @@ turtle &_animal
 +TravelPosY :int @Until(1.21.5)
 +TravelPosZ :int @Until(1.21.5)
 +has_egg :boolean @OldName(1.21.5, HasEgg)
-+home_pos :BlockPos @Since(1.21.5)
++home_pos :BlockPos @Since(1.21.5) @Until(1.21.6)
 
 vex &_mob
 +BoundX :int @Until(1.21.5)

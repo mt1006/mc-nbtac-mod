@@ -123,10 +123,9 @@ potion
 splash_potion =potion
 lingering_potion =potion
 
-#TODO: fix effectid
 suspicious_stew
 +Effects :list<compound>
-	+EffectId :byte
+	+EffectId :RegistryId(minecraft:mob_effect)
 	+EffectDuration :int
 
 tipped_arrow

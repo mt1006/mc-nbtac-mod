@@ -27,7 +27,6 @@ public class Loader
 			new SuggestionFileParser("compound", "nbtac").parseNbtSuggestions();
 			new SuggestionFileParser("block", "minecraft").parseNbtSuggestions();
 			new SuggestionFileParser("entity", "minecraft").parseNbtSuggestions();
-			new SuggestionFileParser("particle", "minecraft").parseNbtSuggestions();
 			new SuggestionFileParser("text", "nbtac").parseNbtSuggestions();
 			new SuggestionFileParser("item", "minecraft").parseNbtSuggestions();
 

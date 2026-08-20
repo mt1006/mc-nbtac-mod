@@ -43,7 +43,6 @@ style
 +clickEvent :compound @Until(1.21.5)
 	+action :Enum(open_url, open_file, run_command, suggest_command, change_page, copy_to_clipboard) @Recommended
 	+value :string
-#TODO: TODO TODO ^^^
 +hover_event :compound @Since(1.21.5)
 	+action :Enum(show_text, show_item, show_entity)
 	+value :InnerTextComponent @RelevantIfEq(action, show_text)

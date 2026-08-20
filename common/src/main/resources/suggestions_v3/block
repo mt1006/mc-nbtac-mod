@@ -1,7 +1,7 @@
 _base_container
 +CustomName :TextComponent
-+lock :#lock @OldName(1.21.2, Lock)
-#TODO: test Lock on 1.21.1
++Lock :string @Until(1.21.2)
++lock :#lock @Since(1.21.2)
 
 _with_single_item
 +LootTable :LootTable
@@ -44,7 +44,8 @@ beacon
 +primary_effect :RegistryKey(minecraft:mob_effect)
 +secondary_effect :RegistryKey(minecraft:mob_effect)
 +CustomName :TextComponent
-+lock :#lock @OldName(1.21.2, Lock)
++Lock :string @Until(1.21.2)
++lock :#lock @Since(1.21.2)
 
 beehive
 +bees :list<compound>
