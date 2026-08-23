@@ -40,6 +40,7 @@ public interface Type
 			Map.entry("DynamicEnum", (s, a) -> EnumType.dynamicEnum(s, firstOrNull(a), true)),
 			Map.entry("DynamicOrderedEnum", (s, a) -> EnumType.dynamicEnum(s, firstOrNull(a), true)),
 			Map.entry("Font", (s, a) -> FontType.INSTANCE),
+			Map.entry("ItemModel", (s, a) -> ItemModelType.INSTANCE),
 			Map.entry("PlayerInventorySlot", (s, a) -> new PlayerInventorySlotType(s.getFirst())),
 			Map.entry("Keybind", (s, a) -> KeybindType.INSTANCE),
 			Map.entry("LongSeed", (s, a) -> LongSeedType.INSTANCE),

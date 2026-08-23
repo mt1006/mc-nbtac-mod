@@ -44,6 +44,10 @@ public class NBTacTest implements FabricClientGameTest
 		ctx.assertAllPresent("/summon zombie ~ ~ ~ {CanBreakDoors:tr", List.of("true")); // partially entered value suggestions
 		ctx.assertPresent("/summon llama ~ ~ ~ {Variant:", "1"); // DescribedEnum (at least main part)
 
+		// test ItemModel and item data component suggestions for Identifier.CODEC
+		ctx.assertContains("/give @p minecraft:acacia_button[item_model=aca", "\"minecraft:acacia_boat\"", MCVER >= 12102);
+		ctx.assertContains("/give @p minecraft:acacia_button[item_model=acacia_boat", "]", MCVER >= 12102);
+
 		// test config options
 		ctx.withConfig(ModConfig.shortBoolean, true, () -> ctx.assertAllPresent("/summon zombie ~ ~ ~ {CanBreakDoors:", List.of("1b", "0b")));
 

@@ -191,7 +191,7 @@ instrument :RegistryKey(minecraft:instrument)
 
 intangible_projectile :EmptyCompound
 
-item_model :RegistryKey(minecraft:item) @Since(1.21.2)
+item_model :ItemModel @Since(1.21.2)
 
 item_name :TextComponent @AlwaysRelevant
 
