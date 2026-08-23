@@ -1,13 +1,23 @@
 -Tag parser has been rewritten.
 -Removed disassembler and cache - all tags are now predefined rather than being generated on launch.
 -General improvements to suggestions.
+-Added suggestions for particle data, including in /particle command (thanks to vred1 for suggestion, and Hardel-DW for PR).
+-Added "update_on_cursor_movement" setting to restore Minecraft suggestion behavior from before 26.1 (true by default).
+-Added "unknown_item_components" setting to specify relevancy of unknown (modded) item data components ("relevand_by_default" by default).
+-Added suggestions for "item_model" suggestions from resource packs (thanks to NotCbop for reporting).
 -Changed suggestion file format - they're now loaded by mod itself and no longer treated as part of resource pack.
 -Changed "json_string_suggestion" and "placing_of_irrelevant" setting type from integer to enum.
 -Renamed "default_quotation_mark_type" to "default_quotation_mark" and changed its type from integer to enum.
 -Removed settings: "use_disassembler", "load_from_resources", "use_cache", "max_cached_instances" and "max_stack_traces" - they were related to removed disassembler and cache.
 -Removed "hide_forge_tags" setting as Forge/NeoForge tags are no longer present.
+-Removed block entity type extraction and "allow_block_entity_extraction" setting.
+-Removed suggestion saving and "save_suggestions" setting.
 -"Finished in" message now shows only when "debug_mode" is enabled.
+-Added basic mod API (thanks to mega12345mega for suggestion).
+-Changed mod ID from "nbt_ac" to "nbtac".
+-Fixed item data component suggestions for some partial IDs (e.g. note_block_sound).
 -Fixed item component id suggestion including equal sign when removing component with "hide_mc_namespace_in_components" disabled or with modded components.
+-Fixed various issues caused by Java localization.
 
 ===Version 1.3.15===
 -Added Chinese [simplified] translation (thanks to HelloWorld-1024cpu).
