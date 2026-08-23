@@ -22,6 +22,7 @@ public class CustomTagParser
 	private final Type rootType;
 	private final @Nullable String dataComponentItemId;
 	public @Nullable Type parsedPathType = null;
+	public SuggestionList tailSuggestions = SuggestionList.empty();
 
 	private CustomTagParser(String str, ParserType parserType, Type rootType, @Nullable String dataComponentItemId)
 	{
@@ -73,12 +74,12 @@ public class CustomTagParser
 				// so we should provide suggestions for it anyway (e.g. for boolean)
 				if (val instanceof ParsedPrimitive) { throw reader.new ReaderException(); }
 			}
-			return SuggestionList.empty();
+			return tailSuggestions;
 		}
 		catch (SimpleStringReader.ReaderException e)
 		{
 			SuggestionList list = rootType.getSuggestions(new Type.SuggestionListContext(val, parserType, reader, e.asSuggestionList()));
-			return list != null ? list : SuggestionList.empty();
+			return list != null ? list : tailSuggestions;
 		}
 	}
 
@@ -172,14 +173,14 @@ public class CustomTagParser
 				}
 				else
 				{
-					return SuggestionList.empty();
+					return tailSuggestions;
 				}
 			}
 		}
 		catch (SimpleStringReader.ReaderException e)
 		{
 			if (inInnerCompound) { throw e; }
-			return SuggestionList.empty();
+			return tailSuggestions;
 		}
 	}
 
