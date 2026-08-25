@@ -13,18 +13,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class NBTacTestContext
 {
 	private final Field pendingSuggestionsField;
-	private final Field suggestionsField;
 	private final ChatScreen chatScreen;
 	private final CommandSuggestions commandSuggestions;
 
 	public NBTacTestContext(ChatScreen chatScreen)
 	{
 		this.pendingSuggestionsField = getField(CommandSuggestions.class, "pendingSuggestions", CompletableFuture.class);
-		this.suggestionsField = getField(Suggestions.class, "suggestions", List.class);
 		this.chatScreen = chatScreen;
 
 		Field commandSuggestionsField = getField(ChatScreen.class, "commandSuggestions", CommandSuggestions.class);
@@ -82,13 +81,32 @@ public class NBTacTestContext
 		field.val = oldVal;
 	}
 
+	public static void assertPresent(CompletableFuture<Suggestions> suggestions, String suggestion)
+	{
+		Set<String> suggestionSet;
+		try
+		{
+			suggestionSet = getSuggestionSet(suggestions.get());
+		}
+		catch (InterruptedException | ExecutionException e) { throw new RuntimeException(e); }
+
+		if (!suggestionSet.contains(suggestion))
+		{
+			NBTac.LOGGER.error("Expected: {}, Got: {}", suggestion, suggestionSet);
+			throw new RuntimeException();
+		}
+	}
+
 	private Set<String> getSuggestionSet()
 	{
 		Suggestions suggestions = ((CompletableFuture<Suggestions>)getFieldVal(pendingSuggestionsField, commandSuggestions)).join();
-		List<Suggestion> suggestionList = (List<Suggestion>)getFieldVal(suggestionsField, suggestions);
+		return getSuggestionSet(suggestions);
+	}
 
+	private static Set<String> getSuggestionSet(Suggestions suggestions)
+	{
 		Set<String> suggestionSet = new HashSet<>();
-		for (Suggestion s : suggestionList)
+		for (Suggestion s : suggestions.getList())
 		{
 			if (!suggestionSet.add(s.getText())) { throw new RuntimeException("Found duplicate suggestions!"); }
 		}

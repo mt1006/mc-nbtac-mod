@@ -7,20 +7,26 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.mt1006.nbtac.api.NBTacAPI;
+import net.mt1006.nbtac.api.NBTacSuggestion;
+import net.mt1006.nbtac.api.NBTacSuggestionList;
 import net.mt1006.nbtac.config.ModConfig;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @SuppressWarnings("UnstableApiUsage")
 public class NBTacTest implements FabricClientGameTest
 {
 	private static final int MCVER = 260200;
 
-	@Override public void runTest(ClientGameTestContext context)
+	@Override public void runTest(ClientGameTestContext gameCtx)
 	{
-		TestSingleplayerContext ctx = context.worldBuilder().adjustSettings((s) -> s.setAllowCommands(true)).create();
-		context.runOnClient(NBTacTest::suggestionTest);
-		ctx.close();
+		TestSingleplayerContext singleplayer = gameCtx.worldBuilder().adjustSettings((s) -> s.setAllowCommands(true)).create();
+		gameCtx.runOnClient(NBTacTest::suggestionTest);
+		gameCtx.runOnClient(NBTacTest::apiTest);
+		singleplayer.close();
 	}
 
 	@SuppressWarnings("ConstantValue")
@@ -69,5 +75,32 @@ public class NBTacTest implements FabricClientGameTest
 		ctx.assertPresent("/particle block{", "block_state");
 		ctx.assertContains("/setblock ~ ~ ~ minecraft:test_instance_block{", "errors", MCVER >= 12109);
 		ctx.assertOnlyContains("/setblock ~ ~ ~ test_instance_block{errors:[{pos:", "[I;", MCVER >= 12109);
+	}
+
+	private static void apiTest(Minecraft mc)
+	{
+		//TODO: test addCustomSuggestions
+
+		// basic tests without processor
+		NBTacTestContext.assertPresent(NBTacAPI.getNbtSuggestions("{", "entity/minecraft:zombie", null, false, null), "CanBreakDoors");
+		NBTacTestContext.assertPresent(NBTacAPI.getNbtSuggestions("", "entity/minecraft:zombie", null, true, null), "CanBreakDoors");
+		NBTacTestContext.assertPresent(NBTacAPI.getItemDataSuggestions("", "item/minecraft:intangible_projectile", null, null, null), "{}");
+
+		// test processor that doesn't do anything
+		NBTacTestContext.assertPresent(NBTacAPI.getNbtSuggestions("{", "entity/minecraft:zombie", null, false, Function.identity()), "CanBreakDoors");
+
+		// test basic processor
+		NBTacTestContext.assertPresent(NBTacAPI.getNbtSuggestions("{", "block/minecraft:furnace", null, false, (sl) -> {
+			sl.suggestions().clear();
+			sl.suggestions().add(NBTacSuggestion.createRaw("x", "y", -100));
+			return sl;
+		}), "x");
+
+		// test processor returning new suggestion list instance
+		NBTacTestContext.assertPresent(NBTacAPI.getNbtSuggestions("{", "block/minecraft:furnace", null, false, (sl) -> {
+			NBTacSuggestionList newSl = new NBTacSuggestionList(new ArrayList<>(), sl.cursor());
+			newSl.suggestions().add(NBTacSuggestion.createRaw("a", "b", 0));
+			return newSl;
+		}), "a");
 	}
 }
