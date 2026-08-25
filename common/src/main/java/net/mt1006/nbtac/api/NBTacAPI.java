@@ -89,7 +89,7 @@ public class NBTacAPI
 	 * Get suggestions for NBT compound value or path.
 	 * @param input argument part to get suggestions for, e.g. "{IsBaby:true,act"
 	 * @param name name of a suggestion - "group/namespace:id", e.g. "entity/minecraft:creeper"
-	 * @param builder suggestion builder, if null dummy builder will be created with empty command and start at 0
+	 * @param builder suggestion builder, if null dummy builder will be created
 	 * @param suggestPath whenever to provide suggestions for path, e.g. for "active_effects[0]."
 	 * @param process if not null, it can be used to modify suggestion list
 	 * @return suggestions
@@ -97,7 +97,7 @@ public class NBTacAPI
 	public static CompletableFuture<Suggestions> getNbtSuggestions(String input, String name, @Nullable SuggestionsBuilder builder, boolean suggestPath,
 	                                                               @Nullable Function<NBTacSuggestionList, NBTacSuggestionList> process)
 	{
-		if (builder == null) { builder = new SuggestionsBuilder("", 0); }
+		if (builder == null) { builder = new SuggestionsBuilder(input, 0); }
 		return SuggestionManager.get(input, CompoundType.fromName(name), builder, suggestPath, (sl) -> processSuggestions(process, sl));
 	}
 
@@ -109,14 +109,14 @@ public class NBTacAPI
 	 * @param input data component value part to get suggestions for, e.g. "tru"
 	 * @param name name of a data component prefixed by "item/", e.g. "item/minecraft:map_decoration"
 	 * @param itemId optional item ID (might be null)
-	 * @param builder suggestion builder, if null dummy builder will be created with empty command and start at 0
+	 * @param builder suggestion builder, if null dummy builder will be created
 	 * @param process if not null, it can be used to modify suggestion list
 	 * @return suggestions
 	 */
 	public static CompletableFuture<Suggestions> getItemDataSuggestions(String input, String name, @Nullable Identifier itemId, @Nullable SuggestionsBuilder builder,
 	                                                                    @Nullable Function<NBTacSuggestionList, NBTacSuggestionList> process)
 	{
-		if (builder == null) { builder = new SuggestionsBuilder("", 0); }
+		if (builder == null) { builder = new SuggestionsBuilder(input, 0); }
 
 		DefinedNbtTag tag = DataComponentManager.componentMap.get(name);
 		if (tag == null) { return Suggestions.empty(); }
