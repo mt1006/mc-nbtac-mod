@@ -20,7 +20,7 @@ public class ItemModelType extends ComplexType
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
 		ModelManager modelManager = Minecraft.getInstance().getModelManager();
-		for (Identifier id : ((ModelManagerFields)modelManager).getBakedItemStackModels().keySet())
+		for (Identifier id : ((ModelManagerFields)modelManager).nbtac$getBakedItemStackModels().keySet())
 		{
 			list.add(new IdSuggestion(id, "[#item_model]", ctx.parserType()));
 		}

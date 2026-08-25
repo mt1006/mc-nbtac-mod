@@ -11,5 +11,5 @@ import java.util.Map;
 @Mixin(ModelManager.class)
 public interface ModelManagerFields
 {
-	@Accessor Map<Identifier, ItemModel> getBakedItemStackModels();
+	@Accessor("bakedItemStackModels") Map<Identifier, ItemModel> nbtac$getBakedItemStackModels();
 }

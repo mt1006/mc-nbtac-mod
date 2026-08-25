@@ -12,7 +12,7 @@ import java.util.UUID;
 @Mixin(EntitySelector.class)
 public interface EntitySelectorFields
 {
-	@Accessor @Nullable String getPlayerName();
-	@Accessor @Nullable UUID getEntityUUID();
-	@Accessor EntityTypeTest<Entity, ?> getType();
+	@Accessor("playerName") @Nullable String nbtac$getPlayerName();
+	@Accessor("entityUUID") @Nullable UUID nbtac$getEntityUUID();
+	@Accessor("type") EntityTypeTest<Entity, ?> nbtac$getType();
 }
