@@ -28,7 +28,7 @@ public class TagsType extends ComplexCompoundType
 		this.idKey = idKey;
 	}
 
-	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)
+	@Override protected void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
 	{
 		if (idKey != null)
 		{

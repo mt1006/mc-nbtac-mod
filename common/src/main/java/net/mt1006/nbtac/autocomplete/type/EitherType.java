@@ -44,9 +44,22 @@ public class EitherType implements Type
 		return PrimitiveType.UNKNOWN;
 	}
 
-	@Override public NbtTagMap getSubcompound()
+	@Override public NbtTagMap getMutableTagMap()
 	{
 		Type type = typeMap.get(ParsedCompound.class);
-		return type != null ? type.getSubcompound() : PrimitiveType.UNKNOWN.getSubcompound();
+		return type != null ? type.getMutableTagMap() : PrimitiveType.UNKNOWN.getMutableTagMap();
+	}
+
+	@Override public @Nullable NbtTagMap getSuggestionsTagMap(ParsedCompound parsed)
+	{
+		Type type = typeMap.get(ParsedCompound.class);
+		return type != null ? type.getSuggestionsTagMap(parsed) : PrimitiveType.UNKNOWN.getSuggestionsTagMap(parsed);
+	}
+
+	@Override public void setTagMap(@Nullable NbtTagMap subcompound)
+	{
+		Type type = typeMap.get(ParsedCompound.class);
+		if (type != null) { type.setTagMap(subcompound); }
+		else { PrimitiveType.UNKNOWN.setTagMap(subcompound); }
 	}
 }

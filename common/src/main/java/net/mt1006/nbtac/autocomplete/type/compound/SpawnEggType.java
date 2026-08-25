@@ -20,7 +20,7 @@ public class SpawnEggType extends ComplexCompoundType
 		this.id = id != null ? Identifier.tryParse(id) : null;
 	}
 
-	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)
+	@Override protected void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
 	{
 		if (id == null) { return; }
 		Item item = RegistryUtils.ITEM.get(id);

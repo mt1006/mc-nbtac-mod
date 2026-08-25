@@ -85,7 +85,7 @@ public class SuggestionDataParser extends FileParser
 			parseAnnotations(reader, tag);
 			reader.expectEnd();
 
-			tag.getType().setSubcompound(parseSuggestions(entry.lines, null));
+			tag.getType().setTagMap(parseSuggestions(entry.lines, null));
 			if (tag.inVersionRange()) { DataComponentManager.componentMap.put(keyPrefix + entryName, tag); }
 		}
 	}
@@ -143,7 +143,7 @@ public class SuggestionDataParser extends FileParser
 				else
 				{
 					NbtTag nbtTag = suggestionStack.get(tabCount - 1);
-					if (!nbtTag.getType().getSubcompound().add(tag)) { throw reader.new ReaderException(); }
+					if (!nbtTag.getType().getMutableTagMap().add(tag)) { throw reader.new ReaderException(); }
 				}
 			}
 			reader.expectEnd();

@@ -2,6 +2,7 @@ package net.mt1006.nbtac.autocomplete.type;
 
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
+import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.parser.ParsedValue;
 import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.type.complex.*;
@@ -85,12 +86,17 @@ public interface Type
 
 	PrimitiveType getPrimitive();
 
-	default NbtTagMap getSubcompound()
+	default NbtTagMap getMutableTagMap()
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	default void setSubcompound(@Nullable NbtTagMap subcompound)
+	default @Nullable NbtTagMap getSuggestionsTagMap(ParsedCompound parsed)
+	{
+		return null;
+	}
+
+	default void setTagMap(@Nullable NbtTagMap subcompound)
 	{
 		if (subcompound != null) { throw new UnsupportedOperationException(); }
 	}

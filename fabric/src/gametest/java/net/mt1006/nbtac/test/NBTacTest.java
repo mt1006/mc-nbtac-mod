@@ -44,6 +44,21 @@ public class NBTacTest implements FabricClientGameTest
 		ctx.assertAllPresent("/summon zombie ~ ~ ~ {CanBreakDoors:tr", List.of("true")); // partially entered value suggestions
 		ctx.assertPresent("/summon llama ~ ~ ~ {Variant:", "1"); // DescribedEnum (at least main part)
 
+		// NBT path tests
+		ctx.assertAllPresent("/data get entity @p Inventory", List.of("["));
+		ctx.assertAllPresent("/data get entity @p Inventory[", List.of("{"));
+		ctx.assertPresent("/data get entity @p Inventory[{", "id");
+		ctx.assertPresent("/data get entity @p Inventory[{id:dirt,", "count");
+		ctx.assertPresent("/data get entity @p Inventory[].", "count");
+		ctx.assertPresent("/data get entity @p Inventory[5].", "count");
+		ctx.assertPresent("/data get entity @p Inventory[5].co", "count");
+		ctx.assertPresent("/data get entity @p Inventory[{id:\"minecraft:dirt\"}].components.", "\"minecraft:enchantments\"");
+
+		// /data modify tests
+		ctx.assertPresent("/data modify entity @p Inventory[1] set value {id:", "\"minecraft:dirt\"");
+		ctx.assertAllPresent("/data modify entity @p Inventory[0] merge value {slot", List.of(":"));
+		ctx.assertPresent("/data modify entity @p Inventory[1] merge from entity @p CustomName.", "keybind");
+
 		// test ItemModel and item data component suggestions for Identifier.CODEC
 		ctx.assertContains("/give @p minecraft:acacia_button[item_model=aca", "\"minecraft:acacia_boat\"", MCVER >= 12102);
 		ctx.assertContains("/give @p minecraft:acacia_button[item_model=acacia_boat", "]", MCVER >= 12102);

@@ -76,6 +76,6 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 
 		CustomTagParser parser = CustomTagParser.forNbtPath(path, compoundType);
 		parser.parse();
-		return parser.parsedPathType;
+		return parser.pathType;
 	}
 }
