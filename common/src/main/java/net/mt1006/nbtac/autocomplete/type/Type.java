@@ -51,6 +51,8 @@ public interface Type
 			Map.entry("PotDecoration", (s, a) -> PotDecorationType.INSTANCE),
 			Map.entry("Recipe", (s, a) -> RecipeType.INSTANCE),
 			Map.entry("RegistryKey", (s, a) -> new RegistryKeyType(firstOrNull(a))),
+			Map.entry("RegistrySet", (s, a) -> EitherType.registrySet(firstOrNull(a))),
+			Map.entry("RegistryTagKey", (s, a) -> new RegistryKeyType(firstOrNull(a), RegistryKeyType.Contents.BOTH_PREFIXED)), //TODO: remove after dropping pre-26.1 suggestions
 			Map.entry("Id", (s, a) -> new IdType(firstOrNull(a))),
 			Map.entry("SpawnEgg", (s, a) -> new SpawnEggType(firstOrNull(a))), //TODO: use
 			Map.entry("Tags", (s, a) -> new TagsType(firstOrNull(a), null, null)),

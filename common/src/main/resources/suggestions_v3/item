@@ -48,11 +48,12 @@ block_state :BlockStateTags($../../id$)
 blocks_attacks :compound @AlwaysRelevant @Since(1.21.5)
 +block_delay_seconds :int
 +disable_cooldown_scale :int
-+bypassed_by :string
++bypassed_by :RegistryTagKey(minecraft:damage_type) @Until(26.1)
++bypassed_by :RegistrySet(minecraft:damage_type) @Since(26.1)
 +block_sound :RegistryKey(minecraft:sound_event)
 +disabled_sound :RegistryKey(minecraft:sound_event)
 +damage_reductions :list<compound>
-	+type :string
+	+type :RegistrySet(minecraft:damage_type)
 	+base :float
 	+factor :float
 	+horizontal_blocking_angle :float
@@ -119,7 +120,8 @@ damage :int
 
 #TODO: fix types on 1.21.11?
 damage_resistant :compound @AlwaysRelevant @Since(1.21.2)
-+types :RegistryKey(minecraft:damage_type)
++types :RegistryTagKey(minecraft:damage_type) @Until(26.1)
++types :RegistrySet(minecraft:damage_type) @Since(26.1)
 
 damage_type :RegistryKey(minecraft:damage_type) @AlwaysRelevant @Since(1.21.11)
 
@@ -153,7 +155,7 @@ equippable :compound @AlwaysRelevant @Since(1.21.2)
 +equip_sound :RegistryKey(minecraft:sound_event)
 +model :string @Until(1.21.4)
 +asset_id :string @Since(1.21.4)
-+allowed_entities :list<RegistryKey(minecraft:entity_type)>
++allowed_entities :RegistrySet(minecraft:entity_type)
 +dispensable :boolean
 +swappable :boolean
 +damage_on_hurt :boolean
@@ -260,8 +262,8 @@ potion_duration_scale :float @Since(1.21.5)
 #TODO: test/improve
 profile :#profile
 
-#TODO: fix
-provides_banner_patterns :RegistryKey(minecraft:banner_pattern) @AlwaysRelevant @Since(1.21.5)
+provides_banner_patterns :RegistryTagKey(minecraft:banner_pattern) @AlwaysRelevant @Since(1.21.5) @Until(26.1)
+provides_banner_patterns :RegistrySet(minecraft:banner_pattern) @AlwaysRelevant @Since(26.1)
 
 provides_trim_material :RegistryKey(minecraft:trim_material) @AlwaysRelevant @Since(1.21.5)
 
@@ -291,7 +293,7 @@ tool :compound @AlwaysRelevant
 +default_mining_speed :float
 +damage_per_block :int
 +rules :list<compound>
-	+blocks :list<RegistryKey(minecraft:block)>
+	+blocks :RegistrySet(minecraft:block)
 	+speed :float
 	+correct_for_drops :boolean
 +can_destroy_blocks_in_creative :boolean @Since(1.21.5)

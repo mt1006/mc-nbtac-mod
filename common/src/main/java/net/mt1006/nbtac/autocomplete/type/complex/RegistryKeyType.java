@@ -12,12 +12,19 @@ import org.jetbrains.annotations.Nullable;
 public class RegistryKeyType extends ComplexType
 {
 	private final @Nullable ResourceKey<Registry<Object>> registryKey;
+	private final Contents contents;
 
 	public RegistryKeyType(@Nullable String arg)
 	{
+		this(arg, Contents.KEYS);
+	}
+
+	public RegistryKeyType(@Nullable String arg, Contents contents)
+	{
 		super(PrimitiveType.STRING);
 		Identifier id = arg != null ? Identifier.parse(arg) : null;
-		registryKey = id != null ? ResourceKey.createRegistryKey(id) : null;
+		this.registryKey = id != null ? ResourceKey.createRegistryKey(id) : null;
+		this.contents = contents;
 	}
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
@@ -29,6 +36,32 @@ public class RegistryKeyType extends ComplexType
 		Registry<?> registry = Minecraft.getInstance().level.registryAccess().lookup(registryKey).orElse(null);
 		if (registry == null) { return; }
 
-		registry.keySet().forEach((id) -> list.add(new IdSuggestion(id, subtext, ctx.parserType())));
+		if (contents.includeKeys)
+		{
+			registry.keySet().forEach((id) -> list.add(new IdSuggestion(id, subtext, ctx.parserType(), 0, contents.keysAsTags)));
+		}
+		if (contents.includeTags)
+		{
+			registry.getTags().forEach((t) -> list.add(new IdSuggestion(t.key().location(), subtext, ctx.parserType(), 0, true)));
+		}
+	}
+
+	public enum Contents
+	{
+		KEYS(true, false, false),
+		TAGS(false, true, false),
+		BOTH(true, true, false),
+		BOTH_PREFIXED(true, true, true);
+
+		public final boolean includeKeys;
+		public final boolean includeTags;
+		public final boolean keysAsTags;
+
+		Contents(boolean includeKeys, boolean includeTags, boolean keysAsTags)
+		{
+			this.includeKeys = includeKeys;
+			this.includeTags = includeTags;
+			this.keysAsTags = keysAsTags;
+		}
 	}
 }

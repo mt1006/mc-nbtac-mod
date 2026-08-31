@@ -3,6 +3,7 @@ package net.mt1006.nbtac.autocomplete.type;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
+import net.mt1006.nbtac.autocomplete.type.complex.RegistryKeyType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
@@ -11,6 +12,13 @@ import java.util.List;
 public class EitherType implements Type
 {
 	private final IdentityHashMap<Class<?>, Type> typeMap = new IdentityHashMap<>();
+
+	public static EitherType registrySet(@Nullable String arg)
+	{
+		return new EitherType(List.of(
+				new RegistryKeyType(arg, RegistryKeyType.Contents.BOTH),
+				new ListType(new RegistryKeyType(arg))));
+	}
 
 	public EitherType(List<Type> types)
 	{

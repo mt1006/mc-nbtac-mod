@@ -80,9 +80,9 @@ command_block
 +SuccessCount :int
 +CustomName :TextComponent
 +TrackOutput :boolean
-+LastOutput :TextComponent @RelevantIfEq(TrackOutput, true)
++LastOutput :TextComponent @RelevantIfEq(TrackOutput, true, 1b)
 +UpdateLastExecution :boolean
-+LastExecution :long @RelevantIfEq(UpdateLastExecution, true)
++LastExecution :long @RelevantIfEq(UpdateLastExecution, true, 1b)
 +powered :boolean
 +conditionMet :boolean
 +auto :boolean

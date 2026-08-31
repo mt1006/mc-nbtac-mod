@@ -57,12 +57,15 @@ public class DefinedNbtTag extends NbtTag
 		if (ifEq != null && !ifEq.isEmpty())
 		{
 			String val = compound.getStrVal(ifEq.getFirst());
+			String fullIdVal = "minecraft:" + val;
+
 			if (val != null)
 			{
 				relevant = false;
 				for (int i = 1; i < ifEq.size(); i++)
 				{
-					if (val.equals(ifEq.get(i))) { return true; }
+					String ifEqArg = ifEq.get(i);
+					if (val.equals(ifEqArg) || fullIdVal.equals(ifEqArg)) { return true; }
 				}
 			}
 		}

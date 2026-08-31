@@ -415,9 +415,9 @@ command_block_minecart &_minecart
 +SuccessCount :int
 +CustomName :TextComponent
 +TrackOutput :boolean
-+LastOutput :TextComponent @RelevantIfEq(TrackOutput, true)
++LastOutput :TextComponent @RelevantIfEq(TrackOutput, true, 1b)
 +UpdateLastExecution :boolean
-+LastExecution :long @RelevantIfEq(UpdateLastExecution, true)
++LastExecution :long @RelevantIfEq(UpdateLastExecution, true, 1b)
 
 # since 1.21.9
 copper_golem &_mob
