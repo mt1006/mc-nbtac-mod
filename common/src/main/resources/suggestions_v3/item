@@ -44,7 +44,6 @@ block_entity_data :TagsWithId(block/$../../id$)
 
 block_state :BlockStateTags($../../id$)
 
-#TODO: improve bypassed_by (and test on 1.21.11)
 blocks_attacks :compound @AlwaysRelevant @Since(1.21.5)
 +block_delay_seconds :int
 +disable_cooldown_scale :int

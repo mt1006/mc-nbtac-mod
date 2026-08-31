@@ -186,13 +186,7 @@ shelf
 +align_items_to_bottom :boolean
 
 skull
-+profile :either<string, compound>
-	+name :string
-	+id :UUID
-	+properties :list<compound>
-		+name :string
-		+value :string
-		+signature :string
++profile :either<string, #profile>
 +note_block_sound :string
 +custom_name :TextComponent
 

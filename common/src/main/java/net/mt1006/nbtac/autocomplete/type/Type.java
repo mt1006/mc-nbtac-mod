@@ -76,7 +76,9 @@ public interface Type
 			Map.entry("TropicalFishExtendedVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
 			Map.entry("HorseExtendedVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
 			Map.entry("FurnaceRecipesUsed", (s, a) -> PrimitiveType.COMPOUND), //TODO: finish
-			Map.entry("RegistryId", (s, a) -> PrimitiveType.UNKNOWN) //TODO: remove after removing pre-1.21 suggestions
+			Map.entry("RegistryId", (s, a) -> PrimitiveType.UNKNOWN), //TODO: remove after removing pre-1.21 suggestions
+			Map.entry("Atlas", (s, a) -> AtlasType.INSTANCE),
+			Map.entry("Sprite", (s, a) -> new SpriteType(firstOrNull(a)))
 	);
 
 	@Nullable SuggestionList getSuggestions(SuggestionListContext ctx);
