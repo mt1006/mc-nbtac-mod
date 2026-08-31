@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @Mixin(targets = "net.minecraft.commands.arguments.item.ItemParser$State")
 public abstract class ItemParserStateMixin
@@ -65,7 +66,7 @@ public abstract class ItemParserStateMixin
 	@Inject(method = "readComponents", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/item/ItemParser$State;readComponent(Lnet/minecraft/nbt/TagParser;Lnet/minecraft/resources/RegistryOps;Lnet/minecraft/core/component/DataComponentType;)V"))
 	private void atReadComponents(CallbackInfo ci)
 	{
-		visitor.visitSuggestions(this::suggestComponentData);
+		visitor.visitSuggestions((builder) -> suggestComponentData(builder, false));
 		cursorBeforeComponent = reader.getCursor();
 	}
 
@@ -81,6 +82,16 @@ public abstract class ItemParserStateMixin
 		suggestionList.forEach((s) -> s.suggest(builder));
 
 		cir.setReturnValue(builder.buildFuture());
+		cir.cancel();
+	}
+
+	@Inject(method = "suggestNextOrEndComponents", at = @At(value = "HEAD"), cancellable = true)
+	private void atSuggestNextOrEndComponents(SuggestionsBuilder builder, CallbackInfoReturnable<CompletableFuture<Suggestions>> cir)
+	{
+		// this is necessary for some components like, e.g. mc component parser treats
+		// item_mode=a as valid component, therefore it tries to suggest , or ]
+		if (!builder.getRemaining().isEmpty()) { cir.setReturnValue(builder.buildFuture()); }
+		else { cir.setReturnValue(suggestComponentData(builder.createOffset(cursorBeforeComponent), true)); }
 		cir.cancel();
 	}
 
@@ -121,7 +132,7 @@ public abstract class ItemParserStateMixin
 		return id != null ? RegistryUtils.ITEM.get(id) : null;
 	}
 
-	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder builder)
+	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder builder, boolean withTailSuggestions)
 	{
 		ResourceLocation componentId = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
 		NbtTag component = componentId != null ? DataComponentManager.componentMap.get("item/" + componentId) : null;
@@ -129,6 +140,16 @@ public abstract class ItemParserStateMixin
 
 		String val = reader.getString().substring(cursorBeforeComponent);
 		CustomTagParser parser = CustomTagParser.forDataComponentValue(val, component.getType(), findParsedItemId());
-		return SuggestionManager.finishSuggestions(parser::parse, builder);
+
+		// if everything works fine, this check probably isn't necessary, but it is used in cases
+		// where data component value isn't valid for mc, but is valid for NBTac, e.g. entity_data={}
+		if (withTailSuggestions)
+		{
+			parser.tailSuggestions = new SuggestionList(val.length());
+			parser.tailSuggestions.addRaw(",", null);
+			parser.tailSuggestions.addRaw("]", null);
+		}
+
+		return SuggestionManager.finishSuggestions(parser::parse, builder, Function.identity());
 	}
 }

@@ -9,5 +9,5 @@ import java.util.Map;
 @Mixin(ClientLanguage.class)
 public interface ClientLanguageFields
 {
-	@Accessor Map<String, String> getStorage();
+	@Accessor("storage") Map<String, String> nbtac$getStorage();
 }
