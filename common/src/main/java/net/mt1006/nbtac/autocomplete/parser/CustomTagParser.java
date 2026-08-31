@@ -23,6 +23,7 @@ public class CustomTagParser
 	private final @Nullable String dataComponentItemId;
 	public @Nullable Type pathType = null;
 	public SuggestionList tailSuggestions = SuggestionList.empty();
+	private boolean success = false; // not set by path parser
 
 	private CustomTagParser(String str, ParserType parserType, Type rootType, @Nullable String dataComponentItemId)
 	{
@@ -55,6 +56,7 @@ public class CustomTagParser
 
 	public SuggestionList parse()
 	{
+		success = false;
 		ParsedValue val = null;
 		try
 		{
@@ -80,6 +82,7 @@ public class CustomTagParser
 				// so we should provide suggestions for it anyway (e.g. for boolean)
 				if (val instanceof ParsedPrimitive) { throw reader.new ReaderException(); }
 			}
+			success = true;
 			return tailSuggestions;
 		}
 		catch (SimpleStringReader.ReaderException e)
@@ -218,7 +221,7 @@ public class CustomTagParser
 	}
 
 	private <T extends ParsedCollection<E>, E> void parseCollection(T out, Function<Integer, E> nextValue, Consumer<E> parser,
-																	char startSign, char stopSign, boolean isArray)
+	                                                                char startSign, char stopSign, boolean isArray)
 	{
 		reader.expect(startSign);
 		if (isArray)
@@ -286,5 +289,11 @@ public class CustomTagParser
 			default:
 				return new ParsedPrimitive(parentTag, cursorPos);
 		}
+	}
+
+	public boolean wasSuccessful()
+	{
+		if (parserType == ParserType.PATH) { throw new UnsupportedOperationException(); }
+		return success;
 	}
 }

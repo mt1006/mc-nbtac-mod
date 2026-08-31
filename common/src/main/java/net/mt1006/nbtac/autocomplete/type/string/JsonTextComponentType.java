@@ -45,6 +45,7 @@ public class JsonTextComponentType extends ComplexStringType
 		{
 			CustomTagParser parser = CustomTagParser.forJson(str, type);
 			SuggestionList suggestions = parser.parse();
+			if (parser.wasSuccessful()) { return -2; } // return ctx.expectedOperators(), which is "'"
 
 			suggestions.forEach(list::add);
 			return suggestions.cursor + 1;
