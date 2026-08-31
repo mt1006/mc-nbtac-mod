@@ -21,6 +21,7 @@
   "nbtac.options.field.default_quotation_mark.double": "이중(\")",
   "nbtac.options.field.json_string_suggestion": "JSON 문자열 제안",
   "nbtac.options.field.json_string_suggestion.none": "없음",
+  "nbtac.options.field.json_string_suggestion.recommended": "권장",
   "nbtac.options.field.json_string_suggestion.default_for_strings": "문자열에 대한 기본값",
   "nbtac.options.field.json_string_suggestion.legacy_separated": "레거시, 구분(' \")",
   "nbtac.options.field.json_string_suggestion.legacy_merged": "레거시, 병합('\")",

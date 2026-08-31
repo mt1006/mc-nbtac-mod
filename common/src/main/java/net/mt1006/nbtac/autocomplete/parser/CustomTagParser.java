@@ -21,7 +21,8 @@ public class CustomTagParser
 	private final ParserType parserType;
 	private final Type rootType;
 	private final @Nullable String dataComponentItemId;
-	public @Nullable Type parsedPathType = null;
+	public @Nullable Type pathType = null;
+	public SuggestionList tailSuggestions = SuggestionList.empty();
 
 	private CustomTagParser(String str, ParserType parserType, Type rootType, @Nullable String dataComponentItemId)
 	{
@@ -36,14 +37,10 @@ public class CustomTagParser
 		return new CustomTagParser(str, ParserType.VALUE, valueType, null);
 	}
 
-	public static CustomTagParser forNbtCompound(String str, CompoundType compoundType)
+	public static CustomTagParser forNbtPath(String str, Type valueType)
 	{
-		return new CustomTagParser(str, ParserType.VALUE, compoundType, null);
-	}
-
-	public static CustomTagParser forNbtPath(String str, CompoundType compoundType)
-	{
-		return new CustomTagParser(str, ParserType.PATH, compoundType, null);
+		if (!(valueType instanceof CompoundType)) { throw new IllegalArgumentException(); }
+		return new CustomTagParser(str, ParserType.PATH, valueType, null);
 	}
 
 	public static CustomTagParser forDataComponentValue(String str, Type type, @Nullable ResourceLocation itemId)
@@ -65,7 +62,8 @@ public class CustomTagParser
 			{
 				val = new ParsedCompound(null, 0);
 				optAddVirtualEntityId(val);
-				return parsePath((ParsedCompound)val, rootType);
+				pathType = rootType;
+				return parsePath((ParsedCompound)val);
 			}
 			else if (dataComponentItemId == null)
 			{
@@ -82,12 +80,12 @@ public class CustomTagParser
 				// so we should provide suggestions for it anyway (e.g. for boolean)
 				if (val instanceof ParsedPrimitive) { throw reader.new ReaderException(); }
 			}
-			return SuggestionList.empty();
+			return tailSuggestions;
 		}
 		catch (SimpleStringReader.ReaderException e)
 		{
 			SuggestionList list = rootType.getSuggestions(new Type.SuggestionListContext(val, parserType, reader, e.asSuggestionList()));
-			return list != null ? list : SuggestionList.empty();
+			return list != null ? list : tailSuggestions;
 		}
 	}
 
@@ -101,9 +99,10 @@ public class CustomTagParser
 		}
 	}
 
-	private SuggestionList parsePath(ParsedCompound compound, Type tagType)
+	private SuggestionList parsePath(ParsedCompound compound)
 	{
-		NbtTagMap tagMap = tagType.getSubcompound();
+		NbtTagMap tagMap = pathType != null ? pathType.getMutableTagMap() : null;
+		ParsedCompound subcompound = null;
 		boolean inInnerCompound = false;
 
 		try
@@ -114,20 +113,21 @@ public class CustomTagParser
 				if (reader.peek() == '\0') { tag.key = ""; }
 				else { reader.readNbtPathString((results) -> tag.key = results.str); }
 
-				boolean usedAsList = false, usedAsCompound = false;
+				NbtTag nbtTag = tagMap != null ? tagMap.get(tag.key) : null;
+				pathType = nbtTag != null ? nbtTag.getType() : null;
+
+				boolean isList = false, isCompound = false;
 
 				if (reader.peek() == '[')
 				{
 					tag.val = new ParsedList(tag, reader.getCursor());
 					reader.skipChar(); // '['
-					reader.readNbtString((results) -> {});
-					reader.expect(']');
-
-					usedAsList = true;
+					pathType = (pathType instanceof ListType listType) ? listType.getElementType() : null;
+					isList = true;
 				}
 
-				ParsedCompound subcompound = new ParsedCompound(tag, reader.getCursor());
-				if (usedAsList) { ((ParsedList)tag.val).add(subcompound, reader.getCursor()); }
+				subcompound = new ParsedCompound(tag, reader.getCursor());
+				if (isList) { ((ParsedList)tag.val).add(subcompound, reader.getCursor()); }
 				else { tag.val = subcompound; }
 
 				if (reader.peek() == '{')
@@ -135,60 +135,75 @@ public class CustomTagParser
 					inInnerCompound = true;
 					parseCompound(subcompound);
 					inInnerCompound = false;
-					usedAsCompound = true;
+					isCompound = true;
 				}
 
-				NbtTag nbtTag = tagMap != null ? tagMap.get(tag.key) : null;
-				parsedPathType = nbtTag != null ? nbtTag.getType() : null;
-
-				if (reader.peek() == '\0')
+				if (isList)
 				{
-					if (tagMap == null) { return SuggestionList.empty(); }
+					if (!isCompound)
+					{
+						// e.g. "Inventory[", where Inventory is list of compounds
+						if (reader.peek() == '\0' && pathType != null && pathType.getPrimitive() == PrimitiveType.COMPOUND)
+						{
+							return new SuggestionList(reader.getCursor()).withOperators("{");
+						}
+
+						// parse index (though it's not validated)
+						if (reader.peek() != ']') { reader.readNbtString((res) -> {}); }
+					}
+
+					reader.expect(']');
+				}
+
+				if (reader.peek() == '.')
+				{
+					compound = subcompound;
+					tagMap = pathType != null ? pathType.getSuggestionsTagMap(compound) : null;
+					reader.skipChar(); // '.'
+				}
+				else if (reader.peek() == '\0')
+				{
+					if (tagMap == null) { return tailSuggestions; }
 
 					if (nbtTag == null)
 					{
-						return (usedAsCompound || usedAsList)
-								? SuggestionList.empty()
-								: tagMap.suggestionsForKeyPrefix(parserType, compound, tag.key, compound.getLastPos());
+						// if it's neither list nor compound, it might be unfinished tag name
+						// otherwise it's impossible because there's [...] or {...} suffix
+						return (isList || isCompound)
+								? tailSuggestions
+								: tagMap.suggestionsForKeyPrefix(parserType, compound, tag.key, compound.getLastPos(), false);
 					}
-					else
+
+					Type elementType = nbtTag.getType();
+
+					SuggestionList suggestions = new SuggestionList(reader.getCursor());
+					if (elementType.getPrimitive().isListOrArray())
 					{
-						Type elementType = nbtTag.getType();
-
-						SuggestionList suggestions = new SuggestionList(reader.getCursor());
-						if (elementType.getPrimitive().isListOrArray())
-						{
-							if (!usedAsList) { return suggestions.withOperators("["); }
-							if (elementType instanceof ListType) { elementType = ((ListType)elementType).getElementType(); }
-						}
-
-						if (elementType.getPrimitive() == PrimitiveType.COMPOUND)
-						{
-							if (!usedAsCompound) { suggestions.withOperators("{"); }
-							return suggestions.withOperators(".");
-						}
-						else
-						{
-							return SuggestionList.empty();
-						}
+						if (!isList) { return suggestions.withOperators("["); }
 					}
-				}
-				else if (reader.peek() == '.')
-				{
-					compound = (ParsedCompound)(usedAsList ? ((ParsedList)tag.val).getLast() : tag.val);
-					tagMap = parsedPathType != null ? parsedPathType.getSubcompound() : null;
-					reader.skipChar();
+					else if (elementType.getPrimitive() == PrimitiveType.COMPOUND)
+					{
+						if (!isCompound) { suggestions.withOperators("{"); }
+						return suggestions.withOperators(".");
+					}
+					return tailSuggestions;
 				}
 				else
 				{
+					//TODO: support multidimensional lists/arrays
+
+					// unexpected character
 					return SuggestionList.empty();
 				}
 			}
 		}
 		catch (SimpleStringReader.ReaderException e)
 		{
-			if (inInnerCompound) { throw e; }
-			return SuggestionList.empty();
+			SuggestionList list = (inInnerCompound && pathType != null)
+					? pathType.getSuggestions(new Type.SuggestionListContext(subcompound, ParserType.VALUE, reader, e.asSuggestionList()))
+					: null;
+			if (list == null) { list = e.asSuggestionList(); }
+			return list != null ? list : tailSuggestions;
 		}
 	}
 

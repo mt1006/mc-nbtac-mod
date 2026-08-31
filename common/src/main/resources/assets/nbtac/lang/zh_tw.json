@@ -29,6 +29,7 @@
 
   "nbtac.options.field.json_string_suggestion": "JSON 字串建議",
   "nbtac.options.field.json_string_suggestion.none": "無",
+  "nbtac.options.field.json_string_suggestion.recommended": "建議",
   "nbtac.options.field.json_string_suggestion.default_for_strings": "字串預設值",
   "nbtac.options.field.json_string_suggestion.legacy_separated": "舊版，分隔 (' \")",
   "nbtac.options.field.json_string_suggestion.legacy_merged": "舊版，合併 ('\")",

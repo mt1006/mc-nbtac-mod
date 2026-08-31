@@ -7,15 +7,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NbtTagManager
 {
-	private static final Map<String, NbtTagMap> tagMaps = new HashMap<>();
+	private static final Map<String, NbtTagMap> tagMaps = new ConcurrentHashMap<>();
 	public static final Map<ResourceLocation, String> blockToBlockEntityMap = new HashMap<>();
 	private static @Nullable NbtTagMap moddedEntityTagMap = null;
 
-	public static void add(String key, @Nullable NbtTagMap tagMap)
+	public static void add(String key, NbtTagMap tagMap)
 	{
 		tagMaps.put(key, tagMap);
 	}
@@ -37,11 +37,6 @@ public class NbtTagManager
 		}
 
 		return tagMaps.get(key);
-	}
-
-	public static Set<Map.Entry<String, NbtTagMap>> tagMapSet()
-	{
-		return tagMaps.entrySet();
 	}
 
 	private static @Nullable NbtTagMap getForModdedEntity()

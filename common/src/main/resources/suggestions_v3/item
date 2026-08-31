@@ -17,7 +17,8 @@ attribute_modifiers :list<compound> @AlwaysRelevant @Since(1.21.5)
 +operation :DynamicEnum(AttributeModifierOperation)
 +display :compound @Since(1.21.6)
 	+type :DynamicEnum(ItemAttributeModifiersDisplayType)
-	+subtype :ServerRegistryKey(minecraft:banner_pattern)
+	+value :TextComponent @RelevantIfEq(type, override)
+#TODO: test display.value
 
 attribute_modifiers :compound @AlwaysRelevant @Until(1.21.5)
 +modifiers :list<compound>
@@ -26,14 +27,11 @@ attribute_modifiers :compound @AlwaysRelevant @Until(1.21.5)
 	+id :string
 	+amount :double
 	+operation :DynamicEnum(AttributeModifierOperation)
-	+display :compound @Since(1.21.6)
-		+type :DynamicEnum(ItemAttributeModifiersDisplayType)
-		+subtype :ServerRegistryKey(minecraft:banner_pattern)
 +show_in_tooltip :boolean
 
 banner_patterns :list<compound>
 +color :DynamicEnum(DyeColor)
-+pattern :ServerRegistryKey(minecraft:banner_pattern)
++pattern :RegistryKey(minecraft:banner_pattern)
 
 base_color :DynamicEnum(DyeColor)
 
@@ -49,11 +47,12 @@ block_state :BlockStateTags($../../id$)
 blocks_attacks :compound @AlwaysRelevant @Since(1.21.5)
 +block_delay_seconds :int
 +disable_cooldown_scale :int
-+bypassed_by :string
++bypassed_by :RegistryTagKey(minecraft:damage_type) @Until(26.1)
++bypassed_by :RegistrySet(minecraft:damage_type) @Since(26.1)
 +block_sound :RegistryKey(minecraft:sound_event)
 +disabled_sound :RegistryKey(minecraft:sound_event)
 +damage_reductions :list<compound>
-	+type :string
+	+type :RegistrySet(minecraft:damage_type)
 	+base :float
 	+factor :float
 	+horizontal_blocking_angle :float
@@ -90,7 +89,7 @@ can_place_on :compound @Until(1.21.5)
 
 charged_projectiles :list<#item_stack>
 
-consumable :compound @AlwaysRelevant
+consumable :compound @AlwaysRelevant @Since(1.21.2)
 +consume_seconds :float
 +animation :DynamicEnum(ItemUseAnimation)
 +sound :RegistryKey(minecraft:sound_event)
@@ -107,7 +106,8 @@ container_loot :compound
 
 custom_data :compound
 
-custom_model_data :compound
+custom_model_data :int @Until(1.21.4)
+custom_model_data :compound @Since(1.21.4)
 +floats :list<float>
 +flags :list<boolean>
 +strings :list<string>
@@ -117,12 +117,14 @@ custom_name :TextComponent @AlwaysRelevant
 
 damage :int
 
-damage_resistant :compound @AlwaysRelevant
-+types :ServerRegistryKey(minecraft:damage_type)
+#TODO: fix types on 1.21.11?
+damage_resistant :compound @AlwaysRelevant @Since(1.21.2)
++types :RegistryTagKey(minecraft:damage_type) @Until(26.1)
++types :RegistrySet(minecraft:damage_type) @Since(26.1)
 
-damage_type :ServerRegistryKey(minecraft:damage_type) @AlwaysRelevant @Since(1.21.11)
+damage_type :RegistryKey(minecraft:damage_type) @AlwaysRelevant @Since(1.21.11)
 
-death_protection :compound @AlwaysRelevant
+death_protection :compound @AlwaysRelevant @Since(1.21.2)
 +death_effects :list<#item_effect>
 
 debug_stick_state :compound
@@ -134,7 +136,7 @@ dyed_color :compound @Until(1.21.5)
 +rgb :int
 +show_in_tooltip :boolean
 
-enchantable :compound @AlwaysRelevant
+enchantable :compound @AlwaysRelevant @Since(1.21.2)
 +value :int
 
 enchantment_glint_override :boolean @AlwaysRelevant
@@ -146,11 +148,13 @@ enchantments :compound @AlwaysRelevant @Until(1.21.5)
 
 entity_data :TagsFromId(minecraft:entity_type, entity/$id$)
 
-equippable :compound @AlwaysRelevant
+#TODO: camera_overlay suggestions?
+equippable :compound @AlwaysRelevant @Since(1.21.2)
 +slot :DynamicEnum(EquipmentSlot) @Recommended
 +equip_sound :RegistryKey(minecraft:sound_event)
-+asset_id :string
-+allowed_entities :list<RegistryKey(minecraft:entity_type)>
++model :string @Until(1.21.4)
++asset_id :string @Since(1.21.4)
++allowed_entities :RegistrySet(minecraft:entity_type)
 +dispensable :boolean
 +swappable :boolean
 +damage_on_hurt :boolean
@@ -159,7 +163,7 @@ equippable :compound @AlwaysRelevant
 +can_be_sheared :boolean @Since(1.21.6)
 +shearing_sound :RegistryKey(minecraft:sound_event) @Since(1.21.6)
 
-fire_resistant :EmptyCompound @AlwaysRelevant
+fire_resistant :EmptyCompound @AlwaysRelevant @Until(1.21.2)
 
 firework_explosion :#firework_explosion
 
@@ -171,8 +175,14 @@ food :compound @AlwaysRelevant
 +nutrition :int @Recommended
 +saturation :float @Recommended
 +can_always_eat :boolean
++eat_seconds :float @Until(1.21.2)
++using_converts_to :#item_stack @Until(1.21.2)
++effects :list<compound> @Until(1.21.2)
+	+effect :#effect
+	+probability :float
+#TODO: test effects
 
-glider :EmptyCompound @AlwaysRelevant
+glider :EmptyCompound @AlwaysRelevant @Since(1.21.2)
 
 hide_additional_tooltip :EmptyCompound @Until(1.21.5)
 
@@ -182,12 +192,12 @@ instrument :RegistryKey(minecraft:instrument)
 
 intangible_projectile :EmptyCompound
 
-item_model :RegistryKey(minecraft:item)
+item_model :ItemModel @Since(1.21.2)
 
 item_name :TextComponent @AlwaysRelevant
 
 jukebox_playable :compound @AlwaysRelevant
-+song :ServerRegistryKey(minecraft:jukebox_song)
++song :RegistryKey(minecraft:jukebox_song)
 +show_in_tooltip :boolean @Until(1.21.5)
 
 kinetic_weapon :compound @Since(1.21.11)
@@ -201,7 +211,9 @@ kinetic_weapon :compound @Since(1.21.11)
 +sound :RegistryKey(minecraft:sound_event)
 +hit_sound :RegistryKey(minecraft:sound_event)
 
-lock :compound
+lock :string @Until(1.21.2)
+
+lock :compound @Since(1.21.2)
 +items :list<RegistryKey(minecraft:item)>
 +count :compound
 	+min :int
@@ -212,7 +224,7 @@ lock :compound
 lodestone_tracker :compound
 +target :compound
 	+pos :int_array
-	+dimension :ServerRegistryKey(minecraft:dimension)
+	+dimension :RegistryKey(minecraft:dimension)
 +tracked :boolean
 
 lore :list<TextComponent>
@@ -243,13 +255,16 @@ pot_decorations :list<PotDecoration>
 
 potion_contents :#potion_contents
 
+#TODO: relevant if potion_contents or custom_effects present
 potion_duration_scale :float @Since(1.21.5)
 
+#TODO: test/improve
 profile :#profile
 
-provides_banner_patterns :ServerRegistryKey(minecraft:banner_pattern) @AlwaysRelevant @Since(1.21.5)
+provides_banner_patterns :RegistryTagKey(minecraft:banner_pattern) @AlwaysRelevant @Since(1.21.5) @Until(26.1)
+provides_banner_patterns :RegistrySet(minecraft:banner_pattern) @AlwaysRelevant @Since(26.1)
 
-provides_trim_material :ServerRegistryKey(minecraft:trim_material) @AlwaysRelevant @Since(1.21.5)
+provides_trim_material :RegistryKey(minecraft:trim_material) @AlwaysRelevant @Since(1.21.5)
 
 rarity :DynamicOrderedEnum(Rarity) @AlwaysRelevant
 
@@ -257,7 +272,7 @@ recipes :list<Recipe>
 
 repair_cost :int
 
-repairable :compound @AlwaysRelevant
+repairable :compound @AlwaysRelevant @Since(1.21.2)
 +items :list<RegistryKey(minecraft:item)>
 
 stored_enchantments :Enchantments @Since(1.21.5)
@@ -277,7 +292,7 @@ tool :compound @AlwaysRelevant
 +default_mining_speed :float
 +damage_per_block :int
 +rules :list<compound>
-	+blocks :list<RegistryKey(minecraft:block)>
+	+blocks :RegistrySet(minecraft:block)
 	+speed :float
 	+correct_for_drops :boolean
 +can_destroy_blocks_in_creative :boolean @Since(1.21.5)
@@ -286,18 +301,18 @@ tooltip_display :compound @AlwaysRelevant @Since(1.21.5)
 +hide_tooltip :boolean
 +hidden_components :list<string>
 
-tooltip_style :string @AlwaysRelevant
+tooltip_style :string @AlwaysRelevant @Since(1.21.2)
 
 trim :compound
-+pattern :ServerRegistryKey(minecraft:trim_pattern)
-+material :ServerRegistryKey(minecraft:trim_material)
++pattern :RegistryKey(minecraft:trim_pattern)
++material :RegistryKey(minecraft:trim_material)
 +show_in_tooltip :boolean @Until(1.21.5)
 
 unbreakable :EmptyCompound @Since(1.21.5)
 unbreakable :compound @Until(1.21.5)
 +show_in_tooltip :boolean
 
-use_cooldown :compound @AlwaysRelevant
+use_cooldown :compound @AlwaysRelevant @Since(1.21.2)
 +seconds :float @Recommended
 +cooldown_group :string
 
@@ -306,7 +321,7 @@ use_effects :compound @AlwaysRelevant @Since(1.21.11)
 +interact_vibrations :boolean
 +speed_multiplier :boolean
 
-use_remainder :#item_stack @AlwaysRelevant
+use_remainder :#item_stack @AlwaysRelevant @Since(1.21.2)
 
 weapon :compound @AlwaysRelevant @Since(1.21.5)
 +item_damage_per_attack :int
@@ -326,21 +341,21 @@ axolotl/variant :DynamicEnum(AxolotlVariant) @RelevantComponentForItem(minecraft
 
 cat/collar :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:cat_spawn_egg)
 
-cat/sound_variant :ServerRegistryKey(minecraft:cat_sound_variant) @RelevantComponentForItem(minecraft:cat_spawn_egg) @Since(26.1)
+cat/sound_variant :RegistryKey(minecraft:cat_sound_variant) @RelevantComponentForItem(minecraft:cat_spawn_egg) @Since(26.1)
 
-cat/variant :ServerRegistryKey(minecraft:cat_variant) @RelevantComponentForItem(minecraft:cat_spawn_egg)
+cat/variant :RegistryKey(minecraft:cat_variant) @RelevantComponentForItem(minecraft:cat_spawn_egg)
 
-chicken/sound_variant :ServerRegistryKey(minecraft:chicken_sound_variant) @RelevantComponentForItem(minecraft:chicken_spawn_egg) @Since(26.1)
+chicken/sound_variant :RegistryKey(minecraft:chicken_sound_variant) @RelevantComponentForItem(minecraft:chicken_spawn_egg) @Since(26.1)
 
-chicken/variant :ServerRegistryKey(minecraft:chicken_variant) @RelevantComponentForItem(minecraft:chicken_spawn_egg)
+chicken/variant :RegistryKey(minecraft:chicken_variant) @RelevantComponentForItem(minecraft:chicken_spawn_egg)
 
-cow/sound_variant :ServerRegistryKey(minecraft:cow_sound_variant) @RelevantComponentForItem(minecraft:cow_spawn_egg) @Since(26.1)
+cow/sound_variant :RegistryKey(minecraft:cow_sound_variant) @RelevantComponentForItem(minecraft:cow_spawn_egg) @Since(26.1)
 
-cow/variant :ServerRegistryKey(minecraft:cow_variant) @RelevantComponentForItem(minecraft:cow_spawn_egg)
+cow/variant :RegistryKey(minecraft:cow_variant) @RelevantComponentForItem(minecraft:cow_spawn_egg)
 
 fox/variant :DynamicEnum(FoxVariant) @RelevantComponentForItem(minecraft:fox_spawn_egg)
 
-frog/variant :ServerRegistryKey(minecraft:frog_variant) @RelevantComponentForItem(minecraft:frog_spawn_egg)
+frog/variant :RegistryKey(minecraft:frog_variant) @RelevantComponentForItem(minecraft:frog_spawn_egg)
 
 horse/variant :DynamicEnum(EquineVariant) @RelevantComponentForItem(minecraft:horse_spawn_egg)
 
@@ -348,13 +363,13 @@ llama/variant :DynamicEnum(LlamaVariant) @RelevantComponentForItem(minecraft:lla
 
 mooshroom/variant :DynamicEnum(MushroomCowVariant) @RelevantComponentForItem(minecraft:mooshroom_spawn_egg)
 
-painting/variant :ServerRegistryKey(minecraft:painting_variant) @RelevantComponentForItem(minecraft:painting)
+painting/variant :RegistryKey(minecraft:painting_variant) @RelevantComponentForItem(minecraft:painting)
 
 parrot/variant :DynamicEnum(ParrotVariant) @RelevantComponentForItem(minecraft:parrot_spawn_egg)
 
-pig/sound_variant :ServerRegistryKey(minecraft:pig_sound_variant) @RelevantComponentForItem(minecraft:pig_spawn_egg)
+pig/sound_variant :RegistryKey(minecraft:pig_sound_variant) @RelevantComponentForItem(minecraft:pig_spawn_egg)
 
-pig/variant :ServerRegistryKey(minecraft:pig_variant) @RelevantComponentForItem(minecraft:pig_spawn_egg) @Since(26.1)
+pig/variant :RegistryKey(minecraft:pig_variant) @RelevantComponentForItem(minecraft:pig_spawn_egg) @Since(26.1)
 
 rabbit/variant :DynamicEnum(RabbitVariant) @RelevantComponentForItem(minecraft:rabbit_spawn_egg)
 
@@ -374,8 +389,8 @@ villager/variant :RegistryKey(minecraft:villager_type) @RelevantComponentForItem
 
 wolf/collar :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:wolf_spawn_egg)
 
-wolf/sound_variant :ServerRegistryKey(minecraft:wolf_sound_variant) @RelevantComponentForItem(minecraft:wolf_spawn_egg)
+wolf/sound_variant :RegistryKey(minecraft:wolf_sound_variant) @RelevantComponentForItem(minecraft:wolf_spawn_egg)
 
-wolf/variant :ServerRegistryKey(minecraft:wolf_variant) @RelevantComponentForItem(minecraft:wolf_spawn_egg)
+wolf/variant :RegistryKey(minecraft:wolf_variant) @RelevantComponentForItem(minecraft:wolf_spawn_egg)
 
-zombie_nautilus/variant :ServerRegistryKey(minecraft:zombie_nautilus_variant) @RelevantComponentForItem(minecraft:zombie_nautilus_spawn_egg) @Since(1.21.11)
+zombie_nautilus/variant :RegistryKey(minecraft:zombie_nautilus_variant) @RelevantComponentForItem(minecraft:zombie_nautilus_spawn_egg) @Since(1.21.11)

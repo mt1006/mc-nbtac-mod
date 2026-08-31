@@ -1,27 +1,36 @@
 initial_content
-+type :Enum(text, translatable, score, selector, keybind, nbt)
++type :Enum(text, translatable, score, selector, keybind, nbt) @Until(1.21.9)
++type :Enum(text, translatable, score, selector, keybind, nbt, object) @Since(1.21.9)
 +text :string
 +translate :TranslationKey
 +selector :EntitySelector
 +keybind :Keybind
 +nbt :string
++object :Enum(atlas, player) @Since(1.21.9)
 +score :compound
 	+name :string
 	+objective :string
 
 common
 +extra :InnerTextComponent
-+separator :InnerTextComponent @RelevantIfEq(type, selector, nbt) @RelevantIfNotDef(text, translate, keybind, score)
-+source :Enum(block, entity, storage) @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
-+interpret :boolean @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
-+block :string @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
-+entity :EntitySelector @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
-+storage :string @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score)
-+fallback :TranslationKey @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score)
-+with :list<InnerTextComponent> @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score)
++separator :InnerTextComponent @RelevantIfEq(type, selector, nbt) @RelevantIfNotDef(text, translate, keybind, score, object)
++source :Enum(block, entity, storage) @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score, object)
++interpret :boolean @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score, object)
++plain :boolean @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score, object) @Since(26.1)
++block :string @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score, object)
++entity :EntitySelector @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score, object)
++storage :string @RelevantIfEq(type, nbt) @RelevantIfNotDef(text, translate, selector, keybind, score, object)
++fallback :TranslationKey @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score, object) @Until(26.1)
++fallback :either<TranslationKey, InnerTextComponent> @RelevantIfEq(type, translatable, object) @RelevantIfNotDef(text, selector, keybind, nbt, score) @Since(26.1)
++with :list<InnerTextComponent> @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score, object)
++atlas :Atlas @RelevantIfEq(object, atlas) @RecommendedIfRelevant @Since(1.21.9)
++sprite :Sprite($../atlas$) @RelevantIfEq(object, atlas) @RecommendedIfRelevant @Since(1.21.9)
++player :#profile @RelevantIfEq(object, player) @RecommendedIfRelevant @Since(1.21.9)
++hat :boolean @RelevantIfEq(object, player) @RecommendedIfRelevant @Since(1.21.9)
 
 style
 +color :TextColor
++shadow_color :int @Since(1.21.4)
 +font :Font
 +bold :boolean
 +italic :boolean
@@ -29,18 +38,30 @@ style
 +strikethrough :boolean
 +obfuscated :boolean
 +insertion :string
-+hover_event :compound
++hoverEvent :compound @Until(1.21.5)
+	+action :Enum(show_text, show_item, show_entity) @Recommended
+	+contents :Depends<InnerTextComponent, #item_stack, #legacy_hover_event_show_entity>(action, show_text, show_item, show_entity)
++clickEvent :compound @Until(1.21.5)
+	+action :Enum(open_url, open_file, run_command, suggest_command, change_page, copy_to_clipboard) @Recommended
+	+value :string
++hover_event :compound @Since(1.21.5)
 	+action :Enum(show_text, show_item, show_entity)
-	+value :string @RelevantIfEq(action, show_text)
+	+value :InnerTextComponent @RelevantIfEq(action, show_text)
 	+id :RegistryKey("$@action@show_item;minecraft:item;show_entity;minecraft:entity_type$") @RelevantIfEq(action, show_item, show_entity)
 	+count :int @RelevantIfEq(action, show_item)
 	+components :compound @RelevantIfEq(action, show_item)
 	+name :InnerTextComponent @RelevantIfEq(action, show_entity)
 	+uuid :UUID @RelevantIfEq(action, show_entity)
-+click_event :compound
-	+action :Enum(open_url, open_file, run_command, suggest_command, change_page, copy_to_clipboard)
++click_event :compound @Since(1.21.5)
+	+action :Enum(open_url, open_file, run_command, suggest_command, change_page, copy_to_clipboard) @Until(1.21.6)
+	+action :Enum(open_url, open_file, run_command, suggest_command, change_page, copy_to_clipboard, show_dialog, custom) @Since(1.21.6)
 	+url :string @RelevantIfEq(action, open_url)
 	+path :string @RelevantIfEq(action, open_file)
 	+command :string @RelevantIfEq(action, run_command, suggest_command)
 	+page :int @RelevantIfEq(action, change_page)
 	+value :string @RelevantIfEq(action, copy_to_clipboard)
+	+dialog :string @RelevantIfEq(action, show_dialog) @Since(1.21.6)
+	+id :string @RelevantIfEq(action, custom) @Since(1.21.6)
+	+payload :string @RelevantIfEq(action, custom) @Since(1.21.6)
+#TODO: test hover_event.id
+#TODO: suggestions for click_event.dialog
