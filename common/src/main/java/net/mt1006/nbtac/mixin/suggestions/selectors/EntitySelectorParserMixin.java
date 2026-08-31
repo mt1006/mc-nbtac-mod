@@ -68,6 +68,6 @@ public class EntitySelectorParserMixin
 	{
 		String str = builder.getRemaining();
 		String name = Utils.entityFromSelectorData(type, entityUUID, playerName);
-		return SuggestionManager.loadFromName(str, name, builder, false);
+		return SuggestionManager.get(str, name, builder, false);
 	}
 }

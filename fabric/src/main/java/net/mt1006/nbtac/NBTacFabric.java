@@ -3,10 +3,6 @@ package net.mt1006.nbtac;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-
-import java.util.Set;
 
 public class NBTacFabric implements ModInitializer, NBTacLoaderInterface
 {
@@ -16,15 +12,6 @@ public class NBTacFabric implements ModInitializer, NBTacLoaderInterface
 	@Override public void onInitialize()
 	{
 		NBTac.init(isDedicatedServer, this);
-	}
-
-	@Override public void appendModVersionIds(Set<String> mods)
-	{
-		for (ModContainer modInfo : FABRIC_LOADER.getAllMods())
-		{
-			ModMetadata metadata = modInfo.getMetadata();
-			mods.add(String.format("%s@%s;", metadata.getId(), metadata.getVersion().getFriendlyString()));
-		}
 	}
 
 	@Override public boolean isModPresent(String id)

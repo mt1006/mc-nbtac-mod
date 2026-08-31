@@ -10,5 +10,5 @@ import java.util.Map;
 @Mixin(AtlasManager.class)
 public interface AtlasManagerFields
 {
-	@Accessor Map<ResourceLocation, AtlasEntryFields> getAtlasById();
+	@Accessor("atlasById") Map<ResourceLocation, AtlasEntryFields> nbtac$getAtlasById();
 }

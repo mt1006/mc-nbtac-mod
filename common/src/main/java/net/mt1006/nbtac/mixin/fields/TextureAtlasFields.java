@@ -11,5 +11,5 @@ import java.util.Map;
 @Mixin(TextureAtlas.class)
 public interface TextureAtlasFields
 {
-	@Accessor Map<ResourceLocation, TextureAtlasSprite> getTexturesByName();
+	@Accessor("texturesByName") Map<ResourceLocation, TextureAtlasSprite> nbtac$getTexturesByName();
 }

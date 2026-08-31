@@ -24,18 +24,18 @@ public class CompoundType extends AbstractCompoundType
 		this.tagMap = tagMap;
 	}
 
-	@Override public NbtTagMap getSubcompound()
+	@Override public NbtTagMap getMutableTagMap()
 	{
 		if (tagMap == null) { tagMap = new NbtTagMap(); }
 		return tagMap;
 	}
 
-	@Override public void setSubcompound(@Nullable NbtTagMap subcompound)
+	@Override public void setTagMap(@Nullable NbtTagMap subcompound)
 	{
 		tagMap = subcompound;
 	}
 
-	@Override protected @Nullable NbtTagMap getTagMap(SuggestionListContext ctx, ParsedCompound parsed)
+	@Override public @Nullable NbtTagMap getSuggestionsTagMap(ParsedCompound parsed)
 	{
 		return tagMap;
 	}

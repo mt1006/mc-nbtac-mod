@@ -1,6 +1,7 @@
 _base_container
 +CustomName :TextComponent
-+lock :#lock
++Lock :string @Until(1.21.2)
++lock :#lock @Since(1.21.2)
 
 _with_single_item
 +LootTable :LootTable
@@ -14,10 +15,10 @@ _with_items &_base_container
 
 _furnace &_base_container
 +Items :list<#item_stack_with_slot>
-+cooking_time_spent :short
-+cooking_total_time :short
-+lit_time_remaining :short
-+lit_total_time :short
++cooking_time_spent :short @OldName(1.21.4, CookTime)
++cooking_total_time :short @OldName(1.21.4, CookTimeTotal)
++lit_time_remaining :short @OldName(1.21.4, BurnTime)
++lit_total_time :short @Since(1.21.4)
 +RecipesUsed :FurnaceRecipesUsed
 
 _sculk_sensor
@@ -32,7 +33,7 @@ _sign
 banner
 +CustomName :TextComponent
 +patterns :list<compound>
-	+pattern :either<ServerRegistryKey(minecraft:banner_pattern), compound>
+	+pattern :either<RegistryKey(minecraft:banner_pattern), compound>
 		+asset_id :string
 		+translation_key :TranslationKey
 	+color :DynamicEnum(DyeColor)
@@ -43,14 +44,15 @@ beacon
 +primary_effect :RegistryKey(minecraft:mob_effect)
 +secondary_effect :RegistryKey(minecraft:mob_effect)
 +CustomName :TextComponent
-+lock :#lock
++Lock :string @Until(1.21.2)
++lock :#lock @Since(1.21.2)
 
 beehive
 +bees :list<compound>
 	+entity_data :TagsWithId(entity/minecraft:bee)
 	+min_ticks_in_hive :int
 	+ticks_in_hive :int
-+flower_pos :BlockPos
++flower_pos :BlockPos @OldName(1.21, FlowerPos)
 
 blast_furnace =_furnace
 
@@ -78,9 +80,9 @@ command_block
 +SuccessCount :int
 +CustomName :TextComponent
 +TrackOutput :boolean
-+LastOutput :TextComponent @RelevantIfEq(TrackOutput, true)
++LastOutput :TextComponent @RelevantIfEq(TrackOutput, true, 1b)
 +UpdateLastExecution :boolean
-+LastExecution :long @RelevantIfEq(UpdateLastExecution, true)
++LastExecution :long @RelevantIfEq(UpdateLastExecution, true, 1b)
 +powered :boolean
 +conditionMet :boolean
 +auto :boolean
@@ -109,7 +111,7 @@ enchanting_table
 
 end_gateway
 +Age :long
-+exit_portal :BlockPos
++exit_portal :BlockPos @OldName(1.21, ExitPortal)
 +ExactTeleport :boolean
 
 furnace =_furnace
@@ -122,7 +124,7 @@ hopper &_with_items
 jigsaw
 +name :string
 +target :string
-+pool :ServerRegistryKey(minecraft:worldgen/template_pool)
++pool :RegistryKey(minecraft:worldgen/template_pool)
 +final_state :string
 +joint :DynamicEnum(JigsawJointType)
 +placement_priority :int
@@ -184,13 +186,7 @@ shelf
 +align_items_to_bottom :boolean
 
 skull
-+profile :either<string, compound>
-	+name :string
-	+id :UUID
-	+properties :list<compound>
-		+name :string
-		+value :string
-		+signature :string
++profile :either<string, #profile>
 +note_block_sound :string
 +custom_name :TextComponent
 
@@ -224,7 +220,7 @@ test_block
 
 test_instance_block
 +data :compound
-	+test :ServerRegistryKey(minecraft:test_instance)
+	+test :RegistryKey(minecraft:test_instance)
 	+size :int_array(3)
 	+rotation :DescribedEnum(Rotation)
 	+ignore_entities :boolean
