@@ -15,6 +15,7 @@
     "fields.FontManagerFields",
     "fields.KeyMappingFields",
     "fields.MinecraftFields",
+    "fields.ModelManagerFields",
     "fields.TextColorFields",
     "fields.TextureAtlasFields",
     "misc.ArgumentCommandNodeMixin",

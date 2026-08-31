@@ -7,5 +7,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(targets = "net.minecraft.client.resources.model.AtlasManager$AtlasEntry")
 public interface AtlasEntryFields
 {
-	@Accessor TextureAtlas getAtlas();
+	@Accessor("atlas") TextureAtlas nbtac$getAtlas();
 }

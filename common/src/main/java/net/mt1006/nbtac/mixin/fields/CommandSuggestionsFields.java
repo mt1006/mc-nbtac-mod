@@ -9,6 +9,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(CommandSuggestions.class)
 public interface CommandSuggestionsFields
 {
-	@Accessor Font getFont();
-	@Accessor EditBox getInput();
+	@Accessor("font") Font nbtac$getFont();
+	@Accessor("input") EditBox nbtac$getInput();
 }

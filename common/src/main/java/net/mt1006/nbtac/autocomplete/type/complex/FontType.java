@@ -20,8 +20,8 @@ public class FontType extends ComplexType
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		FontManager fontManager = ((MinecraftFields)Minecraft.getInstance()).getFontManager();
-		for (Identifier id : ((FontManagerFields)fontManager).getFontSets().keySet())
+		FontManager fontManager = ((MinecraftFields)Minecraft.getInstance()).nbtac$getFontManager();
+		for (Identifier id : ((FontManagerFields)fontManager).nbtac$getFontSets().keySet())
 		{
 			list.add(new IdSuggestion(id, "[#font]", ctx.parserType()));
 		}

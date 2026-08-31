@@ -27,7 +27,7 @@ public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 		{
 			String str = builder.getRemaining();
 			String name = getResourceName(ctx, builder.getStart());
-			return SuggestionManager.loadFromName(str, name, builder, true);
+			return SuggestionManager.get(str, name, builder, true);
 		}
 		catch (Exception e)
 		{

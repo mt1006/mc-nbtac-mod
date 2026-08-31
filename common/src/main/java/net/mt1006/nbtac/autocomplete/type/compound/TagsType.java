@@ -7,7 +7,7 @@ import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.autocomplete.type.complex.IdType;
-import net.mt1006.nbtac.autocomplete.type.complex.ServerRegistryKeyType;
+import net.mt1006.nbtac.autocomplete.type.complex.RegistryKeyType;
 import org.jetbrains.annotations.Nullable;
 
 public class TagsType extends ComplexCompoundType
@@ -28,14 +28,14 @@ public class TagsType extends ComplexCompoundType
 		this.idKey = idKey;
 	}
 
-	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)
+	@Override protected void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
 	{
 		if (idKey != null)
 		{
 			Type type = null;
 			if (keyId != null)
 			{
-				type = new ServerRegistryKeyType(keyId);
+				type = new RegistryKeyType(keyId);
 			}
 			else if (id != null)
 			{

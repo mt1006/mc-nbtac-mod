@@ -15,7 +15,7 @@ public class BrainType extends ComplexCompoundType
 		this.entityId = entityId != null ? Identifier.tryParse(entityId) : null;
 	}
 
-	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)
+	@Override protected void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
 	{
 		if (entityId == null || !entityId.getNamespace().equals("minecraft")) { return; }
 		map.addAll(NbtTagManager.get("_entity/minecraft:_brain/" + entityId.getPath()));

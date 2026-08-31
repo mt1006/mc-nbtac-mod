@@ -31,11 +31,12 @@
 
   "nbtac.options.field.json_string_suggestion": "Sugestia ciągu JSON",
   "nbtac.options.field.json_string_suggestion.none": "Żadna",
+  "nbtac.options.field.json_string_suggestion.recommended": "Zalecana",
   "nbtac.options.field.json_string_suggestion.default_for_strings": "Domyślna dla ciągów",
   "nbtac.options.field.json_string_suggestion.legacy_separated": "Przestarzała, oddzielone (' \")",
   "nbtac.options.field.json_string_suggestion.legacy_merged": "Przestarzała, złączone ('\")",
   "nbtac.options.field.json_string_suggestion.legacy_backslash": "Przestarzała, lewy ukośnik (\"\\\")",
-  "nbtac.options.field.json_string_suggestion.desc": "Określa sugestię otwarcia prostego ciągu dla komponentów tekstu w JSON'ie.\nnone - Żadna\ndefault_for_strings - używa rodzaju cudzysłowu z ustawienia \"Domyślny typ cudzysłowów\".\nlegacy_separated - [' \"]\nlegacy_merged - ['\"] - podobne do legacy_separated, ale bez spacji.\nlegacy_backslash - [\"\\\"]",
+  "nbtac.options.field.json_string_suggestion.desc": "Określa sugestię otwarcia prostego ciągu dla komponentów tekstu w JSON'ie.\nnone - Żadna\nrecommended - to samo co \"default_for_strings\" na 1.20.4 i nowszych, to samo co \"legacy_separated\" na starszych.\ndefault_for_strings - używa rodzaju cudzysłowu z ustawienia \"Domyślny typ cudzysłowów\".\nlegacy_separated - [' \"]\nlegacy_merged - ['\"] - podobne do legacy_separated, ale bez spacji.\nlegacy_backslash - [\"\\\"]",
 
   "nbtac.options.field.hide_mc_namespace_in_tags": "Ukryj przestrzeń nazw Minecraft'a w tagach",
   "nbtac.options.field.hide_mc_namespace_in_tags.desc": "Ukrywa przestrzeń nazw \"minecraft:\" w sugestiach tagów.",
@@ -49,6 +50,9 @@
 
   "nbtac.options.field.show_tag_hints": "Pokazuj podpowiedzi do tagów",
   "nbtac.options.field.show_tag_hints.desc": "Pokazuje podpowiedzi do tagów (takie jak ich typ lub źródło) obok ich nazw na liście sugestii.",
+
+  "nbtac.options.field.update_on_cursor_movement": "Aktualizuj przy ruchu kursora",
+  "nbtac.options.field.update_on_cursor_movement.desc": "Aktualizuje sugestie przy ruchu kursora.\nDotyczy to wszystkich sugestii poleceń, nie tylko tych od NBT Autocomplete.\nUstawienie te przywraca zachowanie sprzed Minecraft 26.1, i ustawienie go na \"false\" nie zmienia niczego na starszych wersjach.",
 
 
   "nbtac.options.field.custom_sorting": "Niestandardowe sortowanie",

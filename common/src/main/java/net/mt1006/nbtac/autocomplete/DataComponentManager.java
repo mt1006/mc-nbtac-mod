@@ -21,10 +21,11 @@ import net.mt1006.nbtac.utils.RegistryUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DataComponentManager
 {
-	public static final Map<String, DefinedNbtTag> componentMap = new HashMap<>();
+	public static final Map<String, DefinedNbtTag> componentMap = new ConcurrentHashMap<>();
 
 	public static void loadSuggestions(SuggestionList list, String str, Set<DataComponentType<?>> usedComponents,
 									   @Nullable Item item, boolean addEqualSign)
