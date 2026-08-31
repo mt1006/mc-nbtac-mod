@@ -7,18 +7,17 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.arguments.ComponentArgument;
 import net.minecraft.network.chat.Component;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
-import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.type.complex.TextComponentType;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @Mixin(ComponentArgument.class)
 public abstract class ComponentArgumentMixin implements ArgumentType<Component>
 {
 	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> ctx, SuggestionsBuilder builder)
 	{
-		CustomTagParser parser = CustomTagParser.forValueOfType(builder.getRemaining(), TextComponentType.INSTANCE);
-		return SuggestionManager.finishSuggestions(parser::parse, builder);
+		return SuggestionManager.get(builder.getRemaining(), TextComponentType.INSTANCE, builder, false, Function.identity());
 	}
 }

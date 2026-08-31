@@ -56,6 +56,6 @@ public class BlockStateParserMixin
 
 		String str = builder.getRemaining();
 		String name = id.toString();
-		return SuggestionManager.loadFromName(str, "block/" + name, builder, false);
+		return SuggestionManager.get(str, "block/" + name, builder, false);
 	}
 }

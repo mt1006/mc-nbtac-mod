@@ -13,6 +13,7 @@
     "fields.FontManagerFields",
     "fields.KeyMappingFields",
     "fields.MinecraftFields",
+    "fields.ModelManagerFields",
     "fields.TextColorFields",
 	"misc.ArgumentCommandNodeMixin",
     "misc.RealmsMainScreenMixin",

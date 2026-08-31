@@ -67,6 +67,7 @@ public class SimpleStringReader
 		readNbtString(setStr, false);
 	}
 
+	// consumer setStr is used instead of return value, so that partial value is set even if exception is thrown
 	private void readNbtString(Consumer<StringResults> setStr, boolean allowDot)
 	{
 		if (pos == len) { throw new ReaderException(); }
