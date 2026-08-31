@@ -75,9 +75,9 @@ public class Utils
 	public static @Nullable String entityFromEntitySelector(EntitySelector entitySelector)
 	{
 		return entityFromSelectorData(
-				((EntitySelectorFields)entitySelector).getType(),
-				((EntitySelectorFields)entitySelector).getEntityUUID(),
-				((EntitySelectorFields)entitySelector).getPlayerName());
+				((EntitySelectorFields)entitySelector).nbtac$getType(),
+				((EntitySelectorFields)entitySelector).nbtac$getEntityUUID(),
+				((EntitySelectorFields)entitySelector).nbtac$getPlayerName());
 	}
 
 	public static @Nullable String entityFromSelectorData(EntityTypeTest<Entity, ?> typeTest, @Nullable UUID uuid, @Nullable String playerName)
@@ -94,7 +94,7 @@ public class Utils
 		{
 			try
 			{
-				TransientEntitySectionManager<Entity> entityStorage = ((ClientLevelFields)clientLevel).getEntityStorage();
+				TransientEntitySectionManager<Entity> entityStorage = ((ClientLevelFields)clientLevel).nbtac$getEntityStorage();
 
 				Entity entity = entityStorage.getEntityGetter().get(uuid);
 				if (entity == null) { return null; }

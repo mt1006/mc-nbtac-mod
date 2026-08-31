@@ -23,7 +23,7 @@ public abstract class AbstractCompoundType implements Type
 		ParsedTag lastTag = parsed.getLast();
 		int lastTagPos = parsed.getLastPos();
 
-		NbtTagMap tagMap = getTagMap(ctx, parsed);
+		NbtTagMap tagMap = getSuggestionsTagMap(parsed);
 		if (tagMap == null) { return SuggestionList.empty(); }
 
 		if (ctx.expectedOperators() != null)
@@ -36,14 +36,14 @@ public abstract class AbstractCompoundType implements Type
 			{
 				return tagMap.containsKey(lastTag.key)
 						? ctx.expectedOperators()
-						: tagMap.suggestionsForKeyPrefix(ctx.parserType(), parsed, lastTag.key, lastTagPos);
+						: tagMap.suggestionsForKeyPrefix(ctx.parserType(), parsed, lastTag.key, lastTagPos, true);
 			}
 		}
 		else
 		{
 			if (lastTag.key == null) // e.g. { or {SomeKey:123,
 			{
-				return tagMap.suggestionsForKeyPrefix(ctx.parserType(), parsed, "", lastTagPos);
+				return tagMap.suggestionsForKeyPrefix(ctx.parserType(), parsed, "", lastTagPos, true);
 			}
 		}
 
@@ -57,6 +57,4 @@ public abstract class AbstractCompoundType implements Type
 	{
 		return PrimitiveType.COMPOUND;
 	}
-
-	protected abstract @Nullable NbtTagMap getTagMap(SuggestionListContext ctx, ParsedCompound parsed);
 }

@@ -29,7 +29,7 @@ public class BlockStateTagsType extends ComplexCompoundType
 		this.id = id != null ? Identifier.tryParse(id) : null;
 	}
 
-	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsedCompound, NbtTagMap map)
+	@Override protected void getBasicCompoundSuggestions(ParsedCompound parsedCompound, NbtTagMap map)
 	{
 		if (id == null) { return; }
 

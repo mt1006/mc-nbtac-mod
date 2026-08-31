@@ -21,7 +21,7 @@ public class KeybindType extends ComplexType
 
 	@Override public void getBasicSuggestions(SuggestionListContext ctx, SuggestionList list)
 	{
-		Map<String, KeyMapping> keyMap = KeyMappingFields.getALL();
+		Map<String, KeyMapping> keyMap = KeyMappingFields.nbtac$getALL();
 		if (keyMap == null) { return; }
 
 		for (String str : keyMap.keySet())

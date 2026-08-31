@@ -10,5 +10,5 @@ import java.util.Map;
 @Mixin(KeyMapping.class)
 public interface KeyMappingFields
 {
-	@Accessor static @Nullable Map<String, KeyMapping> getALL() { return null; }
+	@Accessor("ALL") static @Nullable Map<String, KeyMapping> nbtac$getALL() { return null; }
 }
