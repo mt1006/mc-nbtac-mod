@@ -21,7 +21,7 @@ public class TranslationKeyType extends ComplexType
 		Language lang = Language.getInstance();
 		if (lang instanceof ClientLanguage)
 		{
-			for (String key : ((ClientLanguageFields)lang).getStorage().keySet())
+			for (String key : ((ClientLanguageFields)lang).nbtac$getStorage().keySet())
 			{
 				list.add(new StringSuggestion(key, "[#translation_key]", ctx.parserType()));
 			}

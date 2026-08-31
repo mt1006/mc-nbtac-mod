@@ -12,6 +12,7 @@ import net.mt1006.nbtac.autocomplete.type.compound.CompoundType;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @Mixin(StyleArgument.class)
 public abstract class StyleArgumentMixin implements ArgumentType<Style>
@@ -19,6 +20,6 @@ public abstract class StyleArgumentMixin implements ArgumentType<Style>
 	@Override public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> ctx, SuggestionsBuilder builder)
 	{
 		CustomTagParser parser = CustomTagParser.forJson(builder.getRemaining(), CompoundType.fromName("text/nbtac:style"));
-		return SuggestionManager.finishSuggestions(parser::parse, builder);
+		return SuggestionManager.finishSuggestions(parser::parse, builder, Function.identity());
 	}
 }

@@ -5,15 +5,17 @@ map_decoration
 +rotation :float
 
 effect
-+id :RegistryKey(minecraft:mob_effect) @Recommended(3)
-+amplifier :byte @Recommended(2)
-+duration :int @Recommended(1)
-+ambient :boolean
-+show_particles :boolean
-+show_icon :boolean
++Id :RegistryId(minecraft:mob_effect) @Recommended(3) @Until(1.21)
++id :RegistryKey(minecraft:mob_effect) @Recommended(3) @Since(1.21)
++amplifier :byte @Recommended(2) @OldName(1.21, Amplifier)
++duration :int @Recommended(1) @OldName(1.21, Duration)
++ambient :boolean @OldName(1.21, Ambient)
++show_particles :boolean @OldName(1.21, ShowParticles)
++show_icon :boolean @OldName(1.21, ShowIcon)
++FactorCalculationData :compound @Until(1.21)
 
 effect_with_hidden &effect
-+hidden_effect :#effect
++hidden_effect :#effect @OldName(1.21, HiddenEffect)
 
 sound_event
 +sound_id :RegistryKey(minecraft:sound_event) @Recommended
@@ -21,19 +23,19 @@ sound_event
 
 item_effect
 +type :RegistryKey(minecraft:consume_effect_type) @Recommended
-+effects :Depends<list<#effect>, SingleOrList<RegistryKey(minecraft:mob_effect)>>(type, apply_effects, remove_effects) @RelevantIfEq(type, apply_effects, remove_effects)
-+probability :float @RelevantIfEq(type, apply_effects)
-+diameter :float @RelevantIfEq(type, teleport_randomly)
-+sound :either<RegistryKey(minecraft:sound_event), #sound_event> @RelevantIfEq(type, play_sound)
++effects :Depends<list<#effect>, RegistrySet(minecraft:mob_effect)>(type, minecraft:apply_effects, minecraft:remove_effects) @RelevantIfEq(type, minecraft:apply_effects, minecraft:remove_effects)
++probability :float @RelevantIfEq(type, minecraft:apply_effects)
++diameter :float @RelevantIfEq(type, minecraft:teleport_randomly)
++sound :either<RegistryKey(minecraft:sound_event), #sound_event> @RelevantIfEq(type, minecraft:play_sound)
 
 global_pos
 +pos :BlockPos
-+dimension :ServerRegistryKey(minecraft:dimension)
++dimension :RegistryKey(minecraft:dimension)
 
 item_stack
 +id :RegistryKey(minecraft:item) @Recommended
-+count :int
-+components :ItemComponents($../id$)
++count :int @OldName(1.21, Count)
++components :ItemComponents($../id$) @OldName(1.21, tag)
 
 item_stack_with_slot &item_stack
 +Slot :byte
@@ -97,7 +99,7 @@ spawn_data
 	+custom_spawn_rules :compound
 		+block_light_limit :int
 		+sky_light_limit :int
-	+equipment :compound
+	+equipment :compound @Since(1.21)
 		+loot_table :LootTable
 		+slot_drop_chances :either<float, #drop_chances>
 
@@ -105,16 +107,11 @@ spawn_potential
 +weight :int
 +data :#spawn_data
 
-item_cost
-+id :RegistryKey(minecraft:item) @Recommended
-+count :int
-+components :ItemComponents($../id$)
-
 villager/offers
 +Recipes :list<compound>
-	+buy :#item_cost @Recommended
-	+sell :#item_cost @Recommended
-	+buyB :#item_cost
+	+buy :#item_stack @Recommended
+	+sell :#item_stack @Recommended
+	+buyB :#item_stack
 	+uses :int
 	+maxUses :int
 	+rewardExp :boolean
@@ -133,8 +130,9 @@ villager/gossip
 +Type :DynamicEnum(GossipType)
 +Value :int
 
+# since 1.21.2
 lock
-+items :SingleOrList<RegistryKey(minecraft:item)>
++items :RegistrySet(minecraft:item)
 +count :either<int, compound>
 	+min :int
 	+max :int
@@ -163,7 +161,7 @@ trial_spawner_config
 +items_to_drop_when_ominous :LootTable
 
 block_predicate
-+blocks :SingleOrList<RegistryKey(minecraft:block)> @Recommended
++blocks :RegistrySet(minecraft:block) @Recommended
 +nbt :TagsWithId(block/$../blocks$)
 +state :BlockStateTags($../blocks$)
 
@@ -199,12 +197,14 @@ warden_anger
 	+anger :int
 
 attribute
-+id :RegistryKey(minecraft:attribute)
-+base :double @Recommended
-+modifiers :list<compound>
-	+id :string
-	+amount :double
-	+operation :DynamicEnum(AttributeModifierOperation)
++id :RegistryKey(minecraft:attribute) @OldName(1.21, Name)
++base :double @Recommended @OldName(1.21, Base)
++modifiers :list<compound> @OldName(1.21, Modifiers)
+	+Operation :DescribedEnum(0, add, 1, multiply_base, 2, multiply)
+	+UUID :RandomUUID @Until(1.21)
+	+id :string @OldName(1.21, Name)
+	+amount :double @OldName(1.21, Amount)
+	+operation :DynamicEnum(AttributeModifierOperation) @Since(1.21)
 
 waypoint_icon
 +color :int
@@ -254,8 +254,8 @@ legacy_hover_event_show_entity
 +type :RegistryKey(minecraft:entity_type)
 +id :list<int>
 
-# until 1.21.5
-legacy_hover_event_show_item
-+id :RegistryKey(minecraft:item)
-+count :int
-+components :ItemComponents($../id$)
+# until 1.21
+legacy_block_pos
++X :int
++Y :int
++Z :int

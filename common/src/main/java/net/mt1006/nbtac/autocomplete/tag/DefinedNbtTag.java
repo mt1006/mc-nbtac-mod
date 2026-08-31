@@ -57,12 +57,15 @@ public class DefinedNbtTag extends NbtTag
 		if (ifEq != null && !ifEq.isEmpty())
 		{
 			String val = compound.getStrVal(ifEq.getFirst());
+			String fullIdVal = "minecraft:" + val;
+
 			if (val != null)
 			{
 				relevant = false;
 				for (int i = 1; i < ifEq.size(); i++)
 				{
-					if (val.equals(ifEq.get(i))) { return true; }
+					String ifEqArg = ifEq.get(i);
+					if (val.equals(ifEqArg) || fullIdVal.equals(ifEqArg)) { return true; }
 				}
 			}
 		}
@@ -133,6 +136,21 @@ public class DefinedNbtTag extends NbtTag
 		return true;
 	}
 
+	public DefinedNbtTag renameIfNecessary()
+	{
+		if (annotations == null) { return this; }
+		List<String> oldName = annotations.get(Annotation.OLD_NAME);
+		if (oldName == null || oldName.size() != 2) { return this; }
+
+		if (McVersion.compare(oldName.get(0)) < 0)
+		{
+			DefinedNbtTag newTag = new DefinedNbtTag(oldName.get(1), getType());
+			newTag.annotations = annotations;
+			return newTag;
+		}
+		return this;
+	}
+
 	public enum Annotation
 	{
 		// only for NBT tags (including in item data component compounds)
@@ -148,7 +166,8 @@ public class DefinedNbtTag extends NbtTag
 		OPT_RECOMMENDED("OptRecommended"),
 		RECOMMENDED_IF_RELEVANT("RecommendedIfRelevant"),
 		SINCE("Since"),
-		UNTIL("Until");
+		UNTIL("Until"),
+		OLD_NAME("OldName");
 
 		private static final Annotation[] VALUES = values();
 		private final String name;

@@ -17,7 +17,7 @@ _entity
 +Glowing :boolean
 +TicksFrozen :int
 +HasVisualFire :boolean
-+data :compound
++data :compound @Since(1.21.5)
 +Tags :list<string>
 +Passengers :list<TagsFromId(minecraft:entity_type, entity/$id$)>
 
@@ -33,8 +33,10 @@ _living_entity &_entity
 +SleepingY :int @Until(1.21.5)
 +SleepingZ :int @Until(1.21.5)
 +Team :ScoreboardTeam
-+active_effects :list<#effect_with_hidden>
-+attributes :list<#attribute>
++ActiveEffects :list<#effect_with_hidden> @Until(1.21)
++active_effects :list<#effect_with_hidden> @Since(1.21)
++Attributes :list<#attribute> @Until(1.21)
++attributes :list<#attribute> @Since(1.21)
 +current_explosion_impact_pos :list<double>(3) @Since(26.1)
 +current_impulse_context_reset_grace_time :int @Since(26.1)
 +equipment :#equipment @Since(1.21.5)
@@ -54,12 +56,12 @@ _mob &_living_entity
 +HandDropChances :list<float> @Until(1.21.5)
 +HandItems :list<#item_stack> @Until(1.21.5)
 +PersistenceRequired :boolean
-+body_armor_item :#item_stack @Until(1.21.5)
-+body_armor_drop_chance :float @Until(1.21.5)
++body_armor_item :#item_stack @Since(1.21) @Until(1.21.5)
++body_armor_drop_chance :float @Since(1.21) @Until(1.21.5)
 +drop_chances :#drop_chances @Since(1.21.5)
-+leash :either<UUID, BlockPos>
++leash :either<UUID, BlockPos> @OldName(1.21, Leash)
 +home_radius :int @Since(1.21.6)
-+home_pos :BlockPos
++home_pos :BlockPos @Since(1.21.6)
 +LeftHanded :boolean
 +DeathLootTable :LootTable
 +DeathLootTableSeed :LongSeed
@@ -78,7 +80,7 @@ _fish &_mob
 +FromBucket :boolean
 
 _boat &_entity
-+leash :either<UUID, BlockPos>
++leash :either<UUID, BlockPos> @OldName(1.21, Leash)
 
 _chest_boat &_boat
 +LootTable :LootTable
@@ -116,10 +118,12 @@ _arrow &_projectile
 +PierceLevel :byte
 +SoundEvent :RegistryKey(minecraft:sound_event)
 +item :#item_stack
-+weapon :#item_stack
++ShotFromCrossbow :boolean @Until(1.21)
++weapon :#item_stack @Since(1.21)
 
 _hurting_projectile &_projectile
-+acceleration_power :double
++power :list<double>(3) @Until(1.21)
++acceleration_power :double @Since(1.21)
 
 _item_projectile &_projectile
 +Item :#item_stack
@@ -158,7 +162,8 @@ _piglin &_mob
 +TimeInOverworld :int
 
 _patrolling_monster &_mob
-+patrol_target :BlockPos
++PatrolTarget :BlockPos @Since(1.21)
++patrol_target :BlockPos @Since(1.21)
 +PatrolLeader :boolean
 +Patrolling :boolean
 
@@ -331,6 +336,8 @@ armadillo &_animal
 +scute_time :int
 
 armor_stand &_living_entity
++ArmorItems :list<#item_stack> @Until(1.21.5)
++HandItems :list<#item_stack> @Until(1.21.5)
 +Invisible :boolean @OptRecommended
 +Small :boolean
 +ShowArms :boolean @OptRecommended
@@ -339,7 +346,7 @@ armor_stand &_living_entity
 +Marker :boolean
 +Pose :#armor_stand_pose
 
-arror =_arrow
+arrow =_arrow
 
 axolotl &_animal
 +Variant :DescribedEnum<int>(0, lucy, 1, wild, 2, gold, 3, cyan, 4, blue) @OptRecommended
@@ -358,8 +365,10 @@ bee &_animal
 +TicksSincePollination :int
 +CannotEnterHiveTicks :int
 +CropsGrownSincePollination :int
-+hive_pos :BlockPos @OptRecommended
-+flower_pos :BlockPos
++HivePos :BlockPos @Until(1.21)
++FlowerPos :BlockPos @Until(1.21)
++hive_pos :BlockPos @OptRecommended @Since(1.21)
++flower_pos :BlockPos @Since(1.21)
 
 birch_boat =_boat
 
@@ -382,8 +391,8 @@ camel &_horse
 
 cat &_tamable_animal
 +CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
-+sound_variant :ServerRegistryKey(minecraft:cat_sound_variant) @OptRecommended(2) @Since(26.1)
-+variant :ServerRegistryKey(minecraft:cat_variant) @OptRecommended(3)
++sound_variant :RegistryKey(minecraft:cat_sound_variant) @OptRecommended(2) @Since(26.1)
++variant :RegistryKey(minecraft:cat_variant) @OptRecommended(3)
 
 cave_spider =_mob
 
@@ -396,8 +405,8 @@ chest_minecart =_minecart_container
 chicken &_animal
 +IsChickenJockey :boolean
 +EggLayTime :int
-+sound_variant :ServerRegistryKey(minecraft:chicken_sound_variant) @OptRecommended(1) @Since(26.1)
-+variant :ServerRegistryKey(minecraft:chicken_variant) @OptRecommended(2)
++sound_variant :RegistryKey(minecraft:chicken_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :RegistryKey(minecraft:chicken_variant) @OptRecommended(2)
 
 cod =_fish
 
@@ -406,9 +415,9 @@ command_block_minecart &_minecart
 +SuccessCount :int
 +CustomName :TextComponent
 +TrackOutput :boolean
-+LastOutput :TextComponent @RelevantIfEq(TrackOutput, true)
++LastOutput :TextComponent @RelevantIfEq(TrackOutput, true, 1b)
 +UpdateLastExecution :boolean
-+LastExecution :long @RelevantIfEq(UpdateLastExecution, true)
++LastExecution :long @RelevantIfEq(UpdateLastExecution, true, 1b)
 
 # since 1.21.9
 copper_golem &_mob
@@ -416,8 +425,8 @@ copper_golem &_mob
 +weather_state :DynamicEnum(WeatheringCopperWeatherState) @OptRecommended
 
 cow &_animal
-+sound_variant :ServerRegistryKey(minecraft:cow_sound_variant) @OptRecommended(1) @Since(26.1)
-+variant :ServerRegistryKey(minecraft:cow_variant) @OptRecommended(2)
++sound_variant :RegistryKey(minecraft:cow_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :RegistryKey(minecraft:cow_variant) @OptRecommended(2)
 
 creaking =_mob
 
@@ -449,7 +458,8 @@ egg =_item_projectile
 elder_guardian =_mob
 
 end_crystal &_entity
-+beam_target :BlockPos
++BeamTarget :BlockPos @Until(1.21)
++beam_target :BlockPos @Since(1.21)
 +ShowBottom :boolean
 
 ender_dragon &_entity
@@ -461,10 +471,8 @@ ender_pearl =_item_projectile
 
 enderman &_mob
 +carriedBlockState :#block_state @OptRecommended
-+AngerTime :int @Until(1.21.11)
-+AngryAt :UUID @Until(1.21.11)
-+anger_end_time :int @Since(1.21.11)
-+angry_at :UUID @Since(1.21.11)
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)
 
 endermite &_mob
 +Lifetime :int
@@ -516,7 +524,7 @@ fox &_animal
 +Crouching :boolean
 
 frog &_animal
-+variant :ServerRegistryKey(minecraft:frog_variant) @OptRecommended
++variant :RegistryKey(minecraft:frog_variant) @OptRecommended
 
 furnace_minecart &_minecart
 +PushX :double
@@ -569,10 +577,8 @@ interaction &_entity
 
 iron_golem &_mob
 +PlayerCreated :boolean
-+AngerTime :int @Until(1.21.11)
-+AngryAt :UUID @Until(1.21.11)
-+anger_end_time :int @Since(1.21.11)
-+angry_at :UUID @Since(1.21.11)
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)
 
 item &_entity
 +Health :short
@@ -642,7 +648,7 @@ ominous_item_spawner &_entity
 
 painting &_attached_entity
 +facing :DescribedEnum<byte>(0, south, 1, west, 2, north, 3, east) @OptRecommended(1)
-+variant :ServerRegistryKey(minecraft:painting_variant) @OptRecommended(2)
++variant :RegistryKey(minecraft:painting_variant) @OptRecommended(2)
 
 pale_oak_boat =_boat
 
@@ -659,13 +665,12 @@ phantom &_mob
 +AX :int @Until(1.21.5)
 +AY :int @Until(1.21.5)
 +AZ :int @Until(1.21.5)
-+Size :int @Until(1.21.5)
 +anchor_pos :BlockPos @Since(1.21.5)
-+size :int @Since(1.21.5)
++size :int @OldName(1.21.5, Size)
 
 pig &_animal
-+sound_variant :ServerRegistryKey(minecraft:pig_sound_variant) @OptRecommended(1) @Since(26.1)
-+variant :ServerRegistryKey(minecraft:pig_variant) @OptRecommended(2)
++sound_variant :RegistryKey(minecraft:pig_sound_variant) @OptRecommended(1) @Since(26.1)
++variant :RegistryKey(minecraft:pig_variant) @OptRecommended(2)
 
 piglin &_piglin
 +IsBaby :boolean
@@ -705,7 +710,7 @@ player &_living_entity
 +ignore_fall_damage_from_current_explosion :boolean @Until(26.1)
 #TODO: \/ test if it work fine, as since 26.1 it's in living_entity
 +current_impulse_context_reset_grace_time :int @Until(26.1)
-+Dimension :ServerRegistryKey(minecraft:dimension)
++Dimension :RegistryKey(minecraft:dimension)
 +warden_spawn_tracker :compound
 +enteredNetherPosition :compound @Until(1.21.5)
 	+x :double
@@ -715,14 +720,14 @@ player &_living_entity
 +seenCredits :boolean
 +recipeBook :compound
 +SpawnAngle :float @Until(1.21.5)
-+SpawnDimension :ServerRegistryKey(minecraft:dimension) @Until(1.21.5)
++SpawnDimension :RegistryKey(minecraft:dimension) @Until(1.21.5)
 +SpawnForced :boolean @Until(1.21.5)
 +SpawnX :int @Until(1.21.5)
 +SpawnY :int @Until(1.21.5)
 +SpawnZ :int @Until(1.21.5)
 +respawn :compound @Since(1.21.5)
 	+angle :float
-	+dimension :ServerRegistryKey(minecraft:dimension)
+	+dimension :RegistryKey(minecraft:dimension)
 	+forced :boolean
 	+pos :#block_pos
 +spawn_extra_particles_on_fall :boolean
@@ -730,10 +735,8 @@ player &_living_entity
 #TODO: warden_spawn_tracker, recipeBook
 
 polar_bear &_animal
-+AngerTime :int @Until(1.21.11)
-+AngryAt :UUID @Until(1.21.11)
-+anger_end_time :int @Since(1.21.11)
-+angry_at :UUID @Since(1.21.11)
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)
 
 # until 1.21.5
 potion =_item_projectile
@@ -846,8 +849,7 @@ tnt &_entity
 +owner :UUID @Since(1.21.6)
 
 tnt_minecart &_minecart
-+TNTFuse :int @OptRecommended @Until(1.21.4)
-+fuse :int @OptRecommended @Since(1.21.4)
++fuse :int @OptRecommended @OldName(1.21.4, TNTFuse)
 +explosion_power :float @OptRecommended @Since(1.21.2)
 +explosion_speed_factor :float @OptRecommended @Since(1.21.4)
 
@@ -861,23 +863,21 @@ tropical_fish &_fish
 +Variant :TropicalFishExtendedVariant @OptRecommended
 
 turtle &_animal
-+HasEgg :boolean @Until(1.21.5)
 +HomePosX :int @Until(1.21.5)
 +HomePosY :int @Until(1.21.5)
 +HomePosZ :int @Until(1.21.5)
 +TravelPosX :int @Until(1.21.5)
 +TravelPosY :int @Until(1.21.5)
 +TravelPosZ :int @Until(1.21.5)
-+has_egg :boolean @Since(1.21.5)
-+home_pos :BlockPos @Since(1.21.5)
++has_egg :boolean @OldName(1.21.5, HasEgg)
++home_pos :BlockPos @Since(1.21.5) @Until(1.21.6)
 
 vex &_mob
 +BoundX :int @Until(1.21.5)
 +BoundY :int @Until(1.21.5)
 +BoundZ :int @Until(1.21.5)
-+LifeTicks :int @Until(1.21.5)
 +bound_pos :BlockPos @Since(1.21.5)
-+life_ticks :int @Since(1.21.5)
++life_ticks :int @OldName(1.21.5, LifeTicks)
 +owner :UUID @Since(1.21.6)
 
 villager &_villager
@@ -896,7 +896,8 @@ vindicator &_raider
 
 wandering_trader &_villager
 +DespawnDelay :int
-+wander_target :BlockPos
++WanderTarget :BlockPos @Since(1.21)
++wander_target :BlockPos @Since(1.21)
 
 warden &_mob
 +anger :#warden_anger
@@ -916,12 +917,10 @@ wither_skull &_hurting_projectile
 
 wolf &_tamable_animal
 +CollarColor :DescribedEnum<byte>(0, white, 1, orange, 2, magenta, 3, light_blue, 4, yellow, 5, lime, 6, pink, 7, gray, 8, light_gray, 9, cyan, 10, purple, 11, blue, 12, brown, 13, green, 14, red, 15, black) @OptRecommended(1)
-+AngerTime :int @Until(1.21.11)
-+AngryAt :UUID @Until(1.21.11)
-+anger_end_time :int @Since(1.21.11)
-+angry_at :UUID @Since(1.21.11)
-+sound_variant :ServerRegistryKey(minecraft:wolf_sound_variant) @OptRecommended(2)
-+variant :ServerRegistryKey(minecraft:wolf_variant) @OptRecommended(3)
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)
++sound_variant :RegistryKey(minecraft:wolf_sound_variant) @OptRecommended(2)
++variant :RegistryKey(minecraft:wolf_variant) @OptRecommended(3)
 
 zoglin &_mob
 +IsBaby :boolean
@@ -940,7 +939,5 @@ zombie_villager &_zombie
 +Xp :int
 
 zombified_piglin &_zombie
-+AngerTime :int @Until(1.21.11)
-+AngryAt :UUID @Until(1.21.11)
-+anger_end_time :int @Since(1.21.11)
-+angry_at :UUID @Since(1.21.11)
++anger_end_time :int @OldName(1.21.11, AngerTime)
++angry_at :UUID @OldName(1.21.11, AngryAt)

@@ -12,7 +12,7 @@ public class TextCompoundType extends ComplexCompoundType
 	public static final TextCompoundType INSTANCE = new TextCompoundType();
 	public static final ListType LIST_INSTANCE = new ListType(INSTANCE);
 
-	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)
+	@Override protected void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
 	{
 		map.addAll(NbtTagManager.get("text/nbtac:common"));
 		map.addAll(NbtTagManager.get("text/nbtac:style"));

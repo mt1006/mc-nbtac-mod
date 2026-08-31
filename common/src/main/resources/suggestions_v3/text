@@ -6,13 +6,10 @@ initial_content
 +selector :EntitySelector
 +keybind :Keybind
 +nbt :string
-+object :compound @Since(1.21.9)
-	+atlas :string
-	+sprite :string
++object :Enum(atlas, player) @Since(1.21.9)
 +score :compound
 	+name :string
 	+objective :string
-#TODO: improve object suggestions
 
 common
 +extra :InnerTextComponent
@@ -26,6 +23,10 @@ common
 +fallback :TranslationKey @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score, object) @Until(26.1)
 +fallback :either<TranslationKey, InnerTextComponent> @RelevantIfEq(type, translatable, object) @RelevantIfNotDef(text, selector, keybind, nbt, score) @Since(26.1)
 +with :list<InnerTextComponent> @RelevantIfEq(type, translatable) @RelevantIfNotDef(text, selector, keybind, nbt, score, object)
++atlas :Atlas @RelevantIfEq(object, atlas) @RecommendedIfRelevant @Since(1.21.9)
++sprite :Sprite($../atlas$) @RelevantIfEq(object, atlas) @RecommendedIfRelevant @Since(1.21.9)
++player :#profile @RelevantIfEq(object, player) @RecommendedIfRelevant @Since(1.21.9)
++hat :boolean @RelevantIfEq(object, player) @RecommendedIfRelevant @Since(1.21.9)
 
 style
 +color :TextColor
@@ -39,11 +40,10 @@ style
 +insertion :string
 +hoverEvent :compound @Until(1.21.5)
 	+action :Enum(show_text, show_item, show_entity) @Recommended
-	+contents :Depends<InnerTextComponent, #legacy_hover_event_show_item, #legacy_hover_event_show_entity>(action, show_text, show_item, show_entity)
+	+contents :Depends<InnerTextComponent, #item_stack, #legacy_hover_event_show_entity>(action, show_text, show_item, show_entity)
 +clickEvent :compound @Until(1.21.5)
 	+action :Enum(open_url, open_file, run_command, suggest_command, change_page, copy_to_clipboard) @Recommended
 	+value :string
-#TODO: TODO TODO ^^^
 +hover_event :compound @Since(1.21.5)
 	+action :Enum(show_text, show_item, show_entity)
 	+value :InnerTextComponent @RelevantIfEq(action, show_text)

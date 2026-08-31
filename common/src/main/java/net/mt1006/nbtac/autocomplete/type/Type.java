@@ -2,6 +2,7 @@ package net.mt1006.nbtac.autocomplete.type;
 
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
+import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.parser.ParsedValue;
 import net.mt1006.nbtac.autocomplete.parser.ParserType;
 import net.mt1006.nbtac.autocomplete.type.complex.*;
@@ -41,16 +42,18 @@ public interface Type
 			Map.entry("DynamicEnum", (s, a) -> EnumType.dynamicEnum(s, firstOrNull(a), true)),
 			Map.entry("DynamicOrderedEnum", (s, a) -> EnumType.dynamicEnum(s, firstOrNull(a), true)),
 			Map.entry("Font", (s, a) -> FontType.INSTANCE),
+			Map.entry("ItemModel", (s, a) -> PrimitiveType.UNKNOWN),
 			Map.entry("PlayerInventorySlot", (s, a) -> new PlayerInventorySlotType(s.getFirst())),
 			Map.entry("Keybind", (s, a) -> KeybindType.INSTANCE),
 			Map.entry("LongSeed", (s, a) -> LongSeedType.INSTANCE),
-			Map.entry("LootTable", (s, a) -> new ServerRegistryKeyType("loot_table")),
+			Map.entry("LootTable", (s, a) -> new RegistryKeyType("loot_table")),
 			Map.entry("MapDecorations", (s, a) -> MapDecorationsType.INSTANCE),
 			Map.entry("MapDecorationType", (s, a) -> MapDecorationTypeType.INSTANCE),
 			Map.entry("PotDecoration", (s, a) -> PotDecorationType.INSTANCE),
 			Map.entry("Recipe", (s, a) -> RecipeType.INSTANCE),
 			Map.entry("RegistryKey", (s, a) -> new RegistryKeyType(firstOrNull(a))),
-			Map.entry("ServerRegistryKey", (s, a) -> new ServerRegistryKeyType(firstOrNull(a))),
+			Map.entry("RegistrySet", (s, a) -> EitherType.registrySet(firstOrNull(a))),
+			Map.entry("RegistryTagKey", (s, a) -> new RegistryKeyType(firstOrNull(a), RegistryKeyType.Contents.BOTH_PREFIXED)), //TODO: remove after dropping pre-26.1 suggestions
 			Map.entry("Id", (s, a) -> new IdType(firstOrNull(a))),
 			Map.entry("SpawnEgg", (s, a) -> new SpawnEggType(firstOrNull(a))), //TODO: use
 			Map.entry("Tags", (s, a) -> new TagsType(firstOrNull(a), null, null)),
@@ -73,7 +76,10 @@ public interface Type
 			Map.entry("ArmorStandSlots", (s, a) -> ArmorStandSlotsType.INSTANCE),
 			Map.entry("TropicalFishExtendedVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
 			Map.entry("HorseExtendedVariant", (s, a) -> PrimitiveType.INT), //TODO: finish
-			Map.entry("FurnaceRecipesUsed", (s, a) -> PrimitiveType.COMPOUND) //TODO: finish
+			Map.entry("FurnaceRecipesUsed", (s, a) -> PrimitiveType.COMPOUND), //TODO: finish
+			Map.entry("RegistryId", (s, a) -> PrimitiveType.UNKNOWN), //TODO: remove after removing pre-1.21 suggestions
+			Map.entry("Atlas", (s, a) -> PrimitiveType.UNKNOWN),
+			Map.entry("Sprite", (s, a) -> PrimitiveType.UNKNOWN)
 	);
 
 	@Nullable SuggestionList getSuggestions(SuggestionListContext ctx);
@@ -85,12 +91,17 @@ public interface Type
 
 	PrimitiveType getPrimitive();
 
-	default NbtTagMap getSubcompound()
+	default NbtTagMap getMutableTagMap()
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	default void setSubcompound(@Nullable NbtTagMap subcompound)
+	default @Nullable NbtTagMap getSuggestionsTagMap(ParsedCompound parsed)
+	{
+		return null;
+	}
+
+	default void setTagMap(@Nullable NbtTagMap subcompound)
 	{
 		if (subcompound != null) { throw new UnsupportedOperationException(); }
 	}

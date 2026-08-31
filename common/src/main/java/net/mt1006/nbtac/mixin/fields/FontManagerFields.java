@@ -11,5 +11,5 @@ import java.util.Map;
 @Mixin(FontManager.class)
 public interface FontManagerFields
 {
-	@Accessor Map<ResourceLocation, FontSet> getFontSets();
+	@Accessor("fontSets") Map<ResourceLocation, FontSet> nbtac$getFontSets();
 }

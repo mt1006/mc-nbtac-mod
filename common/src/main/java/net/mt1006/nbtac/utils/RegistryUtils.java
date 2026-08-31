@@ -2,14 +2,12 @@ package net.mt1006.nbtac.utils;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,9 +21,7 @@ public class RegistryUtils
 	public static final LocalRegistry<Item> ITEM = new LocalRegistry<>(BuiltInRegistries.ITEM);
 	public static final LocalRegistry<Block> BLOCK = new LocalRegistry<>(BuiltInRegistries.BLOCK);
 	public static final LocalRegistry<EntityType<?>> ENTITY_TYPE = new LocalRegistry<>(BuiltInRegistries.ENTITY_TYPE);
-	public static final LocalRegistry<BlockEntityType<?>> BLOCK_ENTITY_TYPE = new LocalRegistry<>(BuiltInRegistries.BLOCK_ENTITY_TYPE);
 	public static final LocalRegistry<DataComponentType<?>> DATA_COMPONENT_TYPE = new LocalRegistry<>(BuiltInRegistries.DATA_COMPONENT_TYPE);
-	public static final LocalRegistry<ParticleType<?>> PARTICLE_TYPE = new LocalRegistry<>(BuiltInRegistries.PARTICLE_TYPE);
 
 	public static class LocalRegistry<T> implements Iterable<T>
 	{

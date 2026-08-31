@@ -53,4 +53,41 @@ subprojects
 		processResources { from project(':common').sourceSets.main.resources }
 		tasks.named('compileJava', JavaCompile) { source project(':common').sourceSets.main.allSource }
 	}
+
+	project.sourceSets.main.java.srcDirs.each((File srcDir) ->
+	{
+		File javaDir = new File(project.projectDir, "src/main/java")
+		File generatedDir = new File(project.projectDir, "src/main/generated")
+		generatedDir.mkdir()
+
+		fileTree(srcDir).visit((FileTreeElement file) ->
+		{
+			String path = file.getPath()
+			if (!file.isDirectory()
+					|| !path.contains("net/mt1006/nbtac")
+					|| path.contains("net/mt1006/nbtac/api")
+					|| (project.name != "common" && (path == "net/mt1006/nbtac" || path == "net/mt1006/nbtac/mixin")))
+			{
+				return
+			}
+
+			String packagePath = javaDir.relativePath(file.file)
+			String packageInfoStr =
+					"@ApiStatus.Internal\n" +
+					"package ${packagePath.replace('/', '.')};\n\n" +
+					"import org.jetbrains.annotations.ApiStatus;\n"
+
+			File dir = new File(generatedDir, packagePath)
+			dir.mkdirs()
+
+			File packageInfoFile = new File(dir, "package-info.java")
+			if (!packageInfoFile.exists() || packageInfoStr != packageInfoFile.getText("UTF-8"))
+			{
+				packageInfoFile.write(packageInfoStr, "UTF-8")
+				println("Generating package info for ${packagePath}")
+			}
+		})
+	})
+
+	project.sourceSets.main.java.srcDirs += ["src/main/generated"]
 }
