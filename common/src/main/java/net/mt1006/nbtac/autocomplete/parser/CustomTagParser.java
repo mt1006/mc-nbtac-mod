@@ -221,7 +221,7 @@ public class CustomTagParser
 	}
 
 	private <T extends ParsedCollection<E>, E> void parseCollection(T out, Function<Integer, E> nextValue, Consumer<E> parser,
-																	char startSign, char stopSign, boolean isArray)
+	                                                                char startSign, char stopSign, boolean isArray)
 	{
 		reader.expect(startSign);
 		if (isArray)
