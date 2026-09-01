@@ -50,6 +50,11 @@ subprojects
 			compileOnly project(':common')
 		}
 
+		jar
+		{
+			from(project.parent.projectDir.path + "/LICENSE") { rename { "LICENSE_${mod_jar_name}" } }
+		}
+
 		processResources { from project(':common').sourceSets.main.resources }
 		tasks.named('compileJava', JavaCompile) { source project(':common').sourceSets.main.allSource }
 	}

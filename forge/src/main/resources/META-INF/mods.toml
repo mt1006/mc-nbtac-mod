@@ -5,7 +5,7 @@ issueTrackerURL="${issue_tracker}"
 
 [[mods]]
 modId="${mod_id}"
-version="${version}"
+version="${version}+mc${minecraft_version}"
 displayName="${mod_name}"
 displayURL="${homepage}"
 logoFile="logo.png"
