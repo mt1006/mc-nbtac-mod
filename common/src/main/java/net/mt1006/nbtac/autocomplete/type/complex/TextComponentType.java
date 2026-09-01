@@ -1,5 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type.complex;
 
+import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.parser.ParsedList;
@@ -39,5 +40,10 @@ public class TextComponentType extends ComplexType
 		list.addRaw(ModConfig.defaultQuotationMark.val.getStr(false), "(simple string) [#text_component]", 3);
 		list.addRaw("{", "(text component) [#text_component]", 2);
 		list.addRaw("[", "(test component list) [#text_component]", 1);
+	}
+
+	@Override public @Nullable NbtTagMap getSuggestionsTagMap(ParsedCompound parsed)
+	{
+		return TextCompoundType.INSTANCE.getSuggestionsTagMap(parsed);
 	}
 }

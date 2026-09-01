@@ -15,20 +15,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Stack;
 
-public class SuggestionFileParser extends FileParser
+public class SuggestionDataParser extends FileParser
 {
-	private final String keyDefaultPrefix, keyModPrefix;
+	private final String group;
+	private final String keyPrefix, keyModPrefix;
 
-	public SuggestionFileParser(String filename, String namespace)
+	public SuggestionDataParser(String group, String namespace, @Nullable String data)
 	{
-		super(filename);
-		this.keyDefaultPrefix = filename + "/" + namespace + ":";
-		this.keyModPrefix = "_" + this.keyDefaultPrefix;
+		super(data != null ? data : group, data == null);
+		this.group = group;
+		this.keyPrefix = group + "/" + namespace + ":";
+		this.keyModPrefix = "_" + this.keyPrefix;
 	}
 
 	public void parseNbtSuggestions()
 	{
-		for (Entry entry : parseFile())
+		for (Entry entry : parseLines())
 		{
 			SimpleStringReader reader = new SimpleStringReader(entry.header);
 			String entryKey = parseNbtEntryName(reader.readFileString());
@@ -121,7 +123,7 @@ public class SuggestionFileParser extends FileParser
 				else
 				{
 					NbtTag nbtTag = suggestionStack.get(tabCount - 1);
-					if (!nbtTag.getType().getSubcompound().add(tag)) { throw reader.new ReaderException(); }
+					if (!nbtTag.getType().getMutableTagMap().add(tag)) { throw reader.new ReaderException(); }
 				}
 			}
 			reader.expectEnd();
@@ -141,7 +143,7 @@ public class SuggestionFileParser extends FileParser
 		}
 
 		String name = reader.readFileString();
-		List<Type> subtypes = reader.parseList(SuggestionFileParser::parseType, '<', '>');
+		List<Type> subtypes = reader.parseList(SuggestionDataParser::parseType, '<', '>');
 		List<String> args = reader.parseList(SimpleStringReader::readFileString, '(', ')');
 
 		int firstDynamicArg = -1;
@@ -177,6 +179,20 @@ public class SuggestionFileParser extends FileParser
 
 	private String parseNbtEntryName(String str)
 	{
-		return (str.startsWith("_") ? keyModPrefix : keyDefaultPrefix) + str;
+		// intended to be used by suggestions from other mods
+		if (str.charAt(0) == ':')
+		{
+			str = str.substring(1);
+			if (str.contains(":"))
+			{
+				return (str.contains(":_") ? "_" : "") + group + "/" + str;
+			}
+			else
+			{
+				return (str.charAt(0) == '_' ? "_" : "") + group + "/minecraft:" + str;
+			}
+		}
+
+		return (str.charAt(0) == '_' ? keyModPrefix : keyPrefix) + str;
 	}
 }

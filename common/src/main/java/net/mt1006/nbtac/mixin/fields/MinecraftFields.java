@@ -8,5 +8,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Minecraft.class)
 public interface MinecraftFields
 {
-	@Accessor FontManager getFontManager();
+	@Accessor("fontManager") FontManager nbtac$getFontManager();
 }

@@ -15,7 +15,7 @@ public class ItemComponentsType extends ComplexCompoundType
 		this.id = id != null ? ResourceLocation.tryParse(id) : null;
 	}
 
-	@Override protected void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)
+	@Override protected void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
 	{
 		map.addAll(CompoundType.buildMapForItem("item/" + id));
 	}

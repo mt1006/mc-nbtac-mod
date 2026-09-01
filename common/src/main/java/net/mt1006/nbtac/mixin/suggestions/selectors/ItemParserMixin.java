@@ -62,6 +62,6 @@ public class ItemParserMixin
 		String name = resourceLocation.toString();
 		String tag = suggestionsBuilder.getRemaining();
 
-		return SuggestionManager.loadFromName(tag, "item/" + name, suggestionsBuilder, false);
+		return SuggestionManager.get(tag, "item/" + name, suggestionsBuilder, false);
 	}
 }

@@ -1,5 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type;
 
+import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.parser.ParsedPrimitive;
@@ -35,6 +36,11 @@ public class DynamicArgumentType implements Type
 	@Override public PrimitiveType getPrimitive()
 	{
 		return primitive;
+	}
+
+	@Override public @Nullable NbtTagMap getSuggestionsTagMap(ParsedCompound parsed)
+	{
+		return constructor.create(subtypes, parseArgs(parsed)).getSuggestionsTagMap(parsed);
 	}
 
 	private List<String> parseArgs(ParsedValue parsed)
@@ -105,6 +111,7 @@ public class DynamicArgumentType implements Type
 
 	private static @Nullable String parseArgumentSwitch(String arg, ParsedValue parsed)
 	{
+		// example: "$@arg@case1;val1;case2;val2$"
 		int atCharPos = arg.indexOf('@');
 		if (atCharPos == -1 || parsed.parentTag == null) { return null; }
 

@@ -29,6 +29,8 @@ public class DependsType implements Type
 		if (val == null) { return SuggestionList.empty(); }
 
 		int index = values.indexOf(val);
+		if (index == -1) { index = values.indexOf("minecraft:" + val); }
+
 		return index != -1 ? types.get(index).getSuggestions(ctx) : SuggestionList.empty();
 	}
 

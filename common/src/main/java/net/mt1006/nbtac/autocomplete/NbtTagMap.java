@@ -66,13 +66,14 @@ public class NbtTagMap implements Iterable<NbtTag>
 		return get(key) != null;
 	}
 
-	public SuggestionList suggestionsForKeyPrefix(ParserType parserType, ParsedCompound compound, String prefix, int cursorPos)
+	public SuggestionList suggestionsForKeyPrefix(ParserType parserType, ParsedCompound compound,
+												  String prefix, int cursorPos, boolean removeUsed)
 	{
 		SuggestionList list = new SuggestionList(cursorPos);
 		forEach((tag) -> list.add(TagSuggestion.create(tag, parserType, compound)));
 
 		list.filterByPrefix(prefix);
-		compound.getAll().forEach((t) -> list.removeByName(t.key));
+		if (removeUsed) { compound.getAll().forEach((t) -> list.removeByName(t.key)); }
 		return list;
 	}
 

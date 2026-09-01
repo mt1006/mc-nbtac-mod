@@ -23,14 +23,14 @@ sound_event
 
 item_effect
 +type :RegistryKey(minecraft:consume_effect_type) @Recommended
-+effects :Depends<list<#effect>, SingleOrList<RegistryKey(minecraft:mob_effect)>>(type, apply_effects, remove_effects) @RelevantIfEq(type, apply_effects, remove_effects)
-+probability :float @RelevantIfEq(type, apply_effects)
-+diameter :float @RelevantIfEq(type, teleport_randomly)
-+sound :either<RegistryKey(minecraft:sound_event), #sound_event> @RelevantIfEq(type, play_sound)
++effects :Depends<list<#effect>, RegistrySet(minecraft:mob_effect)>(type, minecraft:apply_effects, minecraft:remove_effects) @RelevantIfEq(type, minecraft:apply_effects, minecraft:remove_effects)
++probability :float @RelevantIfEq(type, minecraft:apply_effects)
++diameter :float @RelevantIfEq(type, minecraft:teleport_randomly)
++sound :either<RegistryKey(minecraft:sound_event), #sound_event> @RelevantIfEq(type, minecraft:play_sound)
 
 global_pos
 +pos :BlockPos
-+dimension :ServerRegistryKey(minecraft:dimension)
++dimension :RegistryKey(minecraft:dimension)
 
 item_stack
 +id :RegistryKey(minecraft:item) @Recommended
@@ -132,7 +132,7 @@ villager/gossip
 
 # since 1.21.2
 lock
-+items :SingleOrList<RegistryKey(minecraft:item)>
++items :RegistrySet(minecraft:item)
 +count :either<int, compound>
 	+min :int
 	+max :int
@@ -161,7 +161,7 @@ trial_spawner_config
 +items_to_drop_when_ominous :LootTable
 
 block_predicate
-+blocks :SingleOrList<RegistryKey(minecraft:block)> @Recommended
++blocks :RegistrySet(minecraft:block) @Recommended
 +nbt :TagsWithId(block/$../blocks$)
 +state :BlockStateTags($../blocks$)
 

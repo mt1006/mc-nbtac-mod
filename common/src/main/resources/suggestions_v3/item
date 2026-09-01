@@ -2,7 +2,7 @@
 
 _common
 +Enchantments :list<compound>
-	+id :ServerRegistryKey(minecraft:enchantment)
+	+id :RegistryKey(minecraft:enchantment)
 	+lvl :int
 +display :compound
 	+Name :TextComponent
@@ -22,8 +22,8 @@ _common
 
 _armor
 +Trim :compound
-	+pattern :ServerRegistryKey(minecraft:trim_pattern)
-	+material :ServerRegistryKey(minecraft:trim_material)
+	+pattern :RegistryKey(minecraft:trim_pattern)
+	+material :RegistryKey(minecraft:trim_material)
 
 leather_helmet =_armor
 leather_chestplate =_armor
@@ -55,7 +55,7 @@ bundle
 +Items :list<#item_stack>
 
 compass
-+LodestoneDimension :ServerRegistryKey(minecraft:dimension)
++LodestoneDimension :RegistryKey(minecraft:dimension)
 +LodestoneTracked :boolean
 +LodestonePos :compound
 	+X :int
@@ -73,7 +73,7 @@ debug_stick
 
 enchanted_book
 +StoredEnchantments :list<compound>
-	+id :ServerRegistryKey(minecraft:enchantment)
+	+id :RegistryKey(minecraft:enchantment)
 	+lvl :int
 
 firework_rocket
@@ -95,7 +95,7 @@ firework_star
 	+Flicker :boolean
 
 goat_horn
-+instrument :ServerRegistryKey(minecraft:instrument)
++instrument :RegistryKey(minecraft:instrument)
 
 item_frame
 +EntityTag :Tags(entity/minecraft:item_frame)
@@ -116,7 +116,7 @@ player_head
 +SkullOwner :string
 
 potion
-+Potion :ServerRegistryKey(minecraft:potion)
++Potion :RegistryKey(minecraft:potion)
 +CustomPotionColor :int
 +CustomPotionEffects :list<#effect>
 

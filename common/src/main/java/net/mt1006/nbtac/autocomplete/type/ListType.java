@@ -2,6 +2,7 @@ package net.mt1006.nbtac.autocomplete.type;
 
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
+import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.parser.ParsedList;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,14 +34,19 @@ public class ListType implements Type
 		return PrimitiveType.LIST;
 	}
 
-	@Override public NbtTagMap getSubcompound()
+	@Override public NbtTagMap getMutableTagMap()
 	{
-		return elementType.getSubcompound();
+		return elementType.getMutableTagMap();
 	}
 
-	@Override public void setSubcompound(@Nullable NbtTagMap subcompound)
+	@Override public @Nullable NbtTagMap getSuggestionsTagMap(ParsedCompound parsed)
 	{
-		elementType.setSubcompound(subcompound);
+		return elementType.getSuggestionsTagMap(parsed);
+	}
+
+	@Override public void setTagMap(@Nullable NbtTagMap subcompound)
+	{
+		elementType.setTagMap(subcompound);
 	}
 
 	public Type getElementType()

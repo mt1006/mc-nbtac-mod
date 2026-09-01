@@ -95,8 +95,8 @@ public abstract class SuggestionsListMixin
 		//TODO: do something with try-catch
 		try
 		{
-			EditBox editBox = ((CommandSuggestionsFields)commandSuggestions).getInput();
-			fontToUse = ((CommandSuggestionsFields)commandSuggestions).getFont();
+			EditBox editBox = ((CommandSuggestionsFields)commandSuggestions).nbtac$getInput();
+			fontToUse = ((CommandSuggestionsFields)commandSuggestions).nbtac$getFont();
 
 			int newW = 0;
 			for (Suggestion suggestion : suggestions)

@@ -9,13 +9,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.forgespi.language.IModInfo;
 import net.mt1006.nbtac.autocomplete.loader.Loader;
 import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.forge.ConfigScreenFactory;
-import org.apache.maven.artifact.versioning.ArtifactVersion;
-
-import java.util.Set;
 
 @Mod(NBTac.MOD_ID)
 public class NBTacForge implements NBTacLoaderInterface
@@ -42,19 +38,6 @@ public class NBTacForge implements NBTacLoaderInterface
 		if (isDedicatedServer) { return; }
 		if (ModConfig.useNewThread.val) { new Thread(Loader::load).start(); }
 		else { Loader.load(); }
-	}
-
-	@Override public void appendModVersionIds(Set<String> mods)
-	{
-		for (IModInfo modInfo : ModList.get().getMods())
-		{
-			String id = modInfo.getModId();
-			ArtifactVersion version = modInfo.getVersion();
-			String qualifier = version.getQualifier();
-
-			mods.add(String.format("%s@%d.%d.%d.%d#%s;", id, version.getMajorVersion(), version.getMinorVersion(),
-					version.getIncrementalVersion(), version.getBuildNumber(), qualifier != null ? qualifier : "?"));
-		}
 	}
 
 	@Override public boolean isModPresent(String id)

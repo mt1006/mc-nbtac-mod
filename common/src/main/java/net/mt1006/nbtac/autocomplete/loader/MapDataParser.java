@@ -2,21 +2,17 @@ package net.mt1006.nbtac.autocomplete.loader;
 
 import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
-import net.mt1006.nbtac.autocomplete.type.complex.ServerRegistryKeyType;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class DataFileParser extends FileParser
+public class MapDataParser extends FileParser
 {
-	protected DataFileParser(String filename)
+	protected MapDataParser(String filename)
 	{
-		super(filename);
+		super(filename, true);
 	}
 
 	public void parseBlockToBlockEntityMap()
 	{
-		for (Entry entry : parseFile())
+		for (Entry entry : parseLines())
 		{
 			String val = "block/" + ResourceLocation.tryParse(entry.header);
 			entry.lines.forEach((l) -> NbtTagManager.blockToBlockEntityMap.put(parseLine(l), val));

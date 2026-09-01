@@ -13,7 +13,7 @@ public class MapDecorationsType extends ComplexCompoundType
 	public static final MapDecorationsType INSTANCE = new MapDecorationsType();
 	private static final Random RNG = new Random();
 
-	@Override public void getBasicCompoundSuggestions(SuggestionListContext ctx, ParsedCompound parsed, NbtTagMap map)
+	@Override public void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
 	{
 		// 36^6 > 2^31
 		String newDecorationId = Long.toString(Math.abs(RNG.nextInt()), Math.min(Character.MAX_RADIX, 36));

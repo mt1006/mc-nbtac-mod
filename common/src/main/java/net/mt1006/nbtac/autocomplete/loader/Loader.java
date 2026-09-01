@@ -24,13 +24,13 @@ public class Loader
 
 		try
 		{
-			new SuggestionFileParser("compound", "nbtac").parseNbtSuggestions();
-			new SuggestionFileParser("block", "minecraft").parseNbtSuggestions();
-			new SuggestionFileParser("entity", "minecraft").parseNbtSuggestions();
-			new SuggestionFileParser("text", "nbtac").parseNbtSuggestions();
-			new SuggestionFileParser("item", "minecraft").parseNbtSuggestions();
+			new SuggestionDataParser("compound", "nbtac", null).parseNbtSuggestions();
+			new SuggestionDataParser("block", "minecraft", null).parseNbtSuggestions();
+			new SuggestionDataParser("entity", "minecraft", null).parseNbtSuggestions();
+			new SuggestionDataParser("text", "nbtac", null).parseNbtSuggestions();
+			new SuggestionDataParser("item", "minecraft", null).parseNbtSuggestions();
 
-			new DataFileParser("block2be").parseBlockToBlockEntityMap();
+			new MapDataParser("block2be").parseBlockToBlockEntityMap();
 		}
 		catch (Exception e)
 		{

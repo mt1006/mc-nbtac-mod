@@ -33,7 +33,7 @@ _sign
 banner
 +CustomName :TextComponent
 +patterns :list<compound>
-	+pattern :either<ServerRegistryKey(minecraft:banner_pattern), compound>
+	+pattern :either<RegistryKey(minecraft:banner_pattern), compound>
 		+asset_id :string
 		+translation_key :TranslationKey
 	+color :DynamicEnum(DyeColor)
@@ -80,9 +80,9 @@ command_block
 +SuccessCount :int
 +CustomName :TextComponent
 +TrackOutput :boolean
-+LastOutput :TextComponent @RelevantIfEq(TrackOutput, true)
++LastOutput :TextComponent @RelevantIfEq(TrackOutput, true, 1b)
 +UpdateLastExecution :boolean
-+LastExecution :long @RelevantIfEq(UpdateLastExecution, true)
++LastExecution :long @RelevantIfEq(UpdateLastExecution, true, 1b)
 +powered :boolean
 +conditionMet :boolean
 +auto :boolean
@@ -124,7 +124,7 @@ hopper &_with_items
 jigsaw
 +name :string
 +target :string
-+pool :ServerRegistryKey(minecraft:worldgen/template_pool)
++pool :RegistryKey(minecraft:worldgen/template_pool)
 +final_state :string
 +joint :DynamicEnum(JigsawJointType)
 +placement_priority :int
@@ -186,13 +186,7 @@ shelf
 +align_items_to_bottom :boolean
 
 skull
-+profile :either<string, compound>
-	+name :string
-	+id :UUID
-	+properties :list<compound>
-		+name :string
-		+value :string
-		+signature :string
++profile :either<string, #profile>
 +note_block_sound :string
 +custom_name :TextComponent
 
@@ -226,7 +220,7 @@ test_block
 
 test_instance_block
 +data :compound
-	+test :ServerRegistryKey(minecraft:test_instance)
+	+test :RegistryKey(minecraft:test_instance)
 	+size :int_array(3)
 	+rotation :DescribedEnum(Rotation)
 	+ignore_entities :boolean
