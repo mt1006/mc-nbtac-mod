@@ -2,7 +2,7 @@ package net.mt1006.nbtac.api;
 
 import net.mt1006.nbtac.autocomplete.suggestions.CustomSuggestion;
 import net.mt1006.nbtac.autocomplete.suggestions.RawSuggestion;
-import org.apache.logging.log4j.util.InternalApi;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public interface NBTacSuggestion
@@ -61,6 +61,6 @@ public interface NBTacSuggestion
 	 */
 	boolean matchPrefix(String prefix);
 
-	@InternalApi
+	@ApiStatus.Internal
 	CustomSuggestion get();
 }
