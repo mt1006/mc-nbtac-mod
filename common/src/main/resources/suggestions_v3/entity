@@ -320,7 +320,8 @@ allay &_mob
 area_effect_cloud &_entity
 +Age :int
 +Duration :int @OptRecommended
-+Particle :ParticleType(particle/$type$) @OptRecommended @Until(1.21.6)
++Particle :RegistryKey(minecraft:particle_type) @OptRecommended @Until(1.21)
++Particle :ParticleType(particle/$type$) @OptRecommended @Since(1.21) @Until(1.21.6)
 +ReapplicationDelay :int
 +DurationOnUse :int
 +RadiusOnUse :float
