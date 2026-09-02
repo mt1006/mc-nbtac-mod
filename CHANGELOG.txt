@@ -1,5 +1,6 @@
+===Version 2.0===
 -Tag parser has been rewritten.
--Removed disassembler and cache - all tags are now predefined rather than being generated on launch.
+-Removed disassembler and cache - all tags are now predefined rather than being generated at startup.
 -General improvements to suggestions.
 -Added suggestions for particle data, including in /particle command (thanks to vred1 for suggestion, and Hardel-DW for PR).
 -Added "update_on_cursor_movement" setting to restore Minecraft suggestion behavior from before 26.1 (true by default).
