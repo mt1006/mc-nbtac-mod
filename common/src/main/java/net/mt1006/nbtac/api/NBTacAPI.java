@@ -10,6 +10,8 @@ import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.loader.SuggestionDataParser;
 import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
+import net.mt1006.nbtac.autocomplete.type.EmptyType;
+import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.autocomplete.type.compound.CompoundType;
 import org.jetbrains.annotations.Nullable;
 
@@ -99,6 +101,33 @@ public class NBTacAPI
 	{
 		if (builder == null) { builder = new SuggestionsBuilder(input, 0); }
 		return SuggestionManager.get(input, CompoundType.fromName(name), builder, suggestPath, (sl) -> processSuggestions(process, sl));
+	}
+
+	/**
+	 * Get suggestions for tag value within given NBT compound.
+	 * @param input argument part to get suggestions for, e.g. "minecraft:di"
+	 * @param name name of a root compound - "group/namespace:id", e.g. "entity/minecraft:creeper"
+	 * @param path path of a tag, e.g. "active_effects[0]."
+	 * @param builder suggestion builder, if null dummy builder will be created
+	 * @param process if not null, it can be used to modify suggestion list
+	 * @return suggestions
+	 */
+	public static CompletableFuture<Suggestions> getValueSuggestions(String input, String name, String path, @Nullable SuggestionsBuilder builder,
+																	 @Nullable Function<NBTacSuggestionList, NBTacSuggestionList> process)
+	{
+		if (builder == null) { builder = new SuggestionsBuilder(input, 0); }
+
+		Type tagType = null;
+		CompoundType rootType = CompoundType.fromName(name);
+		if (rootType.hasTagMap())
+		{
+			CustomTagParser parser = CustomTagParser.forNbtPath(path, rootType);
+			parser.parse();
+			tagType = parser.pathType;
+		}
+
+		if (tagType == null) { tagType = EmptyType.INSTANCE; }
+		return SuggestionManager.get(input, tagType, builder, false, (sl) -> processSuggestions(process, sl));
 	}
 
 	/**

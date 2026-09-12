@@ -85,6 +85,8 @@ public class NBTacTest implements FabricClientGameTest
 		NBTacTestContext.assertPresent(NBTacAPI.getNbtSuggestions("{", "entity/minecraft:zombie", null, false, null), "CanBreakDoors");
 		NBTacTestContext.assertPresent(NBTacAPI.getNbtSuggestions("", "entity/minecraft:zombie", null, true, null), "CanBreakDoors");
 		NBTacTestContext.assertPresent(NBTacAPI.getItemDataSuggestions("", "item/minecraft:intangible_projectile", null, null, null), "{}");
+		NBTacTestContext.assertPresent(NBTacAPI.getValueSuggestions("", "entity/minecraft:zombie", "IsBaby", null, null), "true");
+		//NBTacTestContext.assertPresent(NBTacAPI.getValueSuggestions("tr", "entity/minecraft:zombie", "IsBaby", null, null), "true"); //TODO: fix
 
 		// test processor that doesn't do anything
 		NBTacTestContext.assertPresent(NBTacAPI.getNbtSuggestions("{", "entity/minecraft:zombie", null, false, Function.identity()), "CanBreakDoors");
