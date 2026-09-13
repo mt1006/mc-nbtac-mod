@@ -1,7 +1,12 @@
 package net.mt1006.nbtac.autocomplete.loader;
 
+import net.minecraft.client.Minecraft;
 import net.mt1006.nbtac.NBTac;
+import net.mt1006.nbtac.autocomplete.DataSource;
 import net.mt1006.nbtac.config.ModConfig;
+
+import java.io.File;
+import java.io.FileReader;
 
 public class Loader
 {
@@ -24,14 +29,14 @@ public class Loader
 
 		try
 		{
-			new SuggestionDataParser("compound", "nbtac", null).parseNbtSuggestions();
-			new SuggestionDataParser("block", "minecraft", null).parseNbtSuggestions();
-			new SuggestionDataParser("entity", "minecraft", null).parseNbtSuggestions();
-			new SuggestionDataParser("particle", "minecraft", null).parseNbtSuggestions();
-			new SuggestionDataParser("text", "nbtac", null).parseNbtSuggestions();
-			new SuggestionDataParser("item", "minecraft", null).parseDataComponents();
+			new SuggestionDataParser("compound", "nbtac", null).parseNbtSuggestions(DataSource.BUILTIN);
+			new SuggestionDataParser("block", "minecraft", null).parseNbtSuggestions(DataSource.BUILTIN);
+			new SuggestionDataParser("entity", "minecraft", null).parseNbtSuggestions(DataSource.BUILTIN);
+			new SuggestionDataParser("particle", "minecraft", null).parseNbtSuggestions(DataSource.BUILTIN);
+			new SuggestionDataParser("text", "nbtac", null).parseNbtSuggestions(DataSource.BUILTIN);
+			new SuggestionDataParser("item", "minecraft", null).parseDataComponents(DataSource.BUILTIN);
 
-			new MapDataParser("block2be").parseBlockToBlockEntityMap();
+			new MapDataParser("block2be", true).parseBlockToBlockEntityMap();
 		}
 		catch (Exception e)
 		{
@@ -39,10 +44,51 @@ public class Loader
 			return;
 		}
 
+		loadCustomSuggestions();
+
 		finished = true;
 		if (ModConfig.debugMode.val)
 		{
 			NBTac.LOGGER.info("Finished in: {} ms", System.currentTimeMillis() - start);
+		}
+	}
+
+	private static void loadCustomSuggestions()
+	{
+		File suggestionsDir = new File(Minecraft.getInstance().gameDirectory, "config/nbtac_suggestions");
+		File[] dirFiles = suggestionsDir.listFiles();
+		if (dirFiles == null) { return; }
+
+		for (File f : dirFiles)
+		{
+			String[] nameParts = f.getName().split("\\.");
+			if (!f.isFile() || nameParts.length != 3)
+			{
+				NBTac.LOGGER.warn("Failed to load suggestions file {} - invalid type or name!", f.getName());
+				continue;
+			}
+
+			try (FileReader reader = new FileReader(f))
+			{
+				if (nameParts[2].equals("b2be"))
+				{
+					// nameParts[0] and nameParts[1] are ignored
+					MapDataParser parser = new MapDataParser(reader.readAllAsString(), false);
+					parser.parseBlockToBlockEntityMap();
+				}
+				else
+				{
+					SuggestionDataParser parser = new SuggestionDataParser(nameParts[1], nameParts[0], reader.readAllAsString());
+					if (nameParts[2].equals("nbts")) { parser.parseNbtSuggestions(DataSource.USER_DEFINED); }
+					else if (nameParts[2].equals("comp")) { parser.parseDataComponents(DataSource.USER_DEFINED); }
+					else { throw new RuntimeException("Invalid suggestion file suffix: " + nameParts[2]); }
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				NBTac.LOGGER.warn("Failed to load suggestion file {}!", f.getName());
+			}
 		}
 	}
 }

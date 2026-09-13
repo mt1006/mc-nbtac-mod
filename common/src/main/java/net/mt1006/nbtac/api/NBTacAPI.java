@@ -5,8 +5,10 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.resources.Identifier;
 import net.mt1006.nbtac.NBTac;
 import net.mt1006.nbtac.autocomplete.DataComponentManager;
+import net.mt1006.nbtac.autocomplete.DataSource;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
+import net.mt1006.nbtac.autocomplete.loader.MapDataParser;
 import net.mt1006.nbtac.autocomplete.loader.SuggestionDataParser;
 import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
@@ -41,7 +43,7 @@ public class NBTacAPI
 	 * my_entity &:_living_entity
 	 * +field1 :int
 	 * +field2 :compound
-	 * 	+subfield :TextCompound
+	 * \t+subfield :TextCompound
 	 *
 	 * my_another_entity =:_mob
 	 * """;
@@ -58,6 +60,9 @@ public class NBTacAPI
 	 * If you want to use "minecraft" namespace in your suggestions, you need to use &:id.
 	 * If you want to use namespace other than given and "minecraft", you need to use colon twice, e.g. &:othermod:id.
 	 * <p>
+	 * Be cautious when writing contents. They have very strict syntax. You cannot for example insert
+	 * more than one space when it's expected. <b>Make sure your text editor uses tabs</b>, not spaces.
+	 * <p>
 	 * You should call this method during game initialization. It should be safe to call this method from any thread.
 	 * You should not try to override existing suggestions. It's also recommended to add all suggestions for given
 	 * group and namespace in single call, so don't call it for each entity separately.
@@ -69,20 +74,53 @@ public class NBTacAPI
 	 */
 	public static void addCustomSuggestions(String group, String namespace, String contents, boolean dataComponents)
 	{
-		if (namespace.equals("minecraft") || namespace.equals("nbtac"))
-		{
-			throw new IllegalArgumentException("Extending existing extensions not supported");
-		}
-
 		try
 		{
 			SuggestionDataParser parser = new SuggestionDataParser(group, namespace, contents);
-			if (dataComponents) { parser.parseDataComponents(); }
-			else { parser.parseNbtSuggestions(); }
+			if (dataComponents) { parser.parseDataComponents(DataSource.API); }
+			else { parser.parseNbtSuggestions(DataSource.API); }
 		}
 		catch (Exception e)
 		{
 			NBTac.LOGGER.warn("Failed to load suggestions {}/{}", group, namespace);
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Appends entries to "block to block entity" map.
+	 * By default, NBT Autocomplete assumes block entity ID is same as given block ID.
+	 * B2BE map fixes cases in which these two IDs differ.
+	 *
+	 * <p>
+	 * Example:
+	 * <pre>
+	 * {@code
+	 * String contents = """
+	 * mymod:chest
+	 * +mymod:red_chest
+	 * +mymod:blue_chest
+	 *
+	 * mymod:furnace
+	 * +mymod:black_furnace
+	 * """;
+	 *
+	 * NBTacAPI.addBlockEntityMapping(contents);
+	 * }
+	 * </pre>
+	 *
+	 * @param contents contents to parse, see example above
+	 */
+	public static void addBlockEntityMapping(String contents)
+	{
+		try
+		{
+			MapDataParser parser = new MapDataParser(contents, false);
+			parser.parseBlockToBlockEntityMap();
+		}
+		catch (Exception e)
+		{
+			NBTac.LOGGER.warn("Failed to load b2be map");
 			e.printStackTrace();
 		}
 	}
@@ -147,7 +185,7 @@ public class NBTacAPI
 	{
 		if (builder == null) { builder = new SuggestionsBuilder(input, 0); }
 
-		DefinedNbtTag tag = DataComponentManager.componentMap.get(name);
+		DefinedNbtTag tag = DataComponentManager.get(name);
 		if (tag == null) { return Suggestions.empty(); }
 
 		CustomTagParser parser = CustomTagParser.forDataComponentValue(input, tag.getType(), itemId);

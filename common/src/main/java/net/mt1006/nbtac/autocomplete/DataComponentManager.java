@@ -25,7 +25,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DataComponentManager
 {
-	public static final Map<String, DefinedNbtTag> componentMap = new ConcurrentHashMap<>();
+	private static final Map<String, Entry> componentMap = new ConcurrentHashMap<>();
+
+	public static void add(String key, DefinedNbtTag tag, DataSource source)
+	{
+		Entry entry = new Entry(tag, source);
+		componentMap.merge(key, entry, (e1, e2) -> e1.source.priority > e2.source.priority ? e1 : e2);
+	}
+
+	public static DefinedNbtTag get(String key)
+	{
+		return componentMap.get(key).tag;
+	}
 
 	public static void loadSuggestions(SuggestionList list, String str, Set<DataComponentType<?>> usedComponents,
 									   @Nullable Item item, boolean addEqualSign)
@@ -51,7 +62,7 @@ public class DataComponentManager
 			DataComponentType<?> componentType = entry.getValue();
 			if (componentType.codec() == null || usedComponents.contains(componentType)) { continue; }
 
-			DefinedNbtTag component = DataComponentManager.componentMap.get("item/" + id);
+			DefinedNbtTag component = DataComponentManager.componentMap.get("item/" + id).tag;
 
 			if (component == null)
 			{
@@ -160,6 +171,18 @@ public class DataComponentManager
 			relevant.add(DataComponents.CONTAINER);
 			relevant.add(DataComponents.LOCK);
 			if (blockTags.containsKey("LootTable")) { relevant.add(DataComponents.CONTAINER_LOOT); }
+		}
+	}
+
+	private static class Entry
+	{
+		public final DefinedNbtTag tag;
+		public final DataSource source;
+
+		public Entry(DefinedNbtTag tag, DataSource source)
+		{
+			this.tag = tag;
+			this.source = source;
 		}
 	}
 }
