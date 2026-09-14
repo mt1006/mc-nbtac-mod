@@ -71,10 +71,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		}
 		if (root == null) { return null; }
 
-		CompoundType compoundType = CompoundType.fromName(root);
-		if (!compoundType.hasTagMap()) { return null; }
-
-		CustomTagParser parser = CustomTagParser.forNbtPath(path, compoundType);
+		CustomTagParser parser = CustomTagParser.forNbtPath(path, CompoundType.fromName(root));
 		parser.parse();
 		return parser.pathType;
 	}

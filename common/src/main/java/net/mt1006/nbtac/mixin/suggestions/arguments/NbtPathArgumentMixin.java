@@ -9,6 +9,7 @@ import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.utils.Utils;
@@ -108,7 +109,7 @@ public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 		return getResourceNameForArguments(ctx, type, isIf ? "sourcePos" : "targetPos", isIf ? "source" : "target");
 	}
 
-	@Unique private @Nullable String getResourceNameForArguments(CommandContext<?> ctx, String type, String blockArgument, String entityArgument)
+	@Unique private @Nullable String getResourceNameForArguments(CommandContext<?> ctx, String type, String blockArgument, String argument)
 	{
 		switch (type)
 		{
@@ -117,9 +118,15 @@ public abstract class NbtPathArgumentMixin implements ArgumentType<CompoundTag>
 				return Utils.blockFromCoords(coords);
 
 			case "entity":
-				EntitySelector entitySelector = ctx.getArgument(entityArgument, EntitySelector.class);
+				EntitySelector entitySelector = ctx.getArgument(argument, EntitySelector.class);
 				return Utils.entityFromEntitySelector(entitySelector);
+
+			case "storage":
+				Identifier id = ctx.getArgument(argument, Identifier.class);
+				return "storage/" + id;
+
+			default:
+				return null;
 		}
-		return null;
 	}
 }

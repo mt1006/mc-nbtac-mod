@@ -155,14 +155,9 @@ public class NBTacAPI
 	{
 		if (builder == null) { builder = new SuggestionsBuilder(input, 0); }
 
-		Type tagType = null;
-		CompoundType rootType = CompoundType.fromName(name);
-		if (rootType.hasTagMap())
-		{
-			CustomTagParser parser = CustomTagParser.forNbtPath(path, rootType);
-			parser.parse();
-			tagType = parser.pathType;
-		}
+		CustomTagParser parser = CustomTagParser.forNbtPath(path, CompoundType.fromName(name));
+		parser.parse();
+		Type tagType = parser.pathType;
 
 		if (tagType == null) { tagType = EmptyType.INSTANCE; }
 		return SuggestionManager.get(input, tagType, builder, false, (sl) -> processSuggestions(process, sl));
