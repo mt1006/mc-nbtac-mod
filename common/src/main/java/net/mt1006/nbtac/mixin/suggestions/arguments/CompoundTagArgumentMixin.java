@@ -5,8 +5,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.arguments.CompoundTagArgument;
-import net.minecraft.commands.arguments.coordinates.Coordinates;
-import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -18,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(CompoundTagArgument.class)
@@ -28,7 +27,7 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		try
 		{
 			String str = builder.getRemaining();
-			String name = getResourceName(ctx);
+			String name = getResourceName(ctx, "entity/minecraft:player");
 			return SuggestionManager.get(str, name, builder, false);
 		}
 		catch (Exception e)
@@ -38,7 +37,7 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		}
 	}
 
-	@Unique private @Nullable String getResourceName(CommandContext<?> ctx)
+	@Unique private @Nullable String getResourceName(CommandContext<?> ctx, String executeAs)
 	{
 		String commandName = Utils.getCommandName(ctx);
 
@@ -50,14 +49,19 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 				return "entity/" + id;
 
 			case "data":
-				return getResourceNameForDataCommand(ctx);
+				return getResourceNameForDataCommand(ctx, executeAs);
 
 			default:
-				return ctx.getChild() != null ? getResourceName(ctx.getChild()) : null;
+				if (Objects.equals(Utils.getExecuteSubcommand(ctx), "as"))
+				{
+					executeAs = Utils.entityFromEntitySelector(ctx, "targets", executeAs);
+				}
+
+				return ctx.getChild() != null ? getResourceName(ctx.getChild(), executeAs) : null;
 		}
 	}
 
-	@Unique private @Nullable String getResourceNameForDataCommand(CommandContext<?> ctx)
+	@Unique private @Nullable String getResourceNameForDataCommand(CommandContext<?> ctx, @Nullable String executeAs)
 	{
 		String instruction = Utils.getNodeString(ctx, 1);
 		if (!instruction.equals("merge")) { return null; }
@@ -66,12 +70,10 @@ public abstract class CompoundTagArgumentMixin implements ArgumentType<CompoundT
 		switch (targetType)
 		{
 			case "block":
-				Coordinates coords = ctx.getArgument("targetPos", Coordinates.class);
-				return Utils.blockFromCoords(coords);
+				return Utils.blockFromCoords(ctx, "targetPos");
 
 			case "entity":
-				EntitySelector entitySelector = ctx.getArgument("target", EntitySelector.class);
-				return Utils.entityFromEntitySelector(entitySelector);
+				return Utils.entityFromEntitySelector(ctx, "target", executeAs);
 
 			default:
 				return null;

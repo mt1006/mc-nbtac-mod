@@ -65,6 +65,15 @@ public class NBTacTest implements FabricClientGameTest
 		ctx.assertAllPresent("/data modify entity @p Inventory[0] merge value {slot", List.of(":"));
 		ctx.assertPresent("/data modify entity @p Inventory[1] merge from entity @p CustomName.", "keybind");
 
+		// /execute and @s tests
+		ctx.assertPresent("/data get entity @s ", "XpLevel");
+		ctx.assertPresent("/execute if entity @e[type=pig] run data get entity @s ", "XpLevel");
+		ctx.assertPresent("/execute as @e[type=pig] run data get entity @s ", "variant");
+		ctx.assertPresent("/execute as @e[type=pig,limit=1] as @e[type=slime,limit=1] run data get entity @s ", "Size");
+		ctx.assertPresent("/data get entity @s[nbt={", "XpLevel");
+		ctx.assertPresent("/execute as @e[type=slime] run data merge entity @s[nbt={", "Size");
+		ctx.assertPresent("/execute as @e[type=slime] run data merge entity @s {", "Size");
+
 		// test ItemModel and item data component suggestions for Identifier.CODEC
 		ctx.assertContains("/give @p minecraft:acacia_button[item_model=aca", "\"minecraft:acacia_boat\"", MCVER >= 12102);
 		ctx.assertContains("/give @p minecraft:acacia_button[item_model=acacia_boat", "]", MCVER >= 12102);

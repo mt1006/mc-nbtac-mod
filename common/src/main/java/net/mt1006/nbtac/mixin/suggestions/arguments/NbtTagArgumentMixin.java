@@ -6,8 +6,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.datafixers.types.templates.Tag;
 import net.minecraft.commands.arguments.NbtTagArgument;
-import net.minecraft.commands.arguments.coordinates.Coordinates;
-import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.type.Type;
@@ -17,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -28,7 +27,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		try
 		{
 			String str = builder.getRemaining();
-			Type tagType = getTagType(ctx);
+			Type tagType = getTagType(ctx, "entity/minecraft:player");
 			return tagType != null ? SuggestionManager.get(str, tagType, builder, false, Function.identity()) : Suggestions.empty();
 		}
 		catch (Exception e)
@@ -37,15 +36,26 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		}
 	}
 
-	@Unique private @Nullable Type getTagType(CommandContext<?> ctx)
+	@Unique private @Nullable Type getTagType(CommandContext<?> ctx, String executeAs)
 	{
 		String commandName = Utils.getCommandName(ctx);
-		if (commandName.equals("data")) { return getTagTypeForDataCommand(ctx); }
-		else if (ctx.getChild() != null) { return getTagType(ctx.getChild()); }
+		if (commandName.equals("data"))
+		{
+			return getTagTypeForDataCommand(ctx, executeAs);
+		}
+		else if (ctx.getChild() != null)
+		{
+			if (Objects.equals(Utils.getExecuteSubcommand(ctx), "as"))
+			{
+				executeAs = Utils.entityFromEntitySelector(ctx, "targets", executeAs);
+			}
+
+			return getTagType(ctx.getChild(), executeAs);
+		}
 		return null;
 	}
 
-	@Unique private @Nullable Type getTagTypeForDataCommand(CommandContext<?> ctx)
+	@Unique private @Nullable Type getTagTypeForDataCommand(CommandContext<?> ctx, String executeAs)
 	{
 		String instruction = Utils.getNodeString(ctx, 1);
 		if (!instruction.equals("modify")) { return null; }
@@ -57,13 +67,11 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		switch (type)
 		{
 			case "block":
-				Coordinates coords = ctx.getArgument("targetPos", Coordinates.class);
-				root = Utils.blockFromCoords(coords);
+				root = Utils.blockFromCoords(ctx, "targetPos");
 				break;
 
 			case "entity":
-				EntitySelector entitySelector = ctx.getArgument("target", EntitySelector.class);
-				root = Utils.entityFromEntitySelector(entitySelector);
+				root = Utils.entityFromEntitySelector(ctx, "target", executeAs);
 				break;
 
 			default:

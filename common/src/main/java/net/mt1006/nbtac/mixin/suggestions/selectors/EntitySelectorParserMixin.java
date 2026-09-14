@@ -1,6 +1,7 @@
 package net.mt1006.nbtac.mixin.suggestions.selectors;
 
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
@@ -18,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -43,6 +45,8 @@ public class EntitySelectorParserMixin
 	@Redirect(method = "parseOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/selector/options/EntitySelectorOptions$Modifier;handle(Lnet/minecraft/commands/arguments/selector/EntitySelectorParser;)V"))
 	private void atParseOptions(EntitySelectorOptions.Modifier modifier, EntitySelectorParser parser) throws CommandSyntaxException
 	{
+		Utils.ctxForSelector = null; // reset to prevent using selector from another command
+
 		if (lastTag != null && lastTag.equalsIgnoreCase("nbt"))
 		{
 			int cursor = reader.getCursor();
@@ -66,8 +70,23 @@ public class EntitySelectorParserMixin
 
 	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder builder, Consumer<SuggestionsBuilder> consumer)
 	{
+		String executeAs = null;
+		CommandContext<?> ctx = Utils.ctxForSelector;
+		if (ctx != null)
+		{
+			executeAs = "entity/minecraft:player";
+			while (ctx.getChild() != null)
+			{
+				if (Objects.equals(Utils.getExecuteSubcommand(ctx), "as"))
+				{
+					executeAs = Utils.entityFromEntitySelector(ctx, "targets", executeAs);
+				}
+				ctx = ctx.getChild();
+			}
+		}
+
 		String str = builder.getRemaining();
-		String name = Utils.entityFromSelectorData(type, entityUUID, playerName);
+		String name = Utils.entityFromSelectorData(type, entityUUID, playerName, executeAs);
 		return SuggestionManager.get(str, name, builder, false);
 	}
 }

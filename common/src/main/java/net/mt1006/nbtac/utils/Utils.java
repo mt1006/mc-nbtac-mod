@@ -2,6 +2,8 @@ package net.mt1006.nbtac.utils;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedArgument;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.CommandSourceStack;
@@ -32,6 +34,7 @@ public class Utils
 {
 	private static final CommandSourceStack DUMMY_COMMAND_SOURCE_STACK =
 			new CommandSourceStack(null, Vec3.ZERO, Vec2.ZERO, null, PermissionSet.NO_PERMISSIONS, null, null, null, null);
+	public static @Nullable CommandContext<?> ctxForSelector = null;
 
 	public static String getNodeString(CommandContext<?> ctx, int pos)
 	{
@@ -48,6 +51,24 @@ public class Utils
 		return name;
 	}
 
+	public static @Nullable String getExecuteSubcommand(CommandContext<?> ctx)
+	{
+		return getExecuteSubcommandAndOffset(ctx).getFirst();
+	}
+
+	public static Pair<@Nullable String, Integer> getExecuteSubcommandAndOffset(CommandContext<?> ctx)
+	{
+		if (ctx.getRootNode() instanceof LiteralCommandNode<?> rootNode)
+		{
+			String rootNodeName = rootNode.getName();
+			if (rootNodeName.equals("execute") || (ModConfig.supportCommandNamespace.val && rootNodeName.startsWith("minecraft:execute")))
+			{
+				return Pair.of(getNodeString(ctx, 0), 0);
+			}
+		}
+		return Pair.of(getCommandName(ctx).equals("execute") ? getNodeString(ctx, 1) : null, 1);
+	}
+
 	public static String getArgumentString(CommandContext<?> ctx, String argumentName)
 	{
 		Map<String, ParsedArgument<?, ?>> arguments;
@@ -60,8 +81,10 @@ public class Utils
 		return argument != null ? argument.getRange().get(ctx.getInput()) : null;
 	}
 
-	public static String blockFromCoords(Coordinates coords)
+	public static String blockFromCoords(CommandContext<?> ctx, String argName)
 	{
+		Coordinates coords = ctx.getArgument(argName, Coordinates.class);
+
 		if (!(coords instanceof WorldCoordinates)) { return null; }
 		if (coords.isXRelative() || coords.isYRelative() || coords.isZRelative()) { return null; }
 		BlockPos blockPos = coords.getBlockPos(DUMMY_COMMAND_SOURCE_STACK);
@@ -73,20 +96,26 @@ public class Utils
 		return "block/" + RegistryUtils.BLOCK.getKey(block);
 	}
 
-	public static @Nullable String entityFromEntitySelector(EntitySelector entitySelector)
+	public static @Nullable String entityFromEntitySelector(CommandContext<?> ctx, String argName, @Nullable String executeAs)
 	{
+		EntitySelector selector = ctx.getArgument(argName, EntitySelector.class);
+
 		return entityFromSelectorData(
-				((EntitySelectorFields)entitySelector).nbtac$getType(),
-				((EntitySelectorFields)entitySelector).nbtac$getEntityUUID(),
-				((EntitySelectorFields)entitySelector).nbtac$getPlayerName());
+				((EntitySelectorFields)selector).nbtac$getType(),
+				((EntitySelectorFields)selector).nbtac$getEntityUUID(),
+				((EntitySelectorFields)selector).nbtac$getPlayerName(),
+				selector.isSelfSelector() ? executeAs : null);
 	}
 
-	public static @Nullable String entityFromSelectorData(EntityTypeTest<Entity, ?> typeTest, @Nullable UUID uuid, @Nullable String playerName)
+	public static @Nullable String entityFromSelectorData(EntityTypeTest<Entity, ?> typeTest, @Nullable UUID uuid,
+														  @Nullable String playerName, @Nullable String executeAs)
 	{
 		if (typeTest instanceof EntityType)
 		{
 			return "entity/" + RegistryUtils.ENTITY_TYPE.getKey((EntityType<?>)typeTest);
 		}
+
+		if (executeAs != null) { return executeAs; }
 
 		ClientLevel clientLevel = Minecraft.getInstance().level;
 		if (clientLevel == null) { return null; }
