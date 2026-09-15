@@ -14,8 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.entity.TransientEntitySectionManager;
@@ -134,16 +132,7 @@ public class Utils
 			catch (Exception ignore) {}
 		}
 
-		if (playerName == null) { return null; }
-
-		for (Player player : clientLevel.players())
-		{
-			if (player.getGameProfile().name().equals(playerName))
-			{
-				return "entity/" + EntityType.getKey(EntityTypes.PLAYER);
-			}
-		}
-		return null;
+		return playerName != null ? "entity/minecraft:player" : null;
 	}
 
 	public static boolean isModPresent(String id)
