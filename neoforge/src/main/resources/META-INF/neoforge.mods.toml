@@ -28,3 +28,11 @@ config="${mod_id}.mixins.json"
 	versionRange="${version_range_neoforge}"
 	ordering="NONE"
 	side="BOTH"
+
+[[dependencies.${mod_id}]]
+	modId="nbt_ac"
+	type="incompatible"
+	reason="Trying to run NBT Autocomplete 1.x and 2.x at the same time"
+	versionRange="*"
+	ordering="NONE"
+	side="BOTH"
