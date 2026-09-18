@@ -18,7 +18,6 @@ attribute_modifiers :list<compound> @AlwaysRelevant @Since(1.21.5)
 +display :compound @Since(1.21.6)
 	+type :DynamicEnum(ItemAttributeModifiersDisplayType)
 	+value :TextComponent @RelevantIfEq(type, override)
-#TODO: test display.value
 
 attribute_modifiers :compound @AlwaysRelevant @Until(1.21.5)
 +modifiers :list<compound>
@@ -117,7 +116,6 @@ custom_name :TextComponent @AlwaysRelevant
 
 damage :int
 
-#TODO: fix types on 1.21.11?
 damage_resistant :compound @AlwaysRelevant @Since(1.21.2)
 +types :RegistryTagKey(minecraft:damage_type) @Until(26.1)
 +types :RegistrySet(minecraft:damage_type) @Since(26.1)
@@ -258,7 +256,7 @@ potion_contents :#potion_contents
 #TODO: relevant if potion_contents or custom_effects present
 potion_duration_scale :float @Since(1.21.5)
 
-#TODO: test/improve
+#TODO: improve?
 profile :#profile
 
 provides_banner_patterns :RegistryTagKey(minecraft:banner_pattern) @AlwaysRelevant @Since(1.21.5) @Until(26.1)
