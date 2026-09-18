@@ -29,7 +29,7 @@ public class NBTacAPI
 	// major version is for marking changes breaking backwards compatibility
 	// minor version is for marking any changes that are not forward compatible
 	public static final int SUGGESTION_FORMAT_VERSION_MAJOR = 1;
-	public static final int SUGGESTION_FORMAT_VERSION_MINOR = 0;
+	public static final int SUGGESTION_FORMAT_VERSION_MINOR = 1;
 
 	/**
 	 * Adds custom suggestions. It parses suggestions using same format as built-in suggestion files.
