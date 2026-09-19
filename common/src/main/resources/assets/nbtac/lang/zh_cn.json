@@ -5,8 +5,6 @@
   "nbtac.options.suggestions": "建议",
   "nbtac.options.suggestion_priority": "建议优先顺序",
   "nbtac.options.item_components": "物品堆叠组件",
-  "nbtac.options.mods_and_plugins_support": "模组与插件支持",
-  "nbtac.options.advanced_settings": "高级选项",
   "nbtac.options.debugging_options": "调试选项",
 
 
@@ -82,11 +80,6 @@
   "nbtac.options.field.vanilla_ids_sorting.3": "一律置中",
   "nbtac.options.field.vanilla_ids_sorting.desc": "指定原版 ID（在 \"minecraft:\" 命名空间中）相对于非原版 ID（来自模组）的排序方法。它仅适用于 NBT 自动完成提供的建议。此设定也与「隐藏字符串中的 Minecraft 命名空间」设定密切相关。\n0 - 无自定义排序 - 隐藏原版命名空间将导致 ID 散布在来自模组的 ID 周围，因此不建议使用。\n1 - 取决于 - 仅在命名空间隐藏时置顶，否则置中。\n2 - 一律置顶\n3 - 一律置中\n其他值将被视为 1。",
 
-  "nbtac.options.field.support_command_namespace": "支持指令命名空间",
-  "nbtac.options.field.support_command_namespace.desc": "忽略 \"minecraft:\" 作为指令前缀。当与将 Minecraft 指令置于此命名空间下的插件一起使用时很有用。",
-
-  "nbtac.options.field.use_new_thread": "使用新线程",
-  "nbtac.options.field.use_new_thread.desc": "使用新线程在 Minecraft 载入期间载入建议。",
 
   "nbtac.options.field.debug_mode": "调试模式",
   "nbtac.options.field.debug_mode.desc": "启用对调试有用的额外信息和检查。",
