@@ -32,24 +32,6 @@ banner
 +yellow_banner
 +yellow_wall_banner
 
-bed
-+black_bed
-+blue_bed
-+brown_bed
-+cyan_bed
-+gray_bed
-+green_bed
-+light_blue_bed
-+light_gray_bed
-+lime_bed
-+magenta_bed
-+orange_bed
-+pink_bed
-+purple_bed
-+red_bed
-+white_bed
-+yellow_bed
-
 beehive
 +bee_nest
 
@@ -60,9 +42,28 @@ brushable_block
 campfire
 +soul_campfire
 
+chest
++copper_chest
++exposed_copper_chest
++oxidized_copper_chest
++waxed_copper_chest
++waxed_exposed_copper_chest
++waxed_oxidized_copper_chest
++waxed_weathered_copper_chest
++weathered_copper_chest
+
 command_block
 +chain_command_block
 +repeating_command_block
+
+copper_golem_statue
++exposed_copper_golem_statue
++oxidized_copper_golem_statue
++waxed_copper_golem_statue
++waxed_exposed_copper_golem_statue
++waxed_oxidized_copper_golem_statue
++waxed_weathered_copper_golem_statue
++weathered_copper_golem_statue
 
 hanging_sign
 +acacia_hanging_sign
@@ -85,6 +86,8 @@ hanging_sign
 +oak_wall_hanging_sign
 +pale_oak_hanging_sign
 +pale_oak_wall_hanging_sign
++poplar_hanging_sign
++poplar_wall_hanging_sign
 +spruce_hanging_sign
 +spruce_wall_hanging_sign
 +warped_hanging_sign
@@ -95,6 +98,21 @@ mob_spawner
 
 piston
 +moving_piston
+
+shelf
++acacia_shelf
++bamboo_shelf
++birch_shelf
++cherry_shelf
++crimson_shelf
++dark_oak_shelf
++jungle_shelf
++mangrove_shelf
++oak_shelf
++pale_oak_shelf
++poplar_shelf
++spruce_shelf
++warped_shelf
 
 shulker_box
 +black_shulker_box
@@ -135,6 +153,8 @@ sign
 +oak_wall_sign
 +pale_oak_sign
 +pale_oak_wall_sign
++poplar_sign
++poplar_wall_sign
 +spruce_sign
 +spruce_wall_sign
 +warped_sign

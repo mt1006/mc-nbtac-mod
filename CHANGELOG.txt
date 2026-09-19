@@ -5,6 +5,8 @@
 -Added getValueSuggestions() API method (thanks to mega12345mega for suggestion).
 -Improvements to loading suggestions with API. Added addBlockEntityMapping() API method.
 -Suggestions based on entity selector now work for any valid player name, not only of these within render distance.
+-Fixed missing "block to block entity" mapping on later versions.
+-Fixed missing suggestion for brewing_stand "Fuel" tag.
 -Added "nbt_ac" (1.x version) as incompatible mod (thanks to lunaynx for reporting).
 
 ===Version 2.0.1===

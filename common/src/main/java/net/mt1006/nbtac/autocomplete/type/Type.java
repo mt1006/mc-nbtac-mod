@@ -49,7 +49,7 @@ public interface Type
 			Map.entry("LootTable", (s, a) -> new RegistryKeyType("loot_table")),
 			Map.entry("MapDecorations", (s, a) -> MapDecorationsType.INSTANCE),
 			Map.entry("MapDecorationType", (s, a) -> MapDecorationTypeType.INSTANCE),
-			Map.entry("PotDecoration", (s, a) -> PotDecorationType.INSTANCE),
+			Map.entry("PotDecoration", (s, a) -> new RegistryKeyType("minecraft:decorated_pot_pattern")), //TODO: improve on 26.3+ or remove
 			Map.entry("Recipe", (s, a) -> RecipeType.INSTANCE),
 			Map.entry("RegistryKey", (s, a) -> new RegistryKeyType(firstOrNull(a))),
 			Map.entry("RegistrySet", (s, a) -> EitherType.registrySet(firstOrNull(a))),

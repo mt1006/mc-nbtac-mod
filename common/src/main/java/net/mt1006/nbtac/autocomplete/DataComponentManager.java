@@ -142,7 +142,6 @@ public class DataComponentManager
 
 			if (item instanceof MapItem)
 			{
-				relevant.add(DataComponents.MAP_COLOR);
 				relevant.add(DataComponents.MAP_DECORATIONS);
 				relevant.add(DataComponents.MAP_ID);
 			}

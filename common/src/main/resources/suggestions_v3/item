@@ -1,6 +1,10 @@
 #TODO: fix, it should be relevant when applied to item in villager "gives"
 additional_trade_cost :int @Since(26.1)
 
+attack_animation :compound @AlwaysRelevant @Since(26.3)
++type :DynamicEnum(SwingAnimationType)
++duration :int
+
 attack_range :compound @AlwaysRelevant @Since(1.21.11)
 +min_reach :float
 +max_reach :float
@@ -43,6 +47,8 @@ block_entity_data :TagsWithId(block/$../../id$)
 
 block_state :BlockStateTags($../../id$)
 
+block_transformer :RegistryKey(minecraft:block_transformer) @AlwaysRelevant @Since(26.3)
+
 blocks_attacks :compound @AlwaysRelevant @Since(1.21.5)
 +block_delay_seconds :int
 +disable_cooldown_scale :int
@@ -61,6 +67,10 @@ blocks_attacks :compound @AlwaysRelevant @Since(1.21.5)
 	+factor :float
 
 break_sound :RegistryKey(minecraft:sound_event) @Since(1.21.5)
+
+brewing_fuel :compound @AlwaysRelevant @Since(26.3)
++uses :either<int, RegistryKey(minecraft:context_int_provider)>
++speed_multiplier :either<float, RegistryKey(minecraft:context_float_provider)>
 
 bucket_entity_data :compound
 +NoAI :boolean
@@ -88,6 +98,9 @@ can_place_on :compound @Until(1.21.5)
 
 charged_projectiles :list<#item_stack>
 
+compostable :compound @AlwaysRelevant @Since(26.3)
++layers :either<int, RegistryKey(minecraft:context_int_provider)>
+
 consumable :compound @AlwaysRelevant @Since(1.21.2)
 +consume_seconds :float
 +animation :DynamicEnum(ItemUseAnimation)
@@ -102,6 +115,10 @@ container :list<compound>
 container_loot :compound
 +loot_table :LootTable
 +seed :LongSeed
+
+cooking_fuel :compound @AlwaysRelevant @Since(26.3)
++burn_time :either<int, RegistryKey(minecraft:context_int_provider)>
++speed_multiplier :either<float, RegistryKey(minecraft:context_float_provider)>
 
 custom_data :compound
 
@@ -190,6 +207,10 @@ instrument :RegistryKey(minecraft:instrument)
 
 intangible_projectile :EmptyCompound
 
+interact_animation :compound @AlwaysRelevant @Since(26.3)
++type :DynamicEnum(SwingAnimationType)
++duration :int
+
 item_model :ItemModel @Since(1.21.2)
 
 item_name :TextComponent @AlwaysRelevant
@@ -227,7 +248,7 @@ lodestone_tracker :compound
 
 lore :list<TextComponent>
 
-map_color :int @AlwaysRelevant
+map_color :int @AlwaysRelevant @Until(26.3)
 
 map_decorations :MapDecorations
 
@@ -239,6 +260,10 @@ max_stack_size :int
 
 minimum_attack_charge :float @AlwaysRelevant @Since(1.21.11)
 
+mob_visibility :compound @Since(26.3)
++targeting_entity_types :RegistrySet(minecraft:entity_type)
++visibility :float
+
 note_block_sound :RegistryKey(minecraft:sound_event)
 
 ominous_bottle_amplifier :int
@@ -249,7 +274,12 @@ piercing_weapon :compound @Since(1.21.11)
 +sound :RegistryKey(minecraft:sound_event)
 +hit_sound :RegistryKey(minecraft:sound_event)
 
-pot_decorations :list<PotDecoration>
+pot_decorations :list<PotDecoration> @Until(26.3)
+pot_decorations :compound @Since(26.3)
++back :#item_stack
++left :#item_stack
++right :#item_stack
++front :#item_stack
 
 potion_contents :#potion_contents
 
@@ -262,6 +292,8 @@ profile :#profile
 provides_banner_patterns :RegistryTagKey(minecraft:banner_pattern) @AlwaysRelevant @Since(1.21.5) @Until(26.1)
 provides_banner_patterns :RegistrySet(minecraft:banner_pattern) @AlwaysRelevant @Since(26.1)
 
+provides_pottery_pattern :RegistryKey(minecraft:decorated_pot_pattern) @AlwaysRelevant @Since(26.3)
+
 provides_trim_material :RegistryKey(minecraft:trim_material) @AlwaysRelevant @Since(1.21.5)
 
 rarity :DynamicOrderedEnum(Rarity) @AlwaysRelevant
@@ -273,6 +305,10 @@ repair_cost :int
 repairable :compound @AlwaysRelevant @Since(1.21.2)
 +items :list<RegistryKey(minecraft:item)>
 
+sign_text_back :#sign_text @Since(26.3)
+
+sign_text_front :#sign_text @Since(26.3)
+
 stored_enchantments :Enchantments @Since(1.21.5)
 stored_enchantments :compound @Until(1.21.5)
 +levels :Enchantments
@@ -282,7 +318,7 @@ sulfur_cube_content :#item_stack @RelevantComponentForItem(minecraft:sulfur_cube
 
 suspicious_stew_effects :list<#suspicious_stew_effect>
 
-swing_animation :compound @AlwaysRelevant @Since(1.21.11)
+swing_animation :compound @AlwaysRelevant @Since(1.21.11) @Until(26.3)
 +type :DynamicEnum(SwingAnimationType)
 +duration :int
 
@@ -321,6 +357,11 @@ use_effects :compound @AlwaysRelevant @Since(1.21.11)
 
 use_remainder :#item_stack @AlwaysRelevant @Since(1.21.2)
 
+villager_food :compound @AlwaysRelevant @Since(26.3)
++nutrition :int
+
+waxed :EmptyCompound @Since(26.3)
+
 weapon :compound @AlwaysRelevant @Since(1.21.5)
 +item_damage_per_attack :int
 +disable_blocking_for_seconds :int
@@ -346,6 +387,8 @@ cat/variant :RegistryKey(minecraft:cat_variant) @RelevantComponentForItem(minecr
 chicken/sound_variant :RegistryKey(minecraft:chicken_sound_variant) @RelevantComponentForItem(minecraft:chicken_spawn_egg) @Since(26.1)
 
 chicken/variant :RegistryKey(minecraft:chicken_variant) @RelevantComponentForItem(minecraft:chicken_spawn_egg)
+
+cushion/color :DynamicEnum(DyeColor) @RelevantComponentForItem(minecraft:cushion) @Since(26.3)
 
 cow/sound_variant :RegistryKey(minecraft:cow_sound_variant) @RelevantComponentForItem(minecraft:cow_spawn_egg) @Since(26.1)
 
