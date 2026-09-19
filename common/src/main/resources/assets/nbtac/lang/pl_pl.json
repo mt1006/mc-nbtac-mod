@@ -88,7 +88,7 @@
   "nbtac.options.field.unknown_item_components.relevant_by_default": "Domyślnie istotne",
   "nbtac.options.field.unknown_item_components.relevant_within_namespace": "Istotne w tej samej przestrzeni nazw",
   "nbtac.options.field.unknown_item_components.irrelevant_by_default": "Domyślnie nieistotne",
-  "nbtac.options.field.unknown_item_components.desc": "Specifies default relevancy of unknown item data components.\nThis applies mainly to modded components. If you see unknown item components\nin vanilla (with only NBTac installed), report this as an issue.\nrelevant_by_default - unknown item components are marked as relevant by default.\nrelevant_within_namespace - unknown item components are marked as relevant only if their ID is in the same namespace as item ID.\nirrelevant_by_default - unknown item components are marked as irrelevant by default.",
+  "nbtac.options.field.unknown_item_components.desc": "Określa domyślną istotność nieznanych komponentów przedmiotów.\nDotyczy to głównie komponentów z modów.\nJeśli widzisz nieznany komponent przedmiotów na \"vanilli\" (tylko z NBTac), zgłoś to jako błąd.\nrelevant_by_default - nieznane komponenty przedmiotów są domyślnie oznaczone jako istotne.\nrelevant_within_namespace - nieznane komponenty przedmiotów są oznaczone jako istotne tylko jeśli ich ID jest w tej samej przestrzeni nazw co ID przedmiotu.\nirrelevant_by_default - nieznane komponenty przedmiotów są domyślnie oznaczone jako nieistotne.",
 
 
   "nbtac.options.field.vanilla_ids_sorting": "Sortowanie ID z wanilii",
