@@ -23,7 +23,6 @@
     "suggestions.SuggestionsListMixin",
     "suggestions.arguments.ComponentArgumentMixin",
     "suggestions.arguments.CompoundTagArgumentMixin",
-    "suggestions.arguments.EntityArgumentMixin",
     "suggestions.arguments.NbtPathArgumentMixin",
     "suggestions.arguments.NbtTagArgumentMixin",
     "suggestions.arguments.ParticleArgumentMixin",

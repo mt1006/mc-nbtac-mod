@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -27,7 +26,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		try
 		{
 			String str = builder.getRemaining();
-			Type tagType = getTagType(ctx, "entity/minecraft:player");
+			Type tagType = getTagType(ctx.getLastChild());
 			return tagType != null ? SuggestionManager.get(str, tagType, builder, false, Function.identity()) : Suggestions.empty();
 		}
 		catch (Exception e)
@@ -36,26 +35,12 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		}
 	}
 
-	@Unique private @Nullable Type getTagType(CommandContext<?> ctx, String executeAs)
+	@Unique private @Nullable Type getTagType(CommandContext<?> ctx)
 	{
-		String commandName = Utils.getCommandName(ctx);
-		if (commandName.equals("data"))
-		{
-			return getTagTypeForDataCommand(ctx, executeAs);
-		}
-		else if (ctx.getChild() != null)
-		{
-			if (Objects.equals(Utils.getExecuteSubcommand(ctx), "as"))
-			{
-				executeAs = Utils.entityFromEntitySelector(ctx, "targets", executeAs);
-			}
-
-			return getTagType(ctx.getChild(), executeAs);
-		}
-		return null;
+		return Utils.getCommandName(ctx).equals("data") ? getTagTypeForDataCommand(ctx) : null;
 	}
 
-	@Unique private @Nullable Type getTagTypeForDataCommand(CommandContext<?> ctx, String executeAs)
+	@Unique private @Nullable Type getTagTypeForDataCommand(CommandContext<?> ctx)
 	{
 		String instruction = Utils.getNodeString(ctx, 1);
 		if (!instruction.equals("modify")) { return null; }
@@ -63,20 +48,12 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		String type = Utils.getNodeString(ctx, 2);
 		String path = Utils.getArgumentString(ctx, "targetPath");
 
-		String root;
-		switch (type)
+		String root = switch (type)
 		{
-			case "block":
-				root = Utils.blockFromCoords(ctx, "targetPos");
-				break;
-
-			case "entity":
-				root = Utils.entityFromEntitySelector(ctx, "target", executeAs);
-				break;
-
-			default:
-				return null;
-		}
+			case "block" -> Utils.blockFromCoords(ctx, "targetPos");
+			case "entity" -> Utils.entityFromSelector(ctx, "target");
+			default -> null;
+		};
 		if (root == null) { return null; }
 
 		CustomTagParser parser = CustomTagParser.forNbtPath(path, CompoundType.fromName(root));

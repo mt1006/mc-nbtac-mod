@@ -1,7 +1,6 @@
 package net.mt1006.nbtac.mixin.suggestions.selectors;
 
 import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
@@ -16,10 +15,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -33,7 +33,14 @@ public class EntitySelectorParserMixin
 	@Shadow @Nullable private EntityType<?> type;
 	@Shadow @Nullable private UUID entityUUID;
 	@Shadow @Nullable private String playerName;
+	@Unique private int startPos = 0;
 	@Unique private String lastTag = null;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void atInit(StringReader reader, boolean allowSelectors, CallbackInfo ci)
+	{
+		startPos = reader.getCursor();
+	}
 
 	@ModifyVariable(method = "parseOptions", at = @At("STORE"), ordinal = 0)
 	public String parseOptionsModifyString(String str)
@@ -45,8 +52,6 @@ public class EntitySelectorParserMixin
 	@Redirect(method = "parseOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/selector/options/EntitySelectorOptions$Modifier;handle(Lnet/minecraft/commands/arguments/selector/EntitySelectorParser;)V"))
 	private void atParseOptions(EntitySelectorOptions.Modifier modifier, EntitySelectorParser parser) throws CommandSyntaxException
 	{
-		Utils.ctxForSelector = null; // reset to prevent using selector from another command
-
 		if (lastTag != null && lastTag.equalsIgnoreCase("nbt"))
 		{
 			int cursor = reader.getCursor();
@@ -70,23 +75,11 @@ public class EntitySelectorParserMixin
 
 	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder builder, Consumer<SuggestionsBuilder> consumer)
 	{
-		String executeAs = null;
-		CommandContext<?> ctx = Utils.ctxForSelector;
-		if (ctx != null)
-		{
-			executeAs = "entity/minecraft:player";
-			while (ctx.getChild() != null)
-			{
-				if (Objects.equals(Utils.getExecuteSubcommand(ctx), "as"))
-				{
-					executeAs = Utils.entityFromEntitySelector(ctx, "targets", executeAs);
-				}
-				ctx = ctx.getChild();
-			}
-		}
+		String outerCommand = reader.getString().substring(0, startPos);
+		if (outerCommand.endsWith(" as ")) { outerCommand = outerCommand.substring(0, outerCommand.length() - 4); }
 
 		String str = builder.getRemaining();
-		String name = Utils.entityFromSelectorData(type, entityUUID, playerName, executeAs);
+		String name = Utils.entityFromSelectorData(type, entityUUID, playerName, Utils.findExecuteAs(outerCommand));
 		return SuggestionManager.get(str, name, builder, false);
 	}
 }

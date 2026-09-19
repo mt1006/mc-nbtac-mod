@@ -38,7 +38,7 @@ public class ModConfig
 
 	//public static final ConfigFields.IntegerField vanillaIdsSorting = fields.add("vanilla_ids_sorting", 1); //TODO: implement
 	public static final ConfigFields.EnumField<UnknownItemComponents> unknownItemComponents = fields.add("unknown_item_components", UnknownItemComponents.RELEVANT_BY_DEFAULT);
-	public static final ConfigFields.BooleanField supportCommandNamespace = fields.add("support_command_namespace", true);
+	public static final ConfigFields.BooleanField supportCommandNamespace = fields.add("support_command_namespace", true); //TODO: remove
 
 	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
 
