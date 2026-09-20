@@ -86,8 +86,6 @@ hanging_sign
 +oak_wall_hanging_sign
 +pale_oak_hanging_sign
 +pale_oak_wall_hanging_sign
-+poplar_hanging_sign
-+poplar_wall_hanging_sign
 +spruce_hanging_sign
 +spruce_wall_hanging_sign
 +warped_hanging_sign
@@ -110,7 +108,6 @@ shelf
 +mangrove_shelf
 +oak_shelf
 +pale_oak_shelf
-+poplar_shelf
 +spruce_shelf
 +warped_shelf
 
@@ -153,8 +150,6 @@ sign
 +oak_wall_sign
 +pale_oak_sign
 +pale_oak_wall_sign
-+poplar_sign
-+poplar_wall_sign
 +spruce_sign
 +spruce_wall_sign
 +warped_sign

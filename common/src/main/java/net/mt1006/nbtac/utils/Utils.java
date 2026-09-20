@@ -36,7 +36,7 @@ public class Utils
 {
 	private static final Pattern EXECUTE_START = Pattern.compile("(^|[/ ])(?:minecraft:)?execute ");
 	private static final CommandSourceStack DUMMY_COMMAND_SOURCE_STACK =
-			new CommandSourceStack(null, Vec3.ZERO, Vec2.ZERO, null, PermissionSet.NO_PERMISSIONS, (MinecraftServer)null, null);
+			new CommandSourceStack(null, Vec3.ZERO, Vec2.ZERO, null, PermissionSet.NO_PERMISSIONS, null, null, null, null);
 
 	public static @Nullable String findExecuteAs(String outerCommand)
 	{
