@@ -1,7 +1,7 @@
 ===Version 2.1===
 -Added /data command storage suggestions.
 -Added support for @s selector (thanks to W2D3F1X2 for reporting).
--Restored ability to load user-defined suggestions (thanks to W2D3F1X2 for request).
+-Restored ability to load user-defined suggestions (thanks to UnRealDinnerbone for request).
 -Added getValueSuggestions() API method (thanks to mega12345mega for suggestion).
 -Improvements to loading suggestions with API. Added addBlockEntityMapping() API method.
 -Suggestions based on entity selector now work for any valid player name, not only of these within render distance.
