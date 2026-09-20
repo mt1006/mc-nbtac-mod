@@ -19,7 +19,9 @@ _entity
 +HasVisualFire :boolean
 +data :compound @Since(1.21.5)
 +Tags :list<string>
++Team :ScoreboardTeam @Since(26.3)
 +Passengers :list<TagsFromId(minecraft:entity_type, entity/$id$)>
++invulnerable_time :int @Since(26.3)
 
 _living_entity &_entity
 +AbsorptionAmount :float
@@ -32,7 +34,7 @@ _living_entity &_entity
 +SleepingX :int @Until(1.21.5)
 +SleepingY :int @Until(1.21.5)
 +SleepingZ :int @Until(1.21.5)
-+Team :ScoreboardTeam
++Team :ScoreboardTeam @Until(26.3)
 +ActiveEffects :list<#effect_with_hidden> @Until(1.21)
 +active_effects :list<#effect_with_hidden> @Since(1.21)
 +Attributes :list<#attribute> @Until(1.21)
@@ -106,6 +108,7 @@ _projectile &_entity
 +Owner :UUID
 +LeftOwner :boolean
 +HasBeenShot :boolean
++can_break :list<#block_predicate> @Since(26.3)
 
 _arrow &_projectile
 +life :short
@@ -180,13 +183,13 @@ _villager &_ageable_mob
 +Offers :#villager/offers @OptRecommended
 +Inventory :list<#item_stack>
 
-_attached_entity &_entity
+_block_attached_entity &_entity
 +TileX :int @Until(1.21.5)
 +TileY :int @Until(1.21.5)
 +TileZ :int @Until(1.21.5)
 +block_pos :BlockPos @OptRecommended @Since(1.21.5)
 
-_item_frame &_attached_entity
+_item_frame &_block_attached_entity
 +Item :#item_stack @OptRecommended
 +ItemRotation :byte @OptRecommended
 +ItemDropChance :float @OptRecommended
@@ -436,6 +439,10 @@ creeper &_mob
 +ExplosionRadius :byte @OptRecommended
 +ignited :boolean @OptRecommended
 
+# since 26.3
+cushion &_block_attached_entity
++color :DynamicEnum(DyeColor) @OptRecommended
+
 dark_oak_boat =_boat
 
 dark_oak_chest_boat =_chest_boat
@@ -598,7 +605,7 @@ jungle_boat =_boat
 
 jungle_chest_boat =_chest_boat
 
-leash_knot =_attached_entity
+leash_knot =_block_attached_entity
 
 lightning_bolt =_entity
 
@@ -646,7 +653,7 @@ ominous_item_spawner &_entity
 +item :#item_stack @OptRecommended
 +spawn_item_after_ticks :long
 
-painting &_attached_entity
+painting &_block_attached_entity
 +facing :DescribedEnum<byte>(0, south, 1, west, 2, north, 3, east) @OptRecommended(1)
 +variant :RegistryKey(minecraft:painting_variant) @OptRecommended(2)
 
@@ -737,6 +744,12 @@ player &_living_entity
 polar_bear &_animal
 +anger_end_time :int @OldName(1.21.11, AngerTime)
 +angry_at :UUID @OldName(1.21.11, AngryAt)
+
+# since 26.3
+poplar_chest_boat =_chest_boat
+
+# since 26.3
+poplar_boat =_boat
 
 # until 1.21.5
 potion =_item_projectile
@@ -887,7 +900,7 @@ villager &_villager
 +LastRestock :long
 +LastGossipDecay :long
 +RestocksToday :int
-+AssignProfessionWhenSpawned :boolean
++AssignProfessionWhenSpawned :boolean @Until(26.3)
 +VillagerDataFinalized :boolean @Since(26.1)
 +Xp :int
 

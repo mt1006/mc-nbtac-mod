@@ -34,8 +34,7 @@ public class NBTacNeoForge implements NBTacLoaderInterface
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
 		if (isDedicatedServer) { return; }
-		if (ModConfig.useNewThread.val) { new Thread(Loader::load).start(); }
-		else { Loader.load(); }
+		new Thread(Loader::load).start();
 	}
 
 	@Override public boolean isModPresent(String id)

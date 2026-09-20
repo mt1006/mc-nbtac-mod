@@ -5,38 +5,40 @@ import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NbtTagManager
 {
 	private static final Map<String, NbtTagMap> tagMaps = new ConcurrentHashMap<>();
-	public static final Map<ResourceLocation, String> blockToBlockEntityMap = new HashMap<>();
+	public static final Map<ResourceLocation, String> blockToBlockEntityMap = new ConcurrentHashMap<>();
 	private static @Nullable NbtTagMap moddedEntityTagMap = null;
 
-	public static void add(String key, NbtTagMap tagMap)
+	public static void add(String key, NbtTagMap tagMap, DataSource source)
 	{
-		tagMaps.put(key, tagMap);
+		tagMap.source = source;
+		tagMaps.merge(key, tagMap, (m1, m2) -> m1.source.priority > m2.source.priority ? m1 : m2);
 	}
 
 	public static @Nullable NbtTagMap get(@Nullable String key)
 	{
 		if (key == null) { return null; }
 
-		if (key.startsWith("entity/"))
-		{
-			ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
-			if (id != null && !id.getNamespace().equals("minecraft")) { return getForModdedEntity(); }
-		}
-		else if (key.startsWith("block/"))
+		if (key.startsWith("block/"))
 		{
 			ResourceLocation id = ResourceLocation.tryParse(key.substring(6));
 			String blockEntityKey = blockToBlockEntityMap.get(id);
 			if (blockEntityKey != null) { key = blockEntityKey; }
 		}
 
-		return tagMaps.get(key);
+		NbtTagMap tagMap = tagMaps.get(key);
+		if (tagMap == null && key.startsWith("entity/"))
+		{
+			ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
+			if (id != null && !id.getNamespace().equals("minecraft")) { return getForModdedEntity(); }
+		}
+
+		return tagMap;
 	}
 
 	private static @Nullable NbtTagMap getForModdedEntity()

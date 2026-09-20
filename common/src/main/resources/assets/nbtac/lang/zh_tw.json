@@ -5,8 +5,6 @@
   "nbtac.options.suggestions": "建議",
   "nbtac.options.suggestion_priority": "建議優先順序",
   "nbtac.options.item_components": "物品元件",
-  "nbtac.options.mods_and_plugins_support": "模組與插件支援",
-  "nbtac.options.advanced_settings": "進階設定",
   "nbtac.options.debugging_options": "除錯選項",
 
 
@@ -86,13 +84,6 @@
   "nbtac.options.field.vanilla_ids_sorting.2": "一律置頂",
   "nbtac.options.field.vanilla_ids_sorting.3": "一律置中",
   "nbtac.options.field.vanilla_ids_sorting.desc": "指定原版 ID（在 \"minecraft:\" 命名空間中）相對於非原版 ID（來自模組）的排序方法。它僅適用於 NBT 自動完成提供的建議。此設定也與「隱藏字串中的 Minecraft 命名空間」設定密切相關。\n0 - 無自訂排序 - 隱藏原版命名空間將導致 ID 散佈在來自模組的 ID 周圍，因此不建議使用。\n1 - 取決於 - 僅在命名空間隱藏時置頂，否則置中。\n2 - 一律置頂\n3 - 一律置中\n其他值將被視為 1。",
-
-  "nbtac.options.field.support_command_namespace": "支援指令命名空間",
-  "nbtac.options.field.support_command_namespace.desc": "忽略 \"minecraft:\" 作為指令前綴。當與將 Minecraft 指令置於此命名空間下的插件一起使用時很有用。",
-
-
-  "nbtac.options.field.use_new_thread": "使用新執行緒",
-  "nbtac.options.field.use_new_thread.desc": "使用新執行緒在 Minecraft 載入期間載入建議。",
 
 
   "nbtac.options.field.debug_mode": "除錯模式",
