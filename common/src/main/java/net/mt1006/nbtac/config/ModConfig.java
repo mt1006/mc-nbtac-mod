@@ -35,12 +35,9 @@ public class ModConfig
 	public static final ConfigFields.BooleanField hideMcNamespaceInComponents = fields.add("hide_mc_namespace_in_components", true);
 	public static final ConfigFields.BooleanField showCustomDataAsRelevant = fields.add("show_custom_data_as_relevant", false);
 	public static final ConfigFields.BooleanField showCustomModelDataAsRelevant = fields.add("show_custom_model_data_as_relevant", false);
+	public static final ConfigFields.EnumField<UnknownItemComponents> unknownItemComponents = fields.add("unknown_item_components", UnknownItemComponents.RELEVANT_BY_DEFAULT);
 
 	//public static final ConfigFields.IntegerField vanillaIdsSorting = fields.add("vanilla_ids_sorting", 1); //TODO: implement
-	public static final ConfigFields.EnumField<UnknownItemComponents> unknownItemComponents = fields.add("unknown_item_components", UnknownItemComponents.RELEVANT_BY_DEFAULT);
-	public static final ConfigFields.BooleanField supportCommandNamespace = fields.add("support_command_namespace", true);
-
-	public static final ConfigFields.BooleanField useNewThread = fields.add("use_new_thread", true);
 
 	public static final ConfigFields.BooleanField debugMode = fields.add("debug_mode", false);
 	public static final ConfigFields.IntegerField debugSleep = fields.add("debug_sleep", 0);
@@ -77,18 +74,13 @@ public class ModConfig
 		list.add(hideMcNamespaceInComponents.createSwitch());
 		list.add(showCustomDataAsRelevant.createSwitch());
 		list.add(showCustomModelDataAsRelevant.createSwitch());
-
-		list.addLabel("mods_and_plugins_support");
-		//list.add(vanillaIdsSorting.createSwitch(List.of(0, 1, 2, 3)));
 		list.add(unknownItemComponents.createSwitch());
-		list.add(supportCommandNamespace.createSwitch());
-
-		list.addLabel("advanced_settings");
-		list.add(useNewThread.createSwitch());
 
 		list.addLabel("debugging_options");
 		list.add(debugMode.createSwitch());
 		list.add(debugSleep.createSlider(0, 100, 200, List.of(0)));
+
+		//list.add(vanillaIdsSorting.createSwitch(List.of(0, 1, 2, 3)));
 	}
 
 	public static void load()

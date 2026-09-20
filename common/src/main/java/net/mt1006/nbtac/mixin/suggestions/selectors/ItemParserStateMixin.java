@@ -135,7 +135,7 @@ public abstract class ItemParserStateMixin
 	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder builder, boolean withTailSuggestions)
 	{
 		ResourceLocation componentId = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
-		NbtTag component = componentId != null ? DataComponentManager.componentMap.get("item/" + componentId) : null;
+		NbtTag component = componentId != null ? DataComponentManager.get("item/" + componentId) : null;
 		if (component == null || cursorBeforeComponent == -1) { return Suggestions.empty(); }
 
 		String val = reader.getString().substring(cursorBeforeComponent);

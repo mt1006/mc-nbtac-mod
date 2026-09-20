@@ -6,8 +6,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.datafixers.types.templates.Tag;
 import net.minecraft.commands.arguments.NbtTagArgument;
-import net.minecraft.commands.arguments.coordinates.Coordinates;
-import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
 import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
 import net.mt1006.nbtac.autocomplete.type.Type;
@@ -28,7 +26,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		try
 		{
 			String str = builder.getRemaining();
-			Type tagType = getTagType(ctx);
+			Type tagType = getTagType(ctx.getLastChild());
 			return tagType != null ? SuggestionManager.get(str, tagType, builder, false, Function.identity()) : Suggestions.empty();
 		}
 		catch (Exception e)
@@ -39,10 +37,7 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 
 	@Unique private @Nullable Type getTagType(CommandContext<?> ctx)
 	{
-		String commandName = Utils.getCommandName(ctx);
-		if (commandName.equals("data")) { return getTagTypeForDataCommand(ctx); }
-		else if (ctx.getChild() != null) { return getTagType(ctx.getChild()); }
-		return null;
+		return Utils.getCommandName(ctx).equals("data") ? getTagTypeForDataCommand(ctx) : null;
 	}
 
 	@Unique private @Nullable Type getTagTypeForDataCommand(CommandContext<?> ctx)
@@ -53,28 +48,15 @@ public abstract class NbtTagArgumentMixin implements ArgumentType<Tag>
 		String type = Utils.getNodeString(ctx, 2);
 		String path = Utils.getArgumentString(ctx, "targetPath");
 
-		String root;
-		switch (type)
+		String root = switch (type)
 		{
-			case "block":
-				Coordinates coords = ctx.getArgument("targetPos", Coordinates.class);
-				root = Utils.blockFromCoords(coords);
-				break;
-
-			case "entity":
-				EntitySelector entitySelector = ctx.getArgument("target", EntitySelector.class);
-				root = Utils.entityFromEntitySelector(entitySelector);
-				break;
-
-			default:
-				return null;
-		}
+			case "block" -> Utils.blockFromCoords(ctx, "targetPos");
+			case "entity" -> Utils.entityFromSelector(ctx, "target");
+			default -> null;
+		};
 		if (root == null) { return null; }
 
-		CompoundType compoundType = CompoundType.fromName(root);
-		if (!compoundType.hasTagMap()) { return null; }
-
-		CustomTagParser parser = CustomTagParser.forNbtPath(path, compoundType);
+		CustomTagParser parser = CustomTagParser.forNbtPath(path, CompoundType.fromName(root));
 		parser.parse();
 		return parser.pathType;
 	}
