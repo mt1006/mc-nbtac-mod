@@ -18,6 +18,7 @@ public class NbtTagMap implements Iterable<NbtTag>
 	private final @Nullable NbtTagMap parent;
 	private @Nullable Map<String, NbtTag> map = null;
 	private boolean containsIdTag = false;
+	public DataSource source = DataSource.SYNTHETIC;
 
 	public NbtTagMap()
 	{

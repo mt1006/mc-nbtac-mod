@@ -5,8 +5,6 @@
   "nbtac.options.suggestions": "Sugestie",
   "nbtac.options.suggestion_priority": "Priorytet sugestii",
   "nbtac.options.item_components": "Komponenty przedmiotów",
-  "nbtac.options.mods_and_plugins_support": "Wsparcie dla modów i pluginów",
-  "nbtac.options.advanced_settings": "Zaawansowane ustawienia",
   "nbtac.options.debugging_options": "Opcje debugowania",
 
 
@@ -86,6 +84,12 @@
   "nbtac.options.field.show_custom_model_data_as_relevant": "Pokaż \"custom_model_data\" jako istotne",
   "nbtac.options.field.show_custom_model_data_as_relevant.desc": "Gdy włączone, komponent przedmiotu \"minecraft:custom_model_data\" będzie się zawsze pokazywał jako istotna sugestia. Gdy wyłączone, będzie się zawsze pokazywał jako nieistotny.",
 
+  "nbtac.options.field.unknown_item_components": "Nieznane komponenty przedmiotów",
+  "nbtac.options.field.unknown_item_components.relevant_by_default": "Domyślnie istotne",
+  "nbtac.options.field.unknown_item_components.relevant_within_namespace": "Istotne w tej samej przestrzeni nazw",
+  "nbtac.options.field.unknown_item_components.irrelevant_by_default": "Domyślnie nieistotne",
+  "nbtac.options.field.unknown_item_components.desc": "Określa domyślną istotność nieznanych komponentów przedmiotów.\nDotyczy to głównie komponentów z modów.\nJeśli widzisz nieznany komponent przedmiotów na \"vanilli\" (tylko z NBTac), zgłoś to jako błąd.\nrelevant_by_default - nieznane komponenty przedmiotów są domyślnie oznaczone jako istotne.\nrelevant_within_namespace - nieznane komponenty przedmiotów są oznaczone jako istotne tylko jeśli ich ID jest w tej samej przestrzeni nazw co ID przedmiotu.\nirrelevant_by_default - nieznane komponenty przedmiotów są domyślnie oznaczone jako nieistotne.",
+
 
   "nbtac.options.field.vanilla_ids_sorting": "Sortowanie ID z wanilii",
   "nbtac.options.field.vanilla_ids_sorting.0": "Bez niestandardowego sortowania",
@@ -93,19 +97,6 @@
   "nbtac.options.field.vanilla_ids_sorting.2": "Zawsze na górze",
   "nbtac.options.field.vanilla_ids_sorting.3": "Zawsze w środku",
   "nbtac.options.field.vanilla_ids_sorting.desc": "Określa metodę sortowania ID z wanilii (w przestrzeni nazw \"minecraft:\") w stosunku do ID spoza wanilii (z modów). Ustawnie to działa tylko na sugestiach dodanych przez tego moda. Ustawienie te jest także ściśle związane z ustawieniem \"Ukryj przestrzeń nazw Minecraft'a w ciągach\".\n0 - Bez niestandardowego sortowania - przy ukrytej przestrzeni nazw Minecraft'a, ID z wanilii będą rozrzucone pomiędzy ID z modów, z tego względu nie jest to zalecane.\n1 - Zależy - umieszczone na górze tylko przy ukrytej przestrzeni nazw, w innym przypadku w środku.\n2 - Zawsze na górze\n3 - Zawsze w środku\nInne wartości będą traktowane jako 1.",
-
-  "nbtac.options.field.unknown_item_components": "Nieznane komponenty przedmiotów",
-  "nbtac.options.field.unknown_item_components.relevant_by_default": "Domyślnie istotne",
-  "nbtac.options.field.unknown_item_components.relevant_within_namespace": "Istotne w tej samej przestrzeni nazw",
-  "nbtac.options.field.unknown_item_components.irrelevant_by_default": "Domyślnie nieistotne",
-  "nbtac.options.field.unknown_item_components.desc": "Specifies default relevancy of unknown item data components.\nThis applies mainly to modded components. If you see unknown item components\nin vanilla (with only NBTac installed), report this as an issue.\nrelevant_by_default - unknown item components are marked as relevant by default.\nrelevant_within_namespace - unknown item components are marked as relevant only if their ID is in the same namespace as item ID.\nirrelevant_by_default - unknown item components are marked as irrelevant by default.",
-
-  "nbtac.options.field.support_command_namespace": "Wsparcie przestrzeni nazw poleceń",
-  "nbtac.options.field.support_command_namespace.desc": "Ignoruje \"minecraft:\" jako prefiks polecenia. Przydatne przy używaniu pluginów które umieszczają polecenia Minecraft'a w tej przestrzeni nazw.",
-
-
-  "nbtac.options.field.use_new_thread": "Użyj nowego wątku",
-  "nbtac.options.field.use_new_thread.desc": "Używa nowego wątku do załadowania sugestii po załadowaniu Minecraft'a.",
 
 
   "nbtac.options.field.debug_mode": "Tryb debugowania",
@@ -117,7 +108,6 @@
 
   "nbtac.options.field.debug_config_screen": "Testowanie ekranu konfiguracji",
   "nbtac.options.field.debug_config_screen.desc": "Pokazuje ekran ustawień po wyjściu z ekranu realms. Nie jest resetowane do domyślnej wartości po użyciu przycisku resetowania ustawień!",
-
 
 
   "nbtac.options.common.tooltip": "%s\n§8Domyślna wartość: %s",

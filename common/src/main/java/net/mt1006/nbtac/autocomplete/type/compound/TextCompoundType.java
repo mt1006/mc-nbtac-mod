@@ -6,13 +6,14 @@ import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.autocomplete.type.ListType;
+import org.jetbrains.annotations.Nullable;
 
 public class TextCompoundType extends ComplexCompoundType
 {
 	public static final TextCompoundType INSTANCE = new TextCompoundType();
 	public static final ListType LIST_INSTANCE = new ListType(INSTANCE);
 
-	@Override protected void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
+	@Override protected void getBasicCompoundSuggestions(@Nullable ParsedCompound parsed, NbtTagMap map)
 	{
 		map.addAll(NbtTagManager.get("text/nbtac:common"));
 		map.addAll(NbtTagManager.get("text/nbtac:style"));
@@ -20,7 +21,7 @@ public class TextCompoundType extends ComplexCompoundType
 		if (initialContent == null) { return; }
 
 		String type = null;
-		String val = parsed.getStrVal("type");
+		String val = parsed != null ? parsed.getStrVal("type") : null;
 		if (val != null)
 		{
 			type = val.equals("translatable") ? "translate" : val;
@@ -29,7 +30,7 @@ public class TextCompoundType extends ComplexCompoundType
 		{
 			for (NbtTag tag : initialContent)
 			{
-				if (parsed.containsKey(tag.getName()) && !tag.getName().equals("type"))
+				if (parsed != null && parsed.containsKey(tag.getName()) && !tag.getName().equals("type"))
 				{
 					type = tag.getName();
 					break;

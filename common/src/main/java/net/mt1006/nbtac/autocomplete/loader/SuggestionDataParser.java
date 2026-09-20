@@ -2,6 +2,7 @@ package net.mt1006.nbtac.autocomplete.loader;
 
 import net.mt1006.nbtac.NBTac;
 import net.mt1006.nbtac.autocomplete.DataComponentManager;
+import net.mt1006.nbtac.autocomplete.DataSource;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Stack;
 
-public class SuggestionDataParser extends FileParser
+public class SuggestionDataParser extends DataParser
 {
 	private final String group;
 	private final String keyPrefix, keyModPrefix;
@@ -29,7 +30,7 @@ public class SuggestionDataParser extends FileParser
 		this.keyModPrefix = "_" + this.keyPrefix;
 	}
 
-	public void parseNbtSuggestions()
+	public void parseNbtSuggestions(DataSource source)
 	{
 		for (Entry entry : parseLines())
 		{
@@ -39,7 +40,7 @@ public class SuggestionDataParser extends FileParser
 			if (reader.peek() != ' ')
 			{
 				reader.expectEnd();
-				NbtTagManager.add(entryKey, parseRequiredSuggestions(entry.lines, null, entryKey));
+				NbtTagManager.add(entryKey, parseRequiredSuggestions(entry.lines, null, entryKey), source);
 				continue;
 			}
 			reader.skipChar(); // skip space
@@ -54,7 +55,7 @@ public class SuggestionDataParser extends FileParser
 			switch (sign)
 			{
 				case '=':
-					NbtTagManager.add(entryKey, parentTagMap);
+					NbtTagManager.add(entryKey, parentTagMap, source);
 					reader.expectEnd();
 					if (!entry.lines.isEmpty()) { throw reader.new ReaderException(); }
 					break;
@@ -62,7 +63,7 @@ public class SuggestionDataParser extends FileParser
 				case '&':
 					reader.expectEnd();
 					NbtTagMap childTagMap = parseRequiredSuggestions(entry.lines, parentTagMap, entryKey);
-					NbtTagManager.add(entryKey, childTagMap);
+					NbtTagManager.add(entryKey, childTagMap, source);
 					break;
 
 				default:
@@ -71,7 +72,7 @@ public class SuggestionDataParser extends FileParser
 		}
 	}
 
-	public void parseDataComponents()
+	public void parseDataComponents(DataSource source)
 	{
 		for (Entry entry : parseLines())
 		{
@@ -86,7 +87,7 @@ public class SuggestionDataParser extends FileParser
 			reader.expectEnd();
 
 			tag.getType().setTagMap(parseSuggestions(entry.lines, null));
-			if (tag.inVersionRange()) { DataComponentManager.componentMap.put(keyPrefix + entryName, tag); }
+			if (tag.inVersionRange()) { DataComponentManager.add(keyPrefix + entryName, tag, source); }
 		}
 	}
 
