@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class FileParser
+public abstract class DataParser
 {
 	private static final String ROOT_DIR = "/suggestions_v3/";
 	private final String data;
 	private final boolean dataAsFilename;
 
-	protected FileParser(String data, boolean dataAsFilename)
+	protected DataParser(String data, boolean dataAsFilename)
 	{
 		this.data = data;
 		this.dataAsFilename = dataAsFilename;

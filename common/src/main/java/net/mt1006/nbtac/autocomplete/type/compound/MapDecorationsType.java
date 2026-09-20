@@ -5,6 +5,7 @@ import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.parser.ParsedTag;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.type.Type;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -13,8 +14,10 @@ public class MapDecorationsType extends ComplexCompoundType
 	public static final MapDecorationsType INSTANCE = new MapDecorationsType();
 	private static final Random RNG = new Random();
 
-	@Override public void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
+	@Override public void getBasicCompoundSuggestions(@Nullable ParsedCompound parsed, NbtTagMap map)
 	{
+		if (parsed == null) { return; }
+
 		// 36^6 > 2^31
 		String newDecorationId = Long.toString(Math.abs(RNG.nextInt()), Math.min(Character.MAX_RADIX, 36));
 		Type tagType = CompoundType.fromName("compound/nbtac:map_decoration");
