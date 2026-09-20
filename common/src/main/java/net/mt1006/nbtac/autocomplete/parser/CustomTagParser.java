@@ -7,7 +7,6 @@ import net.mt1006.nbtac.autocomplete.tag.NbtTag;
 import net.mt1006.nbtac.autocomplete.type.ListType;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.autocomplete.type.Type;
-import net.mt1006.nbtac.autocomplete.type.compound.CompoundType;
 import net.mt1006.nbtac.autocomplete.type.compound.EntityCompoundType;
 import net.mt1006.nbtac.utils.SimpleStringReader;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +39,6 @@ public class CustomTagParser
 
 	public static CustomTagParser forNbtPath(String str, Type valueType)
 	{
-		if (!(valueType instanceof CompoundType)) { throw new IllegalArgumentException(); }
 		return new CustomTagParser(str, ParserType.PATH, valueType, null);
 	}
 
@@ -104,7 +102,7 @@ public class CustomTagParser
 
 	private SuggestionList parsePath(ParsedCompound compound)
 	{
-		NbtTagMap tagMap = pathType != null ? pathType.getMutableTagMap() : null;
+		NbtTagMap tagMap = pathType != null ? pathType.getSuggestionsTagMap(null) : null;
 		ParsedCompound subcompound = null;
 		boolean inInnerCompound = false;
 

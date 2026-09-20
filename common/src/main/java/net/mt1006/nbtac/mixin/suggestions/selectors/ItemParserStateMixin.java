@@ -135,7 +135,7 @@ public abstract class ItemParserStateMixin
 	@Unique private CompletableFuture<Suggestions> suggestComponentData(SuggestionsBuilder builder, boolean withTailSuggestions)
 	{
 		ResourceLocation componentId = lastAdded != null ? RegistryUtils.DATA_COMPONENT_TYPE.getKey(lastAdded) : null;
-		NbtTag component = componentId != null ? DataComponentManager.componentMap.get("item/" + componentId) : null;
+		NbtTag component = componentId != null ? DataComponentManager.get("item/" + componentId) : null;
 		if (component == null || cursorBeforeComponent == -1) { return Suggestions.empty(); }
 
 		builder = builder.createOffset(cursorBeforeComponent); // necessary on 1.21.4, but not on 1.21.5-26.2

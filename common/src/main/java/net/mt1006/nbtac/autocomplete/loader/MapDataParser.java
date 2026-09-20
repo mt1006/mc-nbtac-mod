@@ -3,11 +3,11 @@ package net.mt1006.nbtac.autocomplete.loader;
 import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 
-public class MapDataParser extends FileParser
+public class MapDataParser extends DataParser
 {
-	protected MapDataParser(String filename)
+	public MapDataParser(String filename, boolean dataAsFilename)
 	{
-		super(filename, true);
+		super(filename, dataAsFilename);
 	}
 
 	public void parseBlockToBlockEntityMap()

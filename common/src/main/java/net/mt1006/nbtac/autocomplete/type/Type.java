@@ -32,6 +32,7 @@ public interface Type
 			Map.entry("long_array", (s, a) -> ArrayType.LONG),
 			Map.entry("compound", (s, a) -> new CompoundType()),
 			Map.entry("list", (s, a) -> new ListType(s.getFirst())),
+			Map.entry("empty", (s, a) -> EmptyType.INSTANCE),
 			Map.entry("BlockStateTags", (s, a) -> new BlockStateTagsType(firstOrNull(a))),
 			Map.entry("DescribedEnum", DescribedEnumType::new),
 			Map.entry("EmptyCompound", (s, a) -> EmptyCompound.INSTANCE),
