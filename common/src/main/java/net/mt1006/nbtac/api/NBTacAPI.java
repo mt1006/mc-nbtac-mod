@@ -4,9 +4,14 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.mt1006.nbtac.NBTac;
+import net.mt1006.nbtac.autocomplete.DataSource;
 import net.mt1006.nbtac.autocomplete.SuggestionList;
 import net.mt1006.nbtac.autocomplete.SuggestionManager;
+import net.mt1006.nbtac.autocomplete.loader.MapDataParser;
 import net.mt1006.nbtac.autocomplete.loader.SuggestionDataParser;
+import net.mt1006.nbtac.autocomplete.parser.CustomTagParser;
+import net.mt1006.nbtac.autocomplete.type.EmptyType;
+import net.mt1006.nbtac.autocomplete.type.Type;
 import net.mt1006.nbtac.autocomplete.type.compound.CompoundType;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +27,7 @@ public class NBTacAPI
 	// major version is for marking changes breaking backwards compatibility
 	// minor version is for marking any changes that are not forward compatible
 	public static final int SUGGESTION_FORMAT_VERSION_MAJOR = 1;
-	public static final int SUGGESTION_FORMAT_VERSION_MINOR = 0;
+	public static final int SUGGESTION_FORMAT_VERSION_MINOR = 1;
 
 	/**
 	 * Adds custom suggestions. It parses suggestions using same format as built-in suggestion files.
@@ -36,7 +41,7 @@ public class NBTacAPI
 	 * my_entity &:_living_entity
 	 * +field1 :int
 	 * +field2 :compound
-	 * 	+subfield :TextCompound
+	 * \t+subfield :TextCompound
 	 *
 	 * my_another_entity =:_mob
 	 * """;
@@ -53,6 +58,9 @@ public class NBTacAPI
 	 * If you want to use "minecraft" namespace in your suggestions, you need to use &:id.
 	 * If you want to use namespace other than given and "minecraft", you need to use colon twice, e.g. &:othermod:id.
 	 * <p>
+	 * Be cautious when writing contents. They have very strict syntax. You cannot for example insert
+	 * more than one space when it's expected. <b>Make sure your text editor uses tabs</b>, not spaces.
+	 * <p>
 	 * You should call this method during game initialization. It should be safe to call this method from any thread.
 	 * You should not try to override existing suggestions. It's also recommended to add all suggestions for given
 	 * group and namespace in single call, so don't call it for each entity separately.
@@ -66,19 +74,52 @@ public class NBTacAPI
 	{
 		if (dataComponents) { throw new IllegalArgumentException("Data components not supported on pre-1.20.5 versions"); }
 
-		if (namespace.equals("minecraft") || namespace.equals("nbtac"))
-		{
-			throw new IllegalArgumentException("Extending existing extensions not supported");
-		}
-
 		try
 		{
 			SuggestionDataParser parser = new SuggestionDataParser(group, namespace, contents);
-			parser.parseNbtSuggestions();
+			parser.parseNbtSuggestions(DataSource.API);
 		}
 		catch (Exception e)
 		{
 			NBTac.LOGGER.warn("Failed to load suggestions {}/{}", group, namespace);
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Appends entries to "block to block entity" map.
+	 * By default, NBT Autocomplete assumes block entity ID is same as given block ID.
+	 * B2BE map fixes cases in which these two IDs differ.
+	 *
+	 * <p>
+	 * Example:
+	 * <pre>
+	 * {@code
+	 * String contents = """
+	 * mymod:chest
+	 * +mymod:red_chest
+	 * +mymod:blue_chest
+	 *
+	 * mymod:furnace
+	 * +mymod:black_furnace
+	 * """;
+	 *
+	 * NBTacAPI.addBlockEntityMapping(contents);
+	 * }
+	 * </pre>
+	 *
+	 * @param contents contents to parse, see example above
+	 */
+	public static void addBlockEntityMapping(String contents)
+	{
+		try
+		{
+			MapDataParser parser = new MapDataParser(contents, false);
+			parser.parseBlockToBlockEntityMap();
+		}
+		catch (Exception e)
+		{
+			NBTac.LOGGER.warn("Failed to load b2be map");
 			e.printStackTrace();
 		}
 	}
@@ -97,6 +138,28 @@ public class NBTacAPI
 	{
 		if (builder == null) { builder = new SuggestionsBuilder(input, 0); }
 		return SuggestionManager.get(input, CompoundType.fromName(name), builder, suggestPath, (sl) -> processSuggestions(process, sl));
+	}
+
+	/**
+	 * Get suggestions for tag value within given NBT compound.
+	 * @param input argument part to get suggestions for, e.g. "minecraft:di"
+	 * @param name name of a root compound - "group/namespace:id", e.g. "entity/minecraft:creeper"
+	 * @param path path of a tag, e.g. "active_effects[0]."
+	 * @param builder suggestion builder, if null dummy builder will be created
+	 * @param process if not null, it can be used to modify suggestion list
+	 * @return suggestions
+	 */
+	public static CompletableFuture<Suggestions> getValueSuggestions(String input, String name, String path, @Nullable SuggestionsBuilder builder,
+																	 @Nullable Function<NBTacSuggestionList, NBTacSuggestionList> process)
+	{
+		if (builder == null) { builder = new SuggestionsBuilder(input, 0); }
+
+		CustomTagParser parser = CustomTagParser.forNbtPath(path, CompoundType.fromName(name));
+		parser.parse();
+		Type tagType = parser.pathType;
+
+		if (tagType == null) { tagType = EmptyType.INSTANCE; }
+		return SuggestionManager.get(input, tagType, builder, false, (sl) -> processSuggestions(process, sl));
 	}
 
 	/**

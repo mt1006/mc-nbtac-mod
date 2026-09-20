@@ -75,9 +75,10 @@ potion_contents
 +custom_effects :list<#effect>
 +custom_name :string @Since(1.21.2)
 
+#TODO: add support for short form with ID only on 26.3+?
 block_state
-+Name :RegistryKey(minecraft:block)
-+Properties :BlockStateTags($../Name$)
++id :RegistryKey(minecraft:block) @OldName(26.3, Name)
++properties :BlockStateTags($../Name$) @OldName(26.3, Properties)
 
 suspicious_stew_effect
 +id :RegistryKey(minecraft:mob_effect)

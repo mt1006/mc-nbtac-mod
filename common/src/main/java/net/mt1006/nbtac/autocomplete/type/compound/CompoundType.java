@@ -7,7 +7,6 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
-import net.mt1006.nbtac.autocomplete.tag.DefinedNbtTag;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.type.ListType;
 import net.mt1006.nbtac.autocomplete.type.complex.RegistryKeyType;
@@ -18,10 +17,15 @@ public class CompoundType extends AbstractCompoundType
 {
 	private @Nullable NbtTagMap tagMap = null;
 
-	public static CompoundType fromName(@Nullable String name)
+	public static AbstractCompoundType fromName(@Nullable String name)
 	{
 		if (name == null) { return new CompoundType(null); }
 		if (name.startsWith("item/")) { return new CompoundType(buildMapForItem(name)); }
+
+		if (name.startsWith("storage/"))
+		{
+			return new StorageCompoundType(ResourceLocation.tryParse(name.substring(8)));
+		}
 
 		NbtTagMap tagMap = NbtTagManager.get(name);
 		return (name.startsWith("entity/") || name.startsWith("block/"))

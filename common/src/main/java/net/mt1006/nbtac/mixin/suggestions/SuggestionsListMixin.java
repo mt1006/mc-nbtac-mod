@@ -37,8 +37,8 @@ public abstract class SuggestionsListMixin
 	@Unique private int renderLoopI = 0;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void atConstructor(CommandSuggestions commandSuggestions, int x, int y, int w,
-							   List<Suggestion> suggestions, boolean narrated, CallbackInfo ci)
+	private void atInit(CommandSuggestions commandSuggestions, int x, int y, int w,
+						List<Suggestion> suggestions, boolean narrated, CallbackInfo ci)
 	{
 		addTypeNames = false;
 		if (!SuggestionManager.hasCustomSuggestions) { return; }

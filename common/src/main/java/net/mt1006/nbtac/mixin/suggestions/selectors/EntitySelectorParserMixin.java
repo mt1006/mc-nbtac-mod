@@ -15,8 +15,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +33,14 @@ public class EntitySelectorParserMixin
 	@Shadow @Nullable private EntityType<?> type;
 	@Shadow @Nullable private UUID entityUUID;
 	@Shadow @Nullable private String playerName;
+	@Unique private int startPos = 0;
 	@Unique private String lastTag = null;
+
+	@Inject(method = "<init>(Lcom/mojang/brigadier/StringReader;Z)V", at = @At("RETURN"))
+	private void atInit(StringReader reader, boolean allowSelectors, CallbackInfo ci)
+	{
+		startPos = reader.getCursor();
+	}
 
 	@ModifyVariable(method = "parseOptions", at = @At("STORE"), ordinal = 0)
 	public String parseOptionsModifyString(String str)
@@ -66,8 +75,11 @@ public class EntitySelectorParserMixin
 
 	@Unique private CompletableFuture<Suggestions> suggestNbt(SuggestionsBuilder builder, Consumer<SuggestionsBuilder> consumer)
 	{
+		String outerCommand = reader.getString().substring(0, startPos);
+		if (outerCommand.endsWith(" as ")) { outerCommand = outerCommand.substring(0, outerCommand.length() - 4); }
+
 		String str = builder.getRemaining();
-		String name = Utils.entityFromSelectorData(type, entityUUID, playerName);
+		String name = Utils.entityFromSelectorData(type, entityUUID, playerName, Utils.findExecuteAs(outerCommand));
 		return SuggestionManager.get(str, name, builder, false);
 	}
 }
