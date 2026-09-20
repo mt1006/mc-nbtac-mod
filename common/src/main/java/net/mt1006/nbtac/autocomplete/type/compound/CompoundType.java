@@ -1,5 +1,6 @@
 package net.mt1006.nbtac.autocomplete.type.compound;
 
+import net.minecraft.resources.Identifier;
 import net.mt1006.nbtac.autocomplete.NbtTagManager;
 import net.mt1006.nbtac.autocomplete.NbtTagMap;
 import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
@@ -9,8 +10,13 @@ public class CompoundType extends AbstractCompoundType
 {
 	private @Nullable NbtTagMap tagMap = null;
 
-	public static CompoundType fromName(String name)
+	public static AbstractCompoundType fromName(String name)
 	{
+		if (name.startsWith("storage/"))
+		{
+			return new StorageCompoundType(Identifier.tryParse(name.substring(8)));
+		}
+
 		NbtTagMap tagMap = NbtTagManager.get(name);
 		return (name.startsWith("entity/") || name.startsWith("block/"))
 				? new EntityCompoundType(tagMap, name.substring(name.indexOf('/') + 1))

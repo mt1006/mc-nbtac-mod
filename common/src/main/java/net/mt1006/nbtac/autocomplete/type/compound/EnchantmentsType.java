@@ -8,6 +8,7 @@ import net.mt1006.nbtac.autocomplete.parser.ParsedCompound;
 import net.mt1006.nbtac.autocomplete.tag.GeneratedNbtTag;
 import net.mt1006.nbtac.autocomplete.type.PrimitiveType;
 import net.mt1006.nbtac.utils.Fields;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class EnchantmentsType extends ComplexCompoundType
 {
 	public static final EnchantmentsType INSTANCE = new EnchantmentsType();
 
-	@Override public void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map)
+	@Override public void getBasicCompoundSuggestions(@Nullable ParsedCompound parsed, NbtTagMap map)
 	{
 		List<ResourceKey> enchantments = Fields.getStaticFields(Enchantments.class, ResourceKey.class);
 		for (ResourceKey<?> resourceKey : enchantments)
