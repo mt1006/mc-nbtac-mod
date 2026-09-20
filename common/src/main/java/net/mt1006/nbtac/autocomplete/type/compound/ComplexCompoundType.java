@@ -6,12 +6,12 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class ComplexCompoundType extends AbstractCompoundType
 {
-	@Override public @Nullable NbtTagMap getSuggestionsTagMap(ParsedCompound parsed)
+	@Override public @Nullable NbtTagMap getSuggestionsTagMap(@Nullable ParsedCompound parsed)
 	{
 		NbtTagMap tagMap = new NbtTagMap();
 		getBasicCompoundSuggestions(parsed, tagMap);
 		return tagMap;
 	}
 
-	protected abstract void getBasicCompoundSuggestions(ParsedCompound parsed, NbtTagMap map);
+	protected abstract void getBasicCompoundSuggestions(@Nullable ParsedCompound parsed, NbtTagMap map);
 }

@@ -15,10 +15,15 @@ _with_items &_base_container
 
 _furnace &_base_container
 +Items :list<#item_stack_with_slot>
-+cooking_time_spent :short @OldName(1.21.4, CookTime)
-+cooking_total_time :short @OldName(1.21.4, CookTimeTotal)
-+lit_time_remaining :short @OldName(1.21.4, BurnTime)
-+lit_total_time :short @Since(1.21.4)
++cooking_time_spent :short @OldName(1.21.4, CookTime) @Until(26.3)
++cooking_total_time :short @OldName(1.21.4, CookTimeTotal) @Until(26.3)
++lit_time_remaining :short @OldName(1.21.4, BurnTime) @Until(26.3)
++lit_total_time :short @Since(1.21.4) @Until(26.3)
++cooking_time_spent :int @Since(26.3)
++cooking_total_time :int @Since(26.3)
++lit_time_remaining :int @Since(26.3)
++lit_total_time :int @Since(26.3)
++speed_multiplier :float @Since(26.3)
 +RecipesUsed :FurnaceRecipesUsed
 
 _sculk_sensor
@@ -26,6 +31,7 @@ _sculk_sensor
 +listener :#vibration_listener
 
 _sign
++allow_op_features :boolean @Since(26.3)
 +front_text :#sign_text
 +back_text :#sign_text
 +is_waxed :boolean
@@ -57,8 +63,14 @@ beehive
 blast_furnace =_furnace
 
 brewing_stand &_base_container
++BrewTime :short @Until(26.3)
++BrewTime :int @Since(26.3)
++Fuel :byte @Until(26.3)
++Fuel :int @Since(26.3)
 +Items :list<#item_stack_with_slot>
-+BrewTime :short
++speed_multiplier :float @Since(26.3)
++total_brew_time :int @Since(26.3)
++total_fuel :int @Since(26.3)
 
 brushable_block =_with_single_item
 
