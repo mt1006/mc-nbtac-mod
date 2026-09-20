@@ -33,9 +33,10 @@ public class DataComponentManager
 		componentMap.merge(key, entry, (e1, e2) -> e1.source.priority > e2.source.priority ? e1 : e2);
 	}
 
-	public static DefinedNbtTag get(String key)
+	public static @Nullable DefinedNbtTag get(String key)
 	{
-		return componentMap.get(key).tag;
+		Entry entry = componentMap.get(key);
+		return entry != null ? entry.tag : null;
 	}
 
 	public static void loadSuggestions(SuggestionList list, String str, Set<DataComponentType<?>> usedComponents,
@@ -62,7 +63,7 @@ public class DataComponentManager
 			DataComponentType<?> componentType = entry.getValue();
 			if (componentType.codec() == null || usedComponents.contains(componentType)) { continue; }
 
-			DefinedNbtTag component = DataComponentManager.componentMap.get("item/" + id).tag;
+			DefinedNbtTag component = get("item/" + id);
 
 			if (component == null)
 			{
