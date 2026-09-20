@@ -9,7 +9,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.mt1006.nbtac.autocomplete.loader.Loader;
-import net.mt1006.nbtac.config.ModConfig;
 import net.mt1006.nbtac.forge.ConfigScreenFactory;
 
 @Mod(NBTac.MOD_ID)
@@ -35,8 +34,7 @@ public class NBTacForge implements NBTacLoaderInterface
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
 		if (isDedicatedServer) { return; }
-		if (ModConfig.useNewThread.val) { new Thread(Loader::load).start(); }
-		else { Loader.load(); }
+		new Thread(Loader::load).start();
 	}
 
 	@Override public boolean isModPresent(String id)
